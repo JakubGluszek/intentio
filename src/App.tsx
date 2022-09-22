@@ -2,7 +2,7 @@ import React from "react";
 
 const App: React.FC = () => {
   return (
-    <div>
+    <div className="">
       <h1>Pomodoro app</h1>
     </div>
   );
