@@ -1,6 +1,7 @@
 import React from "react";
 import { invoke } from "@tauri-apps/api";
-import { Settings } from "../types";
+import { Settings, SettingsUpdate } from "../types";
+import { emit } from "@tauri-apps/api/event";
 
 const useSettings = () => {
   const [settings, setSettings] = React.useState<Settings>();
@@ -14,8 +15,18 @@ const useSettings = () => {
     setSettings(settings);
   };
 
+  const update = async (changes: SettingsUpdate) => {
+    const updated = await invoke<Settings>("update_settings", {
+      settings: { ...settings, ...changes },
+    });
+    setSettings(updated);
+    await emit("update_settings", updated);
+  };
+
   return {
     settings,
+    setSettings,
+    update,
   };
 };
 

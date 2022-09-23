@@ -1,7 +1,7 @@
 import React from "react";
 
-const History: React.FC = () => {
+const HistoryPage: React.FC = () => {
   return <div>History page</div>;
 };
 
-export default History;
+export default HistoryPage;

@@ -1,15 +1,15 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import History from "./pages/History";
-import Home from "./pages/Home";
-import Settings from "./pages/Settings";
+import HistoryPage from "./pages/HistoryPage";
+import HomePage from "./pages/HomePage";
+import SettingsPage from "./pages/SettingsPage";
 
 const App: React.FC = () => {
   return (
     <Routes>
-      <Route index element={<Home />} />
-      <Route path="settings" element={<Settings />} />
-      <Route path="history" element={<History />} />
+      <Route index element={<HomePage />} />
+      <Route path="settings" element={<SettingsPage />} />
+      <Route path="history" element={<HistoryPage />} />
     </Routes>
   );
 };

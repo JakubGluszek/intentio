@@ -6,6 +6,7 @@ type TimerType = "focus" | "break" | "long break";
 const useTimer = (settings: Settings) => {
   const [type, setType] = React.useState<TimerType>("focus");
   const [duration, setDuration] = React.useState(settings.pomodoro_duration);
+  const [timeFocused, setTimeFocused] = React.useState(0);
   const [isRunning, setIsRunning] = React.useState(false);
   const [iterations, setIterations] = React.useState(0);
 
@@ -13,6 +14,7 @@ const useTimer = (settings: Settings) => {
     const timer = setInterval(() => {
       if (!isRunning) return;
       if (duration > 0) {
+        if (type === "focus") setTimeFocused((t) => t + 1);
         setDuration(duration - 1);
       } else {
         save();
@@ -22,6 +24,10 @@ const useTimer = (settings: Settings) => {
 
     return () => clearInterval(timer);
   });
+
+  React.useEffect(() => {
+    restart();
+  }, [settings]);
 
   const start = () => {
     setIsRunning(true);
@@ -34,6 +40,7 @@ const useTimer = (settings: Settings) => {
   const restart = () => {
     switch (type) {
       case "focus":
+        save();
         setDuration(settings.pomodoro_duration);
         break;
       case "break":
@@ -46,7 +53,10 @@ const useTimer = (settings: Settings) => {
   };
 
   const save = () => {
-    if (duration < 60) return;
+    if (timeFocused < 60) {
+      // perform save here
+    }
+    setTimeFocused(0);
   };
 
   const next = () => {
@@ -61,10 +71,18 @@ const useTimer = (settings: Settings) => {
         setType("break");
         setDuration(settings.break_duration);
       }
+
       setIterations(iterations + 1);
+      if (settings.auto_start_breaks) {
+        start();
+      }
+      save();
     } else {
       setType("focus");
       setDuration(settings.pomodoro_duration);
+      if (settings.auto_start_pomodoros) {
+        start();
+      }
     }
   };
 
@@ -90,7 +108,7 @@ const useTimer = (settings: Settings) => {
     iterations,
     start,
     pause,
-    restart,
+    next,
     change,
   };
 };
