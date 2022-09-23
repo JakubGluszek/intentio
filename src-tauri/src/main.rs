@@ -3,9 +3,20 @@
     windows_subsystem = "windows"
 )]
 
+use pomodoro::*;
+
+#[tauri::command]
+fn read_settings() -> Settings {
+    Settings::read()
+}
+
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![])
+        .setup(|_app| {
+            Storage::setup();
+            Ok(())
+        })
+        .invoke_handler(tauri::generate_handler![read_settings])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

@@ -1,10 +1,16 @@
 import React from "react";
+import { Route, Routes } from "react-router-dom";
+import History from "./pages/History";
+import Home from "./pages/Home";
+import Settings from "./pages/Settings";
 
 const App: React.FC = () => {
   return (
-    <div className="">
-      <h1>Pomodoro app</h1>
-    </div>
+    <Routes>
+      <Route index element={<Home />} />
+      <Route path="settings" element={<Settings />} />
+      <Route path="history" element={<History />} />
+    </Routes>
   );
 };
 

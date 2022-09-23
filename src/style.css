@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  html {
+    font-size: calc(1vw + 1vh + 4px);
+  }
+}
+
+@layer components {
+  .btn {
+    @apply w-full h-fit px-4 py-2 rounded bg-blue-400 transition-transform hover:scale-[102%] text-white;
+  }
+}
