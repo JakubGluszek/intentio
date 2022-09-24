@@ -10,29 +10,11 @@ const Timer: React.FC<TimerProps> = ({ settings }) => {
   const timer = useTimer(settings);
 
   return (
-    <div className="w-full h-full flex flex-col items-center justify-evenly gap-4 p-4">
-      <div className="w-full flex flex-row items-center gap-2">
-        <button
-          className={`btn ${timer.type === "focus" && "bg-opacity-60"}`}
-          onClick={() => timer.change("focus")}
-        >
-          Focus
-        </button>
-        <button
-          className={`btn ${timer.type === "break" && "bg-opacity-60"}`}
-          onClick={() => timer.change("break")}
-        >
-          Break
-        </button>
-        <button
-          className={`btn ${timer.type === "long break" && "bg-opacity-60"}`}
-          onClick={() => timer.change("long break")}
-        >
-          Long break
-        </button>
+    <div className="m-auto w-fit h-fit flex flex-col items-center justify-evenly gap-4 p-4">
+      <div className="flex flex-col gap-4 items-center">
+        <span className="text-5xl">{timer.duration}</span>
+        <span>{timer.type}</span>
       </div>
-      <span className="text-5xl">{timer.duration}</span>
-      <span>{timer.iterations}</span>
       <div className="w-full flex flex-row items-center gap-2">
         {timer.isRunning ? (
           <button className="btn grow" onClick={() => timer.pause()}>

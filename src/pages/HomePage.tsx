@@ -4,31 +4,49 @@ import Layout from "../components/Layout";
 import Timer from "../components/Timer";
 import useSettings from "../hooks/useSettings";
 import { listen } from "@tauri-apps/api/event";
+import { MdHistory, MdSettings } from "react-icons/md";
 
 const HomePage: React.FC = () => {
   const { settings, setSettings } = useSettings();
 
-  listen<string>("update_settings", (event) => {
-    setSettings(JSON.parse(event.payload));
-  });
+  React.useEffect(() => {
+    listen<string>("update_settings", (event) => {
+      setSettings(JSON.parse(event.payload));
+    });
+  }, []);
 
   return (
     <Layout>
-      <button
-        className="absolute right-2 top-2"
-        onClick={() =>
-          new WebviewWindow("settings", {
-            url: "/settings",
-            width: 480,
-            height: 600,
-          })
-        }
-      >
-        Settings
-      </button>
-      <div className="m-auto w-[80vw] h-[80vh]">
-        {settings && <Timer settings={settings} />}
+      <div className="absolute top-4 right-4 flex flex-row items-center gap-4">
+        <button
+          className="btn"
+          onClick={() =>
+            new WebviewWindow("settings", {
+              url: "/settings",
+              width: 344,
+              height: 464,
+              resizable: false,
+              visible: true,
+            })
+          }
+        >
+          <MdSettings size={24} />
+        </button>
+        <button
+          className="btn"
+          onClick={() =>
+            new WebviewWindow("history", {
+              url: "/history",
+              width: 344,
+              height: 464,
+              resizable: false,
+            })
+          }
+        >
+          <MdHistory size={24} />
+        </button>
       </div>
+      {settings && <Timer settings={settings} />}
     </Layout>
   );
 };

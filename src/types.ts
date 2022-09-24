@@ -17,3 +17,10 @@ export interface SettingsUpdate {
   auto_start_pomodoros?: boolean;
   auto_start_breaks?: boolean;
 }
+
+export interface Pomodoro {
+  id: string;
+  duration: number;
+  started_at: Date;
+  finished_at: Date;
+}
