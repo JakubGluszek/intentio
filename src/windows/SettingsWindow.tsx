@@ -1,9 +1,8 @@
 import React from "react";
-import Layout from "../components/Layout";
 import useSettings from "../hooks/useSettings";
 import { SettingsUpdate } from "../types";
 
-const SettingsPage: React.FC = () => {
+const SettingsWindow: React.FC = () => {
   const { settings, update } = useSettings();
   const [changes, setChanges] = React.useState<SettingsUpdate>({});
 
@@ -11,18 +10,16 @@ const SettingsPage: React.FC = () => {
     return <div>loading</div>;
   }
 
-  const saveButton = Object.keys(changes).length > 0 && (
-    <button
-      className="btn"
-      onClick={() => update(changes).then(() => setChanges({}))}
-    >
-      save
-    </button>
-  );
-
   return (
-    <Layout>
-      {saveButton}
+    <div className="w-screen h-screen flex flex-col p-4">
+      {Object.keys(changes).length > 0 && (
+        <button
+          className="btn"
+          onClick={() => update(changes).then(() => setChanges({}))}
+        >
+          save
+        </button>
+      )}
       <div className="flex flex-col gap-4 p-4">
         <div className="flex flex-row items-center gap-4">
           <span>Pomodoro duration</span>
@@ -103,8 +100,8 @@ const SettingsPage: React.FC = () => {
           />
         </div>
       </div>
-    </Layout>
+    </div>
   );
 };
 
-export default SettingsPage;
+export default SettingsWindow;

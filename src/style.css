@@ -2,14 +2,57 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: "jetbrains";
+  src: url("../public/fonts/JetBrainsMono-Regular.woff2");
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: "jetbrains";
+  src: url("../public/fonts/JetBrainsMono-Medium.woff2");
+  font-weight: medium;
+}
+
+@font-face {
+  font-family: "jetbrains";
+  src: url("../public/fonts/JetBrainsMono-Bold.woff2");
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: "jetbrains";
+  src: url("../public/fonts/JetBrainsMono-Italic.woff2");
+  font-style: italic;
+}
+
 @layer base {
+  :root {
+    --window-color: #222831;
+    --base-color: #393e46;
+    --primary-color: #00adb5;
+    --text-color: #eeeeee;
+  }
+  
   html {
-    @apply bg-slate-900 text-slate-300;
+    @apply font-jetbrains text-text;
+  }
+
+  body {
+    @apply w-screen h-screen flex flex-col bg-window border-2 border-base p-4;
+  }
+
+  #root {
+    @apply grow flex flex-col;
   }
 }
 
 @layer components {
   .btn {
-    @apply w-fit h-fit p-2 rounded bg-slate-600 hover:bg-slate-700 text-slate-300;
+    @apply bg-base rounded flex flex-row items-center justify-center gap-1 px-2 py-1 text-primary brightness-90 hover:brightness-100;
+  }
+
+  .btn-ghost {
+    @apply bg-transparent px-0;
   }
 }

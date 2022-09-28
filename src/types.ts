@@ -24,3 +24,8 @@ export interface Pomodoro {
   started_at: Date;
   finished_at: Date;
 }
+
+export interface Project {
+  id: string;
+  title: string;
+}

@@ -54,12 +54,18 @@
     },
     "windows": [
       {
-        "fullscreen": false,
+        "label": "main",
+        "title": "Pomodoro",
         "width": 360,
         "height": 420,
+        "fullscreen": false,
         "resizable": false,
-        "title": "Pomodoro"
+        "decorations": false
       }
-    ]
+    ],
+    "systemTray": {
+      "iconPath": "icons/icon.png",
+      "iconAsTemplate": true
+    }
   }
 }

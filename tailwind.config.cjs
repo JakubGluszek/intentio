@@ -2,7 +2,17 @@
 module.exports = {
   content: ["./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        window: "var(--window-color)",
+        base: "var(--base-color)",
+        primary: "var(--primary-color)",
+        text: "var(--text-color)",
+      },
+      fontFamily: {
+        jetbrains: ["JetBrainsMono"],
+      },
+    },
   },
   plugins: [],
 };

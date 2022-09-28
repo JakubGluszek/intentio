@@ -1,15 +1,15 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import HistoryPage from "./pages/HistoryPage";
-import HomePage from "./pages/HomePage";
-import SettingsPage from "./pages/SettingsPage";
+import MainWindow from "./windows/MainWindow";
+import SettingsWindow from "./windows/SettingsWindow";
+import ProjectsWindow from "./windows/ProjectsWindow";
 
 const App: React.FC = () => {
   return (
     <Routes>
-      <Route index element={<HomePage />} />
-      <Route path="settings" element={<SettingsPage />} />
-      <Route path="history" element={<HistoryPage />} />
+      <Route index element={<MainWindow />} />
+      <Route path="settings" element={<SettingsWindow />} />
+      <Route path="projects" element={<ProjectsWindow />} />
     </Routes>
   );
 };

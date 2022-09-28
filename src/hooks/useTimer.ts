@@ -13,21 +13,6 @@ const useTimer = (settings: Settings) => {
   const [iterations, setIterations] = React.useState(0);
 
   React.useEffect(() => {
-    const timer = setInterval(() => {
-      if (!isRunning) return;
-      if (duration > 0) {
-        if (type === "focus") setTimeFocused((t) => t + 1);
-        setDuration(duration - 1);
-      } else {
-        pause();
-        next();
-      }
-    }, 1000);
-
-    return () => clearInterval(timer);
-  });
-
-  React.useEffect(() => {
     switch (type) {
       case "focus":
         setDuration(settings.pomodoro_duration);
@@ -40,6 +25,10 @@ const useTimer = (settings: Settings) => {
         break;
     }
   }, [settings]);
+
+  React.useEffect(() => {
+    setTimeFocused(0);
+  }, [type])
 
   const start = () => {
     if (!startedAt) {
@@ -60,21 +49,26 @@ const useTimer = (settings: Settings) => {
     });
   };
 
+  const tick = () => {
+    setTimeFocused(seconds => seconds + 1);
+  }
+
   const resetPomodoro = () => {
     setTimeFocused(0);
     setStartedAt(null);
   };
 
-  const next = () => {
+  const next = (manual: boolean = false) => {
+    pause();
     if (type === "focus") {
       save();
       resetPomodoro();
 
-      const isLongBreak =
+      const is_long_break =
         iterations >= settings.long_break_interval &&
         iterations % settings.long_break_interval === 0;
 
-      if (isLongBreak) {
+      if (is_long_break) {
         setType("long break");
         setDuration(settings.long_break_duration);
       } else {
@@ -82,7 +76,7 @@ const useTimer = (settings: Settings) => {
         setDuration(settings.break_duration);
       }
       setIterations(iterations + 1);
-      if (settings.auto_start_breaks) {
+      if (!manual && settings.auto_start_breaks) {
         setTimeout(() => {
           start();
         }, 1000);
@@ -90,7 +84,7 @@ const useTimer = (settings: Settings) => {
     } else {
       setType("focus");
       setDuration(settings.pomodoro_duration);
-      if (settings.auto_start_pomodoros) {
+      if (!manual && settings.auto_start_pomodoros) {
         setTimeout(() => {
           start();
         }, 1000);
@@ -105,6 +99,7 @@ const useTimer = (settings: Settings) => {
     iterations,
     start,
     pause,
+    tick,
     next,
   };
 };
