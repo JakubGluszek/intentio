@@ -12,6 +12,28 @@ pub struct Settings {
     auto_start_breaks: bool,
 }
 
+#[derive(Debug, serde::Serialize, serde::Deserialize)]
+pub struct Pomodoro {
+    id: String,
+    duration: u32,
+    started_at: DateTime<Utc>,
+    finished_at: DateTime<Utc>,
+    project_id: Option<String>,
+}
+
+#[derive(Clone, serde::Serialize, serde::Deserialize)]
+pub struct Project {
+    id: String,
+    title: String,
+}
+
+pub enum Storage {
+    Root,
+    Settings,
+    Pomodoros,
+    Projects,
+}
+
 impl Default for Settings {
     fn default() -> Self {
         Self {
@@ -48,21 +70,14 @@ impl Settings {
     }
 }
 
-#[derive(Debug, serde::Serialize, serde::Deserialize)]
-pub struct Pomodoro {
-    id: String,
-    duration: u32,
-    started_at: DateTime<Utc>,
-    finished_at: DateTime<Utc>,
-}
-
 impl Pomodoro {
-    pub fn new(duration: u32, started_at: DateTime<Utc>) -> Self {
+    pub fn new(duration: u32, started_at: DateTime<Utc>, project_id: Option<String>) -> Self {
         Self {
             id: cuid::cuid().unwrap(),
             duration,
             started_at,
             finished_at: Utc::now(),
+            project_id,
         }
     }
 
@@ -93,10 +108,47 @@ impl Pomodoro {
     }
 }
 
-pub enum Storage {
-    Root,
-    Settings,
-    Pomodoros,
+impl Project {
+    pub fn new(title: String) -> Self {
+        Self {
+            id: cuid::cuid().unwrap(),
+            title,
+        }
+    }
+
+    pub fn save(project: Project) -> Vec<Project> {
+        let path = Storage::get_path(Storage::Projects);
+        let contents = fs::read_to_string(&path).unwrap();
+
+        let mut projects: Vec<Project> = match serde_json::from_str(&contents) {
+            Ok(projects) => projects,
+            Err(_) => vec![],
+        };
+
+        projects.push(project);
+        fs::write(&path, serde_json::to_string_pretty(&projects).unwrap()).unwrap();
+
+        projects
+    }
+
+    pub fn read() -> Vec<Project> {
+        let path = Storage::get_path(Storage::Projects);
+        let contents = fs::read_to_string(&path).unwrap();
+        match serde_json::from_str(&contents) {
+            Ok(projects) => projects,
+            Err(_) => {
+                let projects = vec![];
+                fs::write(&path, serde_json::to_string_pretty(&projects).unwrap()).unwrap();
+                projects
+            }
+        }
+    }
+
+    pub fn update(projects: Vec<Project>) -> Vec<Project> {
+        let path = Storage::get_path(Storage::Projects);
+        fs::write(&path, serde_json::to_string_pretty(&projects).unwrap()).unwrap();
+        projects
+    }
 }
 
 impl Storage {
@@ -111,6 +163,7 @@ impl Storage {
             Storage::Root => "/pomodoro",
             Storage::Settings => "/pomodoro/settings.json",
             Storage::Pomodoros => "/pomodoro/pomodoros.json",
+            Storage::Projects => "/pomodoro/projects.json",
         };
 
         path.push_str(target);
@@ -126,6 +179,7 @@ impl Storage {
 
         Storage::setup_settings();
         Storage::setup_pomodoros();
+        Storage::setup_projects();
     }
 
     fn setup_settings() {
@@ -144,6 +198,14 @@ impl Storage {
         if !Path::new(&path).is_file() {
             let pomodoros: Vec<Pomodoro> = vec![];
             fs::write(&path, serde_json::to_string_pretty(&pomodoros).unwrap()).unwrap();
+        }
+    }
+
+    fn setup_projects() {
+        let path = Storage::get_path(Storage::Projects);
+        if !Path::new(&path).is_file() {
+            let projects: Vec<Project> = vec![];
+            fs::write(&path, serde_json::to_string_pretty(&projects).unwrap()).unwrap();
         }
     }
 }

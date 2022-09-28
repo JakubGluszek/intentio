@@ -56,7 +56,7 @@
       {
         "fullscreen": false,
         "width": 360,
-        "height": 480,
+        "height": 420,
         "resizable": false,
         "title": "Pomodoro"
       }
