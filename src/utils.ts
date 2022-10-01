@@ -1,3 +1,5 @@
+import { Theme } from "./types";
+
 export const formatTime = (sec: number): String => {
   let seconds = sec % 60;
   let minutes = ((sec - seconds) / 60).toFixed();
@@ -6,4 +8,18 @@ export const formatTime = (sec: number): String => {
     seconds < 10 && seconds > 0 ? "0" : ""
   }${seconds}${seconds === 0 ? "0" : ""}
   `;
+};
+
+export const applyTheme = (theme?: Theme) => {
+  if (!theme) return;
+  document.documentElement.style.setProperty(
+    "--window-color",
+    theme.colors.window
+  );
+  document.documentElement.style.setProperty("--base-color", theme.colors.base);
+  document.documentElement.style.setProperty(
+    "--primary-color",
+    theme.colors.primary
+  );
+  document.documentElement.style.setProperty("--text-color", theme.colors.text);
 };

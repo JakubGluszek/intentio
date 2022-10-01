@@ -8,6 +8,7 @@ import {
   createRoutesFromElements,
   Route,
 } from "react-router-dom";
+import { MantineProvider } from "@mantine/core";
 
 const router = createBrowserRouter(
   createRoutesFromElements(<Route path="*" element={<App />} />)
@@ -15,6 +16,8 @@ const router = createBrowserRouter(
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <MantineProvider>
+      <RouterProvider router={router} />
+    </MantineProvider>
   </React.StrictMode>
 );

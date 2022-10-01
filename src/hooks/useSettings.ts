@@ -1,6 +1,6 @@
 import React from "react";
 import { invoke } from "@tauri-apps/api";
-import { Settings, SettingsUpdate } from "../types";
+import { Settings } from "../types";
 import { emit } from "@tauri-apps/api/event";
 
 const useSettings = () => {
@@ -15,13 +15,13 @@ const useSettings = () => {
     setSettings(settings);
   };
 
-  const update = async (changes: SettingsUpdate) => {
-    const updated = await invoke<Settings>("update_settings", {
-      settings: { ...settings, ...changes },
+  const update = React.useCallback((updated: Settings) => {
+    invoke<Settings>("update_settings", {
+      settings: updated,
     });
     setSettings(updated);
-    await emit("update_settings", updated);
-  };
+    emit("settings_updated", updated);
+  }, []);
 
   return {
     settings,

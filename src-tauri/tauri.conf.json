@@ -58,6 +58,8 @@
         "title": "Pomodoro",
         "width": 360,
         "height": 420,
+        "maxWidth": 360,
+        "maxHeight": 420,
         "fullscreen": false,
         "resizable": false,
         "decorations": false

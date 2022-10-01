@@ -16,6 +16,12 @@
 
 @font-face {
   font-family: "jetbrains";
+  src: url("../public/fonts/JetBrainsMono-SemiBold.woff2");
+  font-weight: bolder;
+}
+
+@font-face {
+  font-family: "jetbrains";
   src: url("../public/fonts/JetBrainsMono-Bold.woff2");
   font-weight: bold;
 }
@@ -33,23 +39,19 @@
     --primary-color: #00adb5;
     --text-color: #eeeeee;
   }
-  
+
   html {
     @apply font-jetbrains text-text;
   }
 
   body {
-    @apply w-screen h-screen flex flex-col bg-window border-2 border-base p-4;
-  }
-
-  #root {
-    @apply grow flex flex-col;
+    @apply bg-window;
   }
 }
 
 @layer components {
   .btn {
-    @apply bg-base rounded flex flex-row items-center justify-center gap-1 px-2 py-1 text-primary brightness-90 hover:brightness-100;
+    @apply bg-base rounded flex flex-row items-center justify-center gap-2 px-2 py-1 text-primary brightness-90 hover:brightness-100;
   }
 
   .btn-ghost {

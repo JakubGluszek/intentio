@@ -44,6 +44,11 @@ fn main() {
             save_project,
             read_projects,
             update_projects,
+            save_theme,
+            read_themes,
+            update_themes,
+            read_state,
+            update_state,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
@@ -56,6 +61,7 @@ fn read_settings() -> Settings {
 
 #[tauri::command]
 fn update_settings(settings: Settings) -> Settings {
+    println!("{:#?}", &settings);
     Settings::update(settings)
 }
 
@@ -84,4 +90,30 @@ fn read_projects() -> Vec<Project> {
 #[tauri::command]
 fn update_projects(projects: Vec<Project>) -> Vec<Project> {
     Project::update(projects)
+}
+
+#[tauri::command]
+fn save_theme(name: String, colors: Colors) -> Vec<Theme> {
+    let theme = Theme::new(name, colors);
+    Theme::save(theme)
+}
+
+#[tauri::command]
+fn read_themes() -> Vec<Theme> {
+    Theme::read()
+}
+
+#[tauri::command]
+fn update_themes(themes: Vec<Theme>) -> Vec<Theme> {
+    Theme::update(themes)
+}
+
+#[tauri::command]
+fn read_state() -> State {
+    State::read()
+}
+
+#[tauri::command]
+fn update_state(state: State) -> State {
+    State::update(state)
 }

@@ -10,8 +10,11 @@
     "tauri": "tauri"
   },
   "dependencies": {
+    "@mantine/core": "^5.4.1",
+    "@mantine/hooks": "^5.4.1",
     "@tauri-apps/api": "^1.1.0",
     "autoprefixer": "^10.4.12",
+    "color": "^4.2.3",
     "postcss": "^8.4.16",
     "react": "^18.2.0",
     "react-countdown-circle-timer": "^3.0.9",
@@ -22,6 +25,7 @@
   },
   "devDependencies": {
     "@tauri-apps/cli": "^1.1.0",
+    "@types/color": "^3.0.3",
     "@types/node": "^18.7.10",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
