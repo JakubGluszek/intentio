@@ -6,6 +6,7 @@ A pomodoro desktop app built with tauri & react.
 
 - [ ] Make a lib for dealing with local storage + later on with cloud storage.
 
-  This would reduce a lot of duplicate methods on struct (save, read, update...)
+  This would reduce a lot of duplicate methods on structs (save(), read(), update()...)
 
 - [ ] Fullscreen mode.
+

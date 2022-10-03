@@ -17,15 +17,29 @@ import {
   MdVolumeUp,
 } from "react-icons/md";
 import { AiFillFolder, AiFillFolderOpen } from "react-icons/ai";
-import { Slider, Checkbox } from "@mantine/core";
-import useSettings from "../hooks/useSettings";
-import { Settings, SettingsUpdate } from "../types";
+import { Checkbox } from "@mantine/core";
+import { Settings } from "../types";
 import useTheme from "../hooks/useTheme";
 import { formatTime } from "../utils";
+import { invoke } from "@tauri-apps/api/tauri";
+import { Slider } from "../components";
+import { emit } from "@tauri-apps/api/event";
 
 const SettingsWindow: React.FC = () => {
-  const { settings, update: updateSettings } = useSettings();
+  const [settings, setSettings] = React.useState<Settings>();
+  const settingsRef = React.useRef<Settings>();
+  settingsRef.current = settings;
+
   const { theme, themes, updateCurrentTheme } = useTheme();
+
+  React.useEffect(() => {
+    invoke<Settings>("read_settings").then((s) => setSettings(s));
+  }, []);
+
+  const updateSettingsSuccess = (s: Settings) => {
+    setSettings(s);
+    emit("settings_updated", s);
+  };
 
   if (!settings) {
     return <div>loading</div>;
@@ -53,10 +67,117 @@ const SettingsWindow: React.FC = () => {
             <MdTimer size={28} />
             <span className="text-lg">Timer</span>
           </div>
-          <TimerSectionView
-            settings={settings}
-            updateSettings={updateSettings}
-          />
+
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-1">
+              <div className="flex flex-col items-center gap-2">
+                <span className="text-sm font-medium">Focus</span>
+                <div className="bg-base rounded px-2 py-1">
+                  <span className="text-xs">
+                    {formatTime(settings.pomodoro_duration)}
+                  </span>
+                </div>
+                <Slider
+                  min={1}
+                  max={90}
+                  defaultValue={settings.pomodoro_duration}
+                  onChangeEnd={(minutes) =>
+                    invoke<Settings>("update_settings", {
+                      settings: {
+                        ...settingsRef.current,
+                        pomodoro_duration: minutes * 60,
+                      },
+                    }).then(updateSettingsSuccess)
+                  }
+                />
+              </div>
+              <div className="flex flex-col items-center gap-2">
+                <span className="text-sm font-medium">Break</span>
+                <div className="bg-base rounded px-2 py-1">
+                  <span className="text-xs">
+                    {formatTime(settings.break_duration)}
+                  </span>
+                </div>
+              </div>
+              <Slider
+                min={1}
+                max={25}
+                defaultValue={settings.break_duration}
+                onChangeEnd={(minutes) =>
+                  invoke<Settings>("update_settings", {
+                    settings: {
+                      ...settingsRef.current,
+                      break_duration: minutes * 60,
+                    },
+                  }).then(updateSettingsSuccess)
+                }
+              />
+              <div className="flex flex-col items-center gap-2">
+                <span className="text-sm font-medium">Long Break</span>
+                <div className="bg-base rounded px-2 py-1">
+                  <span className="text-xs">
+                    {formatTime(settings.long_break_duration)}
+                  </span>
+                </div>
+                <Slider
+                  min={1}
+                  max={45}
+                  defaultValue={settings.long_break_duration}
+                  onChangeEnd={(minutes) =>
+                    invoke<Settings>("update_settings", {
+                      settings: {
+                        ...settingsRef.current,
+                        long_break_duration: minutes * 60,
+                      },
+                    }).then(updateSettingsSuccess)
+                  }
+                />
+              </div>
+              <div className="flex flex-col items-center gap-2">
+                <span className="text-sm font-medium">Long Break Interval</span>
+                <div className="bg-base rounded px-2 py-1">
+                  <span className="text-xs">
+                    {settings.long_break_interval}
+                  </span>
+                </div>
+                <Slider
+                  min={2}
+                  max={16}
+                  defaultValue={settings.long_break_interval}
+                  onChangeEnd={(intervals) =>
+                    invoke<Settings>("update_settings", {
+                      settings: {
+                        ...settingsRef.current,
+                        long_break_interval: intervals,
+                      },
+                    }).then(updateSettingsSuccess)
+                  }
+                />
+              </div>
+            </div>
+            <div className="flex flex-col gap-2">
+              <div className="flex flex-row items-center justify-between">
+                <span>Auto Start Pomodoros</span>
+                <Checkbox
+                  classNames={{
+                    input:
+                      "border-primary checked:border-primary bg-window checked:bg-window border-2",
+                    icon: "text-primary",
+                  }}
+                />
+              </div>
+              <div className="flex flex-row items-center justify-between">
+                <span>Auto Start Breaks</span>
+                <Checkbox
+                  classNames={{
+                    input:
+                      "border-primary checked:border-primary bg-window checked:bg-window border-2",
+                    icon: "text-primary",
+                  }}
+                />
+              </div>
+            </div>
+          </div>
         </div>
         {/* Alerts */}
         <div className="flex flex-col gap-4">
@@ -71,11 +192,22 @@ const SettingsWindow: React.FC = () => {
           </div>
           <div className="flex flex-col gap-3">
             <AlertSectionView />
-            <VolumeSectionView />
-            <RepeatAlertSection
-              settings={settings}
-              updateSettings={updateSettings}
-            />
+            <div className="flex flex-row items-center gap-4">
+              <MdVolumeUp size={24} />
+              <Slider onChangeEnd={() => null} />
+            </div>
+            <div className="flex flex-row items-center gap-4">
+              <span>Repeat</span>
+              <div className="flex flex-row items-center px-2 gap-2 bg-base rounded">
+                <button className="btn btn-ghost" onMouseUp={() => null}>
+                  <MdRemove size={24} />
+                </button>
+                <span>{settings.alert.repeat}</span>
+                <button className="btn btn-ghost" onMouseUp={() => null}>
+                  <MdAdd size={24} />
+                </button>
+              </div>
+            </div>
           </div>
         </div>
         {/* Themes */}
@@ -158,115 +290,6 @@ const SettingsWindow: React.FC = () => {
   );
 };
 
-interface TimerSectionViewProps {
-  settings: Settings;
-  updateSettings: (update: SettingsUpdate) => void;
-}
-
-const TimerSectionView: React.FC<TimerSectionViewProps> = ({
-  settings,
-  updateSettings,
-}) => {
-  return (
-    <div className="flex flex-col gap-4">
-      <div className="flex flex-col gap-1">
-        <div className="flex flex-col items-center gap-2">
-          <span className="text-sm font-medium">Focus</span>
-          <div className="bg-base rounded px-2 py-1">
-            <span className="text-xs">
-              {formatTime(settings.pomodoro_duration)}
-            </span>
-          </div>
-          <Slider
-            classNames={{
-              root: "w-full",
-              bar: "bg-primary",
-              thumb: "bg-primary border-primary",
-              track: "before:bg-base",
-            }}
-            label={null}
-            defaultValue={settings.pomodoro_duration / 60}
-            min={1}
-            max={90}
-          />
-        </div>
-        <div className="flex flex-col items-center gap-2">
-          <span className="text-sm font-medium">Break</span>
-          <div className="bg-base rounded px-2 py-1">
-            <span className="text-xs">
-              {formatTime(settings.break_duration)}
-            </span>
-          </div>
-          <Slider
-            classNames={{
-              root: "w-full",
-              bar: "bg-primary",
-              thumb: "bg-primary border-primary",
-              track: "before:bg-base",
-            }}
-            label={null}
-            defaultValue={settings.break_duration / 60}
-            min={1}
-            max={45}
-          />
-        </div>
-        <div className="flex flex-col items-center gap-2">
-          <span className="text-sm font-medium">Long Break</span>
-          <div className="bg-base rounded px-2 py-1">
-            <span className="text-xs">
-              {formatTime(settings.long_break_duration)}
-            </span>
-          </div>
-          <Slider
-            classNames={{
-              root: "w-full",
-              bar: "bg-primary",
-              thumb: "bg-primary border-primary",
-              track: "before:bg-base",
-            }}
-            label={null}
-            defaultValue={settings.long_break_duration / 60}
-            min={1}
-            max={90}
-          />
-        </div>
-        <div className="flex flex-col items-center gap-2">
-          <span className="text-sm font-medium">Long Break Interval</span>
-          <div className="bg-base rounded px-2 py-1">
-            <span className="text-xs">{settings.long_break_interval}</span>
-          </div>
-          <Slider
-            classNames={{
-              root: "w-full",
-              bar: "bg-primary",
-              thumb: "bg-primary border-primary",
-              track: "before:bg-base",
-            }}
-            label={null}
-            defaultValue={settings.long_break_interval}
-            min={2}
-            max={16}
-          />
-        </div>
-      </div>
-      <div className="flex flex-col gap-2">
-        <div className="flex flex-row items-center justify-between">
-          <span>Auto Start Pomodoros</span>
-          <Checkbox
-            classNames={{ input: "border-primary bg-window border-2" }}
-          />
-        </div>
-        <div className="flex flex-row items-center justify-between">
-          <span>Auto Start Breaks</span>
-          <Checkbox
-            classNames={{ input: "border-primary bg-window border-2" }}
-          />
-        </div>
-      </div>
-    </div>
-  );
-};
-
 const AlertSectionView = () => {
   const [folderIcon, setFolderIcon] = React.useState<"open" | "closed">(
     "closed"
@@ -295,60 +318,6 @@ const AlertSectionView = () => {
           <AiFillFolderOpen size={32} />
         )}
       </button>
-    </div>
-  );
-};
-
-const VolumeSectionView = () => {
-  return (
-    <div className="flex flex-row items-center gap-4">
-      <MdVolumeUp size={24} />
-      <Slider
-        classNames={{
-          root: "w-full",
-          bar: "bg-primary",
-          thumb: "bg-primary border-primary",
-          track: "before:bg-base",
-        }}
-        label={null}
-        onChangeEnd={() => null}
-      />
-    </div>
-  );
-};
-
-interface RepeatAlertSectionProps {
-  settings: Settings;
-  updateSettings: (settings: Settings) => void;
-}
-
-const RepeatAlertSection: React.FC<RepeatAlertSectionProps> = ({
-  settings,
-  updateSettings,
-}) => {
-  const decrement = () => {
-    if (settings.alert.repeat === 0) return;
-    let repeat = settings.alert.repeat - 1;
-    updateSettings({ ...settings, alert: { ...settings.alert, repeat } });
-  };
-
-  const increment = () => {
-    let repeat = settings.alert.repeat + 1;
-    updateSettings({ ...settings, alert: { ...settings.alert, repeat } });
-  };
-
-  return (
-    <div className="flex flex-row items-center gap-4">
-      <span>Repeat</span>
-      <div className="flex flex-row items-center px-2 gap-2 bg-base rounded">
-        <button className="btn btn-ghost" onMouseUp={() => decrement()}>
-          <MdRemove size={24} />
-        </button>
-        <span>{settings.alert.repeat}</span>
-        <button className="btn btn-ghost" onMouseUp={() => increment()}>
-          <MdAdd size={24} />
-        </button>
-      </div>
     </div>
   );
 };

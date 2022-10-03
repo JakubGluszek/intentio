@@ -133,7 +133,11 @@ const Timer: React.FC<TimerProps> = ({ settings, theme }) => {
       <div className="flex flex-col items-center gap-0.5 text-sm brightness-75">
         <span>#{timer.iterations}</span>
         <span>
-          {timer.type === "focus" ? "Time to focus!" : "Time for a break!"}
+          {timer.type === "focus"
+            ? "Time to focus!"
+            : timer.type === "break"
+            ? "Time for a break!"
+            : "Time for a longer break!"}
         </span>
       </div>
       <div className="flex flex-row gap-2 w-full h-10">
