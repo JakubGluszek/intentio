@@ -1,18 +1,24 @@
 use chrono::{DateTime, Utc};
 use std::{fs, path::Path};
 
-#[derive(Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Default, serde::Serialize, serde::Deserialize)]
 pub struct Settings {
-    pomodoro_duration: u32,
-    break_duration: u32,
-    long_break_duration: u32,
-    long_break_interval: u32,
-    auto_start_pomodoros: bool,
-    auto_start_breaks: bool,
-    alert: AlertSettings,
+    pub timer: TimerSettings,
+    pub theme: ThemeSettings,
+    pub alert: AlertSettings,
 }
 
-impl Default for Settings {
+#[derive(serde::Serialize, serde::Deserialize)]
+pub struct TimerSettings {
+    pub pomodoro_duration: u32,
+    pub break_duration: u32,
+    pub long_break_duration: u32,
+    pub long_break_interval: u32,
+    pub auto_start_pomodoros: bool,
+    pub auto_start_breaks: bool,
+}
+
+impl Default for TimerSettings {
     fn default() -> Self {
         Self {
             pomodoro_duration: 1500,
@@ -21,7 +27,55 @@ impl Default for Settings {
             long_break_interval: 4,
             auto_start_pomodoros: true,
             auto_start_breaks: true,
-            alert: AlertSettings::default(),
+        }
+    }
+}
+
+#[derive(serde::Serialize, serde::Deserialize)]
+pub struct ThemeSettings {
+    pub current_theme: Theme,
+    pub idle_theme: Theme,
+    pub focus_theme: Option<Theme>,
+    pub break_theme: Option<Theme>,
+}
+
+impl Default for ThemeSettings {
+    fn default() -> Self {
+        let contents = fs::read_to_string(Storage::get_path(Storage::Themes)).unwrap();
+        let themes: Vec<Theme> = serde_json::from_str(&contents).unwrap();
+
+        Self {
+            current_theme: themes[0].clone(),
+            idle_theme: themes[0].clone(),
+            focus_theme: None,
+            break_theme: None,
+        }
+    }
+}
+
+#[derive(serde::Serialize, serde::Deserialize)]
+pub struct AlertSettings {
+    pub name: String,
+    pub path: String,
+    pub volume: f32,
+    pub repeat: u8,
+}
+
+impl Default for AlertSettings {
+    fn default() -> Self {
+        let path = tauri::api::path::audio_dir()
+            .unwrap()
+            .to_str()
+            .unwrap()
+            .to_owned();
+
+        let path = path + "/pomodoro/default.mp3";
+
+        Self {
+            volume: 0.5,
+            name: "default.mp3".to_string(),
+            path,
+            repeat: 2,
         }
     }
 }
@@ -48,24 +102,7 @@ impl Settings {
     }
 }
 
-#[derive(Debug, serde::Deserialize, serde::Serialize)]
-pub struct AlertSettings {
-    sound: String,
-    volume: u8,
-    repeat: u32,
-}
-
-impl Default for AlertSettings {
-    fn default() -> Self {
-        Self {
-            sound: "".to_string(),
-            volume: 50,
-            repeat: 1,
-        }
-    }
-}
-
-#[derive(Debug, serde::Serialize, serde::Deserialize)]
+#[derive(serde::Serialize, serde::Deserialize)]
 pub struct Pomodoro {
     id: String,
     duration: u32,
@@ -161,14 +198,14 @@ impl Project {
     }
 }
 
-#[derive(serde::Serialize, serde::Deserialize)]
+#[derive(Clone, serde::Serialize, serde::Deserialize)]
 pub struct Theme {
     id: String,
     name: String,
     colors: Colors,
 }
 
-#[derive(serde::Serialize, serde::Deserialize)]
+#[derive(Clone, serde::Serialize, serde::Deserialize)]
 pub struct Colors {
     window: String,
     base: String,
@@ -220,55 +257,12 @@ impl Theme {
     }
 }
 
-#[derive(serde::Deserialize, serde::Serialize)]
-pub struct State {
-    theme: Theme,
-}
-
-impl Default for State {
-    fn default() -> Self {
-        Self {
-            theme: Theme::new(
-                "abyss".to_string(),
-                Colors {
-                    window: "#222831".to_string(),
-                    base: "#393E46".to_string(),
-                    primary: "#00ADB5".to_string(),
-                    text: "#EEEEEE".to_string(),
-                },
-            ),
-        }
-    }
-}
-
-impl State {
-    pub fn read() -> Self {
-        let path = Storage::get_path(Storage::State);
-        let contents = fs::read_to_string(&path).unwrap();
-        match serde_json::from_str(&contents) {
-            Ok(state) => state,
-            Err(_) => {
-                let state = State::default();
-                fs::write(&path, serde_json::to_string_pretty(&state).unwrap()).unwrap();
-                state
-            }
-        }
-    }
-
-    pub fn update(state: Self) -> Self {
-        let path = Storage::get_path(Storage::State);
-        fs::write(&path, serde_json::to_string_pretty(&state).unwrap()).unwrap();
-        state
-    }
-}
-
 pub enum Storage {
     Root,
     Settings,
     Pomodoros,
     Projects,
     Themes,
-    State,
 }
 
 impl Storage {
@@ -285,7 +279,6 @@ impl Storage {
             Storage::Pomodoros => "/pomodoro/pomodoros.json",
             Storage::Projects => "/pomodoro/projects.json",
             Storage::Themes => "/pomodoro/themes.json",
-            Storage::State => "/pomodoro/state.json",
         };
 
         path.push_str(target);
@@ -299,11 +292,10 @@ impl Storage {
             fs::create_dir(root_path).unwrap();
         }
 
-        Storage::setup_settings();
         Storage::setup_pomodoros();
         Storage::setup_projects();
         Storage::setup_themes();
-        Storage::setup_state();
+        Storage::setup_settings();
     }
 
     fn setup_settings() {
@@ -339,53 +331,12 @@ impl Storage {
             return;
         };
 
-        let themes: Vec<Theme> = vec![
-            Theme::new(
-                "abyss".to_string(),
-                Colors {
-                    window: "#222831".to_string(),
-                    base: "#393E46".to_string(),
-                    primary: "#00ADB5".to_string(),
-                    text: "#EEEEEE".to_string(),
-                },
-            ),
-            Theme::new(
-                "winter".to_string(),
-                Colors {
-                    window: "#F9F7F7".to_string(),
-                    base: "#DBE2EF".to_string(),
-                    primary: "#3F72AF".to_string(),
-                    text: "#112D4E".to_string(),
-                },
-            ),
-            Theme::new(
-                "cyan".to_string(),
-                Colors {
-                    window: "#232931".to_string(),
-                    base: "#393E46".to_string(),
-                    primary: "#4ECCA3".to_string(),
-                    text: "#EEEEEE".to_string(),
-                },
-            ),
-            Theme::new(
-                "jungle".to_string(),
-                Colors {
-                    window: "#191A19".to_string(),
-                    base: "#1E5128".to_string(),
-                    primary: "#4E9F3D".to_string(),
-                    text: "#D8E9A8".to_string(),
-                },
-            ),
-        ];
+        let contents = fs::read_to_string("./assets/themes.json").unwrap();
+        let mut themes: Vec<Theme> = serde_json::from_str(&contents).unwrap();
+        for theme in &mut themes {
+            *theme = Theme::new(theme.name.clone(), theme.colors.clone());
+        }
 
         fs::write(&path, serde_json::to_string_pretty(&themes).unwrap()).unwrap();
-    }
-
-    fn setup_state() {
-        let path = Storage::get_path(Storage::State);
-        if !Path::new(&path).is_file() {
-            let state = State::default();
-            fs::write(&path, serde_json::to_string_pretty(&state).unwrap()).unwrap();
-        }
     }
 }

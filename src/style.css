@@ -41,7 +41,7 @@
   }
 
   html {
-    @apply font-jetbrains text-text;
+    @apply font-jetbrains text-text cursor-default transition-colors duration-200;
   }
 
   body {
@@ -56,5 +56,9 @@
 
   .btn-ghost {
     @apply bg-transparent px-0;
+  }
+
+  .card {
+    @apply rounded hover:bg-base p-2;
   }
 }

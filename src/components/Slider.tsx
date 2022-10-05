@@ -15,14 +15,14 @@ const Slider: React.FC<Props> = ({ min, max, defaultValue, onChangeEnd }) => {
         root: "w-full",
         bar: "bg-primary",
         thumb: "bg-primary border-primary",
-        track: "before:bg-base",
+        track: "before:bg-base group-hover:before:bg-window",
         label: "bg-base text-text",
       }}
       showLabelOnHover={false}
       onChangeEnd={onChangeEnd}
       min={min}
       max={max}
-      defaultValue={defaultValue && defaultValue / 60}
+      defaultValue={defaultValue}
     />
   );
 };

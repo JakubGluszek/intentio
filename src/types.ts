@@ -1,19 +1,28 @@
-export interface State {
-  theme: Theme;
+export interface Settings {
+  timer: TimerSettings;
+  theme: ThemeSettings;
+  alert: AlertSettings;
 }
 
-export interface Settings {
+interface TimerSettings {
   pomodoro_duration: number;
   break_duration: number;
   long_break_duration: number;
   long_break_interval: number;
   auto_start_pomodoros: boolean;
   auto_start_breaks: boolean;
-  alert: AlertSettings;
 }
 
-export interface AlertSettings {
-  sound: string;
+interface ThemeSettings {
+  current_theme: Theme;
+  idle_theme: Theme;
+  focus_theme?: Theme;
+  break_theme?: Theme;
+}
+
+interface AlertSettings {
+  name: string;
+  path: string;
   volume: number;
   repeat: number;
 }

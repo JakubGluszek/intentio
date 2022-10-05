@@ -1,3 +1,5 @@
+import { invoke } from "@tauri-apps/api/tauri";
+
 import { Theme } from "./types";
 
 export const formatTime = (sec: number): String => {
@@ -12,6 +14,7 @@ export const formatTime = (sec: number): String => {
 
 export const applyTheme = (theme?: Theme) => {
   if (!theme) return;
+
   document.documentElement.style.setProperty(
     "--window-color",
     theme.colors.window
@@ -22,4 +25,8 @@ export const applyTheme = (theme?: Theme) => {
     theme.colors.primary
   );
   document.documentElement.style.setProperty("--text-color", theme.colors.text);
+};
+
+export const playAudio = async (path?: string) => {
+  await invoke("play_audio", { path });
 };
