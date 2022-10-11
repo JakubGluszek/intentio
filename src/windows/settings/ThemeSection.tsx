@@ -1,9 +1,10 @@
 import React from "react";
 import { emit } from "@tauri-apps/api/event";
 import { invoke } from "@tauri-apps/api/tauri";
+import { WebviewWindow } from "@tauri-apps/api/window";
 import { MdAddCircle, MdCircle, MdColorLens } from "react-icons/md";
 
-import { Colors, Settings, Theme } from "../../types";
+import { Settings, Theme } from "../../types";
 
 interface Props {
   settings: Settings;
@@ -21,24 +22,10 @@ const ThemeSection: React.FC<Props> = ({ settings, setSettings }) => {
     invoke<Settings>("settings_update", {
       settings: {
         ...settings,
-        theme: { ...settings.theme, current_theme: theme },
+        theme: { ...settings.theme, current: theme },
       },
     }).then((s) => setSettings(s));
     emit("update_current_theme", theme);
-  };
-
-  const create = (name: string, colors: Colors) => {
-    invoke<Theme[]>("theme_save", { name, colors }).then((themes) =>
-      setThemes(themes)
-    );
-    return;
-  };
-
-  const update = (themes: Theme[]) => {
-    invoke<Theme[]>("themes_save", { themes }).then((themes) =>
-      setThemes(themes)
-    );
-    return;
   };
 
   return (
@@ -48,9 +35,23 @@ const ThemeSection: React.FC<Props> = ({ settings, setSettings }) => {
         <span className="text-lg">Themes</span>
       </div>
       <div className="flex flex-col gap-4">
-        <button className="btn card btn-ghost">
+        <button
+          className="btn btn-ghost justify-start"
+          onMouseUp={() =>
+            new WebviewWindow("theme-create", {
+              url: "/theme/create",
+              decorations: false,
+              title: "Create theme",
+              skipTaskbar: true,
+              width: 360,
+              height: 400,
+              resizable: false,
+              fullscreen: false,
+            })
+          }
+        >
           <MdAddCircle size={24} />
-          <span>Add custom theme</span>
+          <span>Add a theme</span>
         </button>
         <div className="flex flex-col gap-2">
           {themes &&
@@ -73,7 +74,7 @@ const ThemeSection: React.FC<Props> = ({ settings, setSettings }) => {
                   style={{ backgroundColor: theme.colors.primary }}
                   className="w-full h-0.5 absolute bottom-0 rounded-b"
                 ></div>
-                {theme.id === settings.theme.current_theme.id && (
+                {theme.id === settings.theme.current.id && (
                   <MdCircle
                     size={16}
                     className="absolute top-auto bottom-auto right-4 text-primary"

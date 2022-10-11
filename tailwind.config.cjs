@@ -10,7 +10,7 @@ module.exports = {
         text: "var(--text-color)",
       },
       fontFamily: {
-        jetbrains: ["JetBrainsMono"],
+        cascadia: ["cascadia"],
       },
     },
   },

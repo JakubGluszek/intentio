@@ -33,10 +33,7 @@ impl Default for TimerSettings {
 
 #[derive(serde::Serialize, serde::Deserialize)]
 pub struct ThemeSettings {
-    pub current_theme: Theme,
-    pub idle_theme: Theme,
-    pub focus_theme: Option<Theme>,
-    pub break_theme: Option<Theme>,
+    pub current: Theme,
 }
 
 impl Default for ThemeSettings {
@@ -45,10 +42,7 @@ impl Default for ThemeSettings {
         let themes: Vec<Theme> = serde_json::from_str(&contents).unwrap();
 
         Self {
-            current_theme: themes[0].clone(),
-            idle_theme: themes[0].clone(),
-            focus_theme: None,
-            break_theme: None,
+            current: themes[0].clone(),
         }
     }
 }

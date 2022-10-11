@@ -45,7 +45,7 @@ const Timer: React.FC<TimerProps> = ({ settings, setSettings }) => {
     listen<string>("update_current_theme", (event) =>
       setSettings({
         ...settings,
-        theme: { ...settings.theme, current_theme: JSON.parse(event.payload) },
+        theme: { ...settings.theme, current: JSON.parse(event.payload) },
       })
     );
   }, []);
@@ -125,8 +125,8 @@ const Timer: React.FC<TimerProps> = ({ settings, setSettings }) => {
         }}
         strokeWidth={8}
         size={168}
-        colors={settings.theme.current_theme.colors.primary as ColorFormat}
-        trailColor={settings.theme.current_theme.colors.base as ColorFormat}
+        colors={settings.theme.current.colors.primary as ColorFormat}
+        trailColor={settings.theme.current.colors.base as ColorFormat}
       >
         {({ remainingTime }) => (
           <span className="text-4xl">{formatTime(remainingTime)}</span>

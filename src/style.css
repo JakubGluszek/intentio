@@ -3,32 +3,32 @@
 @tailwind utilities;
 
 @font-face {
-  font-family: "jetbrains";
-  src: url("../public/fonts/JetBrainsMono-Regular.woff2");
+  font-family: "cascadia";
+  src: url("fonts/CascadiaMono-Regular.woff2");
   font-weight: normal;
 }
 
 @font-face {
-  font-family: "jetbrains";
-  src: url("../public/fonts/JetBrainsMono-Medium.woff2");
-  font-weight: medium;
+  font-family: "cascadia";
+  src: url("/fonts/CascadiaMono-Light.woff2");
+  font-weight: lighter;
 }
 
 @font-face {
-  font-family: "jetbrains";
-  src: url("../public/fonts/JetBrainsMono-SemiBold.woff2");
+  font-family: "cascadia";
+  src: url("/fonts/CascadiaMono-SemiBold.woff2");
   font-weight: bolder;
 }
 
 @font-face {
-  font-family: "jetbrains";
-  src: url("../public/fonts/JetBrainsMono-Bold.woff2");
+  font-family: "cascadia";
+  src: url("/fonts/CascadiaMono-Bold.woff2");
   font-weight: bold;
 }
 
 @font-face {
-  font-family: "jetbrains";
-  src: url("../public/fonts/JetBrainsMono-Italic.woff2");
+  font-family: "cascadia";
+  src: url("/fonts/CascadiaMono-Italic.woff2");
   font-style: italic;
 }
 
@@ -41,7 +41,7 @@
   }
 
   html {
-    @apply font-jetbrains text-text cursor-default transition-colors duration-200;
+    @apply font-cascadia text-text cursor-default transition-colors duration-200;
   }
 
   body {
@@ -51,14 +51,36 @@
 
 @layer components {
   .btn {
-    @apply bg-base rounded flex flex-row items-center justify-center gap-2 px-2 py-1 text-primary brightness-90 hover:brightness-100;
+    @apply bg-base rounded flex flex-row items-center justify-center gap-2 px-2 py-1 text-primary brightness-90 hover:brightness-100 focus:brightness-100 tracking-widest font-semibold uppercase;
   }
 
   .btn-ghost {
     @apply bg-transparent px-0;
   }
 
+  .btn-primary {
+    @apply bg-primary text-window;
+  }
+
   .card {
     @apply rounded hover:bg-base p-2;
+  }
+
+  .input {
+    @apply w-full h-8 rounded border-2 border-base px-2 text-text text-sm bg-window;
+  }
+
+  .input-ghost {
+    @apply bg-transparent border-none focus:outline-none;
+  }
+
+  .contrast-text {
+    background: inherit;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: sepia(5) /* add some color to grey so the rest works */
+      saturate(100) /* increase strength of color channels */ invert(1)
+      /* invert the color */ grayscale(1) /* make it grey */ contrast(9); /* make it black/white */
   }
 }

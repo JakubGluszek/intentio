@@ -31,12 +31,22 @@
   },
   {
     "id": "cl8vghzst0003c9mjfh5bsa9e",
-    "name": "jungle",
+    "name": "prophecy",
     "colors": {
-      "window": "#191A19",
-      "base": "#1E5128",
-      "primary": "#4E9F3D",
-      "text": "#D8E9A8"
+      "window": "#062C30",
+      "base": "#05595B",
+      "primary": "#E2D784",
+      "text": "#F5F5F5"
+    }
+  },
+  {
+    "id": "cl943a8a70000g0mj9tlhp1w3",
+    "name": "dracula",
+    "colors": {
+      "window": "#282a36",
+      "base": "#383a59",
+      "primary": "#bd93f9",
+      "text": "#f8f8f2"
     }
   }
 ]

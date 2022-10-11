@@ -14,10 +14,7 @@ interface TimerSettings {
 }
 
 interface ThemeSettings {
-  current_theme: Theme;
-  idle_theme: Theme;
-  focus_theme?: Theme;
-  break_theme?: Theme;
+  current: Theme;
 }
 
 interface AlertSettings {

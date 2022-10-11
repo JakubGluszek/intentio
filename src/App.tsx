@@ -8,6 +8,7 @@ import { Settings } from "./types";
 import MainWindow from "./windows/main";
 import SettingsWindow from "./windows/settings";
 import ProjectsWindow from "./windows/projects";
+import { ThemeCreateWindow } from "./windows/theme";
 
 import.meta.env.PROD &&
   document.addEventListener("contextmenu", (event) => event.preventDefault());
@@ -15,7 +16,7 @@ import.meta.env.PROD &&
 const App: React.FC = () => {
   React.useEffect(() => {
     invoke<Settings>("settings_read").then((settings) => {
-      applyTheme(settings.theme.current_theme);
+      applyTheme(settings.theme.current);
     });
 
     listen<string>("update_current_theme", (event) => {
@@ -28,6 +29,7 @@ const App: React.FC = () => {
       <Route index element={<MainWindow />} />
       <Route path="settings" element={<SettingsWindow />} />
       <Route path="projects" element={<ProjectsWindow />} />
+      <Route path="theme/create" element={<ThemeCreateWindow />} />
     </Routes>
   );
 };
