@@ -16,10 +16,15 @@ tauri-build = { version = "1.1", features = [] }
 [dependencies]
 serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
+serde_with_macros = "2"
 tauri = { version = "1.1", features = ["api-all", "system-tray"] }
 chrono = { version = "0.4.22", features = ["serde"] }
 cuid = "1.2.0"
 rodio = "0.16.0"
+thiserror = "1"
+tokio = { version = "1", features = ["full"] }
+surrealdb = {version = "1.0.0-beta.8", default-features=false, features = ['parallel', 'kv-mem'] }
+ts-rs = { version = "6", features = ["format"] }
 
 [features]
 # by default Tauri runs in production mode

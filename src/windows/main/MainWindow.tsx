@@ -11,15 +11,15 @@ import { appWindow, WebviewWindow } from "@tauri-apps/api/window";
 import { listen } from "@tauri-apps/api/event";
 import { invoke } from "@tauri-apps/api/tauri";
 
-import { Settings } from "../../types";
 import Timer from "./Timer";
 import WindowBorders from "../../components/WindowBorders";
+import { Settings } from "../../bindings/Settings";
 
 const MainWindow: React.FC = () => {
   const [settings, setSettings] = React.useState<Settings>();
 
   React.useEffect(() => {
-    invoke<Settings>("settings_read").then((s) => setSettings(s));
+    invoke<Settings>("get_settings").then((s) => console.log(s));
 
     listen<string>("settings_updated", (event) =>
       setSettings(JSON.parse(event.payload))
