@@ -1,3 +1,5 @@
+//! Tauri IPC commands to bridge the Project Backend Model Controller with Client side.
+
 use tauri::{command, AppHandle, Wry};
 
 use crate::{

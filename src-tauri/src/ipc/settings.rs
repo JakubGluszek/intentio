@@ -1,4 +1,4 @@
-//! Tauri IPC commands to bridge Project Backend Model Controller with Frontend
+//! Tauri IPC commands to bridge the Todo Backend Model Controller with Client side.
 
 use super::IpcResponse;
 use crate::ctx::Ctx;
@@ -9,7 +9,7 @@ use tauri::{command, AppHandle, Wry};
 #[command]
 pub async fn get_settings(app: AppHandle<Wry>) -> IpcResponse<Settings> {
     match Ctx::from_app(app) {
-        Ok(ctx) => SettingsBmc::get(ctx).await.into(),
+        Ok(_) => SettingsBmc::get().into(),
         Err(_) => Err(Error::CtxFail).into(),
     }
 }
@@ -20,7 +20,7 @@ pub async fn update_settings(
     data: SettingsForUpdate,
 ) -> IpcResponse<Settings> {
     match Ctx::from_app(app) {
-        Ok(ctx) => SettingsBmc::update(ctx, data).await.into(),
+        Ok(_) => SettingsBmc::update(data).into(),
         Err(_) => Err(Error::CtxFail).into(),
     }
 }

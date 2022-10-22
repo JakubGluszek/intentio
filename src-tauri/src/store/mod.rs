@@ -40,7 +40,7 @@ impl Store {
     }
 
     pub async fn exec_create<T: Creatable>(&self, tb: &str, data: T) -> Result<Object> {
-        let sql = "CREATE type::table($tb) CONTENT $data RETURN id";
+        let sql = "CREATE type::table($tb) CONTENT $data RETURN AFTER";
 
         let mut data: Object = W(data.into()).try_into()?;
         let now = Datetime::default().timestamp_nanos();
@@ -67,7 +67,7 @@ impl Store {
     }
 
     pub async fn exec_merge<T: Patchable>(&self, tid: &str, data: T) -> Result<Object> {
-        let sql = "UPDATE $th MERGE $data RETURN id";
+        let sql = "UPDATE $th MERGE $data RETURN AFTER";
 
         let vars = map![
 			"th".into() => thing(tid)?.into(),

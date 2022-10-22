@@ -5,15 +5,16 @@ use crate::event::HubEvent;
 use serde::Serialize;
 use ts_rs::TS;
 
-mod bmc_base;
 mod project;
 mod settings;
 mod theme;
+mod todo;
 
 // Re-Exports
 pub use project::*;
 pub use settings::*;
 pub use theme::*;
+pub use todo::*;
 
 fn fire_model_event<D>(ctx: &Ctx, entity: &str, action: &str, data: D)
 where
@@ -31,7 +32,7 @@ pub type Minutes = i64;
 
 /// Delete mutation queries will return an {id} struct.
 #[derive(TS, Serialize, Clone)]
-#[ts(export, export_to = "../src-ui/src/bindings/")]
+#[ts(export, export_to = "../src/bindings/")]
 pub struct ModelDeleteResultData {
     pub id: String,
 }

@@ -4,7 +4,7 @@ use serde::Serialize;
 use ts_rs::TS;
 
 #[derive(TS, Serialize, Clone)]
-#[ts(export, export_to = "../src-ui/src/bindings/")]
+#[ts(export, export_to = "../src/bindings/")]
 pub struct HubEvent<D: Serialize + Clone> {
     pub hub: String,
     pub topic: String,

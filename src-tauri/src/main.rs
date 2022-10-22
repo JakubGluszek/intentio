@@ -17,6 +17,9 @@ use crate::commands::*;
 use crate::ipc::*;
 use crate::prelude::*;
 use model::SettingsBmc;
+use model::ThemeBmc;
+use std::fs;
+use std::path::Path;
 use std::sync::Arc;
 use store::Store;
 use tauri::Manager;
@@ -27,14 +30,16 @@ async fn main() -> Result<()> {
     let store = Store::new().await?;
     let store = Arc::new(store);
 
-    init_db(store.clone()).await?;
+    initialize(store.clone()).await?;
 
     tauri::Builder::default()
         .manage(store)
         .system_tray(SystemTray::new().with_menu(create_tray_menu()))
         .on_system_tray_event(handle_on_system_tray_event)
         .invoke_handler(tauri::generate_handler![
+            // arbitrary commands
             open_folder,
+            get_current_theme,
             // Settings
             get_settings,
             update_settings,
@@ -50,6 +55,12 @@ async fn main() -> Result<()> {
             create_project,
             update_project,
             delete_project,
+            // Todo
+            get_todo,
+            get_todos,
+            create_todo,
+            update_todo,
+            delete_todo,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
@@ -57,9 +68,26 @@ async fn main() -> Result<()> {
     Ok(())
 }
 
-async fn init_db(store: Arc<Store>) -> Result<()> {
-    SettingsBmc::init(store).await?;
+async fn initialize(store: Arc<Store>) -> Result<()> {
+    initialize_config_dir();
+
+    ThemeBmc::initialize(store).await?;
+    SettingsBmc::initialize()?;
+
     Ok(())
+}
+
+fn initialize_config_dir() {
+    let config_dir = tauri::api::path::config_dir()
+        .unwrap()
+        .to_str()
+        .unwrap()
+        .to_owned();
+    let config_dir = config_dir + "/pomodoro";
+
+    if !Path::new(&config_dir).is_dir() {
+        fs::create_dir(config_dir).unwrap();
+    }
 }
 
 fn create_tray_menu() -> SystemTrayMenu {

@@ -3027,6 +3027,7 @@ dependencies = [
  "tauri-build",
  "thiserror",
  "tokio",
+ "toml",
  "ts-rs",
 ]
 

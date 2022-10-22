@@ -1,9 +1,11 @@
 //! Application wide utilities. Most will be re-exported.
 
+mod testing;
 mod x_take;
 
 // --- re-exports
 pub use self::x_take::*;
+pub use testing::*;
 
 // from: https://github.com/surrealdb/surrealdb.wasm/blob/main/src/mac/mod.rs
 macro_rules! map {

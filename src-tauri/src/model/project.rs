@@ -5,24 +5,21 @@ use serde_with_macros::skip_serializing_none;
 use surrealdb::sql::{Object, Value};
 use ts_rs::TS;
 
+use crate::prelude::Result;
 use crate::{
     ctx::Ctx,
-    prelude::{Error, Result},
+    prelude::Error,
     store::{Creatable, Patchable},
-    utils::{map, XTake, XTakeVal},
+    utils::{map, XTakeVal},
 };
 
-use super::{
-    bmc_base::{bmc_create, bmc_delete, bmc_get, bmc_list, bmc_update},
-    ModelDeleteResultData,
-};
+use super::{fire_model_event, ModelDeleteResultData, TodoBmc};
 
 #[derive(Serialize, TS, Debug)]
-#[ts(export, export_to = "../src/bindings")]
+#[ts(export, export_to = "../src/bindings/")]
 pub struct Project {
     id: String,
     name: String,
-    parent_id: Option<String>,
 }
 
 impl TryFrom<Object> for Project {
@@ -31,7 +28,6 @@ impl TryFrom<Object> for Project {
         let project = Self {
             id: val.x_take_val("id")?,
             name: val.x_take_val("name")?,
-            parent_id: val.x_take("parent_id")?,
         };
 
         Ok(project)
@@ -40,7 +36,7 @@ impl TryFrom<Object> for Project {
 
 #[skip_serializing_none]
 #[derive(Deserialize, TS, Debug)]
-#[ts(export, export_to = "../src/bindings")]
+#[ts(export, export_to = "../src/bindings/")]
 pub struct ProjectForCreate {
     name: String,
     parent_id: Option<String>,
@@ -61,7 +57,7 @@ impl Creatable for ProjectForCreate {}
 
 #[skip_serializing_none]
 #[derive(Deserialize, TS, Debug)]
-#[ts(export, export_to = "../src/bindings")]
+#[ts(export, export_to = "../src/bindings/")]
 pub struct ProjectForUpdate {
     name: Option<String>,
     parent_id: Option<String>,
@@ -90,23 +86,46 @@ impl ProjectBmc {
     const ENTITY: &'static str = "project";
 
     pub async fn get(ctx: Arc<Ctx>, id: &str) -> Result<Project> {
-        bmc_get(ctx, Self::ENTITY, id).await
+        ctx.get_store().exec_get(id).await?.try_into()
     }
 
     pub async fn create(ctx: Arc<Ctx>, data: ProjectForCreate) -> Result<Project> {
-        bmc_create(ctx, Self::ENTITY, data).await
+        let result = ctx.get_store().exec_create(Self::ENTITY, data).await?;
+
+        fire_model_event(&ctx, Self::ENTITY, "create", result.clone());
+
+        result.try_into()
     }
 
     pub async fn update(ctx: Arc<Ctx>, id: &str, data: ProjectForUpdate) -> Result<Project> {
-        bmc_update(ctx, Self::ENTITY, id, data).await
+        let result = ctx.get_store().exec_merge(id, data).await?;
+
+        fire_model_event(&ctx, Self::ENTITY, "update", result.clone());
+
+        result.try_into()
     }
 
-    // TODO: On delete handle children projects. (change parent | delete).
+    /// Deletes the project itself
+    /// Deletes all todos where todo.project_id = id
     pub async fn delete(ctx: Arc<Ctx>, id: &str) -> Result<ModelDeleteResultData> {
-        bmc_delete(ctx, Self::ENTITY, id).await
+        let store = ctx.get_store();
+
+        let id = store.exec_delete(id).await?;
+        let result = ModelDeleteResultData::from(id);
+
+        fire_model_event(&ctx, Self::ENTITY, "delete", result.clone());
+
+        TodoBmc::delete_by_project(store.clone(), &result.id).await?;
+
+        Ok(result)
     }
 
     pub async fn list(ctx: Arc<Ctx>) -> Result<Vec<Project>> {
-        bmc_list(ctx, Self::ENTITY).await
+        let objects = ctx.get_store().exec_select(Self::ENTITY).await?;
+
+        objects.into_iter().map(|o| o.try_into()).collect()
     }
 }
+
+#[cfg(test)]
+mod tests {}

@@ -8,20 +8,18 @@ use ts_rs::TS;
 use crate::{
     ctx::Ctx,
     prelude::{Error, Result},
-    store::{Creatable, Patchable},
+    store::{Creatable, Patchable, Store},
     utils::{map, XTakeVal},
 };
 
-use super::{
-    bmc_base::{bmc_create, bmc_delete, bmc_get, bmc_list, bmc_update},
-    ModelDeleteResultData,
-};
+use super::{fire_model_event, ModelDeleteResultData};
 
 #[derive(Serialize, TS, Debug)]
 #[ts(export, export_to = "../src/bindings/")]
 pub struct Theme {
     id: String,
     name: String,
+    default: bool,
     window_hex: String,
     base_hex: String,
     primary_hex: String,
@@ -34,6 +32,7 @@ impl TryFrom<Object> for Theme {
         let theme = Theme {
             id: val.x_take_val("id")?,
             name: val.x_take_val("name")?,
+            default: val.x_take_val("default")?,
             window_hex: val.x_take_val("window_hex")?,
             base_hex: val.x_take_val("base_hex")?,
             primary_hex: val.x_take_val("primary_hex")?,
@@ -48,6 +47,7 @@ impl TryFrom<Object> for Theme {
 #[ts(export, export_to = "../src/bindings/")]
 pub struct ThemeForCreate {
     name: String,
+    default: bool,
     window_hex: String,
     base_hex: String,
     primary_hex: String,
@@ -58,6 +58,7 @@ impl From<ThemeForCreate> for Value {
     fn from(val: ThemeForCreate) -> Value {
         let data = map![
             "name".into() => val.name.into(),
+            "default".into() => val.default.into(),
             "window_hex".into() => val.window_hex.into(),
             "base_hex".into() => val.base_hex.into(),
             "primary_hex".into() => val.primary_hex.into(),
@@ -110,23 +111,102 @@ pub struct ThemeBmc {}
 impl ThemeBmc {
     const ENTITY: &'static str = "theme";
 
+    pub async fn initialize(store: Arc<Store>) -> Result<()> {
+        let objects = store.exec_select(Self::ENTITY).await?;
+
+        if objects.len() == 0 {
+            let sql = "
+                CREATE theme:abyss CONTENT {
+                    name: 'abyss',
+                    default: true,
+                    window_hex: '#222831',
+                    base_hex: '#393E46',
+                    primary_hex: '#00ADB5',
+                    text_hex: '#EEEEEE',
+                };
+                CREATE theme:winter CONTENT {
+                    name: 'winter',
+                    default: true,
+                    window_hex: '#F9F7F7',
+                    base_hex: '#DBE2EF',
+                    primary_hex: '#3F72AF',
+                    text_hex: '#112D4E',
+                };
+                CREATE theme:dracula CONTENT {
+                    name: 'dracula',
+                    default: true,
+                    window_hex: '#282a36',
+                    base_hex: '#383a59',
+                    primary_hex: '#bd93f9',
+                    text_hex: '#f8f8f2',
+                };
+            ";
+
+            store.ds.execute(sql, &store.ses, None, false).await?;
+        }
+
+        Ok(())
+    }
+
     pub async fn get(ctx: Arc<Ctx>, id: &str) -> Result<Theme> {
-        bmc_get::<Theme>(ctx, Self::ENTITY, id).await
+        ctx.get_store().exec_get(id).await?.try_into()
     }
 
     pub async fn create(ctx: Arc<Ctx>, data: ThemeForCreate) -> Result<Theme> {
-        bmc_create(ctx, Self::ENTITY, data).await
+        let result = ctx.get_store().exec_create(Self::ENTITY, data).await?;
+
+        fire_model_event(&ctx, Self::ENTITY, "create", result.clone());
+
+        result.try_into()
     }
 
     pub async fn update(ctx: Arc<Ctx>, id: &str, data: ThemeForUpdate) -> Result<Theme> {
-        bmc_update(ctx, Self::ENTITY, id, data).await
+        let result = ctx.get_store().exec_merge(id, data).await?;
+
+        fire_model_event(&ctx, Self::ENTITY, "update", result.clone());
+
+        result.try_into()
     }
 
     pub async fn delete(ctx: Arc<Ctx>, id: &str) -> Result<ModelDeleteResultData> {
-        bmc_delete(ctx, Self::ENTITY, id).await
+        let id = ctx.get_store().exec_delete(id).await?;
+        let result = ModelDeleteResultData::from(id);
+
+        fire_model_event(&ctx, Self::ENTITY, "delete", result.clone());
+
+        Ok(result)
     }
 
     pub async fn list(ctx: Arc<Ctx>) -> Result<Vec<Theme>> {
-        bmc_list(ctx, Self::ENTITY).await
+        let objects = ctx.get_store().exec_select(Self::ENTITY).await?;
+
+        objects.into_iter().map(|o| o.try_into()).collect()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use surrealdb::sql::Array;
+
+    use crate::{prelude::W, utils::get_test_store};
+
+    use super::*;
+
+    #[tokio::test]
+    async fn default_themes() -> Result<()> {
+        let store = get_test_store().await?;
+
+        ThemeBmc::initialize(store.clone()).await?;
+
+        let sql = "SELECT * FROM theme";
+        let ress = store.ds.execute(sql, &store.ses, None, false).await?;
+        let first_res = ress.into_iter().next().expect("should get a response");
+
+        let array: Array = W(first_res.result?).try_into()?;
+
+        println!("{}", array.len());
+        assert_eq!(array.len(), 3);
+
+        Ok(())
     }
 }

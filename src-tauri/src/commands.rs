@@ -1,6 +1,13 @@
 //! Arbitrary IPC commands.
 
-use tauri::command;
+use tauri::{command, AppHandle, Wry};
+
+use crate::{
+    ctx::Ctx,
+    ipc::IpcResponse,
+    model::{SettingsBmc, Theme, ThemeBmc},
+    prelude::Error,
+};
 
 #[command]
 pub async fn open_folder(os_type: String, path: String) {
@@ -12,6 +19,17 @@ pub async fn open_folder(os_type: String, path: String) {
     };
 
     std::process::Command::new(cmd).arg(path).spawn().unwrap();
+}
+
+#[command]
+pub async fn get_current_theme(app: AppHandle<Wry>) -> IpcResponse<Theme> {
+    match Ctx::from_app(app) {
+        Ok(ctx) => {
+            let settings = SettingsBmc::get().unwrap();
+            ThemeBmc::get(ctx, &settings.current_theme_id).await.into()
+        }
+        Err(_) => Err(Error::CtxFail).into(),
+    }
 }
 
 /*
