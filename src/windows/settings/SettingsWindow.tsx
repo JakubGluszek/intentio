@@ -1,25 +1,24 @@
 import React from "react";
 import { appWindow } from "@tauri-apps/api/window";
-import { invoke } from "@tauri-apps/api/tauri";
 import { MdClose, MdSettings } from "react-icons/md";
 
-import { Settings } from "../../types";
 import TimerSection from "./TimerSection";
 import ThemeSection from "./ThemeSection";
 import AlertSection from "./AlertSection";
 import AboutSection from "./AboutSection";
-import WindowBorders from "../../components/WindowBorders";
+import Layout from "../../components/Layout";
+import { Settings } from "../../bindings/Settings";
+import { ipc_invoke } from "../../ipc";
 
 const SettingsWindow: React.FC = () => {
   const [settings, setSettings] = React.useState<Settings>();
 
   React.useEffect(() => {
-    invoke<Settings>("settings_read").then((s) => setSettings(s));
+    ipc_invoke<Settings>("get_settings").then((res) => setSettings(res.data));
   }, []);
 
   return (
-    <>
-      <WindowBorders />
+    <Layout>
       <div className="w-screen min-h-screen flex flex-col gap-2">
         {/* Window Header */}
         <div className="z-[9999] sticky top-0 flex flex-col gap-2 bg-window px-4 py-2">
@@ -45,7 +44,7 @@ const SettingsWindow: React.FC = () => {
           )}
         </div>
       </div>
-    </>
+    </Layout>
   );
 };
 

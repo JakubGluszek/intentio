@@ -1,6 +1,5 @@
 import { invoke } from "@tauri-apps/api/tauri";
-
-import { Theme } from "./types";
+import { Theme } from "./bindings/Theme";
 
 export const formatTime = (sec: number): String => {
   let seconds = sec % 60;
@@ -12,19 +11,17 @@ export const formatTime = (sec: number): String => {
   `;
 };
 
-export const applyTheme = (theme?: Theme) => {
-  if (!theme) return;
-
+export const applyTheme = (theme: Theme) => {
   document.documentElement.style.setProperty(
     "--window-color",
-    theme.colors.window
+    theme.window_hex
   );
-  document.documentElement.style.setProperty("--base-color", theme.colors.base);
+  document.documentElement.style.setProperty("--base-color", theme.base_hex);
   document.documentElement.style.setProperty(
     "--primary-color",
-    theme.colors.primary
+    theme.primary_hex
   );
-  document.documentElement.style.setProperty("--text-color", theme.colors.text);
+  document.documentElement.style.setProperty("--text-color", theme.text_hex);
 };
 
 export const playAudio = async (path?: string) => {

@@ -16,9 +16,10 @@ import { type } from "@tauri-apps/api/os";
 import { audioDir } from "@tauri-apps/api/path";
 import { readDir, BaseDirectory, FileEntry } from "@tauri-apps/api/fs";
 
-import { Settings } from "../../types";
 import { Slider } from "../../components";
 import { playAudio } from "../../utils";
+import { Settings } from "../../bindings/Settings";
+import { ipc_invoke } from "../../ipc";
 
 const AUDIO_FORMATS = [".mp3", ".ogg"];
 
@@ -29,8 +30,7 @@ interface Props {
 
 const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
   const [currentTrack, setCurrentTrack] = React.useState<FileEntry>({
-    name: settings.alert.name,
-    path: settings.alert.path,
+    path: settings.alert_path,
   });
   const [tracks, setTracks] = React.useState<FileEntry[]>([]);
 
@@ -87,12 +87,12 @@ const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
   };
 
   const updateTrack = (track: FileEntry) => {
-    invoke<Settings>("settings_update", {
+    ipc_invoke<Settings>("update_settings", {
       settings: {
         ...settings,
-        alert: { ...settings.alert, name: track.name, path: track.path },
+        alert_path: track.path,
       },
-    }).then((s) => setSettings(s));
+    }).then((res) => setSettings(res.data));
   };
 
   return (
@@ -122,8 +122,8 @@ const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
             className="btn btn-ghost p-0"
             onClick={() => currentTrack && playAudio(currentTrack.path)}
           >
-            {settings.alert.volume > 0 ? (
-              settings.alert.volume < 0.5 ? (
+            {settings.alert_volume > 0 ? (
+              settings.alert_volume < 0.5 ? (
                 <MdVolumeDown size={24} />
               ) : (
                 <MdVolumeUp size={24} />
@@ -135,14 +135,11 @@ const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
           <Slider
             min={0}
             max={100}
-            defaultValue={parseInt((settings.alert.volume * 100).toFixed())}
+            defaultValue={parseInt((settings.alert_volume * 100).toFixed())}
             onChangeEnd={(volume) =>
-              invoke<Settings>("settings_update", {
-                settings: {
-                  ...settings,
-                  alert: { ...settings.alert, volume: volume / 100 },
-                },
-              }).then((s) => setSettings(s))
+              ipc_invoke<Settings>("update_settings", {
+                alert_volume: volume / 100,
+              }).then((res) => setSettings(res.data))
             }
           />
         </div>
@@ -152,33 +149,21 @@ const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
             <button
               className="btn btn-ghost"
               onMouseUp={() =>
-                settings.alert.repeat > 1 &&
-                invoke<Settings>("settings_update", {
-                  settings: {
-                    ...settings,
-                    alert: {
-                      ...settings.alert,
-                      repeat: settings.alert.repeat - 1,
-                    },
-                  },
-                }).then((s) => setSettings(s))
+                settings.alert_repeat > 1 &&
+                ipc_invoke<Settings>("update_settings", {
+                  alert_repeat: settings.alert_repeat - 1,
+                }).then((res) => setSettings(res.data))
               }
             >
               <MdRemove size={24} />
             </button>
-            <span>{settings.alert.repeat}</span>
+            <span>{settings.alert_repeat}</span>
             <button
               className="btn btn-ghost"
               onMouseUp={() =>
-                invoke<Settings>("settings_update", {
-                  settings: {
-                    ...settings,
-                    alert: {
-                      ...settings.alert,
-                      repeat: settings.alert.repeat + 1,
-                    },
-                  },
-                }).then((s) => setSettings(s))
+                ipc_invoke<Settings>("update_settings", {
+                  alert_repeat: settings.alert_repeat + 1,
+                }).then((res) => setSettings(res.data))
               }
             >
               <MdAdd size={24} />

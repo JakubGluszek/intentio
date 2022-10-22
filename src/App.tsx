@@ -1,23 +1,23 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import { listen } from "@tauri-apps/api/event";
-import { invoke } from "@tauri-apps/api/tauri";
 
+import { ipc_invoke } from "./ipc";
+import { Theme } from "./bindings/Theme";
 import { applyTheme } from "./utils";
-import { Settings } from "./types";
+
 import MainWindow from "./windows/main";
 import SettingsWindow from "./windows/settings";
 import ProjectsWindow from "./windows/projects";
-import { ThemeCreateWindow } from "./windows/theme";
 
 import.meta.env.PROD &&
   document.addEventListener("contextmenu", (event) => event.preventDefault());
 
 const App: React.FC = () => {
   React.useEffect(() => {
-    invoke<Settings>("settings_read").then((settings) => {
-      applyTheme(settings.theme.current);
-    });
+    ipc_invoke<Theme>("get_current_theme")
+      .then((res) => applyTheme(res.data))
+      .catch((err) => console.log(err));
 
     listen<string>("update_current_theme", (event) => {
       applyTheme(JSON.parse(event.payload));
@@ -29,7 +29,6 @@ const App: React.FC = () => {
       <Route index element={<MainWindow />} />
       <Route path="settings" element={<SettingsWindow />} />
       <Route path="projects" element={<ProjectsWindow />} />
-      <Route path="theme/create" element={<ThemeCreateWindow />} />
     </Routes>
   );
 };

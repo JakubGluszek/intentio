@@ -9,26 +9,25 @@ import {
 } from "react-icons/md";
 import { appWindow, WebviewWindow } from "@tauri-apps/api/window";
 import { listen } from "@tauri-apps/api/event";
-import { invoke } from "@tauri-apps/api/tauri";
 
-import Timer from "./Timer";
-import WindowBorders from "../../components/WindowBorders";
 import { Settings } from "../../bindings/Settings";
+import { ipc_invoke } from "../../ipc";
+import Layout from "../../components/Layout";
+import Timer from "./Timer";
 
 const MainWindow: React.FC = () => {
   const [settings, setSettings] = React.useState<Settings>();
 
   React.useEffect(() => {
-    invoke<Settings>("get_settings").then((s) => console.log(s));
+    ipc_invoke<Settings>("get_settings").then((res) => setSettings(res.data));
 
-    listen<string>("settings_updated", (event) =>
-      setSettings(JSON.parse(event.payload))
-    );
+    listen<string>("sync_settings", (event) => {
+      setSettings(JSON.parse(event.payload));
+    });
   }, []);
 
   return (
-    <>
-      <WindowBorders />
+    <Layout>
       <div className="relative w-screen h-screen flex flex-col p-4">
         <div className="h-10 flex flex-row items-center justify-between">
           <div className="flex flex-row items-center gap-2">
@@ -64,7 +63,7 @@ const MainWindow: React.FC = () => {
           </div>
         </div>
         <div className="grow flex flex-col p-4">
-          {settings && <Timer settings={settings} setSettings={setSettings} />}
+          {settings && <Timer settings={settings} />}
         </div>
         <div className="h-10 flex flex-row items-center justify-between">
           <button className="btn btn-ghost">
@@ -93,7 +92,7 @@ const MainWindow: React.FC = () => {
           </button>
         </div>
       </div>
-    </>
+    </Layout>
   );
 };
 

@@ -1,33 +1,22 @@
-import { invoke } from "@tauri-apps/api/tauri";
-import { appWindow } from "@tauri-apps/api/window";
 import React from "react";
+import { appWindow } from "@tauri-apps/api/window";
 import { MdAddCircle, MdClose, MdDelete, MdEdit } from "react-icons/md";
-import WindowBorders from "../../components/WindowBorders";
-import { Project } from "../../types";
+
+import Layout from "../../components/Layout";
+import { Project } from "../../bindings/Project";
 
 const ProjectsWindow: React.FC = () => {
   const [projects, setProjects] = React.useState<Project[]>([]);
 
-  const createProject = () => {
-    invoke<Project[]>("project_save", { title: "new project" }).then(
-      (projects) => setProjects(projects)
-    );
-  };
+  const createProject = () => {};
 
-  const updateProjects = (id: string) => {
-    invoke<Project[]>("projects_save", {
-      projects: projects.map((p) =>
-        p.id === id ? { ...p, title: "new title" } : p
-      ),
-    }).then((projects) => setProjects(projects));
-  };
+  const updateProjects = (id: string) => {};
 
   return (
-    <>
-      <WindowBorders />
+    <Layout>
       <div className="w-screen min-h-screen flex flex-col p-4 gap-2">
         <div className="flex flex-row items-center justify-between p-1">
-          <span className="text-xl">Projects</span>
+          <span className="text-lg">Projects</span>
           <button className="btn btn-ghost" onClick={() => appWindow.close()}>
             <MdClose size={32} />
           </button>
@@ -43,7 +32,7 @@ const ProjectsWindow: React.FC = () => {
                 key={project.id}
                 className="group cursor-pointer flex flex-row items-center justify-between px-1 py-2 hover:bg-base rounded"
               >
-                <span className="">{project.title}</span>
+                <span className="">{project.name}</span>
                 <div className="flex flex-row items-center gap-1">
                   <button className="btn btn-ghost p-0 text-text hidden group-hover:flex">
                     <MdEdit size={20} />
@@ -57,7 +46,7 @@ const ProjectsWindow: React.FC = () => {
           </div>
         </div>
       </div>
-    </>
+    </Layout>
   );
 };
 

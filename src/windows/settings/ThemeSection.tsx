@@ -1,10 +1,11 @@
 import React from "react";
-import { emit } from "@tauri-apps/api/event";
-import { invoke } from "@tauri-apps/api/tauri";
-import { WebviewWindow } from "@tauri-apps/api/window";
 import { MdAddCircle, MdCircle, MdColorLens } from "react-icons/md";
+import { WebviewWindow } from "@tauri-apps/api/window";
 
-import { Settings, Theme } from "../../types";
+import { Settings } from "../../bindings/Settings";
+import { Theme } from "../../bindings/Theme";
+import { ipc_invoke } from "../../ipc";
+import { emit } from "@tauri-apps/api/event";
 
 interface Props {
   settings: Settings;
@@ -15,17 +16,16 @@ const ThemeSection: React.FC<Props> = ({ settings, setSettings }) => {
   const [themes, setThemes] = React.useState<Theme[]>([]);
 
   React.useEffect(() => {
-    invoke<Theme[]>("themes_read").then((themes) => setThemes(themes));
+    ipc_invoke<Theme[]>("get_themes").then((res) => setThemes(res.data));
   }, []);
 
   const updateCurrentTheme = async (theme: Theme) => {
-    invoke<Settings>("settings_update", {
-      settings: {
-        ...settings,
-        theme: { ...settings.theme, current: theme },
-      },
-    }).then((s) => setSettings(s));
-    emit("update_current_theme", theme);
+    ipc_invoke<Settings>("update_settings", {
+      current_theme_id: theme.id,
+    }).then((res) => {
+      setSettings(res.data);
+      emit("update_current_theme", theme);
+    });
   };
 
   return (
@@ -35,21 +35,7 @@ const ThemeSection: React.FC<Props> = ({ settings, setSettings }) => {
         <span className="text-lg">Themes</span>
       </div>
       <div className="flex flex-col gap-4">
-        <button
-          className="btn btn-ghost justify-start"
-          onMouseUp={() =>
-            new WebviewWindow("theme-create", {
-              url: "/theme/create",
-              decorations: false,
-              title: "Create theme",
-              skipTaskbar: true,
-              width: 360,
-              height: 400,
-              resizable: false,
-              fullscreen: false,
-            })
-          }
-        >
+        <button className="btn btn-ghost justify-start" onMouseUp={() => null}>
           <MdAddCircle size={24} />
           <span>Add a theme</span>
         </button>
@@ -59,22 +45,22 @@ const ThemeSection: React.FC<Props> = ({ settings, setSettings }) => {
               <div
                 key={theme.id}
                 style={{
-                  backgroundColor: theme.colors.window,
-                  border: theme.colors.base,
+                  backgroundColor: theme.window_hex,
+                  border: theme.base_hex,
                 }}
                 className={`relative h-10 flex flex-row items-center gap-4 rounded border-2`}
                 onMouseUp={() => updateCurrentTheme(theme)}
               >
                 <div
-                  style={{ backgroundColor: theme.colors.primary }}
+                  style={{ backgroundColor: theme.primary_hex }}
                   className={`w-12 h-full rounded-l`}
                 ></div>
-                <span style={{ color: theme.colors.text }}>{theme.name}</span>
+                <span style={{ color: theme.text_hex }}>{theme.name}</span>
                 <div
-                  style={{ backgroundColor: theme.colors.primary }}
+                  style={{ backgroundColor: theme.primary_hex }}
                   className="w-full h-0.5 absolute bottom-0 rounded-b"
                 ></div>
-                {theme.id === settings.theme.current.id && (
+                {theme.id === settings.current_theme_id && (
                   <MdCircle
                     size={16}
                     className="absolute top-auto bottom-auto right-4 text-primary"
