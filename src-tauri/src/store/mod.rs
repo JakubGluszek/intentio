@@ -22,7 +22,15 @@ pub struct Store {
 
 impl Store {
     pub async fn new() -> Result<Self> {
-        let ds = Datastore::new("memory").await?;
+        let path = tauri::api::path::data_dir()
+            .unwrap()
+            .to_str()
+            .unwrap()
+            .to_owned();
+
+        let path = format!("file://{}/pomodoro.db", path);
+
+        let ds = Datastore::new(&path).await?;
         let ses = Session::for_db("appns", "appdb");
         Ok(Store { ds, ses })
     }

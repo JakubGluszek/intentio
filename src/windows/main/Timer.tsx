@@ -31,9 +31,10 @@ const Timer: React.FC<TimerProps> = ({ settings }) => {
   React.useEffect(() => {
     ipc_invoke<Theme>("get_current_theme").then((res) => setTheme(res.data));
 
-    listen<string>("update_current_theme", (event) => {
+    const unlisten = listen<string>("update_current_theme", (event) => {
       setTheme(JSON.parse(event.payload));
     });
+    return () => unlisten.then((f) => f()) as never;
   }, []);
 
   React.useEffect(() => {
@@ -48,7 +49,7 @@ const Timer: React.FC<TimerProps> = ({ settings }) => {
         setDuration(settings.long_break_duration);
         break;
     }
-  }, []);
+  }, [settings]);
 
   React.useEffect(() => {
     setTimeFocused(0);

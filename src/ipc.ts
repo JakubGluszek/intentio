@@ -1,5 +1,9 @@
 import { invoke } from "@tauri-apps/api";
 
+export interface DeleteData {
+  id: string;
+}
+
 interface IpcResult<D> {
   data: D;
 }
@@ -11,7 +15,7 @@ export async function ipc_invoke<D>(
   method: string,
   params?: object
 ): Promise<IpcResult<D>> {
-  const response: any = await invoke(method, { data: params });
+  const response: any = await invoke(method, { ...params });
   if (response.error != null) {
     console.log("ERROR - ipc_invoke - ipc_invoke error", response);
     throw new Error(response.error);

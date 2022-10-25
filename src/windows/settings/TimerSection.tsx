@@ -19,7 +19,7 @@ const TimerSection: React.FC<Props> = ({ settings, setSettings }) => {
   settingsRef.current = settings;
 
   const updateSettings = (update: SettingsForUpdate) => {
-    ipc_invoke<Settings>("update_settings", update).then((res) => {
+    ipc_invoke<Settings>("update_settings", { data: update }).then((res) => {
       setSettings(res.data);
       emit("sync_settings", res.data);
     });

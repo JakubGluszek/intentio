@@ -43,7 +43,6 @@ const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
       dir: BaseDirectory.Audio,
       recursive: false,
     }).then((entries) => {
-      console.log(entries);
       setTracks(
         entries.filter((entry) =>
           AUDIO_FORMATS.some((ending) => entry.path.endsWith(ending))
@@ -88,7 +87,7 @@ const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
 
   const updateTrack = (track: FileEntry) => {
     ipc_invoke<Settings>("update_settings", {
-      settings: {
+      data: {
         ...settings,
         alert_path: track.path,
       },
@@ -138,7 +137,7 @@ const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
             defaultValue={parseInt((settings.alert_volume * 100).toFixed())}
             onChangeEnd={(volume) =>
               ipc_invoke<Settings>("update_settings", {
-                alert_volume: volume / 100,
+                data: { alert_volume: volume / 100 },
               }).then((res) => setSettings(res.data))
             }
           />
@@ -151,7 +150,7 @@ const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
               onMouseUp={() =>
                 settings.alert_repeat > 1 &&
                 ipc_invoke<Settings>("update_settings", {
-                  alert_repeat: settings.alert_repeat - 1,
+                  data: { alert_repeat: settings.alert_repeat - 1 },
                 }).then((res) => setSettings(res.data))
               }
             >
@@ -162,7 +161,7 @@ const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
               className="btn btn-ghost"
               onMouseUp={() =>
                 ipc_invoke<Settings>("update_settings", {
-                  alert_repeat: settings.alert_repeat + 1,
+                  data: { alert_repeat: settings.alert_repeat + 1 },
                 }).then((res) => setSettings(res.data))
               }
             >

@@ -51,7 +51,8 @@
 
 @layer components {
   .btn {
-    @apply bg-base rounded flex flex-row items-center justify-center gap-2 px-2 py-1 text-primary brightness-90 hover:brightness-100 focus:brightness-100 tracking-widest font-semibold uppercase;
+    @apply bg-base rounded flex flex-row items-center justify-center gap-2 px-4 py-1 text-primary brightness-90 hover:brightness-100 focus:brightness-100 tracking-widest uppercase;
+    font: bold;
   }
 
   .btn-ghost {
@@ -67,11 +68,7 @@
   }
 
   .input {
-    @apply w-full h-8 rounded border-2 border-base px-2 text-text text-sm bg-window;
-  }
-
-  .input-ghost {
-    @apply bg-transparent border-none focus:outline-none;
+    @apply w-full bg-transparent border-b border-b-base focus:border-primary py-1 outline-none;
   }
 
   .contrast-text {

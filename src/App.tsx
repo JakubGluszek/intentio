@@ -9,19 +9,29 @@ import { applyTheme } from "./utils";
 import MainWindow from "./windows/main";
 import SettingsWindow from "./windows/settings";
 import ProjectsWindow from "./windows/projects";
+import useGlobal from "./store";
 
 import.meta.env.PROD &&
   document.addEventListener("contextmenu", (event) => event.preventDefault());
 
 const App: React.FC = () => {
+  const setCurrentTheme = useGlobal((state) => state.setCurrentTheme);
+
   React.useEffect(() => {
     ipc_invoke<Theme>("get_current_theme")
-      .then((res) => applyTheme(res.data))
+      .then((res) => {
+        applyTheme(res.data);
+        setCurrentTheme(res.data);
+      })
       .catch((err) => console.log(err));
 
-    listen<string>("update_current_theme", (event) => {
-      applyTheme(JSON.parse(event.payload));
+    const unlisten = listen<string>("update_current_theme", (event) => {
+      const theme = JSON.parse(event.payload) as Theme;
+      applyTheme(theme);
+      setCurrentTheme(theme);
     });
+
+    return () => unlisten.then((f) => f()) as never;
   }, []);
 
   return (

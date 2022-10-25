@@ -21,9 +21,11 @@ const MainWindow: React.FC = () => {
   React.useEffect(() => {
     ipc_invoke<Settings>("get_settings").then((res) => setSettings(res.data));
 
-    listen<string>("sync_settings", (event) => {
+    const unlisten = listen<string>("sync_settings", (event) => {
       setSettings(JSON.parse(event.payload));
     });
+
+    return () => unlisten.then((f) => f()) as never;
   }, []);
 
   return (
