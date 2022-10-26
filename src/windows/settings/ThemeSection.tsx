@@ -140,6 +140,13 @@ const ThemeView: React.FC<ThemeViewProps> = ({ theme, apply }) => {
     });
   });
 
+  const disabled =
+    watch("name") === theme.name &&
+    watch("window_hex") === theme.window_hex &&
+    watch("base_hex") === theme.base_hex &&
+    watch("primary_hex") === theme.primary_hex &&
+    watch("text_hex") === theme.text_hex;
+
   return (
     <div
       style={{ color: watch("text_hex") }}
@@ -164,7 +171,7 @@ const ThemeView: React.FC<ThemeViewProps> = ({ theme, apply }) => {
           }}
           className="group w-full h-full flex flex-row items-center justify-between px-2"
         >
-          <span style={{ color: watch("text_hex") }}>{theme.name}</span>
+          <span style={{ color: watch("text_hex") }}>{watch("name")}</span>
           {!theme.default && (
             <button
               style={{ color: watch("primary_hex") }}
@@ -336,8 +343,9 @@ const ThemeView: React.FC<ThemeViewProps> = ({ theme, apply }) => {
                 Delete
               </button>
               <button
+                disabled={disabled}
                 type="submit"
-                className="btn btn-primary"
+                className={`btn btn-primary ${disabled && "opacity-60"}`}
                 style={{
                   backgroundColor: watch("primary_hex"),
                   color: watch("window_hex"),
