@@ -204,7 +204,6 @@ mod tests {
 
         let array: Array = W(first_res.result?).try_into()?;
 
-        println!("{}", array.len());
         assert_eq!(array.len(), 3);
 
         Ok(())

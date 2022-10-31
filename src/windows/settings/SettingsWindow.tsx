@@ -38,7 +38,7 @@ const SettingsWindow: React.FC = () => {
             <>
               <TimerSection settings={settings} setSettings={setSettings} />
               <AlertSection settings={settings} setSettings={setSettings} />
-              <ThemeSection setSettings={setSettings} />
+              <ThemeSection />
               <AboutSection />
             </>
           )}

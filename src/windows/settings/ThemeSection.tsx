@@ -6,71 +6,28 @@ import {
   MdColorLens,
 } from "react-icons/md";
 import { BiShow } from "react-icons/bi";
-import { emit, listen } from "@tauri-apps/api/event";
+import { emit } from "@tauri-apps/api/event";
 import { useForm } from "react-hook-form";
 
 import { Settings } from "../../bindings/Settings";
 import { Theme } from "../../bindings/Theme";
 import { DeleteData, ipc_invoke } from "../../ipc";
-import { HubEvent } from "../../bindings/HubEvent";
 import { applyTheme } from "../../utils";
 import useGlobal from "../../store";
 
-interface Props {
-  setSettings: React.Dispatch<React.SetStateAction<Settings | undefined>>;
-}
-
-const ThemeSection: React.FC<Props> = ({ setSettings }) => {
-  const [themes, setThemes] = React.useState<Theme[]>([]);
+const ThemeSection: React.FC = () => {
   const [viewCreate, setViewCreate] = React.useState(false);
+
+  const themes = useGlobal((state) => state.themes);
+  const setThemes = useGlobal((state) => state.setThemes);
 
   const currentTheme = useGlobal((state) => state.currentTheme);
 
   React.useEffect(() => {
     ipc_invoke<Theme[]>("get_themes").then((res) => setThemes(res.data));
 
-    const unlisten = listen<HubEvent<Theme>>("HubEvent", (event) => {
-      const payload = event.payload;
-
-      // push newly created theme
-      if (payload.topic === "theme" && payload.label === "create") {
-        setThemes((themes) => [payload.data!, ...themes]);
-      }
-      // find & update theme
-      if (payload.topic === "theme" && payload.label === "update") {
-        setThemes((themes) =>
-          themes.filter((t) => (t.id === payload.data?.id ? payload.data : t))
-        );
-      }
-      // find & delete theme
-      if (payload.topic === "theme" && payload.label === "delete") {
-        const filtered_themes = themes.filter(
-          (t) => t.id !== payload.data?.id && t
-        );
-        setThemes(filtered_themes);
-
-        // if deleted theme was currently set,
-        // update current theme with a random choice
-        if (payload.data?.id === currentTheme?.id) {
-          ipc_invoke<Settings>("update_settings", {
-            data: { current_theme_id: filtered_themes[0] },
-          });
-          emit("update_current_theme", filtered_themes[0]);
-        }
-      }
-    });
-
-    return () => unlisten.then((f) => f()) as never;
+    return;
   }, []);
-
-  const updateCurrentTheme = async (theme: Theme) => {
-    ipc_invoke<Settings>("update_settings", {
-      data: { current_theme_id: theme.id },
-    }).then((res) => {
-      setSettings(res.data);
-      emit("update_current_theme", theme);
-    });
-  };
 
   return (
     <div className="flex flex-col gap-4">
@@ -91,18 +48,12 @@ const ThemeSection: React.FC<Props> = ({ setSettings }) => {
         {viewCreate && currentTheme && (
           <CreateThemeView
             theme={currentTheme}
-            cancel={() => setViewCreate(false)}
+            hide={() => setViewCreate(false)}
           />
         )}
         <div className="flex flex-col gap-2">
           {themes &&
-            themes.map((theme) => (
-              <ThemeView
-                key={theme.id}
-                theme={theme}
-                apply={(t) => updateCurrentTheme(t)}
-              />
-            ))}
+            themes.map((theme) => <ThemeView key={theme.id} theme={theme} />)}
         </div>
       </div>
     </div>
@@ -111,14 +62,14 @@ const ThemeSection: React.FC<Props> = ({ setSettings }) => {
 
 interface ThemeViewProps {
   theme: Theme;
-  apply: (theme: Theme) => void;
 }
 
-const ThemeView: React.FC<ThemeViewProps> = ({ theme, apply }) => {
+const ThemeView: React.FC<ThemeViewProps> = ({ theme }) => {
   const [viewEdit, setViewEdit] = React.useState(false);
   const [viewDelete, setViewDelete] = React.useState(false);
 
   const currentTheme = useGlobal((state) => state.currentTheme);
+  const removeTheme = useGlobal((state) => state.removeTheme);
 
   const { register, handleSubmit, setValue, watch } = useForm<FormData>();
 
@@ -130,6 +81,7 @@ const ThemeView: React.FC<ThemeViewProps> = ({ theme, apply }) => {
     setValue("text_hex", theme.text_hex);
   }, []);
 
+  // update theme
   const onSubmit = handleSubmit((data) => {
     ipc_invoke<Theme>("update_theme", {
       id: theme.id,
@@ -139,6 +91,30 @@ const ThemeView: React.FC<ThemeViewProps> = ({ theme, apply }) => {
         emit("update_current_theme", res.data);
     });
   });
+
+  const deleteTheme = async () => {
+    const res = await ipc_invoke<DeleteData>("delete_theme", { id: theme.id });
+    removeTheme(res.data.id);
+
+    // if the deleted theme was currently used, set a new current theme
+    if (res.data.id === currentTheme?.id) {
+      ipc_invoke<Settings>("update_settings", {
+        data: { current_theme_id: "theme:abyss" },
+      }).then(() =>
+        ipc_invoke<Theme>("get_current_theme").then((res) =>
+          emit("update_current_theme", res.data)
+        )
+      );
+    }
+
+    setViewDelete(false);
+  };
+
+  const setCurrentTheme = () => {
+    ipc_invoke<Settings>("update_settings", {
+      data: { current_theme_id: theme.id },
+    }).then(() => emit("update_current_theme", theme));
+  };
 
   const disabled =
     watch("name") === theme.name &&
@@ -162,7 +138,7 @@ const ThemeView: React.FC<ThemeViewProps> = ({ theme, apply }) => {
         <div
           style={{ backgroundColor: watch("primary_hex") }}
           className={`min-w-[48px] h-full cursor-pointer transition-transform duration-200`}
-          onMouseUp={() => apply(theme)}
+          onMouseUp={() => setCurrentTheme()}
         ></div>
 
         <div
@@ -231,9 +207,7 @@ const ThemeView: React.FC<ThemeViewProps> = ({ theme, apply }) => {
                         color: watch("window_hex"),
                       }}
                       className="btn btn-primary"
-                      onMouseUp={() =>
-                        ipc_invoke<DeleteData>("delete_theme", { id: theme.id })
-                      }
+                      onMouseUp={() => deleteTheme()}
                     >
                       Confirm
                     </button>
@@ -362,7 +336,7 @@ const ThemeView: React.FC<ThemeViewProps> = ({ theme, apply }) => {
 };
 
 interface CreateThemeViewProps {
-  cancel?: () => void;
+  hide: () => void;
   theme: Theme;
 }
 
@@ -374,9 +348,11 @@ type FormData = {
   text_hex: string;
 };
 
-const CreateThemeView: React.FC<CreateThemeViewProps> = ({ theme, cancel }) => {
+const CreateThemeView: React.FC<CreateThemeViewProps> = ({ theme, hide }) => {
   const { register, handleSubmit, setValue, watch, getValues } =
     useForm<FormData>();
+
+  const addTheme = useGlobal((state) => state.addTheme);
 
   React.useEffect(() => {
     setValue("name", theme.name);
@@ -389,7 +365,10 @@ const CreateThemeView: React.FC<CreateThemeViewProps> = ({ theme, cancel }) => {
   const onSubmit = handleSubmit((data) => {
     ipc_invoke<Theme>("create_theme", {
       data: { ...data, default: false },
-    }).then(() => cancel && cancel());
+    }).then((res) => {
+      addTheme(res.data);
+      hide();
+    });
   });
 
   return (
@@ -480,7 +459,7 @@ const CreateThemeView: React.FC<CreateThemeViewProps> = ({ theme, cancel }) => {
         </div>
       </div>
       <div className="flex flex-row items-center justify-between">
-        <button className="btn btn-ghost" onMouseUp={() => cancel && cancel()}>
+        <button className="btn btn-ghost" onMouseUp={() => hide()}>
           Cancel
         </button>
         <BiShow
