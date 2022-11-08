@@ -33,6 +33,10 @@
 }
 
 @layer base {
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
   :root {
     --window-color: #222831;
     --base-color: #393e46;

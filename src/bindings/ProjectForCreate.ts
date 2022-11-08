@@ -2,5 +2,4 @@
 
 export interface ProjectForCreate {
   name: string;
-  parent_id?: string;
 }

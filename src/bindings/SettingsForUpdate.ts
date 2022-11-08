@@ -7,7 +7,9 @@ export interface SettingsForUpdate {
   long_break_interval?: number;
   auto_start_pomodoros?: boolean;
   auto_start_breaks?: boolean;
-  alert_path?: string;
+  alert_audio?: string;
   alert_volume?: number;
   alert_repeat?: number;
+  current_theme_id?: string;
+  current_project_id?: string;
 }

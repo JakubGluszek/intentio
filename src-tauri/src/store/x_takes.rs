@@ -2,7 +2,7 @@
 
 use crate::prelude::*;
 use crate::utils::XTakeImpl;
-use surrealdb::sql::Object;
+use surrealdb::sql::{Datetime, Object};
 
 impl XTakeImpl<String> for Object {
     fn x_take_impl(&mut self, k: &str) -> Result<Option<String>> {
@@ -35,5 +35,11 @@ impl XTakeImpl<bool> for Object {
 impl XTakeImpl<f64> for Object {
     fn x_take_impl(&mut self, k: &str) -> Result<Option<f64>> {
         Ok(self.remove(k).map(|v| v.as_float()))
+    }
+}
+
+impl XTakeImpl<Datetime> for Object {
+    fn x_take_impl(&mut self, k: &str) -> Result<Option<Datetime>> {
+        Ok(self.remove(k).map(|v| v.as_datetime()))
     }
 }

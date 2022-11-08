@@ -6,7 +6,6 @@ import {
   MdColorLens,
 } from "react-icons/md";
 import { BiShow } from "react-icons/bi";
-import { emit } from "@tauri-apps/api/event";
 import { useForm } from "react-hook-form";
 
 import { Settings } from "../../bindings/Settings";
@@ -25,8 +24,6 @@ const ThemeSection: React.FC = () => {
 
   React.useEffect(() => {
     ipc_invoke<Theme[]>("get_themes").then((res) => setThemes(res.data));
-
-    return;
   }, []);
 
   return (
@@ -86,34 +83,19 @@ const ThemeView: React.FC<ThemeViewProps> = ({ theme }) => {
     ipc_invoke<Theme>("update_theme", {
       id: theme.id,
       data: { ...data, default: false },
-    }).then((res) => {
-      res.data.id === currentTheme?.id &&
-        emit("update_current_theme", res.data);
     });
   });
 
   const deleteTheme = async () => {
     const res = await ipc_invoke<DeleteData>("delete_theme", { id: theme.id });
     removeTheme(res.data.id);
-
-    // if the deleted theme was currently used, set a new current theme
-    if (res.data.id === currentTheme?.id) {
-      ipc_invoke<Settings>("update_settings", {
-        data: { current_theme_id: "theme:abyss" },
-      }).then(() =>
-        ipc_invoke<Theme>("get_current_theme").then((res) =>
-          emit("update_current_theme", res.data)
-        )
-      );
-    }
-
     setViewDelete(false);
   };
 
   const setCurrentTheme = () => {
     ipc_invoke<Settings>("update_settings", {
       data: { current_theme_id: theme.id },
-    }).then(() => emit("update_current_theme", theme));
+    });
   };
 
   const disabled =

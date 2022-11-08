@@ -20,7 +20,7 @@ pub async fn update_settings(
     data: SettingsForUpdate,
 ) -> IpcResponse<Settings> {
     match Ctx::from_app(app) {
-        Ok(_) => SettingsBmc::update(data).into(),
+        Ok(ctx) => SettingsBmc::update(ctx, data).into(),
         Err(_) => Err(Error::CtxFail).into(),
     }
 }

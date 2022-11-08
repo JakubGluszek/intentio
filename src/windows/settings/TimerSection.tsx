@@ -1,7 +1,6 @@
 import React from "react";
 import { MdTimer } from "react-icons/md";
 import { Checkbox } from "@mantine/core";
-import { emit } from "@tauri-apps/api/event";
 
 import { formatTime } from "../../utils";
 import { Slider } from "../../components";
@@ -21,7 +20,6 @@ const TimerSection: React.FC<Props> = ({ settings, setSettings }) => {
   const updateSettings = (update: SettingsForUpdate) => {
     ipc_invoke<Settings>("update_settings", { data: update }).then((res) => {
       setSettings(res.data);
-      emit("sync_settings", res.data);
     });
   };
 
@@ -107,8 +105,9 @@ const TimerSection: React.FC<Props> = ({ settings, setSettings }) => {
         </div>
         <div className="flex flex-col gap-2">
           <div className="flex flex-row items-center justify-between rounded hover:bg-base p-2">
-            <span>Auto Start Pomodoros</span>
+            <label htmlFor="auto-start-pomodoros">Auto Start Pomodoros</label>
             <Checkbox
+              id="auto-start-pomodoros"
               defaultChecked={settings.auto_start_pomodoros}
               onChange={(value) =>
                 updateSettings({
@@ -123,8 +122,9 @@ const TimerSection: React.FC<Props> = ({ settings, setSettings }) => {
             />
           </div>
           <div className="flex flex-row items-center justify-between rounded hover:bg-base p-2">
-            <span>Auto Start Breaks</span>
+            <label htmlFor="auto-start-breaks">Auto Start Breaks</label>
             <Checkbox
+              id="auto-start-breaks"
               defaultChecked={settings.auto_start_breaks}
               onChange={(value) =>
                 updateSettings({

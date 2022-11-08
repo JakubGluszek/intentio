@@ -7,12 +7,12 @@ use ts_rs::TS;
 
 use crate::{
     ctx::Ctx,
-    prelude::{Error, Result},
+    prelude::{Error, Result, DEFAULT_THEME},
     store::{Creatable, Patchable, Store},
     utils::{map, XTakeVal},
 };
 
-use super::{fire_model_event, ModelDeleteResultData};
+use super::{ModelDeleteResultData, SettingsBmc};
 
 #[derive(Serialize, TS, Debug)]
 #[ts(export, export_to = "../src/bindings/")]
@@ -111,7 +111,7 @@ pub struct ThemeBmc {}
 impl ThemeBmc {
     const ENTITY: &'static str = "theme";
 
-    pub async fn initialize(store: Arc<Store>) -> Result<()> {
+    pub async fn init(store: Arc<Store>) -> Result<()> {
         let objects = store.exec_select(Self::ENTITY).await?;
 
         if objects.len() == 0 {
@@ -153,17 +153,14 @@ impl ThemeBmc {
     }
 
     pub async fn create(ctx: Arc<Ctx>, data: ThemeForCreate) -> Result<Theme> {
-        let result = ctx.get_store().exec_create(Self::ENTITY, data).await?;
-
-        fire_model_event(&ctx, Self::ENTITY, "create", result.clone());
-
-        result.try_into()
+        ctx.get_store()
+            .exec_create(Self::ENTITY, data)
+            .await?
+            .try_into()
     }
 
     pub async fn update(ctx: Arc<Ctx>, id: &str, data: ThemeForUpdate) -> Result<Theme> {
         let result = ctx.get_store().exec_merge(id, data).await?;
-
-        fire_model_event(&ctx, Self::ENTITY, "update", result.clone());
 
         result.try_into()
     }
@@ -172,7 +169,15 @@ impl ThemeBmc {
         let id = ctx.get_store().exec_delete(id).await?;
         let result = ModelDeleteResultData::from(id);
 
-        fire_model_event(&ctx, Self::ENTITY, "delete", result.clone());
+        let mut settings = SettingsBmc::get()?;
+
+        if settings.current_theme_id == result.id {
+            settings.current_theme_id = DEFAULT_THEME.to_string();
+
+            SettingsBmc::save(&settings)?;
+
+            ctx.emit_event("current_theme_updated", "");
+        }
 
         Ok(result)
     }
@@ -188,15 +193,16 @@ impl ThemeBmc {
 mod tests {
     use surrealdb::sql::Array;
 
-    use crate::{prelude::W, utils::get_test_store};
+    use crate::prelude::W;
 
     use super::*;
 
     #[tokio::test]
     async fn default_themes() -> Result<()> {
-        let store = get_test_store().await?;
+        let ctx = Ctx::test().await;
+        let store = ctx.get_store();
 
-        ThemeBmc::initialize(store.clone()).await?;
+        ThemeBmc::init(store.clone()).await?;
 
         let sql = "SELECT * FROM theme";
         let ress = store.ds.execute(sql, &store.ses, None, false).await?;

@@ -15,6 +15,9 @@ pub enum Error {
     #[error("Fail to create. Cause: {0}")]
     StoreFailToCreate(String),
 
+    #[error("No current project")]
+    NoCurrentProject,
+
     #[error(transparent)]
     Surreal(#[from] surrealdb::Error),
 

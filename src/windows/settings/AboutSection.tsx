@@ -15,9 +15,7 @@ const AboutSection: React.FC = () => {
   const [data, setData] = React.useState<AboutData>();
 
   React.useEffect(() => {
-    fetch("data/about.json").then((res) =>
-      res.json().then((data) => setData(data))
-    );
+    fetch("about.json").then((res) => res.json().then((data) => setData(data)));
   }, []);
 
   if (!data) return null;
@@ -47,13 +45,15 @@ const AboutSection: React.FC = () => {
         <div className="group card flex flex-col items-center gap-2">
           <span>Source Code</span>
           <div className="bg-base group-hover:bg-window rounded px-2 py-1">
-            <a href={data.source} target="_blank">Github</a>
+            <a href={data.source} target="_blank">
+              Github
+            </a>
           </div>
         </div>
-        <div className="flex flex-col items-center justify-evenly gap-0.5">
-          <button className="btn btn-ghost">Report a bug</button>
-          <button className="btn btn-ghost">Provide feedback</button>
-        </div>
+        {/* <div className="flex flex-col items-center justify-evenly gap-0.5"> */}
+        {/*   <button className="btn btn-ghost">Report a bug</button> */}
+        {/*   <button className="btn btn-ghost">Provide feedback</button> */}
+        {/* </div> */}
       </div>
     </div>
   );

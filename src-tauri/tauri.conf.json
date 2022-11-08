@@ -22,7 +22,7 @@
         "removeDir": true,
         "removeFile": true,
         "renameFile": true,
-        "scope": ["$APP/*", "$APP", "$AUDIO/*", "$AUDIO"]
+        "scope": ["$APP/*", "$APP", "$AUDIO/*", "$AUDIO", "$RESOURCE/*"]
       }
     },
     "bundle": {
@@ -49,7 +49,7 @@
         "providerShortName": null,
         "signingIdentity": null
       },
-      "resources": [],
+      "resources": ["./assets/audio/*"],
       "shortDescription": "",
       "targets": "all",
       "windows": {

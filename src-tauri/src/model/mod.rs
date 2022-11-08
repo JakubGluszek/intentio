@@ -1,32 +1,18 @@
 // Backend model controllers for the application.
 
-use crate::ctx::Ctx;
-use crate::event::HubEvent;
 use serde::Serialize;
 use ts_rs::TS;
 
 mod project;
+mod session;
 mod settings;
 mod theme;
-mod todo;
 
 // Re-Exports
 pub use project::*;
+pub use session::*;
 pub use settings::*;
 pub use theme::*;
-pub use todo::*;
-
-fn fire_model_event<D>(ctx: &Ctx, entity: &str, action: &str, data: D)
-where
-    D: Serialize + Clone,
-{
-    ctx.emit_hub_event(HubEvent {
-        hub: "Model".to_string(),
-        topic: entity.to_string(),
-        label: Some(action.to_string()),
-        data: Some(data),
-    });
-}
 
 pub type Minutes = i64;
 

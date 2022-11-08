@@ -4,13 +4,12 @@ import {
   ColorFormat,
   CountdownCircleTimer,
 } from "react-countdown-circle-timer";
-import { listen } from "@tauri-apps/api/event";
-import { invoke } from "@tauri-apps/api/tauri";
 
 import { formatTime, playAudio } from "../../utils";
 import { Settings } from "../../bindings/Settings";
-import { Theme } from "../../bindings/Theme";
 import { ipc_invoke } from "../../ipc";
+import useGlobal from "../../store";
+import { sendNotification } from "@tauri-apps/api/notification";
 
 type TimerType = "focus" | "break" | "long break";
 
@@ -26,16 +25,8 @@ const Timer: React.FC<TimerProps> = ({ settings }) => {
   const [isRunning, setIsRunning] = React.useState(false);
   const [iterations, setIterations] = React.useState(0);
 
-  const [theme, setTheme] = React.useState<Theme>();
-
-  React.useEffect(() => {
-    ipc_invoke<Theme>("get_current_theme").then((res) => setTheme(res.data));
-
-    const unlisten = listen<string>("update_current_theme", (event) => {
-      setTheme(JSON.parse(event.payload));
-    });
-    return () => unlisten.then((f) => f()) as never;
-  }, []);
+  const theme = useGlobal((state) => state.currentTheme);
+  const currentProject = useGlobal((state) => state.currentProject);
 
   React.useEffect(() => {
     switch (type) {
@@ -67,11 +58,16 @@ const Timer: React.FC<TimerProps> = ({ settings }) => {
   };
 
   const save = () => {
-    if (type !== "focus" || timeFocused < 4) return;
-    invoke("pomodoro_save", {
-      duration: timeFocused,
-      startedAt,
-    });
+    if (type !== "focus" || timeFocused + 1 < 60) return;
+    ipc_invoke("create_session", {
+      data: {
+        duration: ~~((timeFocused + 1) / 60),
+        started_at: startedAt && startedAt.getTime().toString(),
+        project_id: currentProject?.id,
+      },
+    })
+      .then(() => console.log("saved focus"))
+      .catch((err) => console.log(err));
   };
 
   const resetPomodoro = () => {
@@ -92,9 +88,21 @@ const Timer: React.FC<TimerProps> = ({ settings }) => {
       if (is_long_break) {
         setType("long break");
         setDuration(settings.long_break_duration);
+        if (!manual) {
+          sendNotification({
+            title: "Pomodoro",
+            body: "Session is over. Time for a long break!",
+          });
+        }
       } else {
         setType("break");
         setDuration(settings.break_duration);
+        if (!manual) {
+          sendNotification({
+            title: "Pomodoro",
+            body: "Session is over. Time for a break!",
+          });
+        }
       }
       setIterations(iterations + 1);
       if (!manual && settings.auto_start_breaks) {
@@ -105,6 +113,14 @@ const Timer: React.FC<TimerProps> = ({ settings }) => {
     } else {
       setType("focus");
       setDuration(settings.pomodoro_duration);
+
+      if (!manual) {
+        sendNotification({
+          title: "Pomodoro",
+          body: "Break is over. Time to focus!",
+        });
+      }
+
       if (!manual && settings.auto_start_pomodoros) {
         setTimeout(() => {
           start();

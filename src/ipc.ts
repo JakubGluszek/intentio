@@ -16,8 +16,8 @@ export async function ipc_invoke<D>(
   params?: object
 ): Promise<IpcResult<D>> {
   const response: any = await invoke(method, { ...params });
+
   if (response.error != null) {
-    console.log("ERROR - ipc_invoke - ipc_invoke error", response);
     throw new Error(response.error);
   } else {
     return response.result;

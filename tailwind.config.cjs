@@ -9,6 +9,9 @@ module.exports = {
         primary: "var(--primary-color)",
         text: "var(--text-color)",
       },
+      fontSize: {
+        medium: "1rem",
+      },
       fontFamily: {
         cascadia: ["cascadia"],
       },

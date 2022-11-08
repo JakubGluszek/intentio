@@ -5,7 +5,7 @@
 use crate::prelude::*;
 use crate::utils::map;
 use std::collections::BTreeMap;
-use surrealdb::sql::{thing, Array, Datetime, Object, Value};
+use surrealdb::sql::{thing, Array, Object, Value};
 use surrealdb::{Datastore, Session};
 
 mod try_froms;
@@ -32,6 +32,7 @@ impl Store {
 
         let ds = Datastore::new(&path).await?;
         let ses = Session::for_db("appns", "appdb");
+
         Ok(Store { ds, ses })
     }
 
@@ -49,10 +50,7 @@ impl Store {
 
     pub async fn exec_create<T: Creatable>(&self, tb: &str, data: T) -> Result<Object> {
         let sql = "CREATE type::table($tb) CONTENT $data RETURN AFTER";
-
-        let mut data: Object = W(data.into()).try_into()?;
-        let now = Datetime::default().timestamp_nanos();
-        data.insert("ctime".into(), now.into());
+        let data: Object = W(data.into()).try_into()?;
 
         let vars = map![
 			"tb".into() => tb.into(),
@@ -63,7 +61,7 @@ impl Store {
             .into_iter()
             .next()
             .map(|r| r.result)
-            .expect("id not returned")?;
+            .expect("data not returned")?;
 
         if let Value::Object(val) = first_val.first() {
             Ok(val)
@@ -113,11 +111,9 @@ impl Store {
     }
 
     pub async fn exec_select(&self, tb: &str) -> Result<Vec<Object>> {
-        let mut sql = String::from("SELECT * FROM type::table($tb)");
+        let sql = String::from("SELECT * FROM type::table($tb)");
 
         let vars = BTreeMap::from([("tb".into(), tb.into())]);
-
-        sql.push_str(" ORDER ctime DESC");
 
         let ress = self.ds.execute(&sql, &self.ses, Some(vars), false).await?;
 

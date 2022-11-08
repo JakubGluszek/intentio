@@ -4712,6 +4712,7 @@ version = "6.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "dc59f479df54269b400dd95bc3b7e81623b3e4b9c70c8ca7125ab8341eafa64e"
 dependencies = [
+ "chrono",
  "dprint-plugin-typescript",
  "thiserror",
  "ts-rs-macros",

@@ -11,9 +11,7 @@ import {
   MdVolumeUp,
 } from "react-icons/md";
 
-import { invoke } from "@tauri-apps/api/tauri";
 import { type } from "@tauri-apps/api/os";
-import { audioDir } from "@tauri-apps/api/path";
 import { readDir, BaseDirectory, FileEntry } from "@tauri-apps/api/fs";
 
 import { Slider } from "../../components";
@@ -30,7 +28,8 @@ interface Props {
 
 const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
   const [currentTrack, setCurrentTrack] = React.useState<FileEntry>({
-    path: settings.alert_path,
+    name: settings.alert_audio,
+    path: "",
   });
   const [tracks, setTracks] = React.useState<FileEntry[]>([]);
 
@@ -39,8 +38,8 @@ const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
   }, []);
 
   const readTracks = () => {
-    readDir("pomodoro", {
-      dir: BaseDirectory.Audio,
+    readDir("assets/audio", {
+      dir: BaseDirectory.Resource,
       recursive: false,
     }).then((entries) => {
       setTracks(
@@ -54,7 +53,7 @@ const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
   const nextTrack = () => {
     for (let i = 0; i < tracks.length; i++) {
       let track = tracks[i];
-      if (track.path === currentTrack.path) {
+      if (track.name === currentTrack.name) {
         let nextTrack: FileEntry;
         if (i < tracks.length - 1) {
           nextTrack = tracks[i + 1];
@@ -71,7 +70,7 @@ const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
   const previousTrack = () => {
     for (let i = 0; i < tracks.length; i++) {
       let track = tracks[i];
-      if (track.path === currentTrack.path) {
+      if (track.name === currentTrack.name) {
         let nextTrack: FileEntry;
         if (i > 0) {
           nextTrack = tracks[i - 1];
@@ -89,7 +88,7 @@ const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
     ipc_invoke<Settings>("update_settings", {
       data: {
         ...settings,
-        alert_path: track.path,
+        alert_audio: track.name,
       },
     }).then((res) => setSettings(res.data));
   };
@@ -184,9 +183,8 @@ const OpenFileExplorerButton: React.FC = () => {
       className="btn btn-ghost"
       onMouseUp={async () => {
         const osType = await type();
-        const path = (await audioDir()) + "pomodoro";
 
-        invoke("open_folder", { osType, path });
+        ipc_invoke("open_audio_directory", { osType });
       }}
       onMouseEnter={() => setFolderIcon("open")}
       onMouseLeave={() => setFolderIcon("closed")}

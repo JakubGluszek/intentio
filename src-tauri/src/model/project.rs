@@ -1,21 +1,21 @@
-use std::{collections::BTreeMap, sync::Arc};
+use std::sync::Arc;
 
 use serde::{Deserialize, Serialize};
-use serde_with_macros::skip_serializing_none;
 use surrealdb::sql::{Object, Value};
 use ts_rs::TS;
 
-use crate::prelude::Result;
+use crate::prelude::*;
+use crate::store::Store;
 use crate::{
     ctx::Ctx,
     prelude::Error,
-    store::{Creatable, Patchable},
+    store::Creatable,
     utils::{map, XTakeVal},
 };
 
-use super::{fire_model_event, ModelDeleteResultData, TodoBmc};
+use super::{ModelDeleteResultData, SettingsBmc};
 
-#[derive(Serialize, TS, Debug)]
+#[derive(Serialize, TS, Debug, Clone)]
 #[ts(export, export_to = "../src/bindings/")]
 pub struct Project {
     id: String,
@@ -34,19 +34,16 @@ impl TryFrom<Object> for Project {
     }
 }
 
-#[skip_serializing_none]
 #[derive(Deserialize, TS, Debug)]
 #[ts(export, export_to = "../src/bindings/")]
 pub struct ProjectForCreate {
     name: String,
-    parent_id: Option<String>,
 }
 
 impl From<ProjectForCreate> for Value {
     fn from(val: ProjectForCreate) -> Value {
         let data = map![
             "name".into() => val.name.into(),
-            "parent_id".into() => val.parent_id.into(),
         ];
 
         Value::Object(data.into())
@@ -54,31 +51,6 @@ impl From<ProjectForCreate> for Value {
 }
 
 impl Creatable for ProjectForCreate {}
-
-#[skip_serializing_none]
-#[derive(Deserialize, TS, Debug)]
-#[ts(export, export_to = "../src/bindings/")]
-pub struct ProjectForUpdate {
-    name: Option<String>,
-    parent_id: Option<String>,
-}
-
-impl From<ProjectForUpdate> for Value {
-    fn from(val: ProjectForUpdate) -> Value {
-        let mut data = BTreeMap::new();
-
-        if let Some(name) = val.name {
-            data.insert("name".into(), name.into());
-        }
-        if let Some(parent_id) = val.parent_id {
-            data.insert("parent_id".into(), parent_id.into());
-        }
-
-        Value::Object(data.into())
-    }
-}
-
-impl Patchable for ProjectForUpdate {}
 
 pub struct ProjectBmc {}
 
@@ -90,38 +62,38 @@ impl ProjectBmc {
     }
 
     pub async fn create(ctx: Arc<Ctx>, data: ProjectForCreate) -> Result<Project> {
-        let result = ctx.get_store().exec_create(Self::ENTITY, data).await?;
+        let obj = ctx.get_store().exec_create(Self::ENTITY, data).await?;
 
-        fire_model_event(&ctx, Self::ENTITY, "create", result.clone());
+        ctx.emit_event("project_created", obj.clone());
 
-        result.try_into()
+        obj.try_into()
     }
 
-    pub async fn update(ctx: Arc<Ctx>, id: &str, data: ProjectForUpdate) -> Result<Project> {
-        let result = ctx.get_store().exec_merge(id, data).await?;
-
-        fire_model_event(&ctx, Self::ENTITY, "update", result.clone());
-
-        result.try_into()
-    }
-
-    /// Deletes the project itself
-    /// Deletes all todos where todo.project_id = id
     pub async fn delete(ctx: Arc<Ctx>, id: &str) -> Result<ModelDeleteResultData> {
         let store = ctx.get_store();
 
         let id = store.exec_delete(id).await?;
-        let result = ModelDeleteResultData::from(id);
+        let data = ModelDeleteResultData::from(id.clone());
 
-        fire_model_event(&ctx, Self::ENTITY, "delete", result.clone());
+        ctx.emit_event("project_deleted", data.clone());
 
-        TodoBmc::delete_by_project(store.clone(), &result.id).await?;
+        let mut settings = SettingsBmc::get()?;
 
-        Ok(result)
+        if let Some(current_project_id) = settings.current_project_id {
+            if current_project_id == data.id {
+                settings.current_project_id = None;
+
+                SettingsBmc::save(&settings)?;
+
+                ctx.emit_event("current_project_updated", "");
+            }
+        }
+
+        Ok(data)
     }
 
-    pub async fn list(ctx: Arc<Ctx>) -> Result<Vec<Project>> {
-        let objects = ctx.get_store().exec_select(Self::ENTITY).await?;
+    pub async fn list(store: Arc<Store>) -> Result<Vec<Project>> {
+        let objects = store.exec_select(Self::ENTITY).await?;
 
         objects.into_iter().map(|o| o.try_into()).collect()
     }
