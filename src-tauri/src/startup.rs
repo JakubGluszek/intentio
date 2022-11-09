@@ -15,7 +15,7 @@ pub async fn init(store: Arc<Store>) -> Result<()> {
     Ok(())
 }
 
-pub fn init_config_dir() {
+fn init_config_dir() {
     let config_dir = tauri::api::path::config_dir()
         .unwrap()
         .to_str()

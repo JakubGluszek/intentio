@@ -113,7 +113,15 @@ impl SettingsBmc {
         let contents = fs::read_to_string(path)?;
 
         // handle this error
-        let settings: Settings = toml::from_str(&contents).unwrap();
+        let settings: Settings = match toml::from_str(&contents) {
+            Ok(settings) => settings,
+            Err(_) => {
+                let settings = Settings::default();
+                Self::save(&settings)?;
+
+                settings
+            }
+        };
 
         Ok(settings)
     }
