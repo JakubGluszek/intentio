@@ -13,7 +13,10 @@ const MainWindow: React.FC = () => {
   return (
     <Layout>
       <div className="relative w-screen h-screen flex flex-col p-4">
-        <div className="h-10 flex flex-row items-center justify-between">
+        <div
+          data-tauri-drag-region
+          className="h-10 flex flex-row items-center justify-between"
+        >
           <div className="flex flex-row items-center gap-2">
             <button
               className="btn btn-ghost"

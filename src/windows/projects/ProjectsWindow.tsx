@@ -49,7 +49,10 @@ const ProjectsWindow: React.FC = () => {
   return (
     <Layout>
       <div className="w-screen min-h-screen flex flex-col p-4 gap-2">
-        <div className="flex flex-row items-center justify-between p-1">
+        <div
+          data-tauri-drag-region
+          className="flex flex-row items-center justify-between p-1"
+        >
           <span className="text-lg">Projects</span>
           <button className="btn btn-ghost" onClick={() => appWindow.close()}>
             <MdClose size={32} />

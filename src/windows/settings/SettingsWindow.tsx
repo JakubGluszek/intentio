@@ -22,7 +22,10 @@ const SettingsWindow: React.FC = () => {
       <div className="w-screen min-h-screen flex flex-col gap-2">
         {/* Window Header */}
         <div className="z-[9999] sticky top-0 flex flex-col gap-2 bg-window px-4 py-2">
-          <div className="flex flex-row items-center justify-between">
+          <div
+            data-tauri-drag-region
+            className="flex flex-row items-center justify-between"
+          >
             <div className="flex flex-row items-center gap-2">
               <MdSettings size={32} />
               <span>Settings</span>
