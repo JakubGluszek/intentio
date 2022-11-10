@@ -4,6 +4,7 @@ import {
   ColorFormat,
   CountdownCircleTimer,
 } from "react-countdown-circle-timer";
+import { VscDebugRestart } from "react-icons/vsc";
 
 import { formatTime, playAudio } from "../../utils";
 import { Settings } from "../../bindings/Settings";
@@ -72,6 +73,7 @@ const Timer: React.FC<TimerProps> = ({ settings }) => {
 
   const resetPomodoro = () => {
     setTimeFocused(0);
+    setDuration(0);
     setStartedAt(null);
   };
 

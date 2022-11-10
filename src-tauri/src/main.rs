@@ -56,12 +56,6 @@ async fn main() -> Result<()> {
             // Session
             get_sessions,
             create_session,
-            // Queue Session
-            get_queue_session,
-            get_queue_sessions,
-            create_queue_session,
-            update_queue_session,
-            delete_queue_session,
             // Queue
             get_queue,
             get_queues,

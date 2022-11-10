@@ -1,5 +1,6 @@
 import React from "react";
 import { MdSettings, MdAnalytics, MdRemove, MdClose } from "react-icons/md";
+import { IoMdReorder } from "react-icons/io";
 import { appWindow, WebviewWindow } from "@tauri-apps/api/window";
 
 import Layout from "../../components/Layout";
@@ -20,7 +21,7 @@ const MainWindow: React.FC = () => {
           <div className="flex flex-row items-center gap-2">
             <button
               className="btn btn-ghost"
-              onClick={() =>
+              onMouseUp={() =>
                 new WebviewWindow("settings", {
                   url: "/settings",
                   decorations: false,
@@ -38,7 +39,7 @@ const MainWindow: React.FC = () => {
             <button className="btn btn-ghost">
               <MdAnalytics
                 size={32}
-                onClick={() =>
+                onMouseUp={() =>
                   new WebviewWindow("analytics", {
                     url: "/analytics",
                     decorations: false,
@@ -65,10 +66,27 @@ const MainWindow: React.FC = () => {
         <div className="grow flex flex-col p-4">
           {settings && <Timer settings={settings} />}
         </div>
-        <div className="h-10 flex flex-row items-center justify-center">
+        <div className="relative h-10 flex flex-row items-center justify-between">
           <button
             className="btn btn-ghost"
-            onClick={() =>
+            onMouseUp={() =>
+              new WebviewWindow("queues", {
+                url: "/queues",
+                decorations: false,
+                title: "Queues",
+                skipTaskbar: true,
+                width: 450,
+                height: 380,
+                resizable: false,
+                fullscreen: false,
+              })
+            }
+          >
+            <IoMdReorder size={32} />
+          </button>
+          <button
+            className="absolute left-[50%] right-[50%] btn btn-ghost"
+            onMouseUp={() =>
               new WebviewWindow("projects", {
                 url: "/projects",
                 decorations: false,
@@ -81,7 +99,7 @@ const MainWindow: React.FC = () => {
               })
             }
           >
-            {currentProject?.name ?? "-SELECT A PROJECT-"}
+            {currentProject?.name ?? "None"}
           </button>
         </div>
       </div>

@@ -4,4 +4,5 @@ export interface QueueSession {
   id: string;
   project_id: string | null;
   duration: number;
+  cycles: number;
 }

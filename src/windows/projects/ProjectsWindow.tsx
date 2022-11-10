@@ -19,7 +19,9 @@ const ProjectsWindow: React.FC = () => {
   const [viewCreate, setViewCreate] = React.useState(false);
 
   const createProject = (name: string) => {
-    ipc_invoke<Project>("create_project", { data: { name } })
+    ipc_invoke<Project>("create_project", {
+      data: { name: name.replaceAll(" ", "") },
+    })
       .then((res) => {
         addProject(res.data);
         setViewCreate(false);

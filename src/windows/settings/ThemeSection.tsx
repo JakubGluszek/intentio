@@ -36,7 +36,7 @@ const ThemeSection: React.FC = () => {
       <div className="flex flex-col gap-4">
         {!viewCreate && (
           <button
-            className="btn btn-ghost justify-start"
+            className="btn btn-primary w-fit justify-start"
             onMouseUp={() => setViewCreate(true)}
           >
             <MdAddCircle size={24} />

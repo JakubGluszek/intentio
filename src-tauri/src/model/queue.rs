@@ -136,8 +136,6 @@ impl QueueBmc {
 
 #[cfg(test)]
 mod tests {
-    use crate::model::{QueueSessionBmc, QueueSessionForCreate};
-
     use super::*;
 
     #[tokio::test]
@@ -147,11 +145,7 @@ mod tests {
         let mut sessions = vec![];
 
         for _ in 0..4 {
-            let data = QueueSessionForCreate::new(None, 20);
-
-            let queue_session = QueueSessionBmc::create(ctx.clone(), data).await?;
-
-            sessions.push(queue_session);
+            sessions.push(QueueSession::new(None, 20, 2));
         }
 
         let data = QueueForCreate {

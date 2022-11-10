@@ -9,6 +9,8 @@ import MainWindow from "./windows/main";
 import SettingsWindow from "./windows/settings";
 import ProjectsWindow from "./windows/projects";
 import AnalyticsWindow from "./windows/analytics";
+import QueuesWindow from "./windows/queues";
+
 import useGlobal from "./store";
 import { Settings } from "./bindings/Settings";
 import { Project } from "./bindings/Project";
@@ -23,9 +25,11 @@ const App: React.FC = () => {
   const setCurrentTheme = useGlobal((state) => state.setCurrentTheme);
   const setSettings = useGlobal((state) => state.setSettings);
   const setCurrentProject = useGlobal((state) => state.setCurrentProject);
+  const setProjects = useGlobal((state) => state.setProjects);
 
   React.useEffect(() => {
     ipc_invoke<Settings>("get_settings").then((res) => setSettings(res.data));
+    ipc_invoke<Project[]>("get_projects").then((res) => setProjects(res.data));
     ipc_invoke<Project>("get_current_project")
       .then((res) => setCurrentProject(res.data))
       .catch(() => setCurrentProject(undefined));
@@ -43,6 +47,7 @@ const App: React.FC = () => {
       <Route path="settings" element={<SettingsWindow />} />
       <Route path="projects" element={<ProjectsWindow />} />
       <Route path="analytics" element={<AnalyticsWindow />} />
+      <Route path="queues" element={<QueuesWindow />} />
     </Routes>
   );
 };
