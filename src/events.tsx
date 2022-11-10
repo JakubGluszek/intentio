@@ -14,6 +14,14 @@ const useEvents = () => {
   const setCurrentProject = useGlobal((state) => state.setCurrentProject);
 
   React.useEffect(() => {
+    const unlisten = listen<string>("update_current_theme", (event) => {
+      applyTheme(JSON.parse(event.payload));
+    });
+
+    return () => unlisten.then((f) => f()) as never;
+  }, []);
+
+  React.useEffect(() => {
     const unlisten = listen<Settings>("settings_updated", (event) => {
       setSettings(event.payload);
     });

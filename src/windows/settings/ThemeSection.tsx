@@ -13,6 +13,7 @@ import { Theme } from "../../bindings/Theme";
 import { DeleteData, ipc_invoke } from "../../ipc";
 import { applyTheme } from "../../utils";
 import useGlobal from "../../store";
+import { emit } from "@tauri-apps/api/event";
 
 const ThemeSection: React.FC = () => {
   const [viewCreate, setViewCreate] = React.useState(false);
@@ -446,8 +447,8 @@ const CreateThemeView: React.FC<CreateThemeViewProps> = ({ theme, hide }) => {
         </button>
         <BiShow
           size={24}
-          onMouseOver={() => applyTheme(getValues() as Theme)}
-          onMouseLeave={() => applyTheme(theme)}
+          onMouseOver={() => emit("update_current_theme", getValues())}
+          onMouseLeave={() => emit("update_current_theme", theme)}
         />
         <button type="submit" className="btn btn-primary">
           Save
