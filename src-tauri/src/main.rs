@@ -55,7 +55,19 @@ async fn main() -> Result<()> {
             delete_project,
             // Session
             get_sessions,
-            create_session
+            create_session,
+            // Queue Session
+            get_queue_session,
+            get_queue_sessions,
+            create_queue_session,
+            update_queue_session,
+            delete_queue_session,
+            // Queue
+            get_queue,
+            get_queues,
+            create_queue,
+            update_queue,
+            delete_queue,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

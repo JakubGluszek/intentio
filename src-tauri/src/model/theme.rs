@@ -160,9 +160,7 @@ impl ThemeBmc {
     }
 
     pub async fn update(ctx: Arc<Ctx>, id: &str, data: ThemeForUpdate) -> Result<Theme> {
-        let result = ctx.get_store().exec_merge(id, data).await?;
-
-        result.try_into()
+        ctx.get_store().exec_merge(id, data).await?.try_into()
     }
 
     pub async fn delete(ctx: Arc<Ctx>, id: &str) -> Result<ModelDeleteResultData> {

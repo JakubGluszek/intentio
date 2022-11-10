@@ -1,6 +1,6 @@
 //! TryFrom implementations for store related types
 
-use crate::prelude::*;
+use crate::{model::QueueSession, prelude::*};
 use surrealdb::sql::{Array, Object, Value};
 
 impl TryFrom<W<Value>> for Object {
@@ -51,6 +51,16 @@ impl TryFrom<W<Value>> for String {
             Value::Strand(strand) => Ok(strand.as_string()),
             Value::Thing(thing) => Ok(thing.to_string()),
             _ => Err(Error::XValueNotOfType("String")),
+        }
+    }
+}
+
+impl TryFrom<W<Value>> for QueueSession {
+    type Error = Error;
+    fn try_from(val: W<Value>) -> Result<QueueSession> {
+        match val.0 {
+            Value::Object(obj) => obj.try_into(),
+            _ => Err(Error::XValueNotOfType("QueueSession")),
         }
     }
 }
