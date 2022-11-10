@@ -75,6 +75,7 @@ const Timer: React.FC<TimerProps> = ({ settings }) => {
     setStartedAt(null);
   };
 
+  /** Starts a new session (focus/break/long break) based on current state */
   const next = (manual: boolean = false) => {
     pause();
     if (type === "focus") {

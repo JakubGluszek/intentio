@@ -37,7 +37,7 @@ const AnalyticsWindow: React.FC = () => {
       .reduce((p, c) => p + c.duration, 0) / 60
   ).toFixed(1);
 
-  let dayStreak = 1;
+  let dayStreak = 0;
 
   let sorted = sessions.sort(
     (a, b) => parseInt(b.finished_at) - parseInt(a.finished_at)
@@ -94,11 +94,11 @@ const AnalyticsWindow: React.FC = () => {
             <span className="text-primary text-2xl">{focusedToday}h</span>
           </div>
           <div className="flex-1 flex flex-col items-center justify-evenly gap-1 p-2 bg-base rounded">
-            <div className="flex flex-row items-center">
-              <AiFillFire size={48} />
-              <span>Day streak</span>
+            <div className="flex flex-row items-center gap-2">
+              <AiFillFire size={38} />
+              <span>Streak</span>
             </div>
-            <span className="text-primary text-2xl">{dayStreak}</span>
+            <span className="text-primary text-2xl">{dayStreak} day</span>
           </div>
         </div>
       </div>
