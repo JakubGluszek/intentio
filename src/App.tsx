@@ -15,6 +15,8 @@ import useGlobal from "./store";
 import { Settings } from "./bindings/Settings";
 import { Project } from "./bindings/Project";
 import useEvents from "./events";
+import { Queue } from "./bindings/Queue";
+import { ActiveQueue } from "./bindings/ActiveQueue";
 
 import.meta.env.PROD &&
   document.addEventListener("contextmenu", (event) => event.preventDefault());
@@ -26,18 +28,31 @@ const App: React.FC = () => {
   const setSettings = useGlobal((state) => state.setSettings);
   const setCurrentProject = useGlobal((state) => state.setCurrentProject);
   const setProjects = useGlobal((state) => state.setProjects);
+  const setQueues = useGlobal((state) => state.setQueues);
+  const setActiveQueue = useGlobal((state) => state.setActiveQueue);
 
   React.useEffect(() => {
+    ipc_invoke<ActiveQueue | null>("get_active_queue").then((res) =>
+      setActiveQueue(res.data)
+    );
+
     ipc_invoke<Settings>("get_settings").then((res) => setSettings(res.data));
+
     ipc_invoke<Project[]>("get_projects").then((res) => setProjects(res.data));
+
     ipc_invoke<Project>("get_current_project")
       .then((res) => setCurrentProject(res.data))
       .catch(() => setCurrentProject(undefined));
+
     ipc_invoke<Theme>("get_current_theme")
       .then((res) => {
         applyTheme(res.data);
         setCurrentTheme(res.data);
       })
+      .catch((err) => console.log(err));
+
+    ipc_invoke<Queue[]>("get_queues")
+      .then((res) => setQueues(res.data))
       .catch((err) => console.log(err));
   }, []);
 

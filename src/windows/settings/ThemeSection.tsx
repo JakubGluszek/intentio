@@ -37,7 +37,7 @@ const ThemeSection: React.FC = () => {
         {!viewCreate && (
           <button
             className="btn btn-primary w-fit justify-start"
-            onMouseUp={() => setViewCreate(true)}
+            onClick={() => setViewCreate(true)}
           >
             <MdAddCircle size={24} />
             <span>Add a theme</span>
@@ -121,7 +121,7 @@ const ThemeView: React.FC<ThemeViewProps> = ({ theme }) => {
         <div
           style={{ backgroundColor: watch("primary_hex") }}
           className={`min-w-[48px] h-full cursor-pointer transition-transform duration-200`}
-          onMouseUp={() => setCurrentTheme()}
+          onClick={() => setCurrentTheme()}
         ></div>
 
         <div
@@ -135,7 +135,7 @@ const ThemeView: React.FC<ThemeViewProps> = ({ theme }) => {
             <button
               style={{ color: watch("primary_hex") }}
               className="hidden group-hover:flex"
-              onMouseUp={() => setViewEdit(!viewEdit)}
+              onClick={() => setViewEdit(!viewEdit)}
             >
               {viewEdit ? (
                 <MdArrowDropUp size={32} />
@@ -180,7 +180,7 @@ const ThemeView: React.FC<ThemeViewProps> = ({ theme }) => {
                     <button
                       style={{ color: watch("primary_hex") }}
                       className="btn btn-ghost"
-                      onMouseUp={() => setViewDelete(false)}
+                      onClick={() => setViewDelete(false)}
                     >
                       Cancel
                     </button>
@@ -190,7 +190,7 @@ const ThemeView: React.FC<ThemeViewProps> = ({ theme }) => {
                         color: watch("window_hex"),
                       }}
                       className="btn btn-primary"
-                      onMouseUp={() => deleteTheme()}
+                      onClick={() => deleteTheme()}
                     >
                       Confirm
                     </button>
@@ -295,7 +295,7 @@ const ThemeView: React.FC<ThemeViewProps> = ({ theme }) => {
               <button
                 className="btn btn-ghost"
                 style={{ color: watch("primary_hex") }}
-                onMouseUp={() => setViewDelete(true)}
+                onClick={() => setViewDelete(true)}
               >
                 Delete
               </button>
@@ -442,7 +442,7 @@ const CreateThemeView: React.FC<CreateThemeViewProps> = ({ theme, hide }) => {
         </div>
       </div>
       <div className="flex flex-row items-center justify-between">
-        <button className="btn btn-ghost" onMouseUp={() => hide()}>
+        <button className="btn btn-ghost" onClick={() => hide()}>
           Cancel
         </button>
         <BiShow

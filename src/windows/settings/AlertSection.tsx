@@ -105,11 +105,11 @@ const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
         <div className="flex flex-row items-center gap-4">
           <span className="text-sm">Sound</span>
           <div className="grow flex flex-row items-center justify-between px-2 bg-base group-hover:bg-window rounded">
-            <button className="btn btn-ghost" onMouseUp={() => previousTrack()}>
+            <button className="btn btn-ghost" onClick={() => previousTrack()}>
               <MdKeyboardArrowLeft size={24} />
             </button>
             <span className="text-xs">{currentTrack?.name ?? "-"}</span>
-            <button className="btn btn-ghost" onMouseUp={() => nextTrack()}>
+            <button className="btn btn-ghost" onClick={() => nextTrack()}>
               <MdKeyboardArrowRight size={24} />
             </button>
           </div>
@@ -146,7 +146,7 @@ const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
           <div className="flex flex-row items-center px-2 gap-2 bg-base group-hover:bg-window rounded">
             <button
               className="btn btn-ghost"
-              onMouseUp={() =>
+              onClick={() =>
                 settings.alert_repeat > 1 &&
                 ipc_invoke<Settings>("update_settings", {
                   data: { alert_repeat: settings.alert_repeat - 1 },
@@ -158,7 +158,7 @@ const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
             <span>{settings.alert_repeat}</span>
             <button
               className="btn btn-ghost"
-              onMouseUp={() =>
+              onClick={() =>
                 ipc_invoke<Settings>("update_settings", {
                   data: { alert_repeat: settings.alert_repeat + 1 },
                 }).then((res) => setSettings(res.data))
@@ -181,7 +181,7 @@ const OpenFileExplorerButton: React.FC = () => {
   return (
     <button
       className="btn btn-ghost"
-      onMouseUp={async () => {
+      onClick={async () => {
         const osType = await type();
 
         ipc_invoke("open_audio_directory", { osType });

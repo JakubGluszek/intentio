@@ -10,6 +10,8 @@ import useGlobal from "../../store";
 const MainWindow: React.FC = () => {
   const settings = useGlobal((state) => state.settings);
   const currentProject = useGlobal((state) => state.currentProject);
+  const activeQueue = useGlobal((state) => state.activeQueue);
+  const getTotalQueueCycles = useGlobal((state) => state.getTotalQueueCycles);
 
   return (
     <Layout>
@@ -21,7 +23,7 @@ const MainWindow: React.FC = () => {
           <div className="flex flex-row items-center gap-2">
             <button
               className="btn btn-ghost"
-              onMouseUp={() =>
+              onClick={() =>
                 new WebviewWindow("settings", {
                   url: "/settings",
                   decorations: false,
@@ -39,7 +41,7 @@ const MainWindow: React.FC = () => {
             <button className="btn btn-ghost">
               <MdAnalytics
                 size={32}
-                onMouseUp={() =>
+                onClick={() =>
                   new WebviewWindow("analytics", {
                     url: "/analytics",
                     decorations: false,
@@ -64,12 +66,14 @@ const MainWindow: React.FC = () => {
           </div>
         </div>
         <div className="grow flex flex-col p-4">
-          {settings && <Timer settings={settings} />}
+          {settings && activeQueue !== undefined && (
+            <Timer settings={settings} activeQueue={activeQueue} />
+          )}
         </div>
         <div className="relative h-10 flex flex-row items-center justify-between">
           <button
             className="btn btn-ghost"
-            onMouseUp={() =>
+            onClick={() =>
               new WebviewWindow("queues", {
                 url: "/queues",
                 decorations: false,
@@ -83,10 +87,15 @@ const MainWindow: React.FC = () => {
             }
           >
             <IoMdReorder size={32} />
+            {activeQueue && (
+              <span>
+                {activeQueue.iterations}/{getTotalQueueCycles()}
+              </span>
+            )}
           </button>
           <button
-            className="absolute left-[50%] right-[50%] btn btn-ghost"
-            onMouseUp={() =>
+            className="absolute left-[50%] right-[50%] btn btn-ghost whitespace-nowrap"
+            onClick={() =>
               new WebviewWindow("projects", {
                 url: "/projects",
                 decorations: false,

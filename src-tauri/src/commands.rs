@@ -1,15 +1,48 @@
 //! Arbitrary IPC commands.
 
-use std::fs::File;
+use std::{fs::File, sync::Mutex};
 
-use tauri::{command, AppHandle, Wry};
+use tauri::{command, AppHandle, Manager, Wry};
 
 use crate::{
     ctx::Ctx,
     ipc::IpcResponse,
     model::{Project, ProjectBmc, SettingsBmc, Theme, ThemeBmc},
     prelude::Error,
+    state::{ActiveQueue, State},
 };
+
+#[command]
+pub fn get_active_queue(state: tauri::State<'_, Mutex<State>>) -> IpcResponse<Option<ActiveQueue>> {
+    let queue = state.lock().unwrap().get_active_queue();
+
+    Ok(queue.clone()).into()
+}
+
+#[command]
+pub fn set_active_queue(
+    data: ActiveQueue,
+    app: AppHandle<Wry>,
+    state: tauri::State<'_, Mutex<State>>,
+) -> IpcResponse<Option<ActiveQueue>> {
+    let queue = state.lock().unwrap().set_active_queue(data);
+
+    app.emit_all("set_active_queue", queue.clone()).unwrap();
+
+    Ok(queue.clone()).into()
+}
+
+#[command]
+pub fn deactivate_queue(
+    app: AppHandle<Wry>,
+    state: tauri::State<'_, Mutex<State>>,
+) -> IpcResponse<()> {
+    state.lock().unwrap().deactivate_queue();
+
+    app.emit_all("deactivate_queue", ()).unwrap();
+
+    Ok(()).into()
+}
 
 #[command]
 pub async fn open_audio_directory(os_type: String, handle: AppHandle) {

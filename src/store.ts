@@ -1,6 +1,6 @@
 import create from "zustand";
-import { ActiveQueue } from "./bindings/ActiveQueue";
 
+import { ActiveQueue } from "./bindings/ActiveQueue";
 import { Project } from "./bindings/Project";
 import { Queue } from "./bindings/Queue";
 import { Session } from "./bindings/Session";
@@ -11,14 +11,16 @@ interface State {
   settings?: Settings;
   setSettings: (settings: Settings) => void;
 
-  activeQueue?: ActiveQueue;
-  setActiveQueue: (queue: ActiveQueue | undefined) => void;
+  activeQueue: ActiveQueue | null | undefined;
+  setActiveQueue: (queue: ActiveQueue | null) => void;
+  getTotalQueueCycles: () => number | undefined;
 
   currentTheme?: Theme;
   setCurrentTheme: (theme: Theme) => void;
 
   currentProject?: Project;
   setCurrentProject: (p: Project | undefined) => void;
+  setCurrentProjectById: (id: string | null) => void;
   getProjectById: (id: string | null) => Project | undefined;
 
   projects: Project[];
@@ -48,8 +50,10 @@ const useGlobal = create<State>((set, get) => ({
     set((state) => ({ ...state, settings: settings })),
 
   activeQueue: undefined,
-  setActiveQueue: (aq: ActiveQueue | undefined) =>
+  setActiveQueue: (aq: ActiveQueue | null) =>
     set((state) => ({ ...state, activeQueue: aq })),
+  getTotalQueueCycles: () =>
+    get().activeQueue?.sessions.reduce((p, c) => (p += c.cycles), 0),
 
   currentTheme: undefined,
   setCurrentTheme: (theme: Theme | undefined) =>
@@ -58,6 +62,11 @@ const useGlobal = create<State>((set, get) => ({
   currentProject: undefined,
   setCurrentProject: (p: Project | undefined) =>
     set((state) => ({ ...state, currentProject: p })),
+  setCurrentProjectById: (id: string | null) =>
+    set((state) => ({
+      ...state,
+      currentProject: state.projects.find((p) => p.id === id),
+    })),
   getProjectById: (id: string | null) =>
     get().projects.find((p) => p.id === id),
 

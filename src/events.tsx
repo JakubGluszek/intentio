@@ -7,11 +7,51 @@ import useGlobal from "./store";
 import { applyTheme } from "./utils";
 import { Theme } from "./bindings/Theme";
 import { Settings } from "./bindings/Settings";
+import { ModelDeleteResultData } from "./bindings/ModelDeleteResultData";
+import { ActiveQueue } from "./bindings/ActiveQueue";
 
 const useEvents = () => {
   const setCurrentTheme = useGlobal((state) => state.setCurrentTheme);
   const setSettings = useGlobal((state) => state.setSettings);
   const setCurrentProject = useGlobal((state) => state.setCurrentProject);
+  const addProject = useGlobal((state) => state.addProject);
+  const removeProject = useGlobal((state) => state.removeProject);
+  const setActiveQueue = useGlobal((state) => state.setActiveQueue);
+
+  React.useEffect(() => {
+    const unlisten = listen("deactivate_queue", () => {
+      setActiveQueue(null);
+    });
+
+    return () => unlisten.then((f) => f()) as never;
+  }, []);
+
+  React.useEffect(() => {
+    const unlisten = listen<ActiveQueue | null>("set_active_queue", (event) =>
+      setActiveQueue(event.payload)
+    );
+
+    return () => unlisten.then((f) => f()) as never;
+  }, []);
+
+  React.useEffect(() => {
+    const unlisten = listen<Project>("project_created", (event) => {
+      addProject(event.payload);
+    });
+
+    return () => unlisten.then((f) => f()) as never;
+  }, []);
+
+  React.useEffect(() => {
+    const unlisten = listen<ModelDeleteResultData>(
+      "project_deleted",
+      (event) => {
+        removeProject(event.payload.id);
+      }
+    );
+
+    return () => unlisten.then((f) => f()) as never;
+  }, []);
 
   React.useEffect(() => {
     const unlisten = listen<string>("update_current_theme", (event) => {

@@ -15,6 +15,8 @@ const AnalyticsWindow: React.FC = () => {
   const sessions = useGlobal((state) => state.sessions);
   const setSessions = useGlobal((state) => state.setSessions);
 
+  console.log(sessions);
+
   React.useEffect(() => {
     ipc_invoke<Session[]>("get_sessions")
       .then((res) => setSessions(res.data))
@@ -37,7 +39,7 @@ const AnalyticsWindow: React.FC = () => {
       .reduce((p, c) => p + c.duration, 0) / 60
   ).toFixed(1);
 
-  let dayStreak = 0;
+  let dayStreak = 1;
 
   let sorted = sessions.sort(
     (a, b) => parseInt(b.finished_at) - parseInt(a.finished_at)

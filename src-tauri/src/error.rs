@@ -12,6 +12,9 @@ pub enum Error {
     #[error("Property '{0}' not found")]
     XPropertyNotFound(String),
 
+    #[error("StateNotAccessed")]
+    StateNotAccessed,
+
     #[error("Fail to create. Cause: {0}")]
     StoreFailToCreate(String),
 

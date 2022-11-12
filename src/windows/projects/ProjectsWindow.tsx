@@ -12,18 +12,25 @@ import { Settings } from "../../bindings/Settings";
 const ProjectsWindow: React.FC = () => {
   const projects = useGlobal((state) => state.projects);
   const setProjects = useGlobal((state) => state.setProjects);
-  const addProject = useGlobal((state) => state.addProject);
   const currentProject = useGlobal((state) => state.currentProject);
   const removeProject = useGlobal((state) => state.removeProject);
 
   const [viewCreate, setViewCreate] = React.useState(false);
 
+  const nameRef = React.useRef<HTMLInputElement | null>(null);
+
   const createProject = (name: string) => {
+    if (projects.find((p) => p.name.toLowerCase() === name.toLowerCase())) {
+      nameRef.current?.focus();
+
+      // TODO: notify user that this name is used
+
+      return;
+    }
     ipc_invoke<Project>("create_project", {
-      data: { name: name.replaceAll(" ", "") },
+      data: { name },
     })
-      .then((res) => {
-        addProject(res.data);
+      .then(() => {
         setViewCreate(false);
       })
       .catch((err) => console.log(err));
@@ -42,7 +49,7 @@ const ProjectsWindow: React.FC = () => {
     removeProject(res.data.id);
   };
 
-  const updateCurrentProject = async (id: string) => {
+  const updateCurrentProject = async (id: string | null) => {
     await ipc_invoke<Settings>("update_settings", {
       data: { current_project_id: id },
     });
@@ -76,7 +83,7 @@ const ProjectsWindow: React.FC = () => {
               />
               <button
                 className="btn btn-ghost"
-                onMouseUp={() => setViewCreate(false)}
+                onClick={() => setViewCreate(false)}
               >
                 <MdClose size={24} />
               </button>
@@ -84,7 +91,7 @@ const ProjectsWindow: React.FC = () => {
           ) : (
             <button
               className="btn btn-ghost justify-start gap-2"
-              onMouseUp={() => setViewCreate(true)}
+              onClick={() => setViewCreate(true)}
             >
               <MdAddCircle size={24} />
               <span>New Project</span>
@@ -110,7 +117,7 @@ const ProjectsWindow: React.FC = () => {
 interface ProjectViewProps {
   data: Project;
   deleteProject: (id: string) => void;
-  selectProject: (id: string) => void;
+  selectProject: (id: string | null) => void;
   selected: boolean;
 }
 
@@ -121,6 +128,13 @@ const ProjectView: React.FC<ProjectViewProps> = ({
   selected,
 }) => {
   const [viewDelete, setViewDelete] = React.useState(false);
+  const delRef = React.useRef<HTMLDivElement | null>(null);
+
+  React.useEffect(() => {
+    if (viewDelete) {
+      delRef.current?.scrollIntoView({ block: "center" });
+    }
+  }, [viewDelete]);
 
   return (
     <div className="group flex flex-col gap-2">
@@ -131,31 +145,34 @@ const ProjectView: React.FC<ProjectViewProps> = ({
       >
         <p
           className="w-full p-2"
-          onMouseUp={async () => selectProject(data.id)}
+          onClick={async () => selectProject(!selected ? data.id : null)}
         >
           {data.name}
         </p>
         <button
           className="btn btn-ghost px-2 text-text hidden group-hover:flex hover:text-primary"
-          onMouseUp={() => setViewDelete(!viewDelete)}
+          onClick={() => setViewDelete(!viewDelete)}
         >
           <MdDelete size={24} />
         </button>
       </div>
       {viewDelete && (
-        <div className="flex flex-col gap-1 text-sm text-center group-hover:bg-base rounded p-1 py-2">
+        <div
+          ref={delRef}
+          className="flex flex-col gap-1 text-sm text-center group-hover:bg-base rounded p-1 py-2"
+        >
           <p>Are you sure you want to delete this project?</p>
           <p>x focus hours will be lost.</p>
           <div className="flex flex-row items-center justify-between p-2">
             <button
               className="btn btn-ghost"
-              onMouseUp={() => setViewDelete(false)}
+              onClick={() => setViewDelete(false)}
             >
               Cancel
             </button>
             <button
               className="btn btn-primary"
-              onMouseUp={async () => deleteProject(data.id)}
+              onClick={async () => deleteProject(data.id)}
             >
               Confirm
             </button>

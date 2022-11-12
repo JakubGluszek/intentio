@@ -14,7 +14,7 @@ use crate::{
 
 use super::{ModelDeleteResultData, QueueSession};
 
-#[derive(Serialize, TS, Debug)]
+#[derive(Serialize, Deserialize, TS, Debug, Clone)]
 #[ts(export, export_to = "../src/bindings/")]
 pub struct Queue {
     id: String,
@@ -145,7 +145,7 @@ mod tests {
         let mut sessions = vec![];
 
         for _ in 0..4 {
-            sessions.push(QueueSession::new(None, 20, 2));
+            sessions.push(QueueSession::new("1".to_string(), None, 20, 2));
         }
 
         let data = QueueForCreate {

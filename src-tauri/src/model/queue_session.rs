@@ -10,7 +10,7 @@ use crate::{
 use super::Minutes;
 
 // Queue Session
-#[derive(Serialize, Deserialize, TS, Debug)]
+#[derive(Serialize, Deserialize, TS, Debug, Clone)]
 #[ts(export, export_to = "../src/bindings/")]
 pub struct QueueSession {
     id: String,
