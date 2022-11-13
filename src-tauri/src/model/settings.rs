@@ -81,7 +81,6 @@ pub struct SettingsForUpdate {
 
     pub current_theme_id: Option<String>,
 
-    #[serialize_always]
     pub current_project_id: Option<String>,
 }
 

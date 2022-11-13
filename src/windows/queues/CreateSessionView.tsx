@@ -41,7 +41,7 @@ const CreateSessionView: React.FC<Props> = ({ hide, save }) => {
                 root: "w-full",
                 bar: "bg-primary",
                 thumb: "bg-primary border-primary",
-                track: "before:bg-window",
+                track: "before:bg-base",
                 label: "bg-base text-text",
               }}
               min={1}
@@ -51,12 +51,9 @@ const CreateSessionView: React.FC<Props> = ({ hide, save }) => {
             />
           </div>
           <div className="flex flex-row items-center gap-4">
-            <label className="min-w-[80px]" htmlFor="session-project">
-              Project
-            </label>
+            <label className="min-w-[80px]">Project</label>
             {/* value, label */}
             <Select
-              id="session-project"
               value={projectId}
               onChange={setProjectId}
               searchable
@@ -115,7 +112,7 @@ const CreateSessionView: React.FC<Props> = ({ hide, save }) => {
                 root: "w-full",
                 bar: "bg-primary",
                 thumb: "bg-primary border-primary",
-                track: "before:bg-window",
+                track: "before:bg-base",
                 label: "bg-base text-text",
               }}
               min={1}

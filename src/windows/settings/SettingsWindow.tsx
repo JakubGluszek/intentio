@@ -28,7 +28,7 @@ const SettingsWindow: React.FC = () => {
           >
             <div className="flex flex-row items-center gap-2">
               <MdSettings size={32} />
-              <span>Settings</span>
+              <span className="text-xl">Settings</span>
             </div>
             <button className="btn btn-ghost" onClick={() => appWindow.close()}>
               <MdClose size={32} />

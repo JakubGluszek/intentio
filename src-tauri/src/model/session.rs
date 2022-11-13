@@ -100,6 +100,8 @@ impl SessionBmc {
             .expect("data not returned")?;
 
         if let Value::Object(val) = first_val.first() {
+            ctx.emit_event("session_saved", val.clone());
+
             val.try_into()
         } else {
             Err(Error::StoreFailToCreate(format!(

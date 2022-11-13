@@ -1,11 +1,12 @@
 import React from "react";
 import { MdSettings, MdAnalytics, MdRemove, MdClose } from "react-icons/md";
-import { IoMdReorder } from "react-icons/io";
 import { appWindow, WebviewWindow } from "@tauri-apps/api/window";
 
 import Layout from "../../components/Layout";
 import Timer from "./Timer";
 import useGlobal from "../../store";
+import QueueIcon from "../../components/QueueIcon";
+import ReactTooltip from "react-tooltip";
 
 const MainWindow: React.FC = () => {
   const settings = useGlobal((state) => state.settings);
@@ -86,7 +87,9 @@ const MainWindow: React.FC = () => {
               })
             }
           >
-            <IoMdReorder size={32} />
+            <div className="w-8 h-fit">
+              <QueueIcon />
+            </div>
             {activeQueue && (
               <span>
                 {activeQueue.iterations}/{getTotalQueueCycles()}
@@ -108,7 +111,7 @@ const MainWindow: React.FC = () => {
               })
             }
           >
-            {currentProject?.name ?? "None"}
+            {currentProject?.name ?? "-"}
           </button>
         </div>
       </div>

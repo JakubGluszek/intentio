@@ -23,8 +23,8 @@ const AboutSection: React.FC = () => {
   return (
     <div className="flex flex-col gap-2">
       <div className="flex flex-row items-center justify-center gap-2">
-        <MdInfoOutline size={28} />
-        <span className="text-lg">About</span>
+        <MdInfoOutline size={32} />
+        <span className="text-xl">About</span>
       </div>
       <div className="flex flex-col gap-4">
         <div className="group card flex flex-col items-center gap-2">

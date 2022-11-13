@@ -63,7 +63,7 @@ const AnalyticsWindow: React.FC = () => {
 
   return (
     <Layout>
-      <div className="min-h-screen flex flex-col gap-2 p-4">
+      <div className="min-h-screen flex flex-col gap-4 p-4">
         {/* Header */}
         <div className="z-[50] sticky top-0 flex flex-col gap-2 bg-window py-2">
           <div
@@ -72,7 +72,7 @@ const AnalyticsWindow: React.FC = () => {
           >
             <div className="flex flex-row items-center gap-2">
               <MdAnalytics size={32} />
-              <span>Analytics</span>
+              <span className="text-xl">Analytics</span>
             </div>
             <button className="btn btn-ghost" onClick={() => appWindow.close()}>
               <MdClose size={32} />

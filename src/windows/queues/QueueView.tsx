@@ -19,6 +19,7 @@ import CreateSessionView from "./CreateSessionView";
 import { ipc_invoke } from "../../ipc";
 import { ModelDeleteResultData } from "../../bindings/ModelDeleteResultData";
 import { ActiveQueue } from "../../bindings/ActiveQueue";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 interface Props {
   data: Queue;
@@ -30,6 +31,8 @@ const QueueView: React.FC<Props> = ({ data }) => {
 
   const updateQueue = useGlobal((state) => state.updateQueue);
   const removeQueue = useGlobal((state) => state.removeQueue);
+
+  const [containerRef] = useAutoAnimate<HTMLDivElement>();
 
   const startQueue = () => {
     ipc_invoke<ActiveQueue>("set_active_queue", {
@@ -105,9 +108,8 @@ const QueueView: React.FC<Props> = ({ data }) => {
             <MdPlayCircle size={32} />
           </button>
           <button
-            className={`btn ${
-              confirmDelete ? "btn-primary p-0.5 px-1 gap-1" : "btn-ghost"
-            }`}
+            className={`btn ${confirmDelete ? "btn-primary p-0.5 px-1 gap-1" : "btn-ghost"
+              }`}
             onClick={() => (confirmDelete ? remove() : triggerConfirmDelete())}
           >
             <MdDelete size={32} />
@@ -115,7 +117,7 @@ const QueueView: React.FC<Props> = ({ data }) => {
           </button>
         </div>
       </div>
-      <div className="flex flex-col gap-2">
+      <div ref={containerRef} className="flex flex-col gap-2">
         {!viewCreateSession ? (
           <button
             className="btn btn-primary"
@@ -198,12 +200,11 @@ const SessionView: React.FC<SessionViewProps> = ({
       ref={innerRef}
       {...draggableProps}
       {...dragHandleProps}
-      className={`relative group flex flex-row gap-2 text-center rounded bg-window p-2 ${
-        snapshot.isDragging ? "shadow-xl" : "shadow-none"
-      }`}
+      className={`relative group flex flex-row gap-2 text-center rounded bg-window p-2 ${snapshot.isDragging ? "shadow-xl" : "shadow-none"
+        }`}
     >
       <div className="flex-1 items-center justify-center">
-        {getProjectById(data.project_id)?.name ?? "None"}
+        {getProjectById(data.project_id)?.name ?? "-"}
       </div>
       <div className="flex-1 items-center justify-center">
         {data.duration} min

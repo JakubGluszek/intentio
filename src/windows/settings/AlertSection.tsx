@@ -5,6 +5,7 @@ import {
   MdKeyboardArrowLeft,
   MdKeyboardArrowRight,
   MdNotifications,
+  MdPlayCircle,
   MdRemove,
   MdVolumeDown,
   MdVolumeOff,
@@ -97,8 +98,8 @@ const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
     <div className="flex flex-col gap-4">
       <div className="flex flex-row items-center justify-center gap-2">
         <div className="flex flex-row items-center gap-2">
-          <MdNotifications size={28} />
-          <span className="text-lg">Alerts</span>
+          <MdNotifications size={32} />
+          <span className="text-xl">Alerts</span>
         </div>
       </div>
       <div className="group card flex flex-col gap-3">
@@ -116,18 +117,15 @@ const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
           <OpenFileExplorerButton />
         </div>
         <div className="flex flex-row items-center gap-4">
-          <button
-            className="btn btn-ghost p-0"
-            onClick={() => currentTrack && playAudio(currentTrack.path)}
-          >
+          <button className="btn btn-ghost p-0">
             {settings.alert_volume > 0 ? (
               settings.alert_volume < 0.5 ? (
-                <MdVolumeDown size={24} />
+                <MdVolumeDown size={32} />
               ) : (
-                <MdVolumeUp size={24} />
+                <MdVolumeUp size={32} />
               )
             ) : (
-              <MdVolumeOff size={24} />
+              <MdVolumeOff size={32} />
             )}
           </button>
           <Slider
@@ -140,6 +138,12 @@ const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
               }).then((res) => setSettings(res.data))
             }
           />
+          <button
+            className="btn btn-ghost"
+            onClick={() => currentTrack && playAudio(currentTrack.path)}
+          >
+            <MdPlayCircle size={32} />
+          </button>
         </div>
         <div className="flex flex-row items-center gap-4">
           <span>Repeat</span>

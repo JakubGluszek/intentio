@@ -36,6 +36,7 @@ interface State {
 
   sessions: Session[];
   setSessions: (sessions: Session[]) => void;
+  addSession: (session: Session) => void;
 
   queues: Queue[];
   setQueues: (queues: Queue[]) => void;
@@ -99,6 +100,8 @@ const useGlobal = create<State>((set, get) => ({
   sessions: [],
   setSessions: (sessions: Session[]) =>
     set((state) => ({ ...state, sessions })),
+  addSession: (session: Session) =>
+    set((state) => ({ ...state, sessions: [session, ...state.sessions] })),
 
   queues: [],
   setQueues: (queues: Queue[]) => set((state) => ({ ...state, queues })),

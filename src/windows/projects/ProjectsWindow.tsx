@@ -1,6 +1,8 @@
 import React from "react";
 import { appWindow } from "@tauri-apps/api/window";
 import { MdAddCircle, MdClose, MdDelete } from "react-icons/md";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
+import autoAnimate from "@formkit/auto-animate";
 
 import Layout from "../../components/Layout";
 import { Project } from "../../bindings/Project";
@@ -18,12 +20,13 @@ const ProjectsWindow: React.FC = () => {
   const [viewCreate, setViewCreate] = React.useState(false);
 
   const nameRef = React.useRef<HTMLInputElement | null>(null);
+  const [containerRef] = useAutoAnimate<HTMLDivElement>();
 
   const createProject = (name: string) => {
     if (projects.find((p) => p.name.toLowerCase() === name.toLowerCase())) {
       nameRef.current?.focus();
 
-      // TODO: notify user that this name is used
+      // TODO: display error to user that this name is used
 
       return;
     }
@@ -94,10 +97,10 @@ const ProjectsWindow: React.FC = () => {
               onClick={() => setViewCreate(true)}
             >
               <MdAddCircle size={24} />
-              <span>New Project</span>
+              <span>Add a project</span>
             </button>
           )}
-          <div className="flex flex-col gap-1">
+          <div ref={containerRef} className="flex flex-col gap-2">
             {projects.map((project) => (
               <ProjectView
                 key={project.id}
@@ -128,7 +131,13 @@ const ProjectView: React.FC<ProjectViewProps> = ({
   selected,
 }) => {
   const [viewDelete, setViewDelete] = React.useState(false);
+
   const delRef = React.useRef<HTMLDivElement | null>(null);
+  const parent = React.useRef<HTMLDivElement | null>(null);
+
+  React.useEffect(() => {
+    parent.current && autoAnimate(parent.current);
+  }, [parent]);
 
   React.useEffect(() => {
     if (viewDelete) {
@@ -137,10 +146,13 @@ const ProjectView: React.FC<ProjectViewProps> = ({
   }, [viewDelete]);
 
   return (
-    <div className="group flex flex-col gap-2">
+    <div
+      ref={parent}
+      className="group flex flex-col gap-2 bg-base rounded overflow-clip"
+    >
       <div
-        className={`group cursor-pointer flex flex-row items-center justify-between group-hover:bg-base rounded ${
-          selected && "bg-base"
+        className={`group cursor-pointer flex flex-row items-center justify-between ${
+          selected && "bg-primary text-window"
         }`}
       >
         <p
@@ -150,7 +162,9 @@ const ProjectView: React.FC<ProjectViewProps> = ({
           {data.name}
         </p>
         <button
-          className="btn btn-ghost px-2 text-text hidden group-hover:flex hover:text-primary"
+          className={`btn btn-ghost px-2 text-text transition-opacity opacity-0 group-hover:opacity-100 ${
+            selected && "text-window"
+          }`}
           onClick={() => setViewDelete(!viewDelete)}
         >
           <MdDelete size={24} />
@@ -159,10 +173,10 @@ const ProjectView: React.FC<ProjectViewProps> = ({
       {viewDelete && (
         <div
           ref={delRef}
-          className="flex flex-col gap-1 text-sm text-center group-hover:bg-base rounded p-1 py-2"
+          className="flex flex-col gap-2 text-sm text-center p-1 py-2"
         >
           <p>Are you sure you want to delete this project?</p>
-          <p>x focus hours will be lost.</p>
+          <p>Focused hours will get orphaned.</p>
           <div className="flex flex-row items-center justify-between p-2">
             <button
               className="btn btn-ghost"

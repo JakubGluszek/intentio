@@ -1,5 +1,6 @@
 import React from "react";
 import cuid from "cuid";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { MdAddCircle, MdDelete } from "react-icons/md";
 
 import { Queue } from "../../bindings/Queue";
@@ -21,6 +22,7 @@ const CreateQueueView: React.FC<Props> = ({ hide }) => {
   const createRef = React.useRef<HTMLButtonElement>(null);
   const inputRef = React.useRef<HTMLInputElement | null>(null);
   const addSessionRef = React.useRef<HTMLButtonElement | null>(null);
+  const [containerRef] = useAutoAnimate<HTMLDivElement>();
 
   const addQueue = useGlobal((state) => state.addQueue);
 
@@ -41,7 +43,7 @@ const CreateQueueView: React.FC<Props> = ({ hide }) => {
   };
 
   return (
-    <div className="flex flex-col gap-6 bg-base rounded p-4">
+    <div className="flex flex-col gap-6 bg-base rounded p-4 animate-in fade-in zoom-in-90">
       {/* Queue name input */}
       <div className="flex flex-row items-center gap-4">
         <input
@@ -66,6 +68,7 @@ const CreateQueueView: React.FC<Props> = ({ hide }) => {
 
       {/* Sessions */}
       <div
+        ref={containerRef}
         className={`flex flex-col ${sessions.length === 0 ? "gap-0" : "gap-4"}`}
       >
         {!createSessionView ? (
@@ -75,7 +78,7 @@ const CreateQueueView: React.FC<Props> = ({ hide }) => {
             onClick={() => setCreateSessionView(true)}
           >
             <MdAddCircle size={24} />
-            <span className="text-sm">Add a Session</span>
+            <span className="text-sm">Add session</span>
           </button>
         ) : (
           <CreateSessionView

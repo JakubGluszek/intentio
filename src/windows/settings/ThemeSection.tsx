@@ -7,13 +7,13 @@ import {
 } from "react-icons/md";
 import { BiShow } from "react-icons/bi";
 import { useForm } from "react-hook-form";
+import { emit } from "@tauri-apps/api/event";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 import { Settings } from "../../bindings/Settings";
 import { Theme } from "../../bindings/Theme";
 import { DeleteData, ipc_invoke } from "../../ipc";
-import { applyTheme } from "../../utils";
 import useGlobal from "../../store";
-import { emit } from "@tauri-apps/api/event";
 
 const ThemeSection: React.FC = () => {
   const [viewCreate, setViewCreate] = React.useState(false);
@@ -23,6 +23,8 @@ const ThemeSection: React.FC = () => {
 
   const currentTheme = useGlobal((state) => state.currentTheme);
 
+  const [containerRef] = useAutoAnimate<HTMLDivElement>();
+
   React.useEffect(() => {
     ipc_invoke<Theme[]>("get_themes").then((res) => setThemes(res.data));
   }, []);
@@ -30,8 +32,8 @@ const ThemeSection: React.FC = () => {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-row items-center justify-center gap-2">
-        <MdColorLens size={28} />
-        <span className="text-lg">Themes</span>
+        <MdColorLens size={32} />
+        <span className="text-xl">Themes</span>
       </div>
       <div className="flex flex-col gap-4">
         {!viewCreate && (
@@ -49,7 +51,7 @@ const ThemeSection: React.FC = () => {
             hide={() => setViewCreate(false)}
           />
         )}
-        <div className="flex flex-col gap-2">
+        <div ref={containerRef} className="flex flex-col gap-1">
           {themes &&
             themes.map((theme) => <ThemeView key={theme.id} theme={theme} />)}
         </div>
@@ -355,7 +357,10 @@ const CreateThemeView: React.FC<CreateThemeViewProps> = ({ theme, hide }) => {
   });
 
   return (
-    <form className="flex flex-col gap-6 p-4 text-sm" onSubmit={onSubmit}>
+    <form
+      className="flex flex-col gap-6 p-4 text-sm animate-in duration-200 fade-in zoom-in-90"
+      onSubmit={onSubmit}
+    >
       <div className="flex flex-col gap-4">
         <div className="flex flex-row items-center gap-4">
           <label className="min-w-[64px]" htmlFor="color-scheme-name">

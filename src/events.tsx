@@ -9,6 +9,7 @@ import { Theme } from "./bindings/Theme";
 import { Settings } from "./bindings/Settings";
 import { ModelDeleteResultData } from "./bindings/ModelDeleteResultData";
 import { ActiveQueue } from "./bindings/ActiveQueue";
+import { Session } from "./bindings/Session";
 
 const useEvents = () => {
   const setCurrentTheme = useGlobal((state) => state.setCurrentTheme);
@@ -17,6 +18,15 @@ const useEvents = () => {
   const addProject = useGlobal((state) => state.addProject);
   const removeProject = useGlobal((state) => state.removeProject);
   const setActiveQueue = useGlobal((state) => state.setActiveQueue);
+  const addSession = useGlobal((state) => state.addSession);
+
+  React.useEffect(() => {
+    const unlisten = listen<Session>("session_saved", (event) =>
+      addSession(event.payload)
+    );
+
+    return () => unlisten.then((f) => f()) as never;
+  }, []);
 
   React.useEffect(() => {
     const unlisten = listen("deactivate_queue", () => {

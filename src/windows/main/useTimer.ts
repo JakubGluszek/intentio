@@ -6,6 +6,7 @@ import { Queue } from "../../bindings/Queue";
 import { Settings } from "../../bindings/Settings";
 import { ipc_invoke } from "../../ipc";
 import useGlobal from "../../store";
+import toast from "react-hot-toast";
 
 type TimerType = "focus" | "break" | "long break";
 
@@ -56,7 +57,6 @@ const useTimer = (settings: Settings, queue: ActiveQueue | null) => {
     switch (type) {
       case "focus":
         if (!queue) {
-          setDuration(settings.pomodoro_duration);
           setKey("focus");
         }
         break;
@@ -94,7 +94,10 @@ const useTimer = (settings: Settings, queue: ActiveQueue | null) => {
         started_at: startedAt && startedAt.getTime().toString(),
         project_id: currentProject?.id,
       },
-    }).then(() => setIterations((it) => it + 1));
+    }).then(() => {
+      setIterations((it) => it + 1);
+      toast("Session saved");
+    });
   }, [timeFocused]);
 
   const nextQueueSession = React.useCallback(() => {

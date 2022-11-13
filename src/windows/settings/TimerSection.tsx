@@ -26,16 +26,16 @@ const TimerSection: React.FC<Props> = ({ settings, setSettings }) => {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-row items-center justify-center gap-2">
-        <MdTimer size={28} />
-        <span className="text-lg">Timer</span>
+        <MdTimer size={32} />
+        <span className="text-xl">Timer</span>
       </div>
 
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-1">
           <div className="group card flex flex-col items-center gap-2">
-            <span className="text-sm font-medium">Focus</span>
+            <span className="font-medium">Focus</span>
             <div className="bg-base group-hover:bg-window rounded px-2 py-1">
-              <span className="text-xs">
+              <span className="text-sm">
                 {formatTime(settings.pomodoro_duration * 60)}
               </span>
             </div>
@@ -53,7 +53,7 @@ const TimerSection: React.FC<Props> = ({ settings, setSettings }) => {
           <div className="group card flex flex-col items-center gap-2">
             <span className="text-sm font-medium">Break</span>
             <div className="group-hover:bg-window bg-base rounded px-2 py-1">
-              <span className="text-xs">
+              <span className="text-sm">
                 {formatTime(settings.break_duration * 60)}
               </span>
             </div>
@@ -71,7 +71,7 @@ const TimerSection: React.FC<Props> = ({ settings, setSettings }) => {
           <div className="group card flex flex-col items-center gap-2">
             <span className="text-sm font-medium">Long Break</span>
             <div className="bg-base group-hover:bg-window rounded px-2 py-1">
-              <span className="text-xs">
+              <span className="text-sm">
                 {formatTime(settings.long_break_duration * 60)}
               </span>
             </div>
@@ -89,7 +89,7 @@ const TimerSection: React.FC<Props> = ({ settings, setSettings }) => {
           <div className="group card flex flex-col items-center gap-2">
             <span className="text-sm font-medium">Long Break Interval</span>
             <div className="bg-base group-hover:bg-window rounded px-2 py-1">
-              <span className="text-xs">{settings.long_break_interval}</span>
+              <span className="text-sm">{settings.long_break_interval}</span>
             </div>
             <Slider
               min={2}

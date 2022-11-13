@@ -17,6 +17,8 @@ import { Project } from "./bindings/Project";
 import useEvents from "./events";
 import { Queue } from "./bindings/Queue";
 import { ActiveQueue } from "./bindings/ActiveQueue";
+import { Session } from "./bindings/Session";
+import { Toaster } from "react-hot-toast";
 
 import.meta.env.PROD &&
   document.addEventListener("contextmenu", (event) => event.preventDefault());
@@ -30,11 +32,14 @@ const App: React.FC = () => {
   const setProjects = useGlobal((state) => state.setProjects);
   const setQueues = useGlobal((state) => state.setQueues);
   const setActiveQueue = useGlobal((state) => state.setActiveQueue);
+  const setSessions = useGlobal((state) => state.setSessions);
 
   React.useEffect(() => {
     ipc_invoke<ActiveQueue | null>("get_active_queue").then((res) =>
       setActiveQueue(res.data)
     );
+
+    ipc_invoke<Session[]>("get_sessions").then((res) => setSessions(res.data));
 
     ipc_invoke<Settings>("get_settings").then((res) => setSettings(res.data));
 
@@ -57,13 +62,22 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <Routes>
-      <Route index element={<MainWindow />} />
-      <Route path="settings" element={<SettingsWindow />} />
-      <Route path="projects" element={<ProjectsWindow />} />
-      <Route path="analytics" element={<AnalyticsWindow />} />
-      <Route path="queues" element={<QueuesWindow />} />
-    </Routes>
+    <>
+      <Routes>
+        <Route index element={<MainWindow />} />
+        <Route path="settings" element={<SettingsWindow />} />
+        <Route path="projects" element={<ProjectsWindow />} />
+        <Route path="analytics" element={<AnalyticsWindow />} />
+        <Route path="queues" element={<QueuesWindow />} />
+      </Routes>
+      <Toaster
+        position="top-center"
+        toastOptions={{
+          className:
+            "p-0.5 bg-base border border-primary rounded text-sm text-text text-center",
+        }}
+      />
+    </>
   );
 };
 

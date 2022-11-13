@@ -90,6 +90,7 @@ pub async fn get_current_project(app: AppHandle<Wry>) -> IpcResponse<Project> {
 
 #[command]
 pub async fn play_audio(audio: Option<String>, handle: AppHandle) {
+    // TODO: Open socket connection to listen for audio volume changes
     let mut settings = SettingsBmc::get().unwrap();
 
     let audio = match audio {
