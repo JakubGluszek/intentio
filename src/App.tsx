@@ -25,6 +25,7 @@ const App: React.FC = () => {
   const setSettings = useGlobal((state) => state.setSettings);
   const setCurrentTheme = useGlobal((state) => state.setCurrentTheme);
   const setProjects = useGlobal((state) => state.setProjects);
+  const setCurrentProject = useGlobal((state) => state.setCurrentProject);
 
   React.useEffect(() => {
     ipc_invoke<Settings>("get_settings").then((res) => setSettings(res.data));
@@ -33,6 +34,9 @@ const App: React.FC = () => {
       setCurrentTheme(res.data);
     });
     ipc_invoke<Project[]>("get_projects").then((res) => setProjects(res.data));
+    ipc_invoke<Project | undefined>("get_current_project").then((res) =>
+      setCurrentProject(res.data)
+    );
   }, []);
 
   return (

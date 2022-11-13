@@ -11,5 +11,5 @@ export interface SettingsForUpdate {
   alert_volume?: number;
   alert_repeat?: number;
   current_theme_id?: string;
-  current_project_id?: string;
+  current_project_id: string | null;
 }

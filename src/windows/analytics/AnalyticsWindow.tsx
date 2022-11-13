@@ -67,8 +67,12 @@ const AnalyticsWindow: React.FC = () => {
     }
   }
 
+  const activeTabRef = React.useRef<string | null>();
+
   React.useEffect(() => {
-    window.scrollBy({ top: 180, behavior: "smooth" });
+    !activeTabRef.current && window.scrollBy({ top: 180, behavior: "smooth" });
+
+    activeTabRef.current = activeTab;
   }, [activeTab]);
 
   return (
