@@ -57,6 +57,7 @@ const useTimer = (settings: Settings, queue: ActiveQueue | null) => {
     switch (type) {
       case "focus":
         if (!queue) {
+          setDuration(settings.pomodoro_duration);
           setKey("focus");
         }
         break;
@@ -96,7 +97,7 @@ const useTimer = (settings: Settings, queue: ActiveQueue | null) => {
       },
     }).then(() => {
       setIterations((it) => it + 1);
-      toast("Session saved");
+      toast("Session saved", { position: "top-center" });
     });
   }, [timeFocused]);
 

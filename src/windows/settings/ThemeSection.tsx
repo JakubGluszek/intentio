@@ -71,6 +71,8 @@ const ThemeView: React.FC<ThemeViewProps> = ({ theme }) => {
   const currentTheme = useGlobal((state) => state.currentTheme);
   const removeTheme = useGlobal((state) => state.removeTheme);
 
+  const containerRef = React.useRef<HTMLDivElement | null>(null);
+
   const { register, handleSubmit, setValue, watch } = useForm<FormData>();
 
   React.useEffect(() => {
@@ -108,8 +110,18 @@ const ThemeView: React.FC<ThemeViewProps> = ({ theme }) => {
     watch("primary_hex") === theme.primary_hex &&
     watch("text_hex") === theme.text_hex;
 
+  React.useEffect(() => {
+    viewEdit &&
+      containerRef.current &&
+      containerRef.current.scrollIntoView({
+        block: "center",
+        behavior: "smooth",
+      });
+  }, [viewEdit]);
+
   return (
     <div
+      ref={containerRef}
       style={{ color: watch("text_hex") }}
       className="flex flex-col rounded overflow-clip"
     >
@@ -166,10 +178,12 @@ const ThemeView: React.FC<ThemeViewProps> = ({ theme }) => {
         >
           {viewDelete && (
             <>
+              {/* Primary color preview */}
               <div
                 style={{ backgroundColor: watch("window_hex") }}
                 className="z-10 absolute w-full h-full opacity-60"
               ></div>
+              {/* Delete theme modal */}
               <div className="z-20 absolute w-full h-full flex flex-col items-center justify-center p-8">
                 <div
                   style={{ backgroundColor: watch("base_hex") }}
@@ -339,6 +353,8 @@ const CreateThemeView: React.FC<CreateThemeViewProps> = ({ theme, hide }) => {
 
   const addTheme = useGlobal((state) => state.addTheme);
 
+  const containerRef = React.useRef<HTMLFormElement | null>(null);
+
   React.useEffect(() => {
     setValue("name", theme.name);
     setValue("window_hex", theme.window_hex);
@@ -356,8 +372,17 @@ const CreateThemeView: React.FC<CreateThemeViewProps> = ({ theme, hide }) => {
     });
   });
 
+  React.useEffect(() => {
+    containerRef.current &&
+      containerRef.current.scrollIntoView({
+        block: "center",
+        behavior: "smooth",
+      });
+  }, []);
+
   return (
     <form
+      ref={containerRef}
       className="flex flex-col gap-6 p-4 text-sm animate-in duration-200 fade-in zoom-in-90"
       onSubmit={onSubmit}
     >

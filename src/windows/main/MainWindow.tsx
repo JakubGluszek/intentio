@@ -6,13 +6,21 @@ import Layout from "../../components/Layout";
 import Timer from "./Timer";
 import useGlobal from "../../store";
 import QueueIcon from "../../components/QueueIcon";
-import ReactTooltip from "react-tooltip";
+import { ipc_invoke } from "../../ipc";
+import { ActiveQueue } from "../../bindings/ActiveQueue";
 
 const MainWindow: React.FC = () => {
   const settings = useGlobal((state) => state.settings);
   const currentProject = useGlobal((state) => state.currentProject);
   const activeQueue = useGlobal((state) => state.activeQueue);
+  const setActiveQueue = useGlobal((state) => state.setActiveQueue);
   const getTotalQueueCycles = useGlobal((state) => state.getTotalQueueCycles);
+
+  React.useEffect(() => {
+    ipc_invoke<ActiveQueue | undefined>("get_active_queue").then((res) =>
+      setActiveQueue(res.data ? res.data : null)
+    );
+  }, []);
 
   return (
     <Layout>

@@ -9,14 +9,28 @@ import useGlobal from "../../store";
 import CreateQueueView from "./CreateQueueView";
 import { ipc_invoke } from "../../ipc";
 import QueueIcon from "../../components/QueueIcon";
+import { Project } from "../../bindings/Project";
+import { Queue } from "../../bindings/Queue";
+import { ActiveQueue } from "../../bindings/ActiveQueue";
 
 const QueuesWindow: React.FC = () => {
   const [viewCreate, setViewCreate] = React.useState(false);
 
   const queues = useGlobal((state) => state.queues);
   const activeQueue = useGlobal((state) => state.activeQueue);
+  const setActiveQueue = useGlobal((state) => state.setActiveQueue);
+  const setProjects = useGlobal((state) => state.setProjects);
+  const setQueues = useGlobal((state) => state.setQueues);
 
   const [containerRef] = useAutoAnimate<HTMLDivElement>();
+
+  React.useEffect(() => {
+    ipc_invoke<Queue[]>("get_queues").then((res) => setQueues(res.data));
+    ipc_invoke<Project[]>("get_projects").then((res) => setProjects(res.data));
+    ipc_invoke<ActiveQueue | undefined>("get_active_queue").then((res) =>
+      setActiveQueue(res.data ? res.data : null)
+    );
+  }, []);
 
   return (
     <Layout>

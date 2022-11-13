@@ -1,64 +1,38 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 
 import { ipc_invoke } from "./ipc";
 import { Theme } from "./bindings/Theme";
 import { applyTheme } from "./utils";
-
-import MainWindow from "./windows/main";
-import SettingsWindow from "./windows/settings";
-import ProjectsWindow from "./windows/projects";
-import AnalyticsWindow from "./windows/analytics";
-import QueuesWindow from "./windows/queues";
-
 import useGlobal from "./store";
 import { Settings } from "./bindings/Settings";
-import { Project } from "./bindings/Project";
 import useEvents from "./events";
-import { Queue } from "./bindings/Queue";
-import { ActiveQueue } from "./bindings/ActiveQueue";
-import { Session } from "./bindings/Session";
-import { Toaster } from "react-hot-toast";
+import { Project } from "./bindings/Project";
+import MainWindow from "./windows/main";
 
 import.meta.env.PROD &&
   document.addEventListener("contextmenu", (event) => event.preventDefault());
 
+const SettingsWindow = React.lazy(() => import("./windows/settings"));
+const ProjectsWindow = React.lazy(() => import("./windows/projects"));
+const AnalyticsWindow = React.lazy(() => import("./windows/analytics"));
+const QueuesWindow = React.lazy(() => import("./windows/queues"));
+
 const App: React.FC = () => {
   useEvents();
 
-  const setCurrentTheme = useGlobal((state) => state.setCurrentTheme);
   const setSettings = useGlobal((state) => state.setSettings);
-  const setCurrentProject = useGlobal((state) => state.setCurrentProject);
+  const setCurrentTheme = useGlobal((state) => state.setCurrentTheme);
   const setProjects = useGlobal((state) => state.setProjects);
-  const setQueues = useGlobal((state) => state.setQueues);
-  const setActiveQueue = useGlobal((state) => state.setActiveQueue);
-  const setSessions = useGlobal((state) => state.setSessions);
 
   React.useEffect(() => {
-    ipc_invoke<ActiveQueue | null>("get_active_queue").then((res) =>
-      setActiveQueue(res.data)
-    );
-
-    ipc_invoke<Session[]>("get_sessions").then((res) => setSessions(res.data));
-
     ipc_invoke<Settings>("get_settings").then((res) => setSettings(res.data));
-
+    ipc_invoke<Theme>("get_current_theme").then((res) => {
+      applyTheme(res.data);
+      setCurrentTheme(res.data);
+    });
     ipc_invoke<Project[]>("get_projects").then((res) => setProjects(res.data));
-
-    ipc_invoke<Project>("get_current_project")
-      .then((res) => setCurrentProject(res.data))
-      .catch(() => setCurrentProject(undefined));
-
-    ipc_invoke<Theme>("get_current_theme")
-      .then((res) => {
-        applyTheme(res.data);
-        setCurrentTheme(res.data);
-      })
-      .catch((err) => console.log(err));
-
-    ipc_invoke<Queue[]>("get_queues")
-      .then((res) => setQueues(res.data))
-      .catch((err) => console.log(err));
   }, []);
 
   return (
@@ -71,10 +45,10 @@ const App: React.FC = () => {
         <Route path="queues" element={<QueuesWindow />} />
       </Routes>
       <Toaster
-        position="top-center"
+        position="bottom-right"
         toastOptions={{
           className:
-            "p-0.5 bg-base border border-primary rounded text-sm text-text text-center",
+            "p-0.5 bg-base border-2 border-window rounded text-sm text-text text-center shadow-xl",
         }}
       />
     </>

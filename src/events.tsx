@@ -21,86 +21,63 @@ const useEvents = () => {
   const addSession = useGlobal((state) => state.addSession);
 
   React.useEffect(() => {
-    const unlisten = listen<Session>("session_saved", (event) =>
+    const sessionSavedEvent = listen<Session>("session_saved", (event) =>
       addSession(event.payload)
     );
-
-    return () => unlisten.then((f) => f()) as never;
-  }, []);
-
-  React.useEffect(() => {
-    const unlisten = listen("deactivate_queue", () => {
+    const deactivateQueueEvent = listen("deactivate_queue", () => {
       setActiveQueue(null);
     });
-
-    return () => unlisten.then((f) => f()) as never;
-  }, []);
-
-  React.useEffect(() => {
-    const unlisten = listen<ActiveQueue | null>("set_active_queue", (event) =>
-      setActiveQueue(event.payload)
+    const setActiveQueueEvent = listen<ActiveQueue | null>(
+      "set_active_queue",
+      (event) => setActiveQueue(event.payload)
     );
-
-    return () => unlisten.then((f) => f()) as never;
-  }, []);
-
-  React.useEffect(() => {
-    const unlisten = listen<Project>("project_created", (event) => {
+    const projectCreatedEvent = listen<Project>("project_created", (event) => {
       addProject(event.payload);
     });
 
-    return () => unlisten.then((f) => f()) as never;
-  }, []);
-
-  React.useEffect(() => {
-    const unlisten = listen<ModelDeleteResultData>(
+    const projectDeletedEvent = listen<ModelDeleteResultData>(
       "project_deleted",
       (event) => {
         removeProject(event.payload.id);
       }
     );
-
-    return () => unlisten.then((f) => f()) as never;
-  }, []);
-
-  React.useEffect(() => {
-    const unlisten = listen<string>("update_current_theme", (event) => {
-      applyTheme(JSON.parse(event.payload));
-    });
-
-    return () => unlisten.then((f) => f()) as never;
-  }, []);
-
-  React.useEffect(() => {
-    const unlisten = listen<Settings>("settings_updated", (event) => {
-      setSettings(event.payload);
-    });
-
-    return () => unlisten.then((f) => f()) as never;
-  }, []);
-
-  React.useEffect(() => {
-    const unlisten = listen("current_project_updated", () => {
+    const updateCurrentThemeEvent = listen<string>(
+      "update_current_theme",
+      (event) => {
+        applyTheme(JSON.parse(event.payload));
+      }
+    );
+    const settingsUpdatedEvent = listen<Settings>(
+      "settings_updated",
+      (event) => {
+        setSettings(event.payload);
+      }
+    );
+    const currentProjectUpdatedEvent = listen("current_project_updated", () => {
       ipc_invoke<Project>("get_current_project")
         .then((res) => setCurrentProject(res.data))
         .catch(() => setCurrentProject(undefined));
     });
-
-    return () => unlisten.then((f) => f()) as never;
-  }, []);
-
-  React.useEffect(() => {
-    const unlisten = listen("current_theme_updated", () => {
+    const currentThemeUpdatedEvent = listen("current_theme_updated", () => {
       ipc_invoke<Theme>("get_current_theme").then((res) => {
         applyTheme(res.data);
         setCurrentTheme(res.data);
       });
     });
 
-    return () => unlisten.then((f) => f()) as never;
+    return () =>
+      Promise.all([
+        sessionSavedEvent,
+        deactivateQueueEvent,
+        setActiveQueueEvent,
+        projectCreatedEvent,
+        projectDeletedEvent,
+        updateCurrentThemeEvent,
+        settingsUpdatedEvent,
+        currentProjectUpdatedEvent,
+        currentThemeUpdatedEvent,
+      ]).then((values) => values.forEach((v) => v())) as never;
   }, []);
-
-  return;
 };
 
 export default useEvents;

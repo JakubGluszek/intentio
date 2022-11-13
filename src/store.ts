@@ -37,6 +37,7 @@ interface State {
   sessions: Session[];
   setSessions: (sessions: Session[]) => void;
   addSession: (session: Session) => void;
+  getSessionsByProjectId: (id: string) => Session[];
 
   queues: Queue[];
   setQueues: (queues: Queue[]) => void;
@@ -102,6 +103,8 @@ const useGlobal = create<State>((set, get) => ({
     set((state) => ({ ...state, sessions })),
   addSession: (session: Session) =>
     set((state) => ({ ...state, sessions: [session, ...state.sessions] })),
+  getSessionsByProjectId: (id: string) =>
+    get().sessions.filter((s) => s.project_id === id),
 
   queues: [],
   setQueues: (queues: Queue[]) => set((state) => ({ ...state, queues })),

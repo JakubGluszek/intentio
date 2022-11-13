@@ -20,6 +20,7 @@ import { ipc_invoke } from "../../ipc";
 import { ModelDeleteResultData } from "../../bindings/ModelDeleteResultData";
 import { ActiveQueue } from "../../bindings/ActiveQueue";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
+import toast from "react-hot-toast";
 
 interface Props {
   data: Queue;
@@ -35,6 +36,10 @@ const QueueView: React.FC<Props> = ({ data }) => {
   const [containerRef] = useAutoAnimate<HTMLDivElement>();
 
   const startQueue = () => {
+    if (data.sessions.length === 0) {
+      toast("Add some sessions");
+      return;
+    }
     ipc_invoke<ActiveQueue>("set_active_queue", {
       data: {
         ...data,
@@ -100,7 +105,7 @@ const QueueView: React.FC<Props> = ({ data }) => {
   };
 
   return (
-    <div className="flex flex-col gap-2 rounded bg-base p-2">
+    <div className="flex flex-col gap-4 rounded p-2">
       <div className="flex flex-row items-center justify-between">
         <span className="text-xl">{data.name}</span>
         <div className="flex flex-row items-center gap-2">
@@ -117,7 +122,7 @@ const QueueView: React.FC<Props> = ({ data }) => {
           </button>
         </div>
       </div>
-      <div ref={containerRef} className="flex flex-col gap-2">
+      <div ref={containerRef} className="flex flex-col gap-4">
         {!viewCreateSession ? (
           <button
             className="btn btn-primary"
@@ -200,7 +205,7 @@ const SessionView: React.FC<SessionViewProps> = ({
       ref={innerRef}
       {...draggableProps}
       {...dragHandleProps}
-      className={`relative group flex flex-row gap-2 text-center rounded bg-window p-2 ${snapshot.isDragging ? "shadow-xl" : "shadow-none"
+      className={`relative group flex flex-row gap-2 text-center rounded bg-base p-2 ${snapshot.isDragging ? "shadow-xl" : "shadow-none"
         }`}
     >
       <div className="flex-1 items-center justify-center">
