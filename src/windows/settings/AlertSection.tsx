@@ -20,7 +20,6 @@ import { Slider } from "../../components";
 import { Settings } from "../../bindings/Settings";
 import { ipc_invoke } from "../../ipc";
 import { Checkbox } from "@mantine/core";
-import { SettingsForUpdate } from "../../bindings/SettingsForUpdate";
 import useGlobal from "../../store";
 import { Project } from "../../bindings/Project";
 
@@ -104,10 +103,10 @@ const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
   const playAudio = () => {
     currentTrack &&
       !playingAudio &&
-      ipc_invoke("play_audio", { data: currentTrack.path }).then(() =>
-        setPlayingAudio(false)
-      );
-    setPlayingAudio(true);
+      ipc_invoke("play_audio", { data: currentTrack.path })
+        .then(() => setPlayingAudio(false))
+        .catch(() => setPlayingAudio(false));
+    !playingAudio && setPlayingAudio(true);
   };
 
   const currentProject = useGlobal((state) => state.currentProject);

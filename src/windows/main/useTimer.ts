@@ -59,15 +59,12 @@ const useTimer = (settings: Settings, queue: ActiveQueue | null) => {
         if (!queue) {
           setDuration(settings.pomodoro_duration);
         }
-        setKey("focus-r");
         break;
       case "break":
         setDuration(settings.break_duration);
-        setKey("break");
         break;
       case "long break":
         setDuration(settings.long_break_duration);
-        setKey("long break");
         break;
     }
   }, [settings]);
