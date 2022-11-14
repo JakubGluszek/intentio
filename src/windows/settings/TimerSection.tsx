@@ -116,6 +116,7 @@ const TimerSection: React.FC<Props> = ({ settings, setSettings }) => {
             <label htmlFor="auto-start-pomodoros">Auto Start Pomodoros</label>
             <Checkbox
               id="auto-start-pomodoros"
+              size="md"
               defaultChecked={settings.auto_start_pomodoros}
               onChange={(value) =>
                 updateSettings({
@@ -132,6 +133,7 @@ const TimerSection: React.FC<Props> = ({ settings, setSettings }) => {
           <div className="flex flex-row items-center justify-between rounded hover:bg-base p-2">
             <label htmlFor="auto-start-breaks">Auto Start Breaks</label>
             <Checkbox
+              size="md"
               id="auto-start-breaks"
               defaultChecked={settings.auto_start_breaks}
               onChange={(value) =>

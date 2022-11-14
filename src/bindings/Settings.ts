@@ -9,6 +9,7 @@ export interface Settings {
   auto_start_breaks: boolean;
   alert_audio: string;
   alert_volume: number;
+  system_notifications: boolean;
   alert_repeat: number;
   current_theme_id: string;
   current_project_id: string | null;

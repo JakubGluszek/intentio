@@ -5,6 +5,7 @@ import {
   MdKeyboardArrowLeft,
   MdKeyboardArrowRight,
   MdNotifications,
+  MdPauseCircle,
   MdPlayCircle,
   MdRemove,
   MdVolumeDown,
@@ -16,9 +17,12 @@ import { type } from "@tauri-apps/api/os";
 import { readDir, BaseDirectory, FileEntry } from "@tauri-apps/api/fs";
 
 import { Slider } from "../../components";
-import { playAudio } from "../../utils";
 import { Settings } from "../../bindings/Settings";
 import { ipc_invoke } from "../../ipc";
+import { Checkbox } from "@mantine/core";
+import { SettingsForUpdate } from "../../bindings/SettingsForUpdate";
+import useGlobal from "../../store";
+import { Project } from "../../bindings/Project";
 
 const AUDIO_FORMATS = [".mp3", ".ogg"];
 
@@ -33,6 +37,9 @@ const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
     path: "",
   });
   const [tracks, setTracks] = React.useState<FileEntry[]>([]);
+
+  const [volumeKey, setVolumeKey] = React.useState<undefined | null>(undefined);
+  const [playingAudio, setPlayingAudio] = React.useState(false);
 
   React.useEffect(() => {
     readTracks();
@@ -94,6 +101,19 @@ const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
     }).then((res) => setSettings(res.data));
   };
 
+  const playAudio = () => {
+    currentTrack &&
+      !playingAudio &&
+      ipc_invoke("play_audio", { data: currentTrack.path }).then(() =>
+        setPlayingAudio(false)
+      );
+    setPlayingAudio(true);
+  };
+
+  const currentProject = useGlobal((state) => state.currentProject);
+  const currentProjectRef = React.useRef<Project>();
+  currentProjectRef.current = currentProject;
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-row items-center justify-center gap-2">
@@ -117,7 +137,20 @@ const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
           <OpenFileExplorerButton />
         </div>
         <div className="flex flex-row items-center gap-4">
-          <button className="btn btn-ghost p-0">
+          <button
+            className="btn btn-ghost p-0"
+            onClick={() => {
+              ipc_invoke<Settings>("update_settings", {
+                data: {
+                  alert_volume: settings.alert_volume === 0 ? 0.5 : 0,
+                  current_project_id: currentProjectRef.current?.id,
+                },
+              }).then((res) => {
+                setSettings(res.data);
+                setVolumeKey((key) => (key === undefined ? null : undefined));
+              });
+            }}
+          >
             {settings.alert_volume > 0 ? (
               settings.alert_volume < 0.5 ? (
                 <MdVolumeDown size={32} />
@@ -129,20 +162,28 @@ const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
             )}
           </button>
           <Slider
+            key={volumeKey}
             min={0}
             max={100}
             defaultValue={parseInt((settings.alert_volume * 100).toFixed())}
             onChangeEnd={(volume) =>
               ipc_invoke<Settings>("update_settings", {
-                data: { alert_volume: volume / 100 },
-              }).then((res) => setSettings(res.data))
+                data: {
+                  alert_volume: volume / 100,
+                  current_project_id: currentProjectRef.current?.id,
+                },
+              }).then((res) => {
+                setSettings(res.data);
+                setVolumeKey(undefined);
+              })
             }
           />
-          <button
-            className="btn btn-ghost"
-            onClick={() => currentTrack && playAudio(currentTrack.path)}
-          >
-            <MdPlayCircle size={32} />
+          <button className="btn btn-ghost" onClick={() => playAudio()}>
+            {playingAudio ? (
+              <MdPauseCircle size={32} />
+            ) : (
+              <MdPlayCircle size={32} />
+            )}
           </button>
         </div>
         <div className="flex flex-row items-center gap-4">
@@ -153,7 +194,10 @@ const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
               onClick={() =>
                 settings.alert_repeat > 1 &&
                 ipc_invoke<Settings>("update_settings", {
-                  data: { alert_repeat: settings.alert_repeat - 1 },
+                  data: {
+                    alert_repeat: settings.alert_repeat - 1,
+                    current_project_id: currentProjectRef.current?.id,
+                  },
                 }).then((res) => setSettings(res.data))
               }
             >
@@ -164,13 +208,37 @@ const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
               className="btn btn-ghost"
               onClick={() =>
                 ipc_invoke<Settings>("update_settings", {
-                  data: { alert_repeat: settings.alert_repeat + 1 },
+                  data: {
+                    alert_repeat: settings.alert_repeat + 1,
+                    current_project_id: currentProjectRef.current?.id,
+                  },
                 }).then((res) => setSettings(res.data))
               }
             >
               <MdAdd size={24} />
             </button>
           </div>
+        </div>
+        <div className="flex flex-row items-center justify-between pr-1">
+          <label htmlFor="system-notifications">System notifications</label>
+          <Checkbox
+            size="md"
+            id="system-notifications"
+            defaultChecked={settings.system_notifications}
+            onChange={(value) =>
+              ipc_invoke("update_settings", {
+                data: {
+                  system_notifications: value.currentTarget.checked,
+                  current_project_id: currentProjectRef.current?.id,
+                },
+              })
+            }
+            styles={{ icon: { color: "var(--primary-color) !important" } }}
+            classNames={{
+              input:
+                "border-primary checked:border-primary bg-transparent checked:bg-transparent border-2",
+            }}
+          />
         </div>
       </div>
     </div>

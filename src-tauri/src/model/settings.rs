@@ -27,8 +27,10 @@ pub struct Settings {
 
     pub auto_start_pomodoros: bool,
     pub auto_start_breaks: bool,
+
     pub alert_audio: String,
-    pub alert_volume: f64,
+    pub alert_volume: f32,
+    pub system_notifications: bool,
 
     #[ts(type = "number")]
     pub alert_repeat: i64,
@@ -49,6 +51,7 @@ impl Default for Settings {
             alert_audio: DEFAULT_AUDIO.into(),
             alert_volume: 0.25,
             alert_repeat: 2,
+            system_notifications: true,
             current_theme_id: DEFAULT_THEME.into(),
             current_project_id: None,
         }
@@ -73,8 +76,10 @@ pub struct SettingsForUpdate {
 
     pub auto_start_pomodoros: Option<bool>,
     pub auto_start_breaks: Option<bool>,
+
     pub alert_audio: Option<String>,
-    pub alert_volume: Option<f64>,
+    pub alert_volume: Option<f32>,
+    pub system_notifications: Option<bool>,
 
     #[ts(type = "number")]
     pub alert_repeat: Option<i64>,
@@ -158,6 +163,9 @@ impl SettingsBmc {
         }
         if let Some(alert_repeat) = data.alert_repeat {
             settings.alert_repeat = alert_repeat;
+        }
+        if let Some(system_notifications) = data.system_notifications {
+            settings.system_notifications = system_notifications;
         }
         if let Some(current_theme_id) = data.current_theme_id {
             settings.current_theme_id = current_theme_id;
