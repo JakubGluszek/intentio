@@ -58,8 +58,8 @@ const useTimer = (settings: Settings, queue: ActiveQueue | null) => {
       case "focus":
         if (!queue) {
           setDuration(settings.pomodoro_duration);
-          setKey("focus");
         }
+        setKey("focus-r");
         break;
       case "break":
         setDuration(settings.break_duration);
@@ -72,9 +72,46 @@ const useTimer = (settings: Settings, queue: ActiveQueue | null) => {
     }
   }, [settings]);
 
+  const restart = () => {
+    pause();
+    save();
+    setTimeFocused(0);
+    setStartedAt(null);
+
+    switch (type) {
+      case "focus":
+        if (queue) {
+          setDuration(queue.sessions[queue.session_idx].duration);
+        } else {
+          setDuration(settings.pomodoro_duration);
+        }
+        setKey("focus-restart");
+        break;
+      case "break":
+        setDuration(settings.break_duration);
+        setKey("break-restart");
+        break;
+      case "long break":
+        setDuration(settings.long_break_duration);
+        setKey("long break-restart");
+        break;
+    }
+  };
+
   const start = () => {
     if (!startedAt) {
       setStartedAt(new Date());
+    }
+    switch (type) {
+      case "focus":
+        setKey("focus");
+        break;
+      case "break":
+        setKey("break");
+        break;
+      case "long break":
+        setKey("long break");
+        break;
     }
     setIsRunning(true);
   };
@@ -225,6 +262,7 @@ const useTimer = (settings: Settings, queue: ActiveQueue | null) => {
     pause,
     next,
     onUpdate,
+    restart,
   };
 };
 
