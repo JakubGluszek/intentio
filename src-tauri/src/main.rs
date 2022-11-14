@@ -21,7 +21,6 @@ use crate::state::*;
 use startup::init;
 use std::sync::Arc;
 use std::sync::Mutex;
-use std::thread;
 use store::Store;
 use tauri::Manager;
 use tauri::{CustomMenuItem, SystemTray, SystemTrayEvent, SystemTrayMenu, SystemTrayMenuItem};
@@ -40,12 +39,12 @@ async fn main() -> Result<()> {
         .on_system_tray_event(handle_on_system_tray_event)
         .plugin(tauri_plugin_window_state::Builder::default().build())
         .setup(|app| {
-            let main_window = app.get_window("main").unwrap();
-
-            thread::spawn(move || {
+            #[cfg(target_os = "windows")]
+            {
+                let main_window = app.get_window("main").unwrap();
                 window_shadows::set_shadow(&main_window, true)
                     .expect("Unsupported platform to use window_shadows");
-            });
+            }
 
             Ok(())
         })
