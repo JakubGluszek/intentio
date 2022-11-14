@@ -93,7 +93,6 @@ const AnalyticsWindow: React.FC = () => {
             </button>
           </div>
         </div>
-
         <ActivityView
           sessions={sessions}
           setDetailsView={(date: string) => {
@@ -102,7 +101,6 @@ const AnalyticsWindow: React.FC = () => {
             window.scrollTo(0, window.innerHeight);
           }}
         />
-
         <div className="grow flex flex-col">
           <div className="flex flex-row gap-4 px-4 py-2 text-center">
             <div className="flex-1 flex flex-col items-center justify-evenly gap-1 p-2 bg-base rounded">
@@ -124,11 +122,12 @@ const AnalyticsWindow: React.FC = () => {
                 <AiFillFire size={34} />
                 <span>Streak</span>
               </div>
-              <span className="text-primary text-xl">{dayStreak} days</span>
+              <span className="text-primary text-xl">
+                {dayStreak} {dayStreak === 1 ? "day" : "days"}
+              </span>
             </div>
           </div>
         </div>
-
         {/* Details */}
         <Tabs
           value={activeTab}

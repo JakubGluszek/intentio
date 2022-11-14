@@ -25,11 +25,15 @@ const QueuesWindow: React.FC = () => {
   const [containerRef] = useAutoAnimate<HTMLDivElement>();
 
   React.useEffect(() => {
-    ipc_invoke<Queue[]>("get_queues").then((res) => setQueues(res.data));
-    ipc_invoke<Project[]>("get_projects").then((res) => setProjects(res.data));
-    ipc_invoke<ActiveQueue | undefined>("get_active_queue").then((res) =>
-      setActiveQueue(res.data ? res.data : null)
-    );
+    ipc_invoke<Queue[]>("get_queues")
+      .then((res) => setQueues(res.data))
+      .catch((err) => console.log(err));
+    ipc_invoke<Project[]>("get_projects")
+      .then((res) => setProjects(res.data))
+      .catch((err) => console.log(err));
+    ipc_invoke<ActiveQueue | undefined>("get_active_queue")
+      .then((res) => setActiveQueue(res.data ? res.data : null))
+      .catch((err) => console.log(err));
   }, []);
 
   return (
