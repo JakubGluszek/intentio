@@ -34,9 +34,9 @@ const App: React.FC = () => {
       setCurrentTheme(res.data);
     });
     ipc_invoke<Project[]>("get_projects").then((res) => setProjects(res.data));
-    ipc_invoke<Project | undefined>("get_current_project").then((res) =>
-      setCurrentProject(res.data)
-    );
+    ipc_invoke<Project>("get_current_project")
+      .then((res) => setCurrentProject(res.data))
+      .catch(() => setCurrentProject(undefined));
   }, []);
 
   return (

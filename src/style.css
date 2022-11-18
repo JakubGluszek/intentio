@@ -37,16 +37,6 @@
     display: none;
   }
 
-  ::selection {
-    color: none;
-    background: none;
-  }
-  /* For Mozilla Firefox */
-  ::-moz-selection {
-    color: none;
-    background: none;
-  }
-
   :root {
     --window-color: #222831;
     --base-color: #393e46;

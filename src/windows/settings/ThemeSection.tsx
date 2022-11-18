@@ -5,7 +5,7 @@ import {
   MdArrowDropUp,
   MdColorLens,
 } from "react-icons/md";
-import { BiShow } from "react-icons/bi";
+import { RiEyeCloseFill, RiEyeFill } from "react-icons/ri";
 import { useForm } from "react-hook-form";
 import { emit } from "@tauri-apps/api/event";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
@@ -53,7 +53,9 @@ const ThemeSection: React.FC = () => {
         )}
         <div ref={containerRef} className="flex flex-col gap-1">
           {themes &&
-            themes.map((theme) => <ThemeView key={theme.id} theme={theme} />)}
+            themes
+              .sort((a, b) => (a.default ? 1 : 0) - (b.default ? 1 : 0))
+              .map((theme) => <ThemeView key={theme.id} theme={theme} />)}
         </div>
       </div>
     </div>
@@ -348,6 +350,8 @@ type FormData = {
 };
 
 const CreateThemeView: React.FC<CreateThemeViewProps> = ({ theme, hide }) => {
+  const [viewThemePreview, setViewThemePreview] = React.useState(false);
+
   const { register, handleSubmit, setValue, watch, getValues } =
     useForm<FormData>();
 
@@ -475,11 +479,23 @@ const CreateThemeView: React.FC<CreateThemeViewProps> = ({ theme, hide }) => {
         <button className="btn btn-ghost" onClick={() => hide()}>
           Cancel
         </button>
-        <BiShow
-          size={24}
-          onMouseOver={() => emit("update_current_theme", getValues())}
-          onMouseLeave={() => emit("update_current_theme", theme)}
-        />
+        <div
+          className="p-2"
+          onMouseOver={() => {
+            emit("update_current_theme", getValues());
+            setViewThemePreview(true);
+          }}
+          onMouseLeave={() => {
+            emit("update_current_theme", theme);
+            setViewThemePreview(false);
+          }}
+        >
+          {viewThemePreview ? (
+            <RiEyeFill size={24} />
+          ) : (
+            <RiEyeCloseFill size={24} />
+          )}
+        </div>
         <button type="submit" className="btn btn-primary">
           Save
         </button>
