@@ -38,16 +38,6 @@ async fn main() -> Result<()> {
         .system_tray(SystemTray::new().with_menu(create_tray_menu()))
         .on_system_tray_event(handle_on_system_tray_event)
         .plugin(tauri_plugin_window_state::Builder::default().build())
-        .setup(|app| {
-            #[cfg(target_os = "windows")]
-            {
-                let main_window = app.get_window("main").unwrap();
-                window_shadows::set_shadow(&main_window, true)
-                    .expect("Unsupported platform to use window_shadows");
-            }
-
-            Ok(())
-        })
         .invoke_handler(tauri::generate_handler![
             // Arbitrary commands
             get_active_queue,

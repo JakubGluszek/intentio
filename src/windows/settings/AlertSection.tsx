@@ -109,10 +109,6 @@ const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
     !playingAudio && setPlayingAudio(true);
   };
 
-  const currentProject = useGlobal((state) => state.currentProject);
-  const currentProjectRef = React.useRef<Project>();
-  currentProjectRef.current = currentProject;
-
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-row items-center justify-center gap-2">
@@ -142,7 +138,6 @@ const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
               ipc_invoke<Settings>("update_settings", {
                 data: {
                   alert_volume: settings.alert_volume === 0 ? 0.5 : 0,
-                  current_project_id: currentProjectRef.current?.id,
                 },
               }).then((res) => {
                 setSettings(res.data);
@@ -169,7 +164,6 @@ const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
               ipc_invoke<Settings>("update_settings", {
                 data: {
                   alert_volume: volume / 100,
-                  current_project_id: currentProjectRef.current?.id,
                 },
               }).then((res) => {
                 setSettings(res.data);
@@ -195,7 +189,6 @@ const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
                 ipc_invoke<Settings>("update_settings", {
                   data: {
                     alert_repeat: settings.alert_repeat - 1,
-                    current_project_id: currentProjectRef.current?.id,
                   },
                 }).then((res) => setSettings(res.data))
               }
@@ -209,7 +202,6 @@ const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
                 ipc_invoke<Settings>("update_settings", {
                   data: {
                     alert_repeat: settings.alert_repeat + 1,
-                    current_project_id: currentProjectRef.current?.id,
                   },
                 }).then((res) => setSettings(res.data))
               }
@@ -228,7 +220,6 @@ const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
               ipc_invoke("update_settings", {
                 data: {
                   system_notifications: value.currentTarget.checked,
-                  current_project_id: currentProjectRef.current?.id,
                 },
               })
             }

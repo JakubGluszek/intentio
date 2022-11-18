@@ -7,8 +7,6 @@ import { Slider } from "../../components";
 import { Settings } from "../../bindings/Settings";
 import { ipc_invoke } from "../../ipc";
 import { SettingsForUpdate } from "../../bindings/SettingsForUpdate";
-import useGlobal from "../../store";
-import { Project } from "../../bindings/Project";
 
 interface Props {
   settings: Settings;
@@ -16,16 +14,9 @@ interface Props {
 }
 
 const TimerSection: React.FC<Props> = ({ settings, setSettings }) => {
-  const currentProject = useGlobal((state) => state.currentProject);
-  const currentProjectRef = React.useRef<Project>();
-  currentProjectRef.current = currentProject;
-
-  const settingsRef = React.useRef<Settings>();
-  settingsRef.current = settings;
-
   const updateSettings = (update: Partial<SettingsForUpdate>) => {
     ipc_invoke<Settings>("update_settings", {
-      data: { ...update, current_project_id: currentProjectRef.current?.id },
+      data: { ...update },
     }).then((res) => {
       setSettings(res.data);
     });

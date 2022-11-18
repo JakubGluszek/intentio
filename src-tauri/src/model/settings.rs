@@ -86,7 +86,7 @@ pub struct SettingsForUpdate {
     pub current_theme_id: Option<String>,
 
     #[serialize_always]
-    pub current_project_id: Option<String>,
+    pub current_project_id: Option<Option<String>>,
 }
 
 pub struct SettingsBmc;
@@ -169,11 +169,11 @@ impl SettingsBmc {
             settings.current_theme_id = current_theme_id;
             events.push("current_theme_updated");
         }
-        if let Some(current_project_id) = data.current_project_id {
-            settings.current_project_id = Some(current_project_id);
-            events.push("current_project_updated");
-        } else {
-            settings.current_project_id = None;
+        if let Some(current_project_update) = data.current_project_id {
+            settings.current_project_id = match current_project_update {
+                Some(project_id) => Some(project_id),
+                None => None,
+            };
             events.push("current_project_updated");
         }
 

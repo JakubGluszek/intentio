@@ -19,11 +19,7 @@
         "readDir": true,
         "copyFile": true,
         "createDir": true,
-        "scope": [
-          "$APP/*",
-          "$APP",
-          "$RESOURCE/*"
-        ]
+        "scope": ["$APP/*", "$APP", "$RESOURCE/*"]
       }
     },
     "bundle": {
@@ -50,9 +46,7 @@
         "providerShortName": null,
         "signingIdentity": null
       },
-      "resources": [
-        "./assets/audio/*"
-      ],
+      "resources": ["./assets/audio/*"],
       "shortDescription": "",
       "targets": "all",
       "windows": {
@@ -77,7 +71,8 @@
         "maxHeight": 420,
         "fullscreen": false,
         "resizable": false,
-        "decorations": false
+        "decorations": false,
+        "alwaysOnTop": true
       }
     ],
     "systemTray": {

@@ -97,6 +97,7 @@ const CreateSessionView: React.FC<Props> = ({ hide, save }) => {
                   height: 360,
                   resizable: false,
                   fullscreen: false,
+                  alwaysOnTop: true,
                 })
               }
             >

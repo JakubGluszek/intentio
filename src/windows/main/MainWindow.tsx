@@ -40,6 +40,7 @@ const MainWindow: React.FC = () => {
                 height: 480,
                 resizable: false,
                 fullscreen: false,
+                alwaysOnTop: true,
               })
             }
           >
@@ -58,6 +59,7 @@ const MainWindow: React.FC = () => {
                   height: 420,
                   resizable: false,
                   fullscreen: false,
+                  alwaysOnTop: true,
                 })
               }
             />
@@ -90,6 +92,7 @@ const MainWindow: React.FC = () => {
               height: 380,
               resizable: false,
               fullscreen: false,
+              alwaysOnTop: true,
             })
           }
         >
@@ -114,6 +117,7 @@ const MainWindow: React.FC = () => {
               height: 360,
               resizable: false,
               fullscreen: false,
+              alwaysOnTop: true,
             })
           }
         >
