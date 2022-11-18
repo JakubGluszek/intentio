@@ -11,7 +11,7 @@ A pomodoro timer desktop app.
 - **projects** - categorize what you spend your time on.
 - **queues** - define & queue up multiple sessions.
 - **analytics** - view stats & monitor your progress.
-- settings - configure timer, alerts & themes.
+- **settings** - configure timer, alerts & themes.
 
 ## Install
 
