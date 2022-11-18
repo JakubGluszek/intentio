@@ -5,7 +5,6 @@ use ts_rs::TS;
 
 mod project;
 mod queue;
-mod queue_session;
 mod session;
 mod settings;
 mod theme;
@@ -13,7 +12,6 @@ mod theme;
 // Re-Exports
 pub use project::*;
 pub use queue::*;
-pub use queue_session::*;
 pub use session::*;
 pub use settings::*;
 pub use theme::*;

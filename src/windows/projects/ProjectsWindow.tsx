@@ -4,7 +4,6 @@ import { MdAddCircle, MdClose, MdDelete } from "react-icons/md";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import autoAnimate from "@formkit/auto-animate";
 
-import Layout from "../../components/Layout";
 import { Project } from "../../bindings/Project";
 import { ipc_invoke } from "../../ipc";
 import useGlobal from "../../store";
@@ -59,61 +58,59 @@ const ProjectsWindow: React.FC = () => {
   };
 
   return (
-    <Layout>
-      <div className="w-screen min-h-screen flex flex-col p-4 gap-2">
-        <div
-          data-tauri-drag-region
-          className="flex flex-row items-center justify-between p-1"
-        >
-          <span className="text-lg">Projects</span>
-          <button className="btn btn-ghost" onClick={() => appWindow.close()}>
-            <MdClose size={32} />
-          </button>
-        </div>
-        <div className="flex flex-col gap-4 p-1">
-          {viewCreate ? (
-            <div className="flex flex-row items-center gap-2">
-              <input
-                className="input"
-                placeholder="Name"
-                autoFocus
-                type="text"
-                onKeyUp={(e) =>
-                  e.key === "Enter" && createProject(e.currentTarget.value)
-                }
-                minLength={1}
-                maxLength={16}
-              />
-              <button
-                className="btn btn-ghost"
-                onClick={() => setViewCreate(false)}
-              >
-                <MdClose size={24} />
-              </button>
-            </div>
-          ) : (
+    <div className="w-screen min-h-screen flex flex-col p-4 gap-2">
+      <div
+        data-tauri-drag-region
+        className="flex flex-row items-center justify-between p-1"
+      >
+        <span className="text-lg">Projects</span>
+        <button className="btn btn-ghost" onClick={() => appWindow.close()}>
+          <MdClose size={32} />
+        </button>
+      </div>
+      <div className="flex flex-col gap-4 p-1">
+        {viewCreate ? (
+          <div className="flex flex-row items-center gap-2">
+            <input
+              className="input"
+              placeholder="Name"
+              autoFocus
+              type="text"
+              onKeyUp={(e) =>
+                e.key === "Enter" && createProject(e.currentTarget.value)
+              }
+              minLength={1}
+              maxLength={16}
+            />
             <button
-              className="btn btn-ghost justify-start gap-2"
-              onClick={() => setViewCreate(true)}
+              className="btn btn-ghost"
+              onClick={() => setViewCreate(false)}
             >
-              <MdAddCircle size={24} />
-              <span>Add a project</span>
+              <MdClose size={24} />
             </button>
-          )}
-          <div ref={containerRef} className="flex flex-col gap-2">
-            {projects.map((project) => (
-              <ProjectView
-                key={project.id}
-                data={project}
-                deleteProject={deleteProject}
-                selectProject={updateCurrentProject}
-                selected={currentProject?.id === project.id}
-              />
-            ))}
           </div>
+        ) : (
+          <button
+            className="btn btn-ghost justify-start gap-2"
+            onClick={() => setViewCreate(true)}
+          >
+            <MdAddCircle size={24} />
+            <span>Add a project</span>
+          </button>
+        )}
+        <div ref={containerRef} className="flex flex-col gap-2">
+          {projects.map((project) => (
+            <ProjectView
+              key={project.id}
+              data={project}
+              deleteProject={deleteProject}
+              selectProject={updateCurrentProject}
+              selected={currentProject?.id === project.id}
+            />
+          ))}
         </div>
       </div>
-    </Layout>
+    </div>
   );
 };
 

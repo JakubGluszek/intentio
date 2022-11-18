@@ -11,8 +11,6 @@ import { Project } from "../../bindings/Project";
 import useGlobal from "../../store";
 import { DayDetail } from "../../types";
 
-// TODO: Sum up hours focused per each project
-
 const ProjectsView: React.FC = () => {
   const [filter, setFilter] = React.useState("");
 
@@ -56,8 +54,11 @@ interface ProjectViewProps {
   data: Project;
 }
 
+const DAYS_PAGINATION = 30;
+
 const ProjectView: React.FC<ProjectViewProps> = ({ data }) => {
   const [viewDetails, setViewDetails] = React.useState(false);
+  const [limit, setLimit] = React.useState(DAYS_PAGINATION);
 
   const sessions = useGlobal((state) => state.getSessionsByProjectId)(data.id);
 
@@ -89,6 +90,8 @@ const ProjectView: React.FC<ProjectViewProps> = ({ data }) => {
     parent.current && autoAnimate(parent.current);
   }, [parent]);
 
+  const days_arr = Array.from(days.values());
+
   return (
     <div ref={parent} className="flex flex-col gap-2 bg-base rounded p-2">
       {/* Header */}
@@ -118,7 +121,7 @@ const ProjectView: React.FC<ProjectViewProps> = ({ data }) => {
       {/* Sessions */}
       {viewDetails && (
         <div className="flex flex-col gap-1">
-          {Array.from(days.values()).map((day) => (
+          {days_arr.slice(0, limit).map((day) => (
             <div key={day.date} className="flex flex-row bg-window rounded p-1">
               <div className="flex-1 text-center">{day.date}</div>
               <div className="flex-1 text-center">
@@ -126,6 +129,20 @@ const ProjectView: React.FC<ProjectViewProps> = ({ data }) => {
               </div>
             </div>
           ))}
+          {limit < days_arr.length && (
+            <button
+              className="btn btn-ghost"
+              onClick={() =>
+                setLimit(
+                  limit + DAYS_PAGINATION <= days_arr.length
+                    ? limit + DAYS_PAGINATION
+                    : days_arr.length
+                )
+              }
+            >
+              Load more
+            </button>
+          )}
         </div>
       )}
     </div>

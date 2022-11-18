@@ -1,6 +1,6 @@
+import React from "react";
 import autoAnimate from "@formkit/auto-animate";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
-import React from "react";
 import { IoMdCalendar, IoMdTime } from "react-icons/io";
 import {
   MdClose,
@@ -16,8 +16,11 @@ interface Props {
   setFilter: React.Dispatch<React.SetStateAction<string>>;
 }
 
+const DETAILS_PAGINATION = 14;
+
 const DetailsView: React.FC<Props> = ({ filter, setFilter }) => {
   const sessions = useGlobal((state) => state.sessions);
+  const [limit, setLimit] = React.useState(DETAILS_PAGINATION);
 
   const [parent] = useAutoAnimate<HTMLDivElement>();
 
@@ -65,6 +68,7 @@ const DetailsView: React.FC<Props> = ({ filter, setFilter }) => {
     return days;
   }, [sessions]);
 
+  const days_arr = Array.from(days.values()).filter(handleFilter);
   return (
     <div className="flex flex-col gap-4">
       {/* Filter by date */}
@@ -79,7 +83,10 @@ const DetailsView: React.FC<Props> = ({ filter, setFilter }) => {
         {filter.length > 0 && (
           <button
             className="absolute top-[25%] bottom-[25%] right-2 btn btn-ghost animate-in fade-in scale-90"
-            onClick={() => setFilter("")}
+            onClick={() => {
+              setFilter("");
+              setLimit(DETAILS_PAGINATION);
+            }}
           >
             <MdClose size={24} />
           </button>
@@ -87,12 +94,24 @@ const DetailsView: React.FC<Props> = ({ filter, setFilter }) => {
       </div>
       {/* Days */}
       <div ref={parent} className="flex flex-col gap-2">
-        {Array.from(days.values())
-          .filter(handleFilter)
-          .map((d) => (
-            <DetailsDayView key={d.date} data={d} />
-          ))}
+        {days_arr.slice(0, limit).map((d) => (
+          <DetailsDayView key={d.date} data={d} />
+        ))}
       </div>
+      {limit < days_arr.length && (
+        <button
+          className="btn btn-ghost"
+          onClick={() =>
+            setLimit(
+              limit + DETAILS_PAGINATION <= days_arr.length
+                ? limit + DETAILS_PAGINATION
+                : days_arr.length
+            )
+          }
+        >
+          Load more
+        </button>
+      )}
     </div>
   );
 };

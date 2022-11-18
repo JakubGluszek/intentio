@@ -51,8 +51,22 @@ const App: React.FC = () => {
       <Toaster
         position="bottom-right"
         toastOptions={{
-          className:
-            "p-0.5 bg-base border-2 border-window rounded text-sm text-text text-center shadow-xl",
+          style: {
+            padding: 4,
+            backgroundColor: "var(--base-color)",
+            border: 2,
+            borderColor: "var(--window-color)",
+            borderRadius: 4,
+            fontSize: 14,
+            color: "var(--text-color)",
+            textAlign: "center",
+            "--tw-shadow":
+              "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)",
+            "--tw-shadow-colored":
+              "0 20px 25px -5px var(--tw-shadow-color), 0 8px 10px -6px var(--tw-shadow-color)",
+            boxShadow:
+              "var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)",
+          },
         }}
       />
     </>

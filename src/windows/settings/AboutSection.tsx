@@ -5,12 +5,8 @@ import { Tooltip } from "@mantine/core";
 
 interface AboutData {
   version: string;
-  author: {
-    name: string;
-    surname: string;
-    email: string;
-  };
-  source: string;
+  sourceCode: string;
+  homePage: string;
 }
 
 const AboutSection: React.FC = () => {
@@ -38,24 +34,21 @@ const AboutSection: React.FC = () => {
         </div>
         <div className="w-2/3 flex flex-row items-center justify-between">
           <Tooltip withArrow label="Home page">
-            <a href="https://incedo.me" target="_blank">
+            <a href={data.homePage} target="_blank">
               <button className="btn btn-ghost">
                 <IoIosGlobe size={42} />
               </button>
             </a>
           </Tooltip>
           <Tooltip withArrow label="Source code">
-            <a href="https://github.com/JakubGluszek/pomodoro" target="_blank">
+            <a href={data.sourceCode} target="_blank">
               <button className="btn btn-ghost">
                 <IoLogoGithub size={40} />
               </button>
             </a>
           </Tooltip>
           <Tooltip withArrow label="Report a bug">
-            <a
-              href="https://github.com/JakubGluszek/pomodoro/issues"
-              target="_blank"
-            >
+            <a href={data.sourceCode + "/issues"} target="_blank">
               <button className="btn btn-ghost">
                 <IoIosBug size={42} />
               </button>

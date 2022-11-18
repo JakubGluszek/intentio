@@ -1,6 +1,5 @@
 import React from "react";
-import { appWindow } from "@tauri-apps/api/window";
-import { MdClose, MdSettings } from "react-icons/md";
+import { MdSettings } from "react-icons/md";
 
 import TimerSection from "./TimerSection";
 import ThemeSection from "./ThemeSection";
@@ -18,24 +17,8 @@ const SettingsWindow: React.FC = () => {
   }, []);
 
   return (
-    <Layout>
+    <Layout Icon={MdSettings} label="Settings">
       <div className="w-screen min-h-screen flex flex-col gap-2">
-        {/* Window Header */}
-        <div className="z-[9999] sticky top-0 flex flex-col gap-2 bg-window px-4 py-2">
-          <div
-            data-tauri-drag-region
-            className="flex flex-row items-center justify-between"
-          >
-            <div className="flex flex-row items-center gap-2">
-              <MdSettings size={32} />
-              <span className="text-xl">Settings</span>
-            </div>
-            <button className="btn btn-ghost" onClick={() => appWindow.close()}>
-              <MdClose size={32} />
-            </button>
-          </div>
-        </div>
-        {/* Main */}
         <div className="flex flex-col gap-6 px-4 py-2">
           {settings && (
             <>

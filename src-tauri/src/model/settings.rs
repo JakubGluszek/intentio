@@ -1,5 +1,4 @@
 //! All models and controller for the Settings type
-//! TODO:Store settings data in .TOML file.
 
 use std::{fs, path::Path, sync::Arc};
 
@@ -93,7 +92,7 @@ pub struct SettingsForUpdate {
 pub struct SettingsBmc;
 
 impl SettingsBmc {
-    /// Writes default settings to "/pomodoro/settings.toml" if the file doesn't yet exist.
+    /// Writes default settings to "/sentio/settings.toml" if the file doesn't yet exist.
     pub fn init() -> Result<()> {
         let path = Self::get_path();
 
@@ -119,7 +118,6 @@ impl SettingsBmc {
 
         let contents = fs::read_to_string(path)?;
 
-        // handle this error
         let settings: Settings = match toml::from_str(&contents) {
             Ok(settings) => settings,
             Err(_) => {
@@ -200,7 +198,7 @@ impl SettingsBmc {
             .unwrap()
             .to_owned();
 
-        let path = path + "/pomodoro/settings.toml";
+        let path = path + "/sentio/settings.toml";
 
         path
     }

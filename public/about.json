@@ -1,9 +1,5 @@
 {
-  "version": "0.0.0",
-  "author": {
-    "name": "Jakub",
-    "surname": "Głuszek",
-    "email": "jacobgluszek03@gmail.com"
-  },
-  "source": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+  "version": "1.0.0",
+  "sourceCode": "https://github.com/JakubGluszek/sentio",
+  "homePage": "https://sentio.dev"
 }

@@ -6,22 +6,19 @@
     "distDir": "../dist"
   },
   "package": {
-    "productName": "pomodoro",
-    "version": "0.0.0"
+    "productName": "Sentio",
+    "version": "1.0.0"
   },
   "tauri": {
     "allowlist": {
       "all": true,
       "fs": {
-        "all": true,
+        "all": false,
         "readFile": true,
         "writeFile": true,
         "readDir": true,
         "copyFile": true,
         "createDir": true,
-        "removeDir": true,
-        "removeFile": true,
-        "renameFile": true,
         "scope": [
           "$APP/*",
           "$APP",
@@ -44,7 +41,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "pomodoro",
+      "identifier": "sentio.dev",
       "longDescription": "",
       "macOS": {
         "entitlements": null,
@@ -73,7 +70,7 @@
     "windows": [
       {
         "label": "main",
-        "title": "Pomodoro",
+        "title": "Sentio",
         "width": 360,
         "height": 420,
         "maxWidth": 360,

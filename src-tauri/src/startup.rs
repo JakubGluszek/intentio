@@ -21,7 +21,7 @@ fn init_config_dir() {
         .to_str()
         .unwrap()
         .to_owned();
-    let config_dir = config_dir + "/pomodoro";
+    let config_dir = config_dir + "/sentio";
 
     if !Path::new(&config_dir).is_dir() {
         fs::create_dir(config_dir).unwrap();
