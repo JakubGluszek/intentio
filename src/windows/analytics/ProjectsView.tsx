@@ -11,6 +11,8 @@ import { Project } from "../../bindings/Project";
 import useGlobal from "../../store";
 import { DayDetail } from "../../types";
 
+// TODO: Sum up hours focused per each project
+
 const ProjectsView: React.FC = () => {
   const [filter, setFilter] = React.useState("");
 
@@ -91,8 +93,16 @@ const ProjectView: React.FC<ProjectViewProps> = ({ data }) => {
     <div ref={parent} className="flex flex-col gap-2 bg-base rounded p-2">
       {/* Header */}
       <div className="flex flex-row items-center justify-between text-lg">
-        <div className="flex-1 flex flex-row items-center justify-center gap-2">
-          {data.name}
+        <div className="flex-1 flex flex-row items-center justify-evenly gap-2">
+          <span>{data.name}</span>
+          <span>
+            {(
+              sessions
+                .filter((s) => s.project_id === data.id)
+                .reduce((c, p) => (c += p.duration), 0) / 60
+            ).toFixed(2)}
+            h
+          </span>
         </div>
         <button
           className="btn btn-ghost"
