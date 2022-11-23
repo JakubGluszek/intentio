@@ -1,4 +1,5 @@
 import React from "react";
+import toast from "react-hot-toast";
 import { sendNotification } from "@tauri-apps/api/notification";
 
 import { ActiveQueue } from "../../bindings/ActiveQueue";
@@ -6,7 +7,6 @@ import { Queue } from "../../bindings/Queue";
 import { Settings } from "../../bindings/Settings";
 import { ipc_invoke } from "../../ipc";
 import useGlobal from "../../store";
-import toast from "react-hot-toast";
 
 type TimerType = "focus" | "break" | "long break";
 
@@ -95,29 +95,21 @@ const useTimer = (settings: Settings, queue: ActiveQueue | null) => {
     }
   };
 
-  const start = () => {
+  const start = React.useCallback(() => {
     if (!startedAt) {
       setStartedAt(new Date());
     }
-    switch (type) {
-      case "focus":
-        setKey("focus");
-        break;
-      case "break":
-        setKey("break");
-        break;
-      case "long break":
-        setKey("long break");
-        break;
-    }
     setIsRunning(true);
-  };
+  }, [startedAt]);
 
   const pause = () => {
     setIsRunning(false);
   };
 
-  const onUpdate = () => setTimeFocused((seconds) => seconds + 1);
+  const onUpdate = React.useCallback(
+    () => type === "focus" && setTimeFocused((seconds) => seconds + 1),
+    [type]
+  );
 
   /** Saves a focus session if it's at least 1 min long */
   const save = React.useCallback(() => {
@@ -166,6 +158,9 @@ const useTimer = (settings: Settings, queue: ActiveQueue | null) => {
 
   const switchSession = React.useCallback(
     (type: TimerType) => {
+      setTimeFocused(0);
+      setStartedAt(null);
+
       switch (type) {
         case "focus":
           if (queue) {
@@ -197,8 +192,6 @@ const useTimer = (settings: Settings, queue: ActiveQueue | null) => {
 
       if (type === "focus") {
         save();
-        setTimeFocused(0);
-        setStartedAt(null);
 
         const is_long_break =
           iterations >= settings.long_break_interval &&

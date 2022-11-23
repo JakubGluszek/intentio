@@ -59,8 +59,8 @@ const Timer: React.FC<TimerProps> = ({ settings, activeQueue }) => {
           {timer.type === "focus"
             ? "Time to focus!"
             : timer.type === "break"
-            ? "Time for a break!"
-            : "Time for a longer break!"}
+              ? "Time for a break!"
+              : "Time for a longer break!"}
         </span>
       </div>
       <div className="flex flex-row gap-2 w-full h-10">
