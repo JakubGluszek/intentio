@@ -200,7 +200,7 @@ const useTimer = (settings: Settings, queue: ActiveQueue | null) => {
         if (is_long_break) {
           switchSession("long break");
 
-          if (!manual) {
+          if (!manual && settings.system_notifications) {
             sendNotification({
               title: "Session",
               body: "Time for a long break!",
@@ -209,7 +209,7 @@ const useTimer = (settings: Settings, queue: ActiveQueue | null) => {
         } else {
           switchSession("break");
 
-          if (!manual) {
+          if (!manual && settings.system_notifications) {
             sendNotification({
               title: "Session",
               body: "Time for a break!",
@@ -225,7 +225,7 @@ const useTimer = (settings: Settings, queue: ActiveQueue | null) => {
       } else {
         switchSession("focus");
 
-        if (!manual) {
+        if (!manual && settings.system_notifications) {
           sendNotification({
             title: "Session",
             body: "Time to focus!",

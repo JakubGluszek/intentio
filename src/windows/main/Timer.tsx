@@ -11,6 +11,7 @@ import { Settings } from "../../bindings/Settings";
 import useTimer from "./useTimer";
 import useGlobal from "../../store";
 import { ActiveQueue } from "../../bindings/ActiveQueue";
+import toast from "react-hot-toast";
 
 interface TimerProps {
   settings: Settings;
@@ -47,6 +48,10 @@ const Timer: React.FC<TimerProps> = ({ settings, activeQueue }) => {
             className="absolute bottom-3 left-[70px] btn btn-ghost opacity-0 group-hover:opacity-100 transition-opacity"
             onClick={() => {
               timer.restart();
+              toast("Session restarted", {
+                position: "top-center",
+                duration: 1200,
+              });
             }}
           >
             <VscDebugRestart size={24} />
@@ -65,17 +70,44 @@ const Timer: React.FC<TimerProps> = ({ settings, activeQueue }) => {
       </div>
       <div className="flex flex-row gap-2 w-full h-10">
         {timer.isRunning ? (
-          <button className="btn w-full" onClick={() => timer.pause()}>
+          <button
+            className="btn w-full"
+            onClick={() => {
+              timer.pause();
+              toast("Session paused", {
+                position: "top-center",
+                duration: 1200,
+              });
+            }}
+          >
             <MdPauseCircle size={24} />
             <span>STOP</span>
           </button>
         ) : (
-          <button className="btn w-full" onClick={() => timer.start()}>
+          <button
+            className="btn w-full"
+            onClick={() => {
+              timer.start();
+              toast("Session started", {
+                position: "top-center",
+                duration: 1200,
+              });
+            }}
+          >
             <MdPlayCircle size={24} />
             <span>START</span>
           </button>
         )}
-        <button className="btn" onClick={() => timer.next(true)}>
+        <button
+          className="btn"
+          onClick={() => {
+            timer.next(true);
+            toast("Session skipped", {
+              position: "top-center",
+              duration: 1200,
+            });
+          }}
+        >
           <MdSkipNext size={24} />
         </button>
       </div>
