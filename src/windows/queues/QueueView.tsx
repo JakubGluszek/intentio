@@ -1,5 +1,10 @@
 import React from "react";
-import { MdAddCircle, MdDelete, MdPlayCircle } from "react-icons/md";
+import {
+  MdAddCircle,
+  MdDelete,
+  MdDragIndicator,
+  MdPlayCircle,
+} from "react-icons/md";
 import {
   DragDropContext,
   Droppable,
@@ -204,10 +209,12 @@ const SessionView: React.FC<SessionViewProps> = ({
       id={data.id}
       ref={innerRef}
       {...draggableProps}
-      {...dragHandleProps}
       className={`relative group flex flex-row gap-2 text-center rounded bg-base p-2 ${snapshot.isDragging ? "shadow-xl" : "shadow-none"
         }`}
     >
+      <div {...dragHandleProps}>
+        <MdDragIndicator size={24} />
+      </div>
       <div className="flex-1 items-center justify-center">
         {getProjectById(data.project_id)?.name ?? "-"}
       </div>
@@ -216,7 +223,7 @@ const SessionView: React.FC<SessionViewProps> = ({
       </div>
       <div className="flex-1 items-center justify-center">{data.cycles}x</div>
       <button
-        className="absolute top-0.5 right-2 transition-opacity opacity-0 group-hover:opacity-100 btn btn-ghost"
+        className="absolute top-[3px] right-2 transition-opacity opacity-0 group-hover:opacity-100 btn btn-ghost"
         onClick={() => remove()}
       >
         <MdDelete size={24} />
