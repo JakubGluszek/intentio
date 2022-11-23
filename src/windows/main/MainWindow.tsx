@@ -7,6 +7,7 @@ import useGlobal from "../../store";
 import QueueIcon from "../../components/QueueIcon";
 import { ipc_invoke } from "../../ipc";
 import { ActiveQueue } from "../../bindings/ActiveQueue";
+import { WebviewConfig } from "../../config";
 
 const MainWindow: React.FC = () => {
   const settings = useGlobal((state) => state.settings);
@@ -33,14 +34,10 @@ const MainWindow: React.FC = () => {
             onClick={() =>
               new WebviewWindow("settings", {
                 url: "/settings",
-                decorations: false,
                 title: "Settings",
-                skipTaskbar: true,
                 width: 328,
                 height: 480,
-                resizable: false,
-                fullscreen: false,
-                alwaysOnTop: true,
+                ...WebviewConfig,
               })
             }
           >
@@ -52,14 +49,10 @@ const MainWindow: React.FC = () => {
               onClick={() =>
                 new WebviewWindow("analytics", {
                   url: "/analytics",
-                  decorations: false,
                   title: "Analytics",
-                  skipTaskbar: true,
                   width: 460,
                   height: 420,
-                  resizable: false,
-                  fullscreen: false,
-                  alwaysOnTop: true,
+                  ...WebviewConfig,
                 })
               }
             />
@@ -85,14 +78,10 @@ const MainWindow: React.FC = () => {
           onClick={() =>
             new WebviewWindow("queues", {
               url: "/queues",
-              decorations: false,
               title: "Queues",
-              skipTaskbar: true,
               width: 450,
               height: 380,
-              resizable: false,
-              fullscreen: false,
-              alwaysOnTop: true,
+              ...WebviewConfig,
             })
           }
         >
@@ -110,14 +99,10 @@ const MainWindow: React.FC = () => {
           onClick={() =>
             new WebviewWindow("projects", {
               url: "/projects",
-              decorations: false,
               title: "Projects",
-              skipTaskbar: true,
               width: 280,
               height: 360,
-              resizable: false,
-              fullscreen: false,
-              alwaysOnTop: true,
+              ...WebviewConfig,
             })
           }
         >

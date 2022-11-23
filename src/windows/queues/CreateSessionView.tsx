@@ -6,6 +6,7 @@ import { Select, Slider } from "@mantine/core";
 
 import { QueueSession } from "../../bindings/QueueSession";
 import useGlobal from "../../store";
+import { WebviewConfig } from "../../config";
 
 interface Props {
   hide: () => void;
@@ -90,14 +91,10 @@ const CreateSessionView: React.FC<Props> = ({ hide, save }) => {
               onClick={() =>
                 new WebviewWindow("projects", {
                   url: "/projects",
-                  decorations: false,
                   title: "Projects",
-                  skipTaskbar: true,
                   width: 280,
                   height: 360,
-                  resizable: false,
-                  fullscreen: false,
-                  alwaysOnTop: true,
+                  ...WebviewConfig,
                 })
               }
             >

@@ -37,7 +37,6 @@ async fn main() -> Result<()> {
         .manage(store)
         .system_tray(SystemTray::new().with_menu(create_tray_menu()))
         .on_system_tray_event(handle_on_system_tray_event)
-        .plugin(tauri_plugin_window_state::Builder::default().build())
         .invoke_handler(tauri::generate_handler![
             // Arbitrary commands
             get_active_queue,

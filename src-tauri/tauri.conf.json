@@ -72,7 +72,8 @@
         "fullscreen": false,
         "resizable": false,
         "decorations": false,
-        "alwaysOnTop": true
+        "alwaysOnTop": true,
+        "center": true
       }
     ],
     "systemTray": {
