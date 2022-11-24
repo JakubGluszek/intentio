@@ -76,11 +76,11 @@ async fn main() -> Result<()> {
 }
 
 fn create_tray_menu() -> SystemTrayMenu {
-    let show = CustomMenuItem::new("show".to_string(), "Show");
+    let open = CustomMenuItem::new("open".to_string(), "Open");
     let quit = CustomMenuItem::new("quit".to_string(), "Quit");
 
     SystemTrayMenu::new()
-        .add_item(show)
+        .add_item(open)
         .add_native_item(SystemTrayMenuItem::Separator)
         .add_item(quit)
 }
@@ -91,9 +91,9 @@ fn handle_on_system_tray_event(app: &tauri::AppHandle, event: SystemTrayEvent) {
             "quit" => {
                 std::process::exit(0);
             }
-            "show" => {
+            "open" => {
                 let window = app.get_window("main").unwrap();
-                window.show().unwrap();
+                window.unminimize().unwrap();
             }
             _ => {}
         }

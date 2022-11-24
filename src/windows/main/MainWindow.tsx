@@ -59,7 +59,10 @@ const MainWindow: React.FC = () => {
           </button>
         </div>
         <div className="flex flex-row items-center gap-2">
-          <button className="btn btn-ghost" onClick={() => appWindow.hide()}>
+          <button
+            className="btn btn-ghost"
+            onClick={() => appWindow.minimize()}
+          >
             <MdRemove size={32} />
           </button>
           <button className="btn btn-ghost" onClick={() => appWindow.close()}>
