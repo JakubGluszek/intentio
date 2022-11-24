@@ -20,7 +20,7 @@ const CreateQueueView: React.FC<Props> = ({ hide }) => {
 
   const [createSessionView, setCreateSessionView] = React.useState(false);
 
-  const createRef = React.useRef<HTMLButtonElement>(null);
+  const createRef = React.useRef<HTMLButtonElement | null>(null);
   const inputRef = React.useRef<HTMLInputElement | null>(null);
   const addSessionRef = React.useRef<HTMLButtonElement | null>(null);
   const [containerRef] = useAutoAnimate<HTMLDivElement>();
@@ -74,7 +74,7 @@ const CreateQueueView: React.FC<Props> = ({ hide }) => {
       >
         {!createSessionView ? (
           <Button
-            ref={addSessionRef}
+            innerRef={addSessionRef}
             onClick={() => setCreateSessionView(true)}
           >
             <MdAddCircle size={24} />
@@ -109,7 +109,7 @@ const CreateQueueView: React.FC<Props> = ({ hide }) => {
         <Button transparent onClick={() => hide()}>
           Cancel
         </Button>
-        <Button ref={createRef} onClick={() => save()}>
+        <Button innerRef={createRef} onClick={() => save()}>
           Create
         </Button>
       </div>

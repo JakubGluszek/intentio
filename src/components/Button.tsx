@@ -5,11 +5,11 @@ import clsx from "clsx";
 interface Props extends HTMLMotionProps<"button"> {
   children: React.ReactNode;
   transparent?: boolean;
-  ref?: React.MutableRefObject<HTMLButtonElement | null>;
+  innerRef?: React.MutableRefObject<HTMLButtonElement | null>;
 }
 
 const Button: React.FC<Props> = (props) => {
-  const { children, transparent, ...restProps } = props;
+  const { children, transparent, innerRef, ...restProps } = props;
 
   return (
     <motion.button
@@ -21,6 +21,7 @@ const Button: React.FC<Props> = (props) => {
       )}
       whileHover={{ scale: transparent ? 1.05 : undefined }}
       whileTap={{ scale: 0.95 }}
+      ref={innerRef}
       {...restProps}
     >
       {children}
