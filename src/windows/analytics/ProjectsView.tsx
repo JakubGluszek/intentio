@@ -10,6 +10,7 @@ import { Project } from "../../bindings/Project";
 
 import useGlobal from "../../store";
 import { DayDetail } from "../../types";
+import Button from "../../components/Button";
 
 const ProjectsView: React.FC = () => {
   const [filter, setFilter] = React.useState("");
@@ -30,12 +31,11 @@ const ProjectsView: React.FC = () => {
           className="input"
         />
         {filter.length > 0 && (
-          <button
-            className="absolute top-[25%] bottom-[25%] right-2 btn btn-ghost animate-in fade-in scale-90"
-            onClick={() => setFilter("")}
-          >
-            <MdClose size={24} />
-          </button>
+          <div className="absolute top-[25%] bottom-[25%] right-2 animate-in fade-in scale-90">
+            <Button transparent onClick={() => setFilter("")}>
+              <MdClose size={24} />
+            </Button>
+          </div>
         )}
       </div>
       {/* Projects */}
@@ -107,16 +107,13 @@ const ProjectView: React.FC<ProjectViewProps> = ({ data }) => {
             h
           </span>
         </div>
-        <button
-          className="btn btn-ghost"
-          onClick={() => setViewDetails(!viewDetails)}
-        >
+        <Button transparent onClick={() => setViewDetails(!viewDetails)}>
           {viewDetails ? (
             <MdKeyboardArrowUp size={24} />
           ) : (
             <MdKeyboardArrowDown size={24} />
           )}
-        </button>
+        </Button>
       </div>
       {/* Sessions */}
       {viewDetails && (
@@ -130,8 +127,8 @@ const ProjectView: React.FC<ProjectViewProps> = ({ data }) => {
             </div>
           ))}
           {limit < days_arr.length && (
-            <button
-              className="btn btn-ghost"
+            <Button
+              transparent
               onClick={() =>
                 setLimit(
                   limit + DAYS_PAGINATION <= days_arr.length
@@ -141,7 +138,7 @@ const ProjectView: React.FC<ProjectViewProps> = ({ data }) => {
               }
             >
               Load more
-            </button>
+            </Button>
           )}
         </div>
       )}

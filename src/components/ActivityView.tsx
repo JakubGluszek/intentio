@@ -1,5 +1,5 @@
-import Color from "color";
 import React from "react";
+import Color from "color";
 import ActivityCalendar, { Day } from "react-activity-calendar";
 import ReactTooltip from "react-tooltip";
 

@@ -8,6 +8,7 @@ import { QueueSession } from "../../bindings/QueueSession";
 import { ipc_invoke } from "../../ipc";
 import useGlobal from "../../store";
 import CreateSessionView from "./CreateSessionView";
+import Button from "../../components/Button";
 
 interface Props {
   hide: () => void;
@@ -72,14 +73,13 @@ const CreateQueueView: React.FC<Props> = ({ hide }) => {
         className={`flex flex-col ${sessions.length === 0 ? "gap-0" : "gap-4"}`}
       >
         {!createSessionView ? (
-          <button
+          <Button
             ref={addSessionRef}
-            className="btn btn-primary w-fit"
             onClick={() => setCreateSessionView(true)}
           >
             <MdAddCircle size={24} />
             <span className="text-sm">Add session</span>
-          </button>
+          </Button>
         ) : (
           <CreateSessionView
             hide={() => setCreateSessionView(false)}
@@ -106,16 +106,12 @@ const CreateQueueView: React.FC<Props> = ({ hide }) => {
 
       {/* Actions */}
       <div className="flex flex-row items-center justify-between">
-        <button className="btn btn-ghost" onClick={() => hide()}>
+        <Button transparent onClick={() => hide()}>
           Cancel
-        </button>
-        <button
-          ref={createRef}
-          className="btn btn-primary"
-          onClick={() => save()}
-        >
+        </Button>
+        <Button ref={createRef} onClick={() => save()}>
           Create
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -141,12 +137,11 @@ const QueueSessionView: React.FC<QueueSessionViewProps> = ({
         {data.duration} min
       </div>
       <div className="flex-1 items-center justify-center">{data.cycles}x</div>
-      <button
-        className="absolute top-0.5 right-2 transition-opacity opacity-0 group-hover:opacity-100 btn btn-ghost"
-        onClick={() => removeSession()}
-      >
-        <MdDelete size={24} />
-      </button>
+      <div className="absolute top-0.5 right-2 transition-opacity opacity-0 group-hover:opacity-100">
+        <Button transparent onClick={() => removeSession()}>
+          <MdDelete size={24} />
+        </Button>
+      </div>
     </div>
   );
 };

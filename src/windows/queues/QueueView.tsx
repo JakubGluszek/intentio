@@ -16,6 +16,8 @@ import {
 } from "react-beautiful-dnd";
 import { arrayMoveImmutable } from "array-move";
 import { appWindow } from "@tauri-apps/api/window";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
+import toast from "react-hot-toast";
 
 import { Queue } from "../../bindings/Queue";
 import { QueueSession } from "../../bindings/QueueSession";
@@ -24,8 +26,7 @@ import CreateSessionView from "./CreateSessionView";
 import { ipc_invoke } from "../../ipc";
 import { ModelDeleteResultData } from "../../bindings/ModelDeleteResultData";
 import { ActiveQueue } from "../../bindings/ActiveQueue";
-import { useAutoAnimate } from "@formkit/auto-animate/react";
-import toast from "react-hot-toast";
+import Button from "../../components/Button";
 
 interface Props {
   data: Queue;
@@ -114,28 +115,24 @@ const QueueView: React.FC<Props> = ({ data }) => {
       <div className="flex flex-row items-center justify-between">
         <span className="text-xl">{data.name}</span>
         <div className="flex flex-row items-center gap-2">
-          <button className="btn btn-ghost" onClick={() => startQueue()}>
+          <Button transparent onClick={() => startQueue()}>
             <MdPlayCircle size={32} />
-          </button>
-          <button
-            className={`btn ${confirmDelete ? "btn-primary p-0.5 px-1 gap-1" : "btn-ghost"
-              }`}
+          </Button>
+          <Button
+            transparent={!confirmDelete}
             onClick={() => (confirmDelete ? remove() : triggerConfirmDelete())}
           >
             <MdDelete size={32} />
             {confirmDelete && <span>Confirm</span>}
-          </button>
+          </Button>
         </div>
       </div>
       <div ref={containerRef} className="flex flex-col gap-4">
         {!viewCreateSession ? (
-          <button
-            className="btn btn-primary"
-            onClick={() => setViewCreateSession(true)}
-          >
+          <Button onClick={() => setViewCreateSession(true)}>
             <MdAddCircle size={24} />
             <span>Add a session</span>
-          </button>
+          </Button>
         ) : (
           <CreateSessionView
             hide={() => setViewCreateSession(false)}
@@ -209,8 +206,9 @@ const SessionView: React.FC<SessionViewProps> = ({
       id={data.id}
       ref={innerRef}
       {...draggableProps}
-      className={`relative group flex flex-row gap-2 text-center rounded bg-base p-2 ${snapshot.isDragging ? "shadow-xl" : "shadow-none"
-        }`}
+      className={`relative group flex flex-row gap-2 text-center rounded bg-base p-2 ${
+        snapshot.isDragging ? "shadow-xl" : "shadow-none"
+      }`}
     >
       <div {...dragHandleProps}>
         <MdDragIndicator size={24} />
@@ -222,12 +220,11 @@ const SessionView: React.FC<SessionViewProps> = ({
         {data.duration} min
       </div>
       <div className="flex-1 items-center justify-center">{data.cycles}x</div>
-      <button
-        className="absolute top-[3px] right-2 transition-opacity opacity-0 group-hover:opacity-100 btn btn-ghost"
-        onClick={() => remove()}
-      >
-        <MdDelete size={24} />
-      </button>
+      <div className="absolute top-[3px] right-2 transition-opacity opacity-0 group-hover:opacity-100">
+        <Button transparent onClick={() => remove()}>
+          <MdDelete size={24} />
+        </Button>
+      </div>
     </div>
   );
 };

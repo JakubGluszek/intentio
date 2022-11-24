@@ -9,6 +9,7 @@ import { ipc_invoke } from "../../ipc";
 import useGlobal from "../../store";
 import { ModelDeleteResultData } from "../../bindings/ModelDeleteResultData";
 import { Settings } from "../../bindings/Settings";
+import Button from "../../components/Button";
 
 const ProjectsWindow: React.FC = () => {
   const projects = useGlobal((state) => state.projects);
@@ -61,12 +62,12 @@ const ProjectsWindow: React.FC = () => {
     <div className="w-screen min-h-screen flex flex-col p-4 gap-2">
       <div
         data-tauri-drag-region
-        className="flex flex-row items-center justify-between p-1"
+        className="z-[1000] sticky top-0 flex flex-row items-center justify-between p-1 bg-window"
       >
         <span className="text-lg">Projects</span>
-        <button className="btn btn-ghost" onClick={() => appWindow.close()}>
+        <Button transparent onClick={() => appWindow.close()}>
           <MdClose size={32} />
-        </button>
+        </Button>
       </div>
       <div className="flex flex-col gap-4 p-1">
         {viewCreate ? (
@@ -82,21 +83,15 @@ const ProjectsWindow: React.FC = () => {
               minLength={1}
               maxLength={16}
             />
-            <button
-              className="btn btn-ghost"
-              onClick={() => setViewCreate(false)}
-            >
+            <Button transparent onClick={() => setViewCreate(false)}>
               <MdClose size={24} />
-            </button>
+            </Button>
           </div>
         ) : (
-          <button
-            className="btn btn-ghost justify-start gap-2"
-            onClick={() => setViewCreate(true)}
-          >
+          <Button onClick={() => setViewCreate(true)}>
             <MdAddCircle size={24} />
             <span>Add a project</span>
-          </button>
+          </Button>
         )}
         <div ref={containerRef} className="flex flex-col gap-2">
           {projects.map((project) => (
@@ -148,7 +143,7 @@ const ProjectView: React.FC<ProjectViewProps> = ({
       className="group flex flex-col gap-2 bg-base rounded overflow-clip"
     >
       <div
-        className={`group cursor-pointer flex flex-row items-center justify-between ${
+        className={`group cursor-pointer flex flex-row items-center justify-between transition-colors ${
           selected && "bg-primary text-window"
         }`}
       >
@@ -158,14 +153,15 @@ const ProjectView: React.FC<ProjectViewProps> = ({
         >
           {data.name}
         </p>
-        <button
-          className={`btn btn-ghost px-2 text-text transition-opacity opacity-0 group-hover:opacity-100 ${
-            selected && "text-window"
-          }`}
-          onClick={() => setViewDelete(!viewDelete)}
-        >
-          <MdDelete size={24} />
-        </button>
+        <div className="transition-opacity opacity-0 group-hover:opacity-100 mr-2">
+          <Button
+            transparent
+            onClick={() => setViewDelete(!viewDelete)}
+            style={{ color: selected ? "var(--window-color)" : undefined }}
+          >
+            <MdDelete size={24} />
+          </Button>
+        </div>
       </div>
       {viewDelete && (
         <div
@@ -175,18 +171,16 @@ const ProjectView: React.FC<ProjectViewProps> = ({
           <p>Are you sure you want to delete this project?</p>
           <p>Focused hours will get orphaned.</p>
           <div className="flex flex-row items-center justify-between p-2">
-            <button
-              className="btn btn-ghost"
+            <Button
+              transparent
+              style={{ marginLeft: 8 }}
               onClick={() => setViewDelete(false)}
             >
               Cancel
-            </button>
-            <button
-              className="btn btn-primary"
-              onClick={async () => deleteProject(data.id)}
-            >
+            </Button>
+            <Button onClick={async () => deleteProject(data.id)}>
               Confirm
-            </button>
+            </Button>
           </div>
         </div>
       )}

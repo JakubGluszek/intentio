@@ -7,8 +7,7 @@ import { Queue } from "../../bindings/Queue";
 import { Settings } from "../../bindings/Settings";
 import { ipc_invoke } from "../../ipc";
 import useGlobal from "../../store";
-
-type TimerType = "focus" | "break" | "long break";
+import { TimerType } from "../../types";
 
 const useTimer = (settings: Settings, queue: ActiveQueue | null) => {
   // key is needed to reset timer components inner state

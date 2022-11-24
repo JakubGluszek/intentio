@@ -14,6 +14,7 @@ import { Settings } from "../../bindings/Settings";
 import { Theme } from "../../bindings/Theme";
 import { DeleteData, ipc_invoke } from "../../ipc";
 import useGlobal from "../../store";
+import Button from "../../components/Button";
 
 const ThemeSection: React.FC = () => {
   const [viewCreate, setViewCreate] = React.useState(false);
@@ -37,13 +38,10 @@ const ThemeSection: React.FC = () => {
       </div>
       <div className="flex flex-col gap-4">
         {!viewCreate && (
-          <button
-            className="btn btn-primary w-fit justify-start"
-            onClick={() => setViewCreate(true)}
-          >
+          <Button onClick={() => setViewCreate(true)}>
             <MdAddCircle size={24} />
             <span>Add a theme</span>
-          </button>
+          </Button>
         )}
         {viewCreate && currentTheme && (
           <CreateThemeView
@@ -148,17 +146,19 @@ const ThemeView: React.FC<ThemeViewProps> = ({ theme }) => {
         >
           <span style={{ color: watch("text_hex") }}>{watch("name")}</span>
           {!theme.default && (
-            <button
-              style={{ color: watch("primary_hex") }}
-              className="hidden group-hover:flex"
-              onClick={() => setViewEdit(!viewEdit)}
-            >
-              {viewEdit ? (
-                <MdArrowDropUp size={32} />
-              ) : (
-                <MdArrowDropDown size={32} />
-              )}
-            </button>
+            <div className="hidden group-hover:flex">
+              <Button
+                transparent
+                style={{ color: watch("primary_hex") }}
+                onClick={() => setViewEdit(!viewEdit)}
+              >
+                {viewEdit ? (
+                  <MdArrowDropUp size={32} />
+                ) : (
+                  <MdArrowDropDown size={32} />
+                )}
+              </Button>
+            </div>
           )}
         </div>
 
@@ -195,23 +195,22 @@ const ThemeView: React.FC<ThemeViewProps> = ({ theme }) => {
                     Are you sure you want to delete "{watch("name")}"?
                   </span>
                   <div className="w-full flex flex-row items-center justify-between">
-                    <button
+                    <Button
+                      transparent
                       style={{ color: watch("primary_hex") }}
-                      className="btn btn-ghost"
                       onClick={() => setViewDelete(false)}
                     >
                       Cancel
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                       style={{
                         backgroundColor: watch("primary_hex"),
                         color: watch("window_hex"),
                       }}
-                      className="btn btn-primary"
                       onClick={() => deleteTheme()}
                     >
                       Confirm
-                    </button>
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -310,24 +309,23 @@ const ThemeView: React.FC<ThemeViewProps> = ({ theme }) => {
             </div>
             {/* Controls */}
             <div className="flex flex-row items-center justify-between">
-              <button
-                className="btn btn-ghost"
+              <Button
+                transparent
                 style={{ color: watch("primary_hex") }}
                 onClick={() => setViewDelete(true)}
               >
                 Delete
-              </button>
-              <button
+              </Button>
+              <Button
                 disabled={disabled}
                 type="submit"
-                className={`btn btn-primary ${disabled && "opacity-60"}`}
                 style={{
                   backgroundColor: watch("primary_hex"),
                   color: watch("window_hex"),
                 }}
               >
                 Update
-              </button>
+              </Button>
             </div>
           </form>
         </div>
@@ -476,9 +474,9 @@ const CreateThemeView: React.FC<CreateThemeViewProps> = ({ theme, hide }) => {
         </div>
       </div>
       <div className="flex flex-row items-center justify-between">
-        <button className="btn btn-ghost" onClick={() => hide()}>
+        <Button transparent onClick={() => hide()}>
           Cancel
-        </button>
+        </Button>
         <div
           className="p-2"
           onMouseOver={() => {
@@ -496,9 +494,7 @@ const CreateThemeView: React.FC<CreateThemeViewProps> = ({ theme, hide }) => {
             <RiEyeCloseFill size={24} />
           )}
         </div>
-        <button type="submit" className="btn btn-primary">
-          Save
-        </button>
+        <Button type="submit">Save</Button>
       </div>
     </form>
   );

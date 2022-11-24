@@ -8,6 +8,7 @@ import QueueIcon from "../../components/QueueIcon";
 import { ipc_invoke } from "../../ipc";
 import { ActiveQueue } from "../../bindings/ActiveQueue";
 import { WebviewConfig } from "../../config";
+import Button from "../../components/Button";
 
 const MainWindow: React.FC = () => {
   const settings = useGlobal((state) => state.settings);
@@ -29,8 +30,8 @@ const MainWindow: React.FC = () => {
         className="h-10 flex flex-row items-center justify-between"
       >
         <div className="flex flex-row items-center gap-2">
-          <button
-            className="btn btn-ghost"
+          <Button
+            transparent
             onClick={() =>
               new WebviewWindow("settings", {
                 url: "/settings",
@@ -42,32 +43,29 @@ const MainWindow: React.FC = () => {
             }
           >
             <MdSettings size={32} />
-          </button>
-          <button className="btn btn-ghost">
-            <MdAnalytics
-              size={32}
-              onClick={() =>
-                new WebviewWindow("analytics", {
-                  url: "/analytics",
-                  title: "Analytics",
-                  width: 460,
-                  height: 420,
-                  ...WebviewConfig,
-                })
-              }
-            />
-          </button>
+          </Button>
+          <Button
+            transparent
+            onClick={() =>
+              new WebviewWindow("analytics", {
+                url: "/analytics",
+                title: "Analytics",
+                width: 460,
+                height: 420,
+                ...WebviewConfig,
+              })
+            }
+          >
+            <MdAnalytics size={32} />
+          </Button>
         </div>
         <div className="flex flex-row items-center gap-2">
-          <button
-            className="btn btn-ghost"
-            onClick={() => appWindow.minimize()}
-          >
+          <Button transparent onClick={() => appWindow.minimize()}>
             <MdRemove size={32} />
-          </button>
-          <button className="btn btn-ghost" onClick={() => appWindow.close()}>
+          </Button>
+          <Button transparent onClick={() => appWindow.close()}>
             <MdClose size={32} />
-          </button>
+          </Button>
         </div>
       </div>
       <div className="grow flex flex-col p-4">
@@ -76,8 +74,8 @@ const MainWindow: React.FC = () => {
         )}
       </div>
       <div className="relative h-10 flex flex-row items-center justify-between">
-        <button
-          className="btn btn-ghost"
+        <Button
+          transparent
           onClick={() =>
             new WebviewWindow("queues", {
               url: "/queues",
@@ -96,9 +94,15 @@ const MainWindow: React.FC = () => {
               {activeQueue.iterations}/{getTotalQueueCycles()}
             </span>
           )}
-        </button>
-        <button
-          className="absolute left-[50%] right-[50%] btn btn-ghost whitespace-nowrap"
+        </Button>
+        <Button
+          style={{
+            position: "absolute",
+            left: "50%",
+            right: "50%",
+            whiteSpace: "nowrap",
+          }}
+          transparent
           onClick={() =>
             new WebviewWindow("projects", {
               url: "/projects",
@@ -110,7 +114,7 @@ const MainWindow: React.FC = () => {
           }
         >
           {currentProject?.name ?? "-"}
-        </button>
+        </Button>
       </div>
     </div>
   );

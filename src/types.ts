@@ -5,3 +5,5 @@ export interface DayDetail {
   duration: number;
   sessions?: Session[];
 }
+
+export type TimerType = "focus" | "break" | "long break";

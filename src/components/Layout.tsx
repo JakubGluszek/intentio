@@ -1,7 +1,9 @@
-import { appWindow } from "@tauri-apps/api/window";
 import React from "react";
+import { appWindow } from "@tauri-apps/api/window";
 import { IconType } from "react-icons";
 import { MdClose } from "react-icons/md";
+
+import Button from "./Button";
 
 interface Props {
   children: React.ReactNode;
@@ -21,9 +23,9 @@ const Layout: React.FC<Props> = ({ children, Icon, label }) => {
             <Icon size={32} />
             <span className="text-xl">{label}</span>
           </div>
-          <button className="btn btn-ghost" onClick={() => appWindow.close()}>
+          <Button transparent onClick={() => appWindow.close()}>
             <MdClose size={32} />
-          </button>
+          </Button>
         </div>
       </div>
 

@@ -1,4 +1,5 @@
 import { invoke } from "@tauri-apps/api/tauri";
+
 import { Theme } from "./bindings/Theme";
 
 export const formatTime = (sec: number): String => {

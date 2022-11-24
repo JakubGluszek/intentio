@@ -66,19 +66,6 @@
 }
 
 @layer components {
-  .btn {
-    @apply bg-base rounded flex flex-row items-center justify-center gap-2 px-4 py-1 text-primary brightness-90 hover:brightness-100 focus:brightness-100 tracking-widest uppercase;
-    font: bold;
-  }
-
-  .btn-ghost {
-    @apply bg-transparent px-0;
-  }
-
-  .btn-primary {
-    @apply bg-primary text-window;
-  }
-
   .card {
     @apply rounded hover:bg-base p-2;
   }

@@ -41,10 +41,10 @@ const useEvents = () => {
         removeProject(event.payload.id);
       }
     );
-    const updateCurrentThemeEvent = listen<string>(
+    const updateCurrentThemeEvent = listen<Theme>(
       "update_current_theme",
       (event) => {
-        applyTheme(JSON.parse(event.payload));
+        applyTheme(event.payload);
       }
     );
     const settingsUpdatedEvent = listen<Settings>(

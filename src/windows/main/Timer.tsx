@@ -5,13 +5,14 @@ import {
   ColorFormat,
   CountdownCircleTimer,
 } from "react-countdown-circle-timer";
+import toast from "react-hot-toast";
 
 import { formatTime, playAudio } from "../../utils";
 import { Settings } from "../../bindings/Settings";
 import useTimer from "./useTimer";
 import useGlobal from "../../store";
 import { ActiveQueue } from "../../bindings/ActiveQueue";
-import toast from "react-hot-toast";
+import Button from "../../components/Button";
 
 interface TimerProps {
   settings: Settings;
@@ -44,18 +45,20 @@ const Timer: React.FC<TimerProps> = ({ settings, activeQueue }) => {
               <span className="text-4xl">{formatTime(remainingTime)}</span>
             )}
           </CountdownCircleTimer>
-          <button
-            className="absolute bottom-3 left-[70px] btn btn-ghost opacity-0 group-hover:opacity-100 transition-opacity"
-            onClick={() => {
-              timer.restart();
-              toast("Session restarted", {
-                position: "top-center",
-                duration: 1200,
-              });
-            }}
-          >
-            <VscDebugRestart size={24} />
-          </button>
+          <div className="absolute bottom-3 left-[70px] btn btn-ghost opacity-0 group-hover:opacity-100 transition-opacity">
+            <Button
+              transparent
+              onClick={() => {
+                timer.restart();
+                toast("Session restarted", {
+                  position: "top-center",
+                  duration: 1200,
+                });
+              }}
+            >
+              <VscDebugRestart size={24} />
+            </Button>
+          </div>
         </div>
       )}
       <div className="flex flex-col items-center gap-0.5 text-sm brightness-75">
@@ -64,14 +67,14 @@ const Timer: React.FC<TimerProps> = ({ settings, activeQueue }) => {
           {timer.type === "focus"
             ? "Time to focus!"
             : timer.type === "break"
-              ? "Time for a break!"
-              : "Time for a longer break!"}
+            ? "Time for a break!"
+            : "Time for a longer break!"}
         </span>
       </div>
-      <div className="flex flex-row gap-2 w-full h-10">
+      <div className="flex flex-row items-center justify-center gap-2 w-full h-10">
         {timer.isRunning ? (
-          <button
-            className="btn w-full"
+          <Button
+            transparent
             onClick={() => {
               timer.pause();
               toast("Session paused", {
@@ -80,12 +83,11 @@ const Timer: React.FC<TimerProps> = ({ settings, activeQueue }) => {
               });
             }}
           >
-            <MdPauseCircle size={24} />
-            <span>STOP</span>
-          </button>
+            <MdPauseCircle size={48} />
+          </Button>
         ) : (
-          <button
-            className="btn w-full"
+          <Button
+            transparent
             onClick={() => {
               timer.start();
               toast("Session started", {
@@ -94,22 +96,23 @@ const Timer: React.FC<TimerProps> = ({ settings, activeQueue }) => {
               });
             }}
           >
-            <MdPlayCircle size={24} />
-            <span>START</span>
-          </button>
+            <MdPlayCircle size={48} />
+          </Button>
         )}
-        <button
-          className="btn"
-          onClick={() => {
-            timer.next(true);
-            toast("Session skipped", {
-              position: "top-center",
-              duration: 1200,
-            });
-          }}
-        >
-          <MdSkipNext size={24} />
-        </button>
+        <div className="z-10 fixed right-4 bottom-3 btn btn-ghost">
+          <Button
+            transparent
+            onClick={() => {
+              timer.next(true);
+              toast("Session skipped", {
+                position: "top-center",
+                duration: 1200,
+              });
+            }}
+          >
+            <MdSkipNext size={32} />
+          </Button>
+        </div>
       </div>
     </div>
   );

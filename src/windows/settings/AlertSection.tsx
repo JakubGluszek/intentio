@@ -12,16 +12,14 @@ import {
   MdVolumeOff,
   MdVolumeUp,
 } from "react-icons/md";
-
+import { Checkbox } from "@mantine/core";
 import { type } from "@tauri-apps/api/os";
 import { readDir, BaseDirectory, FileEntry } from "@tauri-apps/api/fs";
 
 import { Slider } from "../../components";
 import { Settings } from "../../bindings/Settings";
 import { ipc_invoke } from "../../ipc";
-import { Checkbox } from "@mantine/core";
-import useGlobal from "../../store";
-import { Project } from "../../bindings/Project";
+import Button from "../../components/Button";
 
 const AUDIO_FORMATS = [".mp3", ".ogg"];
 
@@ -121,19 +119,19 @@ const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
         <div className="flex flex-row items-center gap-4">
           <span className="text-sm">Sound</span>
           <div className="grow flex flex-row items-center justify-between px-2 bg-base group-hover:bg-window rounded">
-            <button className="btn btn-ghost" onClick={() => previousTrack()}>
+            <Button transparent onClick={() => previousTrack()}>
               <MdKeyboardArrowLeft size={24} />
-            </button>
+            </Button>
             <span className="text-xs">{currentTrack?.name ?? "-"}</span>
-            <button className="btn btn-ghost" onClick={() => nextTrack()}>
+            <Button transparent onClick={() => nextTrack()}>
               <MdKeyboardArrowRight size={24} />
-            </button>
+            </Button>
           </div>
           <OpenFileExplorerButton />
         </div>
         <div className="flex flex-row items-center gap-4">
-          <button
-            className="btn btn-ghost p-0"
+          <Button
+            transparent
             onClick={() => {
               ipc_invoke<Settings>("update_settings", {
                 data: {
@@ -154,7 +152,7 @@ const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
             ) : (
               <MdVolumeOff size={32} />
             )}
-          </button>
+          </Button>
           <Slider
             key={volumeKey}
             min={0}
@@ -171,19 +169,19 @@ const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
               })
             }
           />
-          <button className="btn btn-ghost" onClick={() => playAudio()}>
+          <Button transparent onClick={() => playAudio()}>
             {playingAudio ? (
               <MdPauseCircle size={32} />
             ) : (
               <MdPlayCircle size={32} />
             )}
-          </button>
+          </Button>
         </div>
         <div className="flex flex-row items-center gap-4">
           <span>Repeat</span>
           <div className="flex flex-row items-center px-2 gap-2 bg-base group-hover:bg-window rounded">
-            <button
-              className="btn btn-ghost"
+            <Button
+              transparent
               onClick={() =>
                 settings.alert_repeat > 1 &&
                 ipc_invoke<Settings>("update_settings", {
@@ -194,10 +192,10 @@ const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
               }
             >
               <MdRemove size={24} />
-            </button>
+            </Button>
             <span>{settings.alert_repeat}</span>
-            <button
-              className="btn btn-ghost"
+            <Button
+              transparent
               onClick={() =>
                 ipc_invoke<Settings>("update_settings", {
                   data: {
@@ -207,7 +205,7 @@ const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
               }
             >
               <MdAdd size={24} />
-            </button>
+            </Button>
           </div>
         </div>
         <div className="flex flex-row items-center justify-between pr-1">
@@ -241,11 +239,12 @@ const OpenFileExplorerButton: React.FC = () => {
   );
 
   return (
-    <button
-      className="btn btn-ghost"
+    <Button
+      transparent
       onClick={async () => {
         const osType = await type();
 
+        // TODO: Handle os type on backend using appropriate macros
         ipc_invoke("open_audio_directory", { osType });
       }}
       onMouseEnter={() => setFolderIcon("open")}
@@ -256,7 +255,7 @@ const OpenFileExplorerButton: React.FC = () => {
       ) : (
         <AiFillFolderOpen size={32} />
       )}
-    </button>
+    </Button>
   );
 };
 

@@ -11,6 +11,7 @@ import QueueIcon from "../../components/QueueIcon";
 import { Project } from "../../bindings/Project";
 import { Queue } from "../../bindings/Queue";
 import { ActiveQueue } from "../../bindings/ActiveQueue";
+import Button from "../../components/Button";
 
 const QueuesWindow: React.FC = () => {
   const [viewCreate, setViewCreate] = React.useState(false);
@@ -49,9 +50,9 @@ const QueuesWindow: React.FC = () => {
             </div>
             <span className="text-xl">Queues</span>
           </div>
-          <button className="btn btn-ghost" onClick={() => appWindow.close()}>
+          <Button transparent onClick={() => appWindow.close()}>
             <MdClose size={32} />
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -65,25 +66,19 @@ const QueuesWindow: React.FC = () => {
                 {activeQueue.name}
               </span>
             </div>
-            <button
-              className="btn btn-primary"
-              onClick={() => ipc_invoke("deactivate_queue")}
-            >
+            <Button onClick={() => ipc_invoke("deactivate_queue")}>
               Deactivate
-            </button>
+            </Button>
           </div>
         )}
 
         <div className="flex flex-col gap-4">
           {/* Create queue */}
           {!viewCreate ? (
-            <button
-              className="btn btn-primary w-fit"
-              onClick={() => setViewCreate(true)}
-            >
+            <Button onClick={() => setViewCreate(true)}>
               <MdAddCircle size={24} />
               <span>Create</span>
-            </button>
+            </Button>
           ) : (
             <CreateQueueView hide={() => setViewCreate(false)} />
           )}

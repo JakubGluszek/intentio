@@ -10,6 +10,7 @@ import {
 
 import useGlobal from "../../store";
 import { DayDetail } from "../../types";
+import Button from "../../components/Button";
 
 interface Props {
   filter: string;
@@ -81,15 +82,17 @@ const DetailsView: React.FC<Props> = ({ filter, setFilter }) => {
           className="input"
         />
         {filter.length > 0 && (
-          <button
-            className="absolute top-[25%] bottom-[25%] right-2 btn btn-ghost animate-in fade-in scale-90"
-            onClick={() => {
-              setFilter("");
-              setLimit(DETAILS_PAGINATION);
-            }}
-          >
-            <MdClose size={24} />
-          </button>
+          <div className="absolute top-[25%] bottom-[25%] right-2 animate-in fade-in scale-90">
+            <Button
+              transparent
+              onClick={() => {
+                setFilter("");
+                setLimit(DETAILS_PAGINATION);
+              }}
+            >
+              <MdClose size={24} />
+            </Button>
+          </div>
         )}
       </div>
       {/* Days */}
@@ -99,8 +102,8 @@ const DetailsView: React.FC<Props> = ({ filter, setFilter }) => {
         ))}
       </div>
       {limit < days_arr.length && (
-        <button
-          className="btn btn-ghost"
+        <Button
+          transparent
           onClick={() =>
             setLimit(
               limit + DETAILS_PAGINATION <= days_arr.length
@@ -110,7 +113,7 @@ const DetailsView: React.FC<Props> = ({ filter, setFilter }) => {
           }
         >
           Load more
-        </button>
+        </Button>
       )}
     </div>
   );
@@ -143,16 +146,13 @@ const DetailsDayView: React.FC<DetailsDayViewProps> = ({ data }) => {
           <IoMdTime size={24} />
           <span>{data.duration.toFixed(2)}h</span>
         </div>
-        <button
-          className="btn btn-ghost"
-          onClick={() => setViewSessions(!viewSessions)}
-        >
+        <Button transparent onClick={() => setViewSessions(!viewSessions)}>
           {viewSessions ? (
             <MdKeyboardArrowUp size={24} />
           ) : (
             <MdKeyboardArrowDown size={24} />
           )}
-        </button>
+        </Button>
       </div>
       {/* Sessions */}
       {viewSessions && (

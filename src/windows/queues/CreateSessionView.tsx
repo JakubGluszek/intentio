@@ -7,6 +7,7 @@ import { Select, Slider } from "@mantine/core";
 import { QueueSession } from "../../bindings/QueueSession";
 import useGlobal from "../../store";
 import { WebviewConfig } from "../../config";
+import Button from "../../components/Button";
 
 interface Props {
   hide: () => void;
@@ -86,8 +87,8 @@ const CreateSessionView: React.FC<Props> = ({ hide, save }) => {
                 },
               }}
             />
-            <button
-              className="btn btn-ghost"
+            <Button
+              transparent
               onClick={() =>
                 new WebviewWindow("projects", {
                   url: "/projects",
@@ -99,7 +100,7 @@ const CreateSessionView: React.FC<Props> = ({ hide, save }) => {
               }
             >
               <MdAddCircle size={32} />
-            </button>
+            </Button>
           </div>
           <div className="flex flex-row items-center gap-4">
             <label className="min-w-[80px]" htmlFor="session-cycles">
@@ -122,18 +123,17 @@ const CreateSessionView: React.FC<Props> = ({ hide, save }) => {
         </div>
         {/* Controls */}
         <div className="flex flex-row items-center justify-between">
-          <button className="btn btn-ghost" onClick={() => hide()}>
+          <Button transparent onClick={() => hide()}>
             Cancel
-          </button>
-          <button
+          </Button>
+          <Button
             type="submit"
-            className="btn btn-primary"
             onClick={() =>
               save({ id: cuid(), duration, cycles, project_id: projectId })
             }
           >
             Add
-          </button>
+          </Button>
         </div>
       </div>
     </div>
