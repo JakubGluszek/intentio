@@ -5,8 +5,8 @@ import { MdAddCircle, MdDelete } from "react-icons/md";
 
 import { Queue } from "../../bindings/Queue";
 import { QueueSession } from "../../bindings/QueueSession";
-import { ipc_invoke } from "../../ipc";
-import useGlobal from "../../store";
+import { ipc_invoke } from "../../app/ipc";
+import useGlobal from "../../app/store";
 import CreateSessionView from "./CreateSessionView";
 import Button from "../../components/Button";
 

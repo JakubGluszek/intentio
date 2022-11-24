@@ -8,7 +8,7 @@ import {
   MdKeyboardArrowUp,
 } from "react-icons/md";
 
-import useGlobal from "../../store";
+import useGlobal from "../../app/store";
 import { DayDetail } from "../../types";
 import Button from "../../components/Button";
 

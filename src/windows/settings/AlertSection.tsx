@@ -18,7 +18,7 @@ import { readDir, BaseDirectory, FileEntry } from "@tauri-apps/api/fs";
 
 import { Slider } from "../../components";
 import { Settings } from "../../bindings/Settings";
-import { ipc_invoke } from "../../ipc";
+import { ipc_invoke } from "../../app/ipc";
 import Button from "../../components/Button";
 
 const AUDIO_FORMATS = [".mp3", ".ogg"];
@@ -116,6 +116,26 @@ const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
         </div>
       </div>
       <div className="group card flex flex-col gap-3">
+        <div className="flex flex-row items-center justify-between pr-1">
+          <label htmlFor="system-notifications">System notifications</label>
+          <Checkbox
+            size="md"
+            id="system-notifications"
+            defaultChecked={settings.system_notifications}
+            onChange={(value) =>
+              ipc_invoke("update_settings", {
+                data: {
+                  system_notifications: value.currentTarget.checked,
+                },
+              })
+            }
+            styles={{ icon: { color: "var(--primary-color) !important" } }}
+            classNames={{
+              input:
+                "border-primary checked:border-primary bg-transparent checked:bg-transparent border-2",
+            }}
+          />
+        </div>
         <div className="flex flex-row items-center gap-4">
           <span className="text-sm">Sound</span>
           <div className="grow flex flex-row items-center justify-between px-2 bg-base group-hover:bg-window rounded">
@@ -207,26 +227,6 @@ const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
               <MdAdd size={24} />
             </Button>
           </div>
-        </div>
-        <div className="flex flex-row items-center justify-between pr-1">
-          <label htmlFor="system-notifications">System notifications</label>
-          <Checkbox
-            size="md"
-            id="system-notifications"
-            defaultChecked={settings.system_notifications}
-            onChange={(value) =>
-              ipc_invoke("update_settings", {
-                data: {
-                  system_notifications: value.currentTarget.checked,
-                },
-              })
-            }
-            styles={{ icon: { color: "var(--primary-color) !important" } }}
-            classNames={{
-              input:
-                "border-primary checked:border-primary bg-transparent checked:bg-transparent border-2",
-            }}
-          />
         </div>
       </div>
     </div>

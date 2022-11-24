@@ -10,7 +10,7 @@ import toast from "react-hot-toast";
 import { formatTime, playAudio } from "../../utils";
 import { Settings } from "../../bindings/Settings";
 import useTimer from "./useTimer";
-import useGlobal from "../../store";
+import useGlobal from "../../app/store";
 import { ActiveQueue } from "../../bindings/ActiveQueue";
 import Button from "../../components/Button";
 

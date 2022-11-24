@@ -6,9 +6,9 @@ import { Tabs } from "@mantine/core";
 
 import { Session } from "../../bindings/Session";
 import Layout from "../../components/Layout";
-import { ipc_invoke } from "../../ipc";
-import ActivityView from "../../components/ActivityView";
-import useGlobal from "../../store";
+import { ipc_invoke } from "../../app/ipc";
+import ActivityView from "./ActivityView";
+import useGlobal from "../../app/store";
 import DetailsView from "./DetailsView";
 import ProjectsView from "./ProjectsView";
 import { Project } from "../../bindings/Project";
@@ -84,7 +84,7 @@ const AnalyticsWindow: React.FC = () => {
   }, [activeTab]);
 
   return (
-    <Layout Icon={MdAnalytics} label="Analytics">
+    <Layout Icon={<MdAnalytics size={32} />} label="Analytics">
       <ActivityView
         sessions={sessions}
         setDetailsView={(date: string) => {

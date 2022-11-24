@@ -1,11 +1,11 @@
 import create from "zustand";
 
-import { ActiveQueue } from "./bindings/ActiveQueue";
-import { Project } from "./bindings/Project";
-import { Queue } from "./bindings/Queue";
-import { Session } from "./bindings/Session";
-import { Settings } from "./bindings/Settings";
-import { Theme } from "./bindings/Theme";
+import { ActiveQueue } from "../bindings/ActiveQueue";
+import { Project } from "../bindings/Project";
+import { Queue } from "../bindings/Queue";
+import { Session } from "../bindings/Session";
+import { Settings } from "../bindings/Settings";
+import { Theme } from "../bindings/Theme";
 
 interface State {
   settings?: Settings;

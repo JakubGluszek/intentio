@@ -5,11 +5,12 @@ import { useAutoAnimate } from "@formkit/auto-animate/react";
 import autoAnimate from "@formkit/auto-animate";
 
 import { Project } from "../../bindings/Project";
-import { ipc_invoke } from "../../ipc";
-import useGlobal from "../../store";
+import { ipc_invoke } from "../../app/ipc";
+import useGlobal from "../../app/store";
 import { ModelDeleteResultData } from "../../bindings/ModelDeleteResultData";
 import { Settings } from "../../bindings/Settings";
 import Button from "../../components/Button";
+import Layout from "../../components/Layout";
 
 const ProjectsWindow: React.FC = () => {
   const projects = useGlobal((state) => state.projects);
@@ -59,16 +60,7 @@ const ProjectsWindow: React.FC = () => {
   };
 
   return (
-    <div className="w-screen min-h-screen flex flex-col p-4 gap-2">
-      <div
-        data-tauri-drag-region
-        className="z-[1000] sticky top-0 flex flex-row items-center justify-between p-1 bg-window"
-      >
-        <span className="text-lg">Projects</span>
-        <Button transparent onClick={() => appWindow.close()}>
-          <MdClose size={32} />
-        </Button>
-      </div>
+    <Layout label="Projects">
       <div className="flex flex-col gap-4 p-1">
         {viewCreate ? (
           <div className="flex flex-row items-center gap-2">
@@ -105,7 +97,7 @@ const ProjectsWindow: React.FC = () => {
           ))}
         </div>
       </div>
-    </div>
+    </Layout>
   );
 };
 

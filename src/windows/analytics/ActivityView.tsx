@@ -3,8 +3,8 @@ import Color from "color";
 import ActivityCalendar, { Day } from "react-activity-calendar";
 import ReactTooltip from "react-tooltip";
 
-import { Session } from "../bindings/Session";
-import useGlobal from "../store";
+import { Session } from "../../bindings/Session";
+import useGlobal from "../../app/store";
 
 interface Props {
   sessions: Session[];

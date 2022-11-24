@@ -5,8 +5,8 @@ import { WebviewWindow } from "@tauri-apps/api/window";
 import { Select, Slider } from "@mantine/core";
 
 import { QueueSession } from "../../bindings/QueueSession";
-import useGlobal from "../../store";
-import { WebviewConfig } from "../../config";
+import useGlobal from "../../app/store";
+import { WebviewConfig } from "../../app/config";
 import Button from "../../components/Button";
 
 interface Props {

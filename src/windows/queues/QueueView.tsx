@@ -21,9 +21,9 @@ import toast from "react-hot-toast";
 
 import { Queue } from "../../bindings/Queue";
 import { QueueSession } from "../../bindings/QueueSession";
-import useGlobal from "../../store";
+import useGlobal from "../../app/store";
 import CreateSessionView from "./CreateSessionView";
-import { ipc_invoke } from "../../ipc";
+import { ipc_invoke } from "../../app/ipc";
 import { ModelDeleteResultData } from "../../bindings/ModelDeleteResultData";
 import { ActiveQueue } from "../../bindings/ActiveQueue";
 import Button from "../../components/Button";

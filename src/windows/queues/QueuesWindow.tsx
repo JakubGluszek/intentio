@@ -1,17 +1,17 @@
 import React from "react";
-import { MdAddCircle, MdClose } from "react-icons/md";
-import { appWindow } from "@tauri-apps/api/window";
+import { MdAddCircle } from "react-icons/md";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 import QueueView from "./QueueView";
-import useGlobal from "../../store";
+import useGlobal from "../../app/store";
 import CreateQueueView from "./CreateQueueView";
-import { ipc_invoke } from "../../ipc";
+import { ipc_invoke } from "../../app/ipc";
 import QueueIcon from "../../components/QueueIcon";
 import { Project } from "../../bindings/Project";
 import { Queue } from "../../bindings/Queue";
 import { ActiveQueue } from "../../bindings/ActiveQueue";
 import Button from "../../components/Button";
+import Layout from "../../components/Layout";
 
 const QueuesWindow: React.FC = () => {
   const [viewCreate, setViewCreate] = React.useState(false);
@@ -37,26 +37,15 @@ const QueuesWindow: React.FC = () => {
   }, []);
 
   return (
-    <div className="w-screen min-h-screen flex flex-col">
-      {/* Window Header */}
-      <div className="z-[20] sticky top-0 flex flex-col gap-2 bg-window px-4 py-2">
-        <div
-          data-tauri-drag-region
-          className="flex flex-row items-center justify-between"
-        >
-          <div className="flex flex-row items-center gap-2">
-            <div className="w-8 h-fit">
-              <QueueIcon />
-            </div>
-            <span className="text-xl">Queues</span>
-          </div>
-          <Button transparent onClick={() => appWindow.close()}>
-            <MdClose size={32} />
-          </Button>
+    <Layout
+      Icon={
+        <div className="w-8 h-fit">
+          <QueueIcon />
         </div>
-      </div>
-
-      <div className="flex flex-col gap-6 p-4 py-2">
+      }
+      label="Queues"
+    >
+      <div className="flex flex-col gap-6 py-2">
         {/* Active queue */}
         {activeQueue && (
           <div className="flex flex-col gap-2 p-2 bg-base rounded">
@@ -91,7 +80,7 @@ const QueuesWindow: React.FC = () => {
           </div>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 };
 

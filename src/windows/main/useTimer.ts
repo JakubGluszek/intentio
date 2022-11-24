@@ -5,12 +5,13 @@ import { sendNotification } from "@tauri-apps/api/notification";
 import { ActiveQueue } from "../../bindings/ActiveQueue";
 import { Queue } from "../../bindings/Queue";
 import { Settings } from "../../bindings/Settings";
-import { ipc_invoke } from "../../ipc";
-import useGlobal from "../../store";
+import { ipc_invoke } from "../../app/ipc";
+import useGlobal from "../../app/store";
 import { TimerType } from "../../types";
+import { MIN_SESSION_DURATION } from "../../app/config";
 
 const useTimer = (settings: Settings, queue: ActiveQueue | null) => {
-  // key is needed to reset timer components inner state
+  // custom key is needed to reset timer components inner state
   const [key, setKey] = React.useState("focus");
   const [type, setType] = React.useState<TimerType>("focus");
   const [duration, setDuration] = React.useState(
@@ -24,6 +25,7 @@ const useTimer = (settings: Settings, queue: ActiveQueue | null) => {
   const [iterations, setIterations] = React.useState(0);
 
   const currentProject = useGlobal((state) => state.currentProject);
+
   const setCurrentProjectById = useGlobal(
     (state) => state.setCurrentProjectById
   );
@@ -32,21 +34,24 @@ const useTimer = (settings: Settings, queue: ActiveQueue | null) => {
   const queueRef = React.useRef<Queue | null>(null);
 
   React.useEffect(() => {
+    // set session for a new qeueue
     if (!queueRef.current && queue) {
       setDuration(queue.sessions[queue.session_idx].duration);
       setCurrentProjectById(queue.sessions[queue.session_idx].project_id);
       setType("focus");
-      setKey("focus");
+      setKey("focus-queue");
+      // unset queue, set session from settings
     } else if (queueRef.current && !queue) {
       setCurrentProjectById(settings.current_project_id);
       setDuration(settings.pomodoro_duration);
       setType("focus");
       setKey("focus");
+      // set a different queue
     } else if (queue && queue.id !== queueRef.current?.id) {
       setDuration(queue.sessions[queue.session_idx].duration);
       setCurrentProjectById(queue.sessions[queue.session_idx].project_id);
       setType("focus");
-      setKey("focus");
+      setKey("focus-queue-other");
     }
     queueRef.current = queue;
   }, [queue]);
@@ -110,9 +115,9 @@ const useTimer = (settings: Settings, queue: ActiveQueue | null) => {
     [type]
   );
 
-  /** Saves a focus session if it's at least 1 min long */
+  /** Saves a focus session */
   const save = React.useCallback(() => {
-    if (type !== "focus" || timeFocused < 60) return;
+    if (type !== "focus" || timeFocused < MIN_SESSION_DURATION * 60) return;
 
     ipc_invoke("create_session", {
       data: {

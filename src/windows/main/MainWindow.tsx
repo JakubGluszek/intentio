@@ -3,11 +3,11 @@ import { MdSettings, MdAnalytics, MdRemove, MdClose } from "react-icons/md";
 import { appWindow, WebviewWindow } from "@tauri-apps/api/window";
 
 import Timer from "./Timer";
-import useGlobal from "../../store";
+import useGlobal from "@/app/store";
 import QueueIcon from "../../components/QueueIcon";
-import { ipc_invoke } from "../../ipc";
+import { ipc_invoke } from "../../app/ipc";
 import { ActiveQueue } from "../../bindings/ActiveQueue";
-import { WebviewConfig } from "../../config";
+import { WebviewConfig } from "../../app/config";
 import Button from "../../components/Button";
 
 const MainWindow: React.FC = () => {

@@ -4,7 +4,7 @@ import { IoIosBug, IoIosGlobe, IoLogoGithub } from "react-icons/io";
 import { Tooltip } from "@mantine/core";
 
 import Button from "../../components/Button";
-import { ABOUT_DATA as data } from "../../config";
+import { ABOUT_DATA as data } from "../../app/config";
 
 const AboutSection: React.FC = () => {
   return (

@@ -5,7 +5,7 @@ import { Checkbox } from "@mantine/core";
 import { formatTime } from "../../utils";
 import { Slider } from "../../components";
 import { Settings } from "../../bindings/Settings";
-import { ipc_invoke } from "../../ipc";
+import { ipc_invoke } from "../../app/ipc";
 import { SettingsForUpdate } from "../../bindings/SettingsForUpdate";
 
 interface Props {

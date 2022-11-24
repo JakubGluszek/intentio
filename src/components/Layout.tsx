@@ -1,13 +1,12 @@
 import React from "react";
 import { appWindow } from "@tauri-apps/api/window";
-import { IconType } from "react-icons";
 import { MdClose } from "react-icons/md";
 
 import Button from "./Button";
 
 interface Props {
   children: React.ReactNode;
-  Icon: IconType;
+  Icon?: React.ReactNode;
   label: string;
 }
 
@@ -20,7 +19,7 @@ const Layout: React.FC<Props> = ({ children, Icon, label }) => {
           className="flex flex-row items-center justify-between"
         >
           <div className="flex flex-row items-center gap-2">
-            <Icon size={32} />
+            {Icon ?? null}
             <span className="text-xl">{label}</span>
           </div>
           <Button transparent onClick={() => appWindow.close()}>
@@ -29,7 +28,7 @@ const Layout: React.FC<Props> = ({ children, Icon, label }) => {
         </div>
       </div>
 
-      {children}
+      <div className="grow flex flex-col px-4">{children}</div>
     </div>
   );
 };

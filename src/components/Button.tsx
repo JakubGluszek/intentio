@@ -9,17 +9,20 @@ interface Props extends HTMLMotionProps<"button"> {
 }
 
 const Button: React.FC<Props> = (props) => {
-  const { children, transparent, innerRef, ...restProps } = props;
+  const { children, transparent, innerRef, disabled, ...restProps } = props;
 
   return (
     <motion.button
       className={clsx(
-        "flex flex-row items-center justify-center font-bold gap-2 py-1 brightness-[80%] hover:brightness-100 tracking-widest uppercase",
+        "flex flex-row items-center justify-center brightness-[85%] hover:brightness-100 font-bold gap-2 py-1 tracking-widest uppercase",
         transparent
           ? "bg-transparent text-primary"
           : "bg-primary px-4 text-window rounded"
       )}
-      whileHover={{ scale: transparent ? 1.05 : undefined }}
+      disabled={disabled}
+      whileHover={{
+        scale: transparent && !disabled ? 1.05 : undefined,
+      }}
       whileTap={{ scale: 0.95 }}
       ref={innerRef}
       {...restProps}

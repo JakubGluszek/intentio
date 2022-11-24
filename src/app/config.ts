@@ -13,3 +13,6 @@ export const ABOUT_DATA = {
   sourceCode: "https://github.com/JakubGluszek/sentio",
   homePage: "https://sentio.dev",
 };
+
+/** Time in minutes */
+export const MIN_SESSION_DURATION = 1;

@@ -8,7 +8,7 @@ import {
 } from "react-icons/md";
 import { Project } from "../../bindings/Project";
 
-import useGlobal from "../../store";
+import useGlobal from "../../app/store";
 import { DayDetail } from "../../types";
 import Button from "../../components/Button";
 
