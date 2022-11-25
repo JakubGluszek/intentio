@@ -24,12 +24,15 @@ const MainWindow: React.FC = () => {
   }, []);
 
   return (
-    <div className="relative w-screen h-screen flex flex-col p-4">
+    <div className="relative w-screen h-screen flex flex-col">
       <div
         data-tauri-drag-region
-        className="h-10 flex flex-row items-center justify-between"
+        className="flex flex-row items-center justify-between px-4 pt-4"
       >
-        <div className="flex flex-row items-center gap-2">
+        <div
+          data-tauri-drag-region
+          className="flex flex-row items-center gap-2"
+        >
           <Button
             transparent
             onClick={() =>
@@ -73,7 +76,7 @@ const MainWindow: React.FC = () => {
           <Timer settings={settings} activeQueue={activeQueue} />
         )}
       </div>
-      <div className="relative h-10 flex flex-row items-center justify-between">
+      <div className="relative h-10 flex flex-row items-center justify-between px-4 pb-4">
         <Button
           transparent
           onClick={() =>

@@ -20,10 +20,7 @@ const Button: React.FC<Props> = (props) => {
           : "bg-primary px-4 text-window rounded"
       )}
       disabled={disabled}
-      whileHover={{
-        scale: transparent && !disabled ? 1.05 : undefined,
-      }}
-      whileTap={{ scale: 0.95 }}
+      whileTap={{ scale: transparent ? 0.9 : 0.975 }}
       ref={innerRef}
       {...restProps}
     >

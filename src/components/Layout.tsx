@@ -13,10 +13,13 @@ interface Props {
 const Layout: React.FC<Props> = ({ children, Icon, label }) => {
   return (
     <div className="w-screen min-h-screen flex flex-col gap-2">
-      <div className="z-[9999] sticky top-0 flex flex-col gap-2 bg-window px-4 py-2">
+      <div
+        data-tauri-drag-region
+        className="z-[2000] sticky top-0 flex flex-col gap-2 bg-window px-4 py-2"
+      >
         <div
           data-tauri-drag-region
-          className="flex flex-row items-center justify-between"
+          className="z-[3000] flex flex-row items-center justify-between"
         >
           <div className="flex flex-row items-center gap-2">
             {Icon ?? null}
