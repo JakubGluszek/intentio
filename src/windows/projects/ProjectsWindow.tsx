@@ -1,22 +1,18 @@
 import React from "react";
-import { appWindow } from "@tauri-apps/api/window";
-import { MdAddCircle, MdClose, MdDelete } from "react-icons/md";
+import { MdAddCircle, MdClose } from "react-icons/md";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
-import autoAnimate from "@formkit/auto-animate";
 
 import { Project } from "../../bindings/Project";
 import { ipc_invoke } from "../../app/ipc";
 import useGlobal from "../../app/store";
-import { ModelDeleteResultData } from "../../bindings/ModelDeleteResultData";
-import { Settings } from "../../bindings/Settings";
 import Button from "../../components/Button";
 import Layout from "../../components/Layout";
+import ProjectView from "./ProjectView";
 
 const ProjectsWindow: React.FC = () => {
   const projects = useGlobal((state) => state.projects);
   const setProjects = useGlobal((state) => state.setProjects);
   const currentProject = useGlobal((state) => state.currentProject);
-  const removeProject = useGlobal((state) => state.removeProject);
 
   const [viewCreate, setViewCreate] = React.useState(false);
 
@@ -45,19 +41,6 @@ const ProjectsWindow: React.FC = () => {
       .then((res) => setProjects(res.data))
       .catch((err) => console.log(err));
   }, []);
-
-  const deleteProject = async (id: string) => {
-    const res = await ipc_invoke<ModelDeleteResultData>("delete_project", {
-      id,
-    });
-    removeProject(res.data.id);
-  };
-
-  const updateCurrentProject = async (id: string | null) => {
-    await ipc_invoke<Settings>("update_settings", {
-      data: { current_project_id: id },
-    });
-  };
 
   return (
     <Layout label="Projects">
@@ -90,93 +73,12 @@ const ProjectsWindow: React.FC = () => {
             <ProjectView
               key={project.id}
               data={project}
-              deleteProject={deleteProject}
-              selectProject={updateCurrentProject}
               selected={currentProject?.id === project.id}
             />
           ))}
         </div>
       </div>
     </Layout>
-  );
-};
-
-interface ProjectViewProps {
-  data: Project;
-  deleteProject: (id: string) => void;
-  selectProject: (id: string | null) => void;
-  selected: boolean;
-}
-
-const ProjectView: React.FC<ProjectViewProps> = ({
-  data,
-  deleteProject,
-  selectProject,
-  selected,
-}) => {
-  const [viewDelete, setViewDelete] = React.useState(false);
-
-  const delRef = React.useRef<HTMLDivElement | null>(null);
-  const parent = React.useRef<HTMLDivElement | null>(null);
-
-  React.useEffect(() => {
-    parent.current && autoAnimate(parent.current);
-  }, [parent]);
-
-  React.useEffect(() => {
-    if (viewDelete) {
-      delRef.current?.scrollIntoView({ block: "center" });
-    }
-  }, [viewDelete]);
-
-  return (
-    <div
-      ref={parent}
-      className="group flex flex-col gap-2 bg-base rounded overflow-clip"
-    >
-      <div
-        className={`group cursor-pointer flex flex-row items-center justify-between transition-colors ${
-          selected && "bg-primary text-window"
-        }`}
-      >
-        <p
-          className="w-full p-2"
-          onClick={async () => selectProject(!selected ? data.id : null)}
-        >
-          {data.name}
-        </p>
-        <div className="transition-opacity opacity-0 group-hover:opacity-100 mr-2">
-          <Button
-            transparent
-            onClick={() => setViewDelete(!viewDelete)}
-            style={{ color: selected ? "var(--window-color)" : undefined }}
-          >
-            <MdDelete size={24} />
-          </Button>
-        </div>
-      </div>
-      {viewDelete && (
-        <div
-          ref={delRef}
-          className="flex flex-col gap-2 text-sm text-center p-1 py-2"
-        >
-          <p>Are you sure you want to delete this project?</p>
-          <p>Focused hours will get orphaned.</p>
-          <div className="flex flex-row items-center justify-between p-2">
-            <Button
-              transparent
-              style={{ marginLeft: 8 }}
-              onClick={() => setViewDelete(false)}
-            >
-              Cancel
-            </Button>
-            <Button onClick={async () => deleteProject(data.id)}>
-              Confirm
-            </Button>
-          </div>
-        </div>
-      )}
-    </div>
   );
 };
 

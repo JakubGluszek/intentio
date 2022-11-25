@@ -25,8 +25,11 @@ const MainWindow: React.FC = () => {
   }, []);
 
   const Header = (
-    <>
-      <div data-tauri-drag-region className="flex flex-row items-center gap-2">
+    <div
+      className="w-full flex flex-row items-center justify-between"
+      data-tauri-drag-region
+    >
+      <div className="flex flex-row items-center gap-2">
         <Button
           transparent
           onClick={() =>
@@ -64,7 +67,7 @@ const MainWindow: React.FC = () => {
           <MdClose size={32} />
         </Button>
       </div>
-    </>
+    </div>
   );
 
   return (

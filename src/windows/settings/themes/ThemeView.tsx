@@ -6,10 +6,11 @@ import { useForm, UseFormWatch } from "react-hook-form";
 import { Theme } from "@/bindings/Theme";
 import Button from "@/components/Button";
 import { Settings } from "@/bindings/Settings";
-import { DeleteData, ipc_invoke } from "@/app/ipc";
+import { ipc_invoke } from "@/app/ipc";
 import useGlobal from "@/app/store";
 import { ThemeFormData } from "@/types";
 import ThemeFormInputs from "./ThemeFormInputs";
+import { ModelDeleteResultData } from "@/bindings/ModelDeleteResultData";
 
 interface ThemeViewProps {
   theme: Theme;
@@ -44,7 +45,9 @@ const ThemeView: React.FC<ThemeViewProps> = ({ theme }) => {
   });
 
   const deleteTheme = async () => {
-    const res = await ipc_invoke<DeleteData>("delete_theme", { id: theme.id });
+    const res = await ipc_invoke<ModelDeleteResultData>("delete_theme", {
+      id: theme.id,
+    });
     removeTheme(res.data.id);
     setViewDelete(false);
   };

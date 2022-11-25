@@ -23,22 +23,20 @@ const Layout: React.FC<Props> = ({ children, Icon, label, headerContent }) => {
         data-tauri-drag-region
         className="z-[2000] sticky top-0 flex flex-col gap-2 bg-window px-4 py-2"
       >
-        <div
-          data-tauri-drag-region
-          className="z-[3000] flex flex-row items-center justify-between"
-        >
-          {headerContent ?? (
-            <>
-              <div className="flex flex-row items-center gap-2">
-                {Icon ?? null}
-                <span className="text-xl">{label}</span>
-              </div>
-              <Button transparent onClick={() => appWindow.close()}>
-                <MdClose size={32} />
-              </Button>
-            </>
-          )}
-        </div>
+        {headerContent ?? (
+          <div
+            data-tauri-drag-region
+            className="z-[3000] flex flex-row items-center justify-between"
+          >
+            <div className="flex flex-row items-center gap-2">
+              {Icon ?? null}
+              <span className="text-xl">{label}</span>
+            </div>
+            <Button transparent onClick={() => appWindow.close()}>
+              <MdClose size={32} />
+            </Button>
+          </div>
+        )}
       </div>
 
       <div className="grow flex flex-col px-4">{children}</div>

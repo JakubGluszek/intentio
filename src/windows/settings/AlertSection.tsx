@@ -42,6 +42,7 @@ const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
     readTracks();
   }, []);
 
+  // Reads files in audio directory matchings the specified file formats
   const readTracks = () => {
     readDir("assets/audio", {
       dir: BaseDirectory.Resource,
