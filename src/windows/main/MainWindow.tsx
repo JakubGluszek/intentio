@@ -9,6 +9,7 @@ import { ipc_invoke } from "../../app/ipc";
 import { ActiveQueue } from "../../bindings/ActiveQueue";
 import { WebviewConfig } from "../../app/config";
 import Button from "../../components/Button";
+import Layout from "@/components/Layout";
 
 const MainWindow: React.FC = () => {
   const settings = useGlobal((state) => state.settings);
@@ -23,60 +24,57 @@ const MainWindow: React.FC = () => {
     );
   }, []);
 
-  return (
-    <div className="relative w-screen h-screen flex flex-col">
-      <div
-        data-tauri-drag-region
-        className="flex flex-row items-center justify-between px-4 pt-4"
-      >
-        <div
-          data-tauri-drag-region
-          className="flex flex-row items-center gap-2"
+  const Header = (
+    <>
+      <div data-tauri-drag-region className="flex flex-row items-center gap-2">
+        <Button
+          transparent
+          onClick={() =>
+            new WebviewWindow("settings", {
+              url: "/settings",
+              title: "Settings",
+              width: 328,
+              height: 480,
+              ...WebviewConfig,
+            })
+          }
         >
-          <Button
-            transparent
-            onClick={() =>
-              new WebviewWindow("settings", {
-                url: "/settings",
-                title: "Settings",
-                width: 328,
-                height: 480,
-                ...WebviewConfig,
-              })
-            }
-          >
-            <MdSettings size={32} />
-          </Button>
-          <Button
-            transparent
-            onClick={() =>
-              new WebviewWindow("analytics", {
-                url: "/analytics",
-                title: "Analytics",
-                width: 460,
-                height: 420,
-                ...WebviewConfig,
-              })
-            }
-          >
-            <MdAnalytics size={32} />
-          </Button>
-        </div>
-        <div className="flex flex-row items-center gap-2">
-          <Button transparent onClick={() => appWindow.minimize()}>
-            <MdRemove size={32} />
-          </Button>
-          <Button transparent onClick={() => appWindow.close()}>
-            <MdClose size={32} />
-          </Button>
-        </div>
+          <MdSettings size={32} />
+        </Button>
+        <Button
+          transparent
+          onClick={() =>
+            new WebviewWindow("analytics", {
+              url: "/analytics",
+              title: "Analytics",
+              width: 460,
+              height: 420,
+              ...WebviewConfig,
+            })
+          }
+        >
+          <MdAnalytics size={32} />
+        </Button>
       </div>
+      <div className="flex flex-row items-center gap-2">
+        <Button transparent onClick={() => appWindow.minimize()}>
+          <MdRemove size={32} />
+        </Button>
+        <Button transparent onClick={() => appWindow.close()}>
+          <MdClose size={32} />
+        </Button>
+      </div>
+    </>
+  );
+
+  return (
+    <Layout headerContent={Header}>
       <div className="grow flex flex-col p-4">
         {settings && activeQueue !== undefined && (
           <Timer settings={settings} activeQueue={activeQueue} />
         )}
       </div>
-      <div className="relative h-10 flex flex-row items-center justify-between px-4 pb-4">
+      <div className="relative h-10 flex flex-row items-center justify-between pb-4">
         <Button
           transparent
           onClick={() =>
@@ -119,7 +117,7 @@ const MainWindow: React.FC = () => {
           {currentProject?.name ?? "-"}
         </Button>
       </div>
-    </div>
+    </Layout>
   );
 };
 
