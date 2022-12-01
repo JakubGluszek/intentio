@@ -2,14 +2,14 @@ import React from "react";
 import { MdSettings, MdAnalytics, MdRemove, MdClose } from "react-icons/md";
 import { appWindow, WebviewWindow } from "@tauri-apps/api/window";
 
-import Timer from "./Timer";
 import useGlobal from "@/app/store";
-import QueueIcon from "../../components/QueueIcon";
-import { ipc_invoke } from "../../app/ipc";
-import { ActiveQueue } from "../../bindings/ActiveQueue";
-import { WebviewConfig } from "../../app/config";
-import Button from "../../components/Button";
 import Layout from "@/components/Layout";
+import QueueIcon from "@/components/QueueIcon";
+import Button from "@/components/Button";
+import { ipc_invoke } from "@/app/ipc";
+import { ActiveQueue } from "@/bindings/ActiveQueue";
+import { WebviewConfig } from "@/app/config";
+import Timer from "./timer";
 
 const MainWindow: React.FC = () => {
   const settings = useGlobal((state) => state.settings);
@@ -60,7 +60,7 @@ const MainWindow: React.FC = () => {
         </Button>
       </div>
       <div className="flex flex-row items-center gap-2">
-        <Button transparent onClick={() => appWindow.minimize()}>
+        <Button transparent onClick={() => appWindow.hide()}>
           <MdRemove size={32} />
         </Button>
         <Button transparent onClick={() => appWindow.close()}>

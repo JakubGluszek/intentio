@@ -93,7 +93,7 @@ fn handle_on_system_tray_event(app: &tauri::AppHandle, event: SystemTrayEvent) {
             }
             "open" => {
                 let window = app.get_window("main").unwrap();
-                window.unminimize().unwrap();
+                window.show().unwrap();
             }
             _ => {}
         }

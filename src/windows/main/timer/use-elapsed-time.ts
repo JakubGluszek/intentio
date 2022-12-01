@@ -1,5 +1,4 @@
-import { useState, useRef, useCallback, useEffect } from "react";
-import { useIsomorphicEffect } from "./useIsomorphicEffect";
+import React from "react";
 
 type MayBe<T> = T | null;
 
@@ -42,17 +41,19 @@ export const useElapsedTime = ({
   onComplete,
   onUpdate,
 }: Props): ReturnValue => {
-  const [displayTime, setDisplayTime] = useState(startAt);
-  const elapsedTimeRef = useRef(0);
-  const startAtRef = useRef(startAt);
-  const totalElapsedTimeRef = useRef(startAt * -1000); // keep in milliseconds to avoid summing up floating point numbers
-  const requestRef = useRef<MayBe<number>>(null);
-  const previousTimeRef = useRef<MayBe<number>>(null);
-  const repeatTimeoutRef = useRef<MayBe<NodeJS.Timeout>>(null);
-  const [bgInterval, setBgInterval] = useState<NodeJS.Timer>();
-  const visibilityRef = useRef(true);
-  const tempTimerRef = useRef(0);
-  const startedTimerRef = useRef(Date.now());
+  const [displayTime, setDisplayTime] = React.useState(startAt);
+  const elapsedTimeRef = React.useRef(0);
+  const startAtRef = React.useRef(startAt);
+  const totalElapsedTimeRef = React.useRef(startAt * -1000); // keep in milliseconds to avoid summing up floating point numbers
+  const requestRef = React.useRef<MayBe<number>>(null);
+  const previousTimeRef = React.useRef<MayBe<number>>(null);
+  const repeatTimeoutRef = React.useRef<MayBe<NodeJS.Timeout>>(null);
+  const [bgInterval, setBgInterval] = React.useState<NodeJS.Timer>();
+  const visibilityRef = React.useRef(true);
+  const prevVisibilityRef = React.useRef(true);
+  const tempTimerRef = React.useRef(0);
+  const startedTimerRef = React.useRef(Date.now());
+  const stoppedTimerRef = React.useRef(Date.now());
 
   const loop = (time: number) => {
     const timeSec = time / 1000;
@@ -64,7 +65,12 @@ export const useElapsedTime = ({
 
     // get current elapsed time
     const deltaTime = timeSec - previousTimeRef.current;
-    const currentElapsedTime = elapsedTimeRef.current + deltaTime;
+    let currentElapsedTime = elapsedTimeRef.current + deltaTime;
+
+    // catch up with interval
+    if (!prevVisibilityRef.current && visibilityRef.current) {
+      currentElapsedTime = (Date.now() - startedTimerRef.current) / 1000;
+    }
 
     // update refs with the current elapsed time
     previousTimeRef.current = timeSec;
@@ -88,26 +94,28 @@ export const useElapsedTime = ({
     }
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     function checkTabFocused() {
-      if (document.visibilityState === "visible") {
-        visibilityRef.current = true;
-      } else {
-        visibilityRef.current = false;
-      }
+      prevVisibilityRef.current = visibilityRef.current;
+      visibilityRef.current = document.visibilityState === "visible";
     }
 
-    // ✅ Add event listener
+    visibilityRef.current = document.visibilityState === "visible";
+
     document.addEventListener("visibilitychange", checkTabFocused);
+    return () =>
+      document.removeEventListener("visibilitychange", checkTabFocused);
   }, []);
 
   const cleanup = () => {
     requestRef.current && cancelAnimationFrame(requestRef.current);
     repeatTimeoutRef.current && clearTimeout(repeatTimeoutRef.current);
     previousTimeRef.current = null;
+    clearInterval(bgInterval);
+    setBgInterval(undefined);
   };
 
-  const reset = useCallback(
+  const reset = React.useCallback(
     (newStartAt?: number) => {
       cleanup();
 
@@ -123,7 +131,7 @@ export const useElapsedTime = ({
     [isPlaying, startAt]
   );
 
-  useIsomorphicEffect(() => {
+  React.useEffect(() => {
     onUpdate?.(displayTime);
 
     if (duration && displayTime >= duration) {
@@ -144,10 +152,13 @@ export const useElapsedTime = ({
     }
   }, [displayTime, duration]);
 
-  useIsomorphicEffect(() => {
+  React.useEffect(() => {
     if (isPlaying) {
       requestRef.current = requestAnimationFrame(loop);
       if (!duration) return;
+
+      startedTimerRef.current =
+        Date.now() + startedTimerRef.current - stoppedTimerRef.current;
 
       let bgTimer = setInterval(() => {
         tempTimerRef.current = Math.floor(
@@ -155,11 +166,11 @@ export const useElapsedTime = ({
         );
         !visibilityRef.current && setDisplayTime(tempTimerRef.current);
       }, 250);
-
       setBgInterval(bgTimer);
     } else {
       clearInterval(bgInterval);
       setBgInterval(undefined);
+      stoppedTimerRef.current = Date.now();
     }
 
     return cleanup;

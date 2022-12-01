@@ -3,12 +3,12 @@ import { MdPauseCircle, MdPlayCircle, MdSkipNext } from "react-icons/md";
 import { VscDebugRestart } from "react-icons/vsc";
 import toast from "react-hot-toast";
 
-import { formatTime, playAudio } from "../../utils";
-import { Settings } from "../../bindings/Settings";
+import { formatTime, playAudio } from "../../../utils";
+import { Settings } from "../../../bindings/Settings";
 import useTimer from "./useTimer";
-import useGlobal from "../../app/store";
-import { ActiveQueue } from "../../bindings/ActiveQueue";
-import Button from "../../components/Button";
+import useGlobal from "../../../app/store";
+import { ActiveQueue } from "../../../bindings/ActiveQueue";
+import Button from "../../../components/Button";
 import { CountdownCircleTimer } from "./CountdownCircleTimer";
 import { ColorFormat } from "@/types";
 

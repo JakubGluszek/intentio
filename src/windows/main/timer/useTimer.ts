@@ -2,13 +2,13 @@ import React from "react";
 import toast from "react-hot-toast";
 import { sendNotification } from "@tauri-apps/api/notification";
 
-import { ActiveQueue } from "../../bindings/ActiveQueue";
-import { Queue } from "../../bindings/Queue";
-import { Settings } from "../../bindings/Settings";
-import { ipc_invoke } from "../../app/ipc";
-import useGlobal from "../../app/store";
-import { TimerType } from "../../types";
-import { MIN_SESSION_DURATION } from "../../app/config";
+import { ActiveQueue } from "../../../bindings/ActiveQueue";
+import { Queue } from "../../../bindings/Queue";
+import { Settings } from "../../../bindings/Settings";
+import { ipc_invoke } from "../../../app/ipc";
+import useGlobal from "../../../app/store";
+import { TimerType } from "../../../types";
+import { MIN_SESSION_DURATION } from "../../../app/config";
 
 const useTimer = (settings: Settings, queue: ActiveQueue | null) => {
   // custom key is needed to reset timer components inner state
@@ -25,19 +25,12 @@ const useTimer = (settings: Settings, queue: ActiveQueue | null) => {
   const [iterations, setIterations] = React.useState(0);
 
   const currentProject = useGlobal((state) => state.currentProject);
-
   const setCurrentProjectById = useGlobal(
     (state) => state.setCurrentProjectById
   );
   const getTotalQueueCycles = useGlobal((state) => state.getTotalQueueCycles);
 
   const queueRef = React.useRef<Queue | null>(null);
-
-  const timeFocusedRef = React.useRef<number>();
-  timeFocusedRef.current = timeFocused;
-
-  const startedAtRef = React.useRef<Date>();
-  startedAtRef.current = startedAt;
 
   React.useEffect(() => {
     // set session for a new qeueue
@@ -116,34 +109,23 @@ const useTimer = (settings: Settings, queue: ActiveQueue | null) => {
     setIsRunning(false);
   };
 
-  const onUpdate = (time: number) => {
-    console.log(time);
-    setTimeFocused((focused) => focused + 1);
-  };
+  const onUpdate = () => setTimeFocused((focused) => focused + 1);
 
   /** Saves a focus session */
   const save = React.useCallback(() => {
-    if (!timeFocusedRef.current) return;
-    console.log(type, timeFocusedRef.current);
-    if (type !== "focus" || timeFocusedRef.current < MIN_SESSION_DURATION * 60)
-      return;
-
-    console.log("here");
+    if (type !== "focus" || timeFocused < MIN_SESSION_DURATION * 60) return;
 
     ipc_invoke("create_session", {
       data: {
-        duration: ~~((timeFocusedRef.current + 1) / 60),
-        started_at:
-          startedAtRef.current && startedAtRef.current.getTime().toString(),
+        duration: ~~((timeFocused + 1) / 60),
+        started_at: startedAt!.getTime().toString(),
         project_id: currentProject?.id,
       },
     }).then(() => {
       setIterations((it) => it + 1);
-      console.log("session saved");
       toast("Session saved", { position: "top-center" });
     });
-    console.log("line after ipc invoke");
-  }, [timeFocused, type]);
+  }, [type, currentProject, timeFocused, startedAt]);
 
   const nextQueueSession = React.useCallback(() => {
     if (!queue) return;
@@ -154,6 +136,7 @@ const useTimer = (settings: Settings, queue: ActiveQueue | null) => {
       return;
     }
 
+    // determine which session to use
     let session_idx = queue.session_idx;
     let session_cycle = queue.session_cycle + 1;
     if (queue.session_cycle === queue.sessions[session_idx].cycles) {
@@ -164,6 +147,7 @@ const useTimer = (settings: Settings, queue: ActiveQueue | null) => {
     setCurrentProjectById(queue.sessions[session_idx].project_id);
     setDuration(queue.sessions[session_idx].duration);
 
+    // update activate queue
     ipc_invoke("set_active_queue", {
       data: {
         ...queue,
@@ -204,6 +188,7 @@ const useTimer = (settings: Settings, queue: ActiveQueue | null) => {
     [queue, settings]
   );
 
+  // next session
   const next = React.useCallback(
     (manual: boolean = false) => {
       pause();
@@ -236,9 +221,7 @@ const useTimer = (settings: Settings, queue: ActiveQueue | null) => {
         }
 
         if (!manual && settings.auto_start_breaks) {
-          setTimeout(() => {
-            start();
-          }, 1000);
+          start();
         }
       } else {
         switchSession("focus");
@@ -251,9 +234,7 @@ const useTimer = (settings: Settings, queue: ActiveQueue | null) => {
         }
 
         if (!manual && settings.auto_start_pomodoros) {
-          setTimeout(() => {
-            start();
-          }, 1000);
+          start();
         }
       }
     },
