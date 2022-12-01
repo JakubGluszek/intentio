@@ -19,7 +19,7 @@ const useTimer = (settings: Settings, queue: ActiveQueue | null) => {
       ? queue.sessions[queue.session_idx].duration
       : settings.pomodoro_duration
   );
-  const [startedAt, setStartedAt] = React.useState<Date | null>(null);
+  const [startedAt, setStartedAt] = React.useState<Date>();
   const [timeFocused, setTimeFocused] = React.useState(0);
   const [isRunning, setIsRunning] = React.useState(false);
   const [iterations, setIterations] = React.useState(0);
@@ -32,6 +32,12 @@ const useTimer = (settings: Settings, queue: ActiveQueue | null) => {
   const getTotalQueueCycles = useGlobal((state) => state.getTotalQueueCycles);
 
   const queueRef = React.useRef<Queue | null>(null);
+
+  const timeFocusedRef = React.useRef<number>();
+  timeFocusedRef.current = timeFocused;
+
+  const startedAtRef = React.useRef<Date>();
+  startedAtRef.current = startedAt;
 
   React.useEffect(() => {
     // set session for a new qeueue
@@ -77,7 +83,7 @@ const useTimer = (settings: Settings, queue: ActiveQueue | null) => {
     pause();
     save();
     setTimeFocused(0);
-    setStartedAt(null);
+    setStartedAt(undefined);
 
     switch (type) {
       case "focus":
@@ -110,26 +116,34 @@ const useTimer = (settings: Settings, queue: ActiveQueue | null) => {
     setIsRunning(false);
   };
 
-  const onUpdate = React.useCallback(
-    () => type === "focus" && setTimeFocused((seconds) => seconds + 1),
-    [type]
-  );
+  const onUpdate = (time: number) => {
+    console.log(time);
+    setTimeFocused((focused) => focused + 1);
+  };
 
   /** Saves a focus session */
   const save = React.useCallback(() => {
-    if (type !== "focus" || timeFocused < MIN_SESSION_DURATION * 60) return;
+    if (!timeFocusedRef.current) return;
+    console.log(type, timeFocusedRef.current);
+    if (type !== "focus" || timeFocusedRef.current < MIN_SESSION_DURATION * 60)
+      return;
+
+    console.log("here");
 
     ipc_invoke("create_session", {
       data: {
-        duration: ~~((timeFocused + 1) / 60),
-        started_at: startedAt && startedAt.getTime().toString(),
+        duration: ~~((timeFocusedRef.current + 1) / 60),
+        started_at:
+          startedAtRef.current && startedAtRef.current.getTime().toString(),
         project_id: currentProject?.id,
       },
     }).then(() => {
       setIterations((it) => it + 1);
+      console.log("session saved");
       toast("Session saved", { position: "top-center" });
     });
-  }, [timeFocused]);
+    console.log("line after ipc invoke");
+  }, [timeFocused, type]);
 
   const nextQueueSession = React.useCallback(() => {
     if (!queue) return;
@@ -163,7 +177,7 @@ const useTimer = (settings: Settings, queue: ActiveQueue | null) => {
   const switchSession = React.useCallback(
     (type: TimerType) => {
       setTimeFocused(0);
-      setStartedAt(null);
+      setStartedAt(undefined);
 
       switch (type) {
         case "focus":

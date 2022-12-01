@@ -1,10 +1,6 @@
 import React from "react";
 import { MdPauseCircle, MdPlayCircle, MdSkipNext } from "react-icons/md";
 import { VscDebugRestart } from "react-icons/vsc";
-import {
-  ColorFormat,
-  CountdownCircleTimer,
-} from "react-countdown-circle-timer";
 import toast from "react-hot-toast";
 
 import { formatTime, playAudio } from "../../utils";
@@ -13,6 +9,8 @@ import useTimer from "./useTimer";
 import useGlobal from "../../app/store";
 import { ActiveQueue } from "../../bindings/ActiveQueue";
 import Button from "../../components/Button";
+import { CountdownCircleTimer } from "./CountdownCircleTimer";
+import { ColorFormat } from "@/types";
 
 interface TimerProps {
   settings: Settings;
@@ -67,8 +65,8 @@ const Timer: React.FC<TimerProps> = ({ settings, activeQueue }) => {
           {timer.type === "focus"
             ? "Time to focus!"
             : timer.type === "break"
-              ? "Time for a break!"
-              : "Time for a longer break!"}
+            ? "Time for a break!"
+            : "Time for a longer break!"}
         </span>
       </div>
       <div className="flex flex-row items-center justify-center gap-2 w-full h-10">
