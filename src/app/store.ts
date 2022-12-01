@@ -1,6 +1,6 @@
 import create from "zustand";
 
-import { ActiveQueue } from "../bindings/ActiveQueue";
+import { SessionQueue } from "../bindings/SessionQueue";
 import { Project } from "../bindings/Project";
 import { Queue } from "../bindings/Queue";
 import { Session } from "../bindings/Session";
@@ -11,8 +11,8 @@ interface State {
   settings?: Settings;
   setSettings: (settings: Settings) => void;
 
-  activeQueue: ActiveQueue | null | undefined;
-  setActiveQueue: (queue: ActiveQueue | null) => void;
+  sessionQueue?: SessionQueue | null;
+  setSessionQueue: (queue: SessionQueue | null) => void;
   getTotalQueueCycles: () => number | undefined;
 
   currentTheme?: Theme;
@@ -51,11 +51,11 @@ const useGlobal = create<State>((set, get) => ({
   setSettings: (settings: Settings) =>
     set((state) => ({ ...state, settings: settings })),
 
-  activeQueue: undefined,
-  setActiveQueue: (aq: ActiveQueue | null) =>
-    set((state) => ({ ...state, activeQueue: aq })),
+  sessionQueue: undefined,
+  setSessionQueue: (aq: SessionQueue | null) =>
+    set((state) => ({ ...state, sessionQueue: aq })),
   getTotalQueueCycles: () =>
-    get().activeQueue?.sessions.reduce((p, c) => (p += c.cycles), 0),
+    get().sessionQueue?.sessions.reduce((p, c) => (p += c.cycles), 0),
 
   currentTheme: undefined,
   setCurrentTheme: (theme: Theme | undefined) =>

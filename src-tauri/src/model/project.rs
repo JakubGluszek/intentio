@@ -13,9 +13,9 @@ use crate::{
     utils::{map, XTakeVal},
 };
 
-use super::{ModelDeleteResultData, SettingsBmc};
+use super::ModelDeleteResultData;
 
-#[derive(Serialize, TS, Debug, Clone)]
+#[derive(Serialize, Deserialize, TS, Debug, Clone)]
 #[ts(export, export_to = "../src/bindings/")]
 pub struct Project {
     id: String,
@@ -76,18 +76,6 @@ impl ProjectBmc {
         let data = ModelDeleteResultData::from(id.clone());
 
         ctx.emit_event("project_deleted", data.clone());
-
-        let mut settings = SettingsBmc::get()?;
-
-        if let Some(current_project_id) = settings.current_project_id {
-            if current_project_id == data.id {
-                settings.current_project_id = None;
-
-                SettingsBmc::save(&settings)?;
-
-                ctx.emit_event("current_project_updated", "");
-            }
-        }
 
         Ok(data)
     }

@@ -1,13 +1,14 @@
 import React from "react";
 import { MdDelete } from "react-icons/md";
 import autoAnimate from "@formkit/auto-animate";
+import { invoke } from "@tauri-apps/api/tauri";
 
 import { Project } from "@/bindings/Project";
 import Button from "@/components/Button";
 import { ipc_invoke } from "@/app/ipc";
-import { Settings } from "@/bindings/Settings";
 import { ModelDeleteResultData } from "@/bindings/ModelDeleteResultData";
 import useGlobal from "@/app/store";
+import { toast } from "react-hot-toast";
 
 interface Props {
   data: Project;
@@ -22,9 +23,9 @@ const ProjectView: React.FC<Props> = ({ data, selected }) => {
 
   const removeProject = useGlobal((state) => state.removeProject);
 
-  const selectProject = async (id: string | null) => {
-    await ipc_invoke<Settings>("update_settings", {
-      data: { current_project_id: id },
+  const selectProject = async (project: Project | undefined) => {
+    await invoke("set_current_project", {
+      data: project,
     });
   };
 
@@ -33,6 +34,7 @@ const ProjectView: React.FC<Props> = ({ data, selected }) => {
       id,
     });
     removeProject(res.data.id);
+    toast("Project deleted");
   };
 
   React.useEffect(() => {
@@ -57,7 +59,7 @@ const ProjectView: React.FC<Props> = ({ data, selected }) => {
       >
         <p
           className="w-full p-2"
-          onClick={async () => selectProject(!selected ? data.id : null)}
+          onClick={async () => selectProject(!selected ? data : undefined)}
         >
           {data.name}
         </p>

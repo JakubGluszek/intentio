@@ -25,7 +25,7 @@ import useGlobal from "../../app/store";
 import CreateSessionView from "./CreateSessionView";
 import { ipc_invoke } from "../../app/ipc";
 import { ModelDeleteResultData } from "../../bindings/ModelDeleteResultData";
-import { ActiveQueue } from "../../bindings/ActiveQueue";
+import { SessionQueue } from "../../bindings/SessionQueue";
 import Button from "../../components/Button";
 
 interface Props {
@@ -46,7 +46,7 @@ const QueueView: React.FC<Props> = ({ data }) => {
       toast("Add some sessions");
       return;
     }
-    ipc_invoke<ActiveQueue>("set_active_queue", {
+    ipc_invoke<SessionQueue>("set_session_queue", {
       data: {
         ...data,
         iterations: 1,
@@ -63,14 +63,20 @@ const QueueView: React.FC<Props> = ({ data }) => {
       id: data.id,
       data: { ...data, sessions: [...data.sessions, session] },
     })
-      .then((res) => updateQueue(res.data))
+      .then((res) => {
+        updateQueue(res.data);
+        toast("Session added");
+      })
       .catch((err) => console.log(err));
   };
 
   /** Delete the current queue */
   const remove = () => {
     ipc_invoke<ModelDeleteResultData>("delete_queue", { id: data.id })
-      .then((res) => removeQueue(res.data.id))
+      .then((res) => {
+        removeQueue(res.data.id);
+        toast("Queue deleted");
+      })
       .catch((err) => console.log(err));
   };
 
@@ -79,7 +85,10 @@ const QueueView: React.FC<Props> = ({ data }) => {
       id: data.id,
       data: { ...data, sessions: data.sessions.filter((s) => s.id !== id) },
     })
-      .then((res) => updateQueue(res.data))
+      .then((res) => {
+        updateQueue(res.data);
+        toast("Session removed");
+      })
       .catch((err) => console.log(err));
   };
 
@@ -123,7 +132,7 @@ const QueueView: React.FC<Props> = ({ data }) => {
             onClick={() => (confirmDelete ? remove() : triggerConfirmDelete())}
           >
             <MdDelete size={32} />
-            {confirmDelete && <span>Confirm</span>}
+            {confirmDelete && <span className="text-sm">Confirm</span>}
           </Button>
         </div>
       </div>

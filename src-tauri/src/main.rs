@@ -1,9 +1,3 @@
-#![cfg_attr(
-    all(not(debug_assertions), target_os = "windows"),
-    windows_subsystem = "windows"
-)]
-
-mod commands;
 mod ctx;
 mod error;
 mod ipc;
@@ -14,13 +8,11 @@ mod state;
 mod store;
 mod utils;
 
-use crate::commands::*;
 use crate::ipc::*;
 use crate::prelude::*;
-use crate::state::*;
 use startup::init;
+use state::State;
 use std::sync::Arc;
-use std::sync::Mutex;
 use store::Store;
 use tauri::Manager;
 use tauri::{CustomMenuItem, SystemTray, SystemTrayEvent, SystemTrayMenu, SystemTrayMenuItem};
@@ -33,17 +25,20 @@ async fn main() -> Result<()> {
     init(store.clone()).await?;
 
     tauri::Builder::default()
-        .manage(Mutex::new(State::default()))
+        .manage(tokio::sync::Mutex::new(State::default()))
         .manage(store)
         .system_tray(SystemTray::new().with_menu(create_tray_menu()))
         .on_system_tray_event(handle_on_system_tray_event)
         .invoke_handler(tauri::generate_handler![
-            // Arbitrary commands
-            get_active_queue,
-            set_active_queue,
-            deactivate_queue,
+            // State
+            get_session_queue,
+            set_session_queue,
+            get_current_project,
+            set_current_project,
+            // Helpers
             get_current_theme,
             get_current_project,
+            // Utils
             open_audio_directory,
             play_audio,
             // Settings

@@ -7,18 +7,18 @@ import { formatTime, playAudio } from "../../../utils";
 import { Settings } from "../../../bindings/Settings";
 import useTimer from "./useTimer";
 import useGlobal from "../../../app/store";
-import { ActiveQueue } from "../../../bindings/ActiveQueue";
+import { SessionQueue } from "../../../bindings/SessionQueue";
 import Button from "../../../components/Button";
 import { CountdownCircleTimer } from "./CountdownCircleTimer";
 import { ColorFormat } from "@/types";
 
 interface TimerProps {
   settings: Settings;
-  activeQueue: ActiveQueue | null;
+  sessionQueue: SessionQueue | null;
 }
 
-const Timer: React.FC<TimerProps> = ({ settings, activeQueue }) => {
-  const timer = useTimer(settings, activeQueue);
+const Timer: React.FC<TimerProps> = ({ settings, sessionQueue }) => {
+  const timer = useTimer(settings, sessionQueue);
   const theme = useGlobal((state) => state.currentTheme);
 
   return (

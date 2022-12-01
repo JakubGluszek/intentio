@@ -19,6 +19,7 @@ const Button: React.FC<Props> = (props) => {
           ? "bg-transparent text-primary"
           : "bg-primary px-4 text-window rounded"
       )}
+      tabIndex={-1} // necessary, otherwise windows crash randomly (on linux at least)
       disabled={disabled}
       whileTap={{ scale: transparent ? 0.9 : 0.975 }}
       ref={innerRef}

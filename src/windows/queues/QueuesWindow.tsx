@@ -1,6 +1,7 @@
 import React from "react";
 import { MdAddCircle } from "react-icons/md";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
+import { invoke } from "@tauri-apps/api/tauri";
 
 import QueueView from "./QueueView";
 import useGlobal from "../../app/store";
@@ -9,7 +10,7 @@ import { ipc_invoke } from "../../app/ipc";
 import QueueIcon from "../../components/QueueIcon";
 import { Project } from "../../bindings/Project";
 import { Queue } from "../../bindings/Queue";
-import { ActiveQueue } from "../../bindings/ActiveQueue";
+import { SessionQueue } from "../../bindings/SessionQueue";
 import Button from "../../components/Button";
 import Layout from "../../components/Layout";
 
@@ -17,8 +18,8 @@ const QueuesWindow: React.FC = () => {
   const [viewCreate, setViewCreate] = React.useState(false);
 
   const queues = useGlobal((state) => state.queues);
-  const activeQueue = useGlobal((state) => state.activeQueue);
-  const setActiveQueue = useGlobal((state) => state.setActiveQueue);
+  const sessionQueue = useGlobal((state) => state.sessionQueue);
+  const setSessionQueue = useGlobal((state) => state.setSessionQueue);
   const setProjects = useGlobal((state) => state.setProjects);
   const setQueues = useGlobal((state) => state.setQueues);
 
@@ -31,8 +32,8 @@ const QueuesWindow: React.FC = () => {
     ipc_invoke<Project[]>("get_projects")
       .then((res) => setProjects(res.data))
       .catch((err) => console.log(err));
-    ipc_invoke<ActiveQueue | undefined>("get_active_queue")
-      .then((res) => setActiveQueue(res.data ? res.data : null))
+    invoke<SessionQueue | undefined>("get_session_queue")
+      .then((data) => setSessionQueue(data ? data : null))
       .catch((err) => console.log(err));
   }, []);
 
@@ -47,19 +48,19 @@ const QueuesWindow: React.FC = () => {
     >
       <div className="flex flex-col gap-6 py-2">
         {/* Active queue */}
-        {activeQueue && (
+        {sessionQueue ? (
           <div className="flex flex-col gap-2 p-2 bg-base rounded">
             <div className="text-lg">
               Active:{" "}
               <span className="text-primary font-semibold">
-                {activeQueue.name}
+                {sessionQueue.name}
               </span>
             </div>
-            <Button onClick={() => ipc_invoke("deactivate_queue")}>
+            <Button onClick={() => ipc_invoke("remove_session_queue")}>
               Deactivate
             </Button>
           </div>
-        )}
+        ) : null}
 
         <div className="flex flex-col gap-4">
           {/* Create queue */}
@@ -69,7 +70,9 @@ const QueuesWindow: React.FC = () => {
               <span>Create</span>
             </Button>
           ) : (
-            <CreateQueueView hide={() => setViewCreate(false)} />
+            <div className="flex flex-col">
+              <CreateQueueView hide={() => setViewCreate(false)} />
+            </div>
           )}
 
           {/* All queues */}

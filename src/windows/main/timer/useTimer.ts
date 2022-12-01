@@ -2,15 +2,17 @@ import React from "react";
 import toast from "react-hot-toast";
 import { sendNotification } from "@tauri-apps/api/notification";
 
-import { ActiveQueue } from "../../../bindings/ActiveQueue";
+import { SessionQueue } from "../../../bindings/SessionQueue";
 import { Queue } from "../../../bindings/Queue";
 import { Settings } from "../../../bindings/Settings";
 import { ipc_invoke } from "../../../app/ipc";
 import useGlobal from "../../../app/store";
 import { TimerType } from "../../../types";
 import { MIN_SESSION_DURATION } from "../../../app/config";
+import { invoke } from "@tauri-apps/api";
+import { Project } from "@/bindings/Project";
 
-const useTimer = (settings: Settings, queue: ActiveQueue | null) => {
+const useTimer = (settings: Settings, queue: SessionQueue | null) => {
   // custom key is needed to reset timer components inner state
   const [key, setKey] = React.useState("focus");
   const [type, setType] = React.useState<TimerType>("focus");
@@ -28,6 +30,7 @@ const useTimer = (settings: Settings, queue: ActiveQueue | null) => {
   const setCurrentProjectById = useGlobal(
     (state) => state.setCurrentProjectById
   );
+  const setCurrentProject = useGlobal((state) => state.setCurrentProject);
   const getTotalQueueCycles = useGlobal((state) => state.getTotalQueueCycles);
 
   const queueRef = React.useRef<Queue | null>(null);
@@ -41,7 +44,9 @@ const useTimer = (settings: Settings, queue: ActiveQueue | null) => {
       setKey("focus-queue");
       // unset queue, set session from settings
     } else if (queueRef.current && !queue) {
-      setCurrentProjectById(settings.current_project_id);
+      invoke<Project>("get_current_project").then((data) =>
+        setCurrentProject(data)
+      );
       setDuration(settings.pomodoro_duration);
       setType("focus");
       setKey("focus");
@@ -132,7 +137,7 @@ const useTimer = (settings: Settings, queue: ActiveQueue | null) => {
 
     // if queue is finished, deactivate it
     if (queue.iterations >= getTotalQueueCycles()!) {
-      ipc_invoke("deactivate_queue");
+      invoke("set_session_queue", { data: undefined });
       return;
     }
 
@@ -148,7 +153,7 @@ const useTimer = (settings: Settings, queue: ActiveQueue | null) => {
     setDuration(queue.sessions[session_idx].duration);
 
     // update activate queue
-    ipc_invoke("set_active_queue", {
+    ipc_invoke("set_session_queue", {
       data: {
         ...queue,
         iterations: queue.iterations + 1,

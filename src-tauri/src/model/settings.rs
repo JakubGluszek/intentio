@@ -35,7 +35,6 @@ pub struct Settings {
     pub alert_repeat: i64,
 
     pub current_theme_id: String,
-    pub current_project_id: Option<String>,
 }
 
 impl Default for Settings {
@@ -52,7 +51,6 @@ impl Default for Settings {
             alert_repeat: 2,
             system_notifications: true,
             current_theme_id: DEFAULT_THEME.into(),
-            current_project_id: None,
         }
     }
 }
@@ -84,9 +82,6 @@ pub struct SettingsForUpdate {
     pub alert_repeat: Option<i64>,
 
     pub current_theme_id: Option<String>,
-
-    #[serialize_always]
-    pub current_project_id: Option<Option<String>>,
 }
 
 pub struct SettingsBmc;
@@ -168,13 +163,6 @@ impl SettingsBmc {
         if let Some(current_theme_id) = data.current_theme_id {
             settings.current_theme_id = current_theme_id;
             events.push("current_theme_updated");
-        }
-        if let Some(current_project_update) = data.current_project_id {
-            settings.current_project_id = match current_project_update {
-                Some(project_id) => Some(project_id),
-                None => None,
-            };
-            events.push("current_project_updated");
         }
 
         let path = Self::get_path();

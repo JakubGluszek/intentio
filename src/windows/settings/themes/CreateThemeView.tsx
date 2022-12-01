@@ -9,6 +9,7 @@ import Button from "@/components/Button";
 import { Theme } from "@/bindings/Theme";
 import { ipc_invoke } from "@/app/ipc";
 import ThemeFormInputs from "./ThemeFormInputs";
+import { toast } from "react-hot-toast";
 
 interface Props {
   hide: () => void;
@@ -31,6 +32,7 @@ const CreateThemeView: React.FC<Props> = ({ theme, hide }) => {
     }).then((res) => {
       addTheme(res.data);
       hide();
+      toast("Theme created");
     });
   });
 
@@ -53,10 +55,10 @@ const CreateThemeView: React.FC<Props> = ({ theme, hide }) => {
   return (
     <form
       ref={containerRef}
-      className="flex flex-col gap-6 p-4 text-sm animate-in duration-200 fade-in zoom-in-90 bg-base rounded"
+      className="flex flex-col gap-6 p-2 text-sm animate-in duration-200 fade-in zoom-in-90 bg-base rounded"
       onSubmit={onSubmit}
     >
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 bg-window rounded p-4">
         <ThemeFormInputs register={register} watch={watch} />
       </div>
       <div className="flex flex-row items-center justify-between">
@@ -80,7 +82,7 @@ const CreateThemeView: React.FC<Props> = ({ theme, hide }) => {
             <RiEyeCloseFill size={24} />
           )}
         </div>
-        <Button type="submit">Save</Button>
+        <Button type="submit">Create</Button>
       </div>
     </form>
   );

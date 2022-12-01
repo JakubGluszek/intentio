@@ -2,6 +2,7 @@ import React from "react";
 import cuid from "cuid";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { MdAddCircle, MdDelete } from "react-icons/md";
+import { useForm } from "react-hook-form";
 
 import { Queue } from "../../bindings/Queue";
 import { QueueSession } from "../../bindings/QueueSession";
@@ -9,6 +10,7 @@ import { ipc_invoke } from "../../app/ipc";
 import useGlobal from "../../app/store";
 import CreateSessionView from "./CreateSessionView";
 import Button from "../../components/Button";
+import { toast } from "react-hot-toast";
 
 interface Props {
   hide: () => void;
@@ -16,54 +18,42 @@ interface Props {
 
 const CreateQueueView: React.FC<Props> = ({ hide }) => {
   const [sessions, setSessions] = React.useState<QueueSession[]>([]);
-  const [name, setName] = React.useState("");
 
   const [createSessionView, setCreateSessionView] = React.useState(false);
 
   const createRef = React.useRef<HTMLButtonElement | null>(null);
-  const inputRef = React.useRef<HTMLInputElement | null>(null);
   const addSessionRef = React.useRef<HTMLButtonElement | null>(null);
   const [containerRef] = useAutoAnimate<HTMLDivElement>();
 
   const addQueue = useGlobal((state) => state.addQueue);
 
-  /** Creates a queue */
-  const save = () => {
-    if (name.length === 0) {
-      inputRef.current?.focus();
-      window.scrollTo({ top: 0 });
-      return;
-    }
+  const { register, handleSubmit } = useForm<{ name: string }>();
 
-    ipc_invoke<Queue>("create_queue", { data: { name, sessions } })
+  const onSubmit = handleSubmit((data) => {
+    ipc_invoke<Queue>("create_queue", { data: { ...data, sessions } })
       .then((res) => {
         addQueue(res.data);
         hide();
+        toast("Queue created");
       })
       .catch((err) => console.log(err));
-  };
+  });
 
   return (
-    <div className="flex flex-col gap-6 bg-base rounded p-4 animate-in fade-in zoom-in-90">
+    <form
+      onSubmit={onSubmit}
+      className="flex flex-col gap-6 bg-base rounded p-4 animate-in fade-in zoom-in-90"
+    >
       {/* Queue name input */}
       <div className="flex flex-row items-center gap-4">
         <input
-          ref={inputRef}
-          autoFocus
+          {...register("name", {
+            required: true,
+            minLength: 1,
+            maxLength: 32,
+          })}
           placeholder="Name"
           className="input border-window"
-          value={name}
-          onChange={(e) => setName(e.currentTarget.value)}
-          onKeyDown={(e) => {
-            // necessary, entire window crashed otherwise
-            // custom "focus next button" implementation produces the same issue
-            if (e.key === "Tab") {
-              e.preventDefault();
-            }
-          }}
-          type="text"
-          minLength={1}
-          maxLength={24}
         />
       </div>
 
@@ -106,14 +96,14 @@ const CreateQueueView: React.FC<Props> = ({ hide }) => {
 
       {/* Actions */}
       <div className="flex flex-row items-center justify-between">
-        <Button transparent onClick={() => hide()}>
+        <Button type="button" transparent onClick={() => hide()}>
           Cancel
         </Button>
-        <Button innerRef={createRef} onClick={() => save()}>
+        <Button type="submit" innerRef={createRef}>
           Create
         </Button>
       </div>
-    </div>
+    </form>
   );
 };
 

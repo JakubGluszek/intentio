@@ -12,5 +12,4 @@ export interface Settings {
   system_notifications: boolean;
   alert_repeat: number;
   current_theme_id: string;
-  current_project_id: string | null;
 }

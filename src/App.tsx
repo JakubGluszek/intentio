@@ -11,8 +11,9 @@ import { Settings } from "./bindings/Settings";
 import { Project } from "./bindings/Project";
 import MainWindow from "./windows/main";
 import { Session } from "./bindings/Session";
-import { ActiveQueue } from "./bindings/ActiveQueue";
+import { SessionQueue } from "./bindings/SessionQueue";
 import { ModelDeleteResultData } from "./bindings/ModelDeleteResultData";
+import { invoke } from "@tauri-apps/api/tauri";
 
 import.meta.env.PROD &&
   document.addEventListener("contextmenu", (event) => event.preventDefault());
@@ -27,23 +28,24 @@ const App: React.FC = () => {
   const setCurrentTheme = useGlobal((state) => state.setCurrentTheme);
   const setProjects = useGlobal((state) => state.setProjects);
   const setCurrentProject = useGlobal((state) => state.setCurrentProject);
+  const currentProject = useGlobal((state) => state.currentProject);
 
   // IPC calls needed for each window
   React.useEffect(() => {
     ipc_invoke<Settings>("get_settings").then((res) => setSettings(res.data));
-    ipc_invoke<Theme>("get_current_theme").then((res) => {
-      applyTheme(res.data);
-      setCurrentTheme(res.data);
-    });
     ipc_invoke<Project[]>("get_projects").then((res) => setProjects(res.data));
-    ipc_invoke<Project>("get_current_project")
-      .then((res) => setCurrentProject(res.data))
+    invoke<Theme>("get_current_theme").then((data) => {
+      applyTheme(data);
+      setCurrentTheme(data);
+    });
+    invoke<Project>("get_current_project")
+      .then((data) => setCurrentProject(data))
       .catch(() => setCurrentProject(undefined));
   }, []);
 
   const addProject = useGlobal((state) => state.addProject);
   const removeProject = useGlobal((state) => state.removeProject);
-  const setActiveQueue = useGlobal((state) => state.setActiveQueue);
+  const setSessionQueue = useGlobal((state) => state.setSessionQueue);
   const addSession = useGlobal((state) => state.addSession);
 
   // Events to listen for on each window
@@ -51,12 +53,9 @@ const App: React.FC = () => {
     const onSessionSaved = listen<Session>("session_saved", (event) =>
       addSession(event.payload)
     );
-    const onQueueDeactivated = listen("deactivate_queue", () => {
-      setActiveQueue(null);
-    });
-    const onQueueActivated = listen<ActiveQueue | null>(
-      "set_active_queue",
-      (event) => setActiveQueue(event.payload)
+    const onQueueUpdated = listen<SessionQueue | null>(
+      "set_session_queue",
+      (event) => setSessionQueue(event.payload)
     );
     const onProjectCreated = listen<Project>("project_created", (event) => {
       addProject(event.payload);
@@ -65,6 +64,9 @@ const App: React.FC = () => {
     const onProjectDeleted = listen<ModelDeleteResultData>(
       "project_deleted",
       (event) => {
+        if (event.payload.id === currentProject?.id) {
+          invoke("set_current_project", { data: undefined });
+        }
         removeProject(event.payload.id);
       }
     );
@@ -74,23 +76,23 @@ const App: React.FC = () => {
     const onSettingsUpdated = listen<Settings>("settings_updated", (event) => {
       setSettings(event.payload);
     });
-    const onCurrentProjectUpdated = listen("current_project_updated", () => {
-      ipc_invoke<Project>("get_current_project")
-        .then((res) => setCurrentProject(res.data))
-        .catch(() => setCurrentProject(undefined));
-    });
+    const onCurrentProjectUpdated = listen<Project>(
+      "current_project_updated",
+      (event) => {
+        setCurrentProject(event.payload);
+      }
+    );
     const onCurrentThemeUpdated = listen("current_theme_updated", () => {
-      ipc_invoke<Theme>("get_current_theme").then((res) => {
-        applyTheme(res.data);
-        setCurrentTheme(res.data);
+      invoke<Theme>("get_current_theme").then((data) => {
+        applyTheme(data);
+        setCurrentTheme(data);
       });
     });
 
     return () =>
       Promise.all([
         onSessionSaved,
-        onQueueDeactivated,
-        onQueueActivated,
+        onQueueUpdated,
         onProjectCreated,
         onProjectDeleted,
         onCurrentThemeUpdated,
@@ -112,6 +114,7 @@ const App: React.FC = () => {
       <Toaster
         position="bottom-right"
         toastOptions={{
+          duration: 2000,
           style: {
             padding: 4,
             backgroundColor: "var(--base-color)",

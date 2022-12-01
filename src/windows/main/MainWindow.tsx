@@ -6,21 +6,21 @@ import useGlobal from "@/app/store";
 import Layout from "@/components/Layout";
 import QueueIcon from "@/components/QueueIcon";
 import Button from "@/components/Button";
-import { ipc_invoke } from "@/app/ipc";
-import { ActiveQueue } from "@/bindings/ActiveQueue";
+import { SessionQueue } from "@/bindings/SessionQueue";
 import { WebviewConfig } from "@/app/config";
 import Timer from "./timer";
+import { invoke } from "@tauri-apps/api/tauri";
 
 const MainWindow: React.FC = () => {
   const settings = useGlobal((state) => state.settings);
   const currentProject = useGlobal((state) => state.currentProject);
-  const activeQueue = useGlobal((state) => state.activeQueue);
-  const setActiveQueue = useGlobal((state) => state.setActiveQueue);
+  const sessionQueue = useGlobal((state) => state.sessionQueue);
+  const setSessionQueue = useGlobal((state) => state.setSessionQueue);
   const getTotalQueueCycles = useGlobal((state) => state.getTotalQueueCycles);
 
   React.useEffect(() => {
-    ipc_invoke<ActiveQueue | undefined>("get_active_queue").then((res) =>
-      setActiveQueue(res.data ? res.data : null)
+    invoke<SessionQueue | undefined>("get_session_queue").then((data) =>
+      setSessionQueue(data ? data : null)
     );
   }, []);
 
@@ -73,8 +73,8 @@ const MainWindow: React.FC = () => {
   return (
     <Layout headerContent={Header}>
       <div className="grow flex flex-col p-4">
-        {settings && activeQueue !== undefined && (
-          <Timer settings={settings} activeQueue={activeQueue} />
+        {settings && sessionQueue !== undefined && (
+          <Timer settings={settings} sessionQueue={sessionQueue} />
         )}
       </div>
       <div className="relative h-10 flex flex-row items-center justify-between pb-4">
@@ -93,9 +93,9 @@ const MainWindow: React.FC = () => {
           <div className="w-8 h-fit">
             <QueueIcon />
           </div>
-          {activeQueue && (
+          {sessionQueue && (
             <span>
-              {activeQueue.iterations}/{getTotalQueueCycles()}
+              {sessionQueue.iterations}/{getTotalQueueCycles()}
             </span>
           )}
         </Button>

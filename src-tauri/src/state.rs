@@ -1,11 +1,11 @@
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
-use crate::model::QueueSession;
+use crate::model::{Project, QueueSession};
 
 #[derive(Serialize, Deserialize, TS, Debug, Clone)]
 #[ts(export, export_to = "../src/bindings/")]
-pub struct ActiveQueue {
+pub struct SessionQueue {
     id: String,
     name: String,
     sessions: Vec<QueueSession>,
@@ -21,26 +21,15 @@ pub struct ActiveQueue {
 }
 
 pub struct State {
-    active_queue: Option<ActiveQueue>,
+    pub session_queue: Option<SessionQueue>,
+    pub current_project: Option<Project>,
 }
 
 impl Default for State {
     fn default() -> Self {
-        State { active_queue: None }
-    }
-}
-
-impl State {
-    pub fn get_active_queue(&self) -> Option<ActiveQueue> {
-        self.active_queue.clone()
-    }
-
-    pub fn set_active_queue(&mut self, data: ActiveQueue) -> Option<ActiveQueue> {
-        self.active_queue = Some(data);
-        self.active_queue.clone()
-    }
-
-    pub fn deactivate_queue(&mut self) {
-        self.active_queue = None;
+        State {
+            session_queue: None,
+            current_project: None,
+        }
     }
 }

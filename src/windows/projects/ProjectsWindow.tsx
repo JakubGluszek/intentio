@@ -8,6 +8,7 @@ import useGlobal from "../../app/store";
 import Button from "../../components/Button";
 import Layout from "../../components/Layout";
 import ProjectView from "./ProjectView";
+import { toast } from "react-hot-toast";
 
 const ProjectsWindow: React.FC = () => {
   const projects = useGlobal((state) => state.projects);
@@ -31,6 +32,7 @@ const ProjectsWindow: React.FC = () => {
       data: { name },
     })
       .then(() => {
+        toast("Project created");
         setViewCreate(false);
       })
       .catch((err) => console.log(err));
@@ -50,7 +52,6 @@ const ProjectsWindow: React.FC = () => {
             <input
               className="input"
               placeholder="Name"
-              autoFocus
               type="text"
               onKeyUp={(e) =>
                 e.key === "Enter" && createProject(e.currentTarget.value)
@@ -62,12 +63,13 @@ const ProjectsWindow: React.FC = () => {
               <MdClose size={24} />
             </Button>
           </div>
-        ) : (
+        ) : null}
+        {!viewCreate ? (
           <Button onClick={() => setViewCreate(true)}>
             <MdAddCircle size={24} />
             <span>Add a project</span>
           </Button>
-        )}
+        ) : null}
         <div ref={containerRef} className="flex flex-col gap-2">
           {projects.map((project) => (
             <ProjectView
