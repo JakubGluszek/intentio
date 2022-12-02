@@ -63,7 +63,7 @@ const ProjectView: React.FC<Props> = ({ data, selected }) => {
         >
           {data.name}
         </p>
-        <div className="transition-opacity opacity-0 group-hover:opacity-100 mr-2">
+        <div className="mr-2">
           <Button
             transparent
             onClick={() => setViewDelete(!viewDelete)}

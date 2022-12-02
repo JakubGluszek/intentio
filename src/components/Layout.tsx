@@ -21,12 +21,12 @@ const Layout: React.FC<Props> = ({ children, Icon, label, headerContent }) => {
     <div className="w-screen min-h-screen flex flex-col gap-2">
       <div
         data-tauri-drag-region
-        className="z-[2000] sticky top-0 flex flex-col gap-2 bg-window px-4 py-2"
+        className="sticky top-0 z-[1000] flex flex-col gap-2 bg-window px-4 py-2"
       >
         {headerContent ?? (
           <div
             data-tauri-drag-region
-            className="z-[3000] flex flex-row items-center justify-between"
+            className="flex flex-row items-center justify-between"
           >
             <div className="flex flex-row items-center gap-2">
               {Icon ?? null}
@@ -39,7 +39,7 @@ const Layout: React.FC<Props> = ({ children, Icon, label, headerContent }) => {
         )}
       </div>
 
-      <div className="grow flex flex-col px-4">{children}</div>
+      <div className="grow flex flex-col px-4 overflow-y-auto">{children}</div>
     </div>
   );
 };
