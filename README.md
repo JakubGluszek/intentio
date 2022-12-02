@@ -19,6 +19,8 @@ Download the latest version from the [releases](https://github.com/JakubGluszek/
 
 ## Development
 
+[Prerequisites](https://tauri.app/v1/guides/getting-started/prerequisites)
+
 ```bash
 git clone https://github.com/JakubGluszek/sentio.git
 
