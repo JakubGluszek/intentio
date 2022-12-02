@@ -46,19 +46,18 @@ const ProjectView: React.FC<Props> = ({ data, selected }) => {
     <div
       ref={parent}
       className="group flex flex-col gap-2 bg-base rounded overflow-clip"
-      data-tauri-disable-drag
     >
       <div
         className={`group cursor-pointer flex flex-row items-center justify-between transition-colors ${
           selected && "bg-primary text-window"
         }`}
       >
-        <p
-          className="w-full p-2 cursor-pointer"
+        <button
+          className="w-full p-2 cursor-pointer text-left"
           onClick={async () => selectProject(!selected ? data : undefined)}
         >
           {data.name}
-        </p>
+        </button>
         <div className="mr-2">
           <Button
             transparent

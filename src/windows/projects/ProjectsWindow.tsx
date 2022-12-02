@@ -56,7 +56,7 @@ const ProjectsWindow: React.FC = () => {
                 e.key === "Enter" && createProject(e.currentTarget.value)
               }
               minLength={1}
-              maxLength={24}
+              maxLength={20}
             />
             <Button transparent onClick={() => setViewCreate(false)}>
               <MdClose size={24} />
