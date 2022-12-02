@@ -140,6 +140,14 @@ impl ThemeBmc {
                     primary_hex: '#bd93f9',
                     text_hex: '#f8f8f2',
                 };
+                CREATE theme:cyan CONTENT {
+                    name: 'cyan',
+                    default: true,
+                    window_hex: '#111123',
+                    base_hex: '#032536',
+                    primary_hex: '#44ffcc',
+                    text_hex: '#EEEEEE',
+                };
             ";
 
             store.ds.execute(sql, &store.ses, None, false).await?;
@@ -208,7 +216,7 @@ mod tests {
 
         let array: Array = W(first_res.result?).try_into()?;
 
-        assert_eq!(array.len(), 3);
+        assert_eq!(array.len(), 4);
 
         Ok(())
     }
