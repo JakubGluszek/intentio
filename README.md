@@ -3,7 +3,7 @@
 A pomodoro timer desktop app.
 
 <div align="center">
-  <img alt="Sentio - Main window" src="https://raw.githubusercontent.com/JakubGluszek/sentio/master/.github/images/sentio-previews.png" />
+  <img alt="Sentio" src="https://github.com/JakubGluszek/sentio/blob/master/.github/images/sentio-preview.png" />
 </div>
 
 ## Features
