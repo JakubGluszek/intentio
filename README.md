@@ -3,7 +3,7 @@
 A pomodoro timer desktop app.
 
 <div align="center">
-  <img alt="Sentio - Main window" src="https://raw.githubusercontent.com/JakubGluszek/sentio/master/.github/images/sentio-previews.png" />
+  <img alt="Sentio" src="https://github.com/JakubGluszek/sentio/blob/master/.github/images/sentio-preview.png" />
 </div>
 
 ## Features
@@ -19,6 +19,11 @@ Download the latest version from the [releases](https://github.com/JakubGluszek/
 
 ## Development
 
+Make sure to install all [prerequisites](https://tauri.app/v1/guides/getting-started/prerequisites).
+
+Another prerequisite on linux is:
+`sudo apt install libasound2-dev`
+
 ```bash
 git clone https://github.com/JakubGluszek/sentio.git
 
@@ -28,6 +33,15 @@ npm install
 
 npm run tauri dev
 ```
+
+## Roadmap
+
+- [ ] Cloud synchronization
+- [ ] Summaries
+- [ ] Color pickers for theme creation
+- [ ] Option to export data into multiple formats
+- [ ] More user preferences
+  - [ ] Minimize behavior (to tray or taskbar)
 
 ## Acknowledgments
 
