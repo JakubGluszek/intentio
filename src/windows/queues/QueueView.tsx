@@ -129,6 +129,9 @@ const QueueView: React.FC<Props> = ({ data }) => {
           </Button>
           <Button
             transparent={!confirmDelete}
+            style={{
+              padding: confirmDelete ? "2px" : undefined,
+            }}
             onClick={() => (confirmDelete ? remove() : triggerConfirmDelete())}
           >
             <MdDelete size={32} />

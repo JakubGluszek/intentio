@@ -66,6 +66,7 @@ const CreateQueueView: React.FC<Props> = ({ hide }) => {
         {!createSessionView ? (
           <Button
             innerRef={addSessionRef}
+            type="button"
             onClick={() => setCreateSessionView(true)}
           >
             <MdAddCircle size={24} />
