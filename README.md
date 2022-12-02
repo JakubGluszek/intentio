@@ -29,6 +29,15 @@ npm install
 npm run tauri dev
 ```
 
+## Roadmap
+
+- [ ] Cloud synchronization
+- [ ] Summaries
+- [ ] Color pickers for theme creation
+- [ ] Option to export data into multiple formats
+- [ ] More user preferences
+  - [ ] Minimize behavior (to tray or taskbar)
+
 ## Acknowledgments
 
 - Inspirations
