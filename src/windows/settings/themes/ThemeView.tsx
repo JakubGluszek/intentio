@@ -97,11 +97,11 @@ const ThemeView: React.FC<ThemeViewProps> = ({ theme }) => {
         className="relative h-10 flex flex-row items-center rounded border-2"
       >
         {/* Area to set theme as the current theme */}
-        <div
+        <button
           style={{ backgroundColor: watch("primary_hex") }}
           className={`min-w-[48px] h-full cursor-pointer transition-transform duration-200`}
           onClick={() => setCurrentTheme()}
-        ></div>
+        ></button>
 
         {/* Heading */}
         <div

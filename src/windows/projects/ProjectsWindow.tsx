@@ -1,6 +1,7 @@
 import React from "react";
 import { MdAddCircle, MdClose } from "react-icons/md";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
+import { toast } from "react-hot-toast";
 
 import { Project } from "../../bindings/Project";
 import { ipc_invoke } from "../../app/ipc";
@@ -8,7 +9,6 @@ import useGlobal from "../../app/store";
 import Button from "../../components/Button";
 import Layout from "../../components/Layout";
 import ProjectView from "./ProjectView";
-import { toast } from "react-hot-toast";
 
 const ProjectsWindow: React.FC = () => {
   const projects = useGlobal((state) => state.projects);
@@ -23,9 +23,6 @@ const ProjectsWindow: React.FC = () => {
   const createProject = (name: string) => {
     if (projects.find((p) => p.name.toLowerCase() === name.toLowerCase())) {
       nameRef.current?.focus();
-
-      // TODO: display error to user that this name is used
-
       return;
     }
     ipc_invoke<Project>("create_project", {
@@ -50,6 +47,7 @@ const ProjectsWindow: React.FC = () => {
         {viewCreate ? (
           <div className="flex flex-row items-center gap-2">
             <input
+              autoFocus
               className="input"
               placeholder="Name"
               type="text"

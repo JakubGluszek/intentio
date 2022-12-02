@@ -2,6 +2,7 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import { listen } from "@tauri-apps/api/event";
+import { invoke } from "@tauri-apps/api/tauri";
 
 import { ipc_invoke } from "./app/ipc";
 import { Theme } from "./bindings/Theme";
@@ -13,7 +14,7 @@ import MainWindow from "./windows/main";
 import { Session } from "./bindings/Session";
 import { SessionQueue } from "./bindings/SessionQueue";
 import { ModelDeleteResultData } from "./bindings/ModelDeleteResultData";
-import { invoke } from "@tauri-apps/api/tauri";
+import { appWindow } from "@tauri-apps/api/window";
 
 import.meta.env.PROD &&
   document.addEventListener("contextmenu", (event) => event.preventDefault());
@@ -28,7 +29,28 @@ const App: React.FC = () => {
   const setCurrentTheme = useGlobal((state) => state.setCurrentTheme);
   const setProjects = useGlobal((state) => state.setProjects);
   const setCurrentProject = useGlobal((state) => state.setCurrentProject);
-  const currentProject = useGlobal((state) => state.currentProject);
+
+  React.useEffect(() => {
+    const noDragSelector = "input, a, button"; // CSS selector
+
+    const handleMouseDown = async (e: MouseEvent) => {
+      if (
+        // @ts-ignore
+        e.target?.closest(noDragSelector) ||
+        // @ts-ignore
+        e.target?.dataset["tauri-disable-drag"] ||
+        // @ts-ignore
+        e.target?.parentElement.dataset["tauri-disable-drag"] ||
+        // @ts-ignore
+        e.target?.parentElement.parentElement.dataset["tauri-disable-drag"]
+      )
+        return; // a non-draggable element either in target or its ancestors
+      await appWindow.startDragging();
+    };
+
+    document.addEventListener("mousedown", handleMouseDown);
+    return () => document.removeEventListener("mousedown", handleMouseDown);
+  }, []);
 
   // IPC calls needed for each window
   React.useEffect(() => {
@@ -47,6 +69,7 @@ const App: React.FC = () => {
   const removeProject = useGlobal((state) => state.removeProject);
   const setSessionQueue = useGlobal((state) => state.setSessionQueue);
   const addSession = useGlobal((state) => state.addSession);
+  const currentProject = useGlobal((state) => state.currentProject);
 
   // Events to listen for on each window
   React.useEffect(() => {
@@ -57,6 +80,12 @@ const App: React.FC = () => {
       "set_session_queue",
       (event) => setSessionQueue(event.payload)
     );
+    const onThemePreview = listen<Theme>("preview_theme", (event) => {
+      applyTheme(event.payload);
+    });
+    const onSettingsUpdated = listen<Settings>("settings_updated", (event) => {
+      setSettings(event.payload);
+    });
     const onProjectCreated = listen<Project>("project_created", (event) => {
       addProject(event.payload);
     });
@@ -70,12 +99,6 @@ const App: React.FC = () => {
         removeProject(event.payload.id);
       }
     );
-    const onThemePreview = listen<Theme>("preview_theme", (event) => {
-      applyTheme(event.payload);
-    });
-    const onSettingsUpdated = listen<Settings>("settings_updated", (event) => {
-      setSettings(event.payload);
-    });
     const onCurrentProjectUpdated = listen<Project>(
       "current_project_updated",
       (event) => {
@@ -100,7 +123,7 @@ const App: React.FC = () => {
         onCurrentProjectUpdated,
         onThemePreview,
       ]).then((values) => values.forEach((v) => v())) as never;
-  }, []);
+  }, [currentProject]);
 
   return (
     <>

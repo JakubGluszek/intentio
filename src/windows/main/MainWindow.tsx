@@ -25,10 +25,7 @@ const MainWindow: React.FC = () => {
   }, []);
 
   const Header = (
-    <div
-      className="w-full flex flex-row items-center justify-between"
-      data-tauri-drag-region
-    >
+    <div className="w-full flex flex-row items-center justify-between">
       <div className="flex flex-row items-center gap-2">
         <Button
           transparent

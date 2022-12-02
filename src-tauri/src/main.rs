@@ -70,7 +70,6 @@ async fn main() -> Result<()> {
             update_queue,
             delete_queue,
         ])
-        .plugin(tauri_plugin_window_state::Builder::default().build())
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
     Ok(())

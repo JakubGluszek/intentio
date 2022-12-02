@@ -19,15 +19,9 @@ const Layout: React.FC<Props> = ({ children, Icon, label, headerContent }) => {
 
   return (
     <div className="w-screen min-h-screen flex flex-col gap-2">
-      <div
-        data-tauri-drag-region
-        className="sticky top-0 z-[1000] flex flex-col gap-2 bg-window px-4 py-2"
-      >
+      <div className="sticky top-0 z-[1000] flex flex-col gap-2 bg-window px-4 py-2">
         {headerContent ?? (
-          <div
-            data-tauri-drag-region
-            className="flex flex-row items-center justify-between"
-          >
+          <div className="flex flex-row items-center justify-between">
             <div className="flex flex-row items-center gap-2">
               {Icon ?? null}
               <span className="text-xl">{label}</span>

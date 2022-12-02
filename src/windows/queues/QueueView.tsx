@@ -218,9 +218,10 @@ const SessionView: React.FC<SessionViewProps> = ({
       className={`relative group flex flex-row gap-2 text-center rounded bg-base p-2 ${
         snapshot.isDragging ? "shadow-xl" : "shadow-none"
       }`}
+      data-tauri-disable-drag
     >
-      <div {...dragHandleProps}>
-        <MdDragIndicator size={24} />
+      <div data-tauri-disable-drag {...dragHandleProps} className="px-2">
+        <MdDragIndicator data-tauri-disable-drag size={24} />
       </div>
       <div className="flex-1 items-center justify-center">
         {getProjectById(data.project_id)?.name ?? "-"}

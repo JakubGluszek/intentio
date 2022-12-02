@@ -11,6 +11,7 @@ interface Props {
 const Slider: React.FC<Props> = ({ min, max, defaultValue, onChangeEnd }) => {
   return (
     <SliderMantine
+      data-tauri-disable-drag
       classNames={{
         root: "w-full",
         bar: "bg-primary",

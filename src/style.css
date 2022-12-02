@@ -37,6 +37,22 @@
     display: none;
   }
 
+  * {
+    user-select: none;
+  }
+
+  span,
+  p,
+  h1,
+  h2,
+  h3 {
+    cursor: default;
+  }
+
+  button > * {
+    cursor: pointer;
+  }
+
   :root {
     --window-color: #222831;
     --base-color: #393e46;

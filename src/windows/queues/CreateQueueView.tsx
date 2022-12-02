@@ -3,6 +3,7 @@ import cuid from "cuid";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { MdAddCircle, MdDelete } from "react-icons/md";
 import { useForm } from "react-hook-form";
+import { toast } from "react-hot-toast";
 
 import { Queue } from "../../bindings/Queue";
 import { QueueSession } from "../../bindings/QueueSession";
@@ -10,7 +11,6 @@ import { ipc_invoke } from "../../app/ipc";
 import useGlobal from "../../app/store";
 import CreateSessionView from "./CreateSessionView";
 import Button from "../../components/Button";
-import { toast } from "react-hot-toast";
 
 interface Props {
   hide: () => void;
@@ -47,6 +47,7 @@ const CreateQueueView: React.FC<Props> = ({ hide }) => {
       {/* Queue name input */}
       <div className="flex flex-row items-center gap-4">
         <input
+          autoFocus
           {...register("name", {
             required: true,
             minLength: 1,
