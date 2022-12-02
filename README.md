@@ -19,7 +19,10 @@ Download the latest version from the [releases](https://github.com/JakubGluszek/
 
 ## Development
 
-[Prerequisites](https://tauri.app/v1/guides/getting-started/prerequisites)
+Make sure to install all [prerequisites](https://tauri.app/v1/guides/getting-started/prerequisites).
+
+Another prerequisite on linux is:
+`sudo apt install libasound2-dev`
 
 ```bash
 git clone https://github.com/JakubGluszek/sentio.git
