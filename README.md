@@ -21,7 +21,7 @@ Download the latest version from the [releases](https://github.com/JakubGluszek/
 
 Make sure to install all [prerequisites](https://tauri.app/v1/guides/getting-started/prerequisites).
 
-Another prerequisite on linux is to install "libasound2-dev":
+Another prerequisite on linux is "libasound2-dev":
 
 `sudo apt install libasound2-dev`
 
