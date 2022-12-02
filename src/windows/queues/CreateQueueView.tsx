@@ -48,6 +48,7 @@ const CreateQueueView: React.FC<Props> = ({ hide }) => {
       <div className="flex flex-row items-center gap-4">
         <input
           autoFocus
+          autoComplete="off"
           {...register("name", {
             required: true,
             minLength: 1,

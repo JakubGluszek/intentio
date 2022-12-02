@@ -18,6 +18,7 @@ const ThemeFormInputs: React.FC<Props> = ({ register, watch }) => {
         <input
           {...register("name", { required: true, maxLength: 16 })}
           id="color-scheme-name"
+          autoComplete="off"
           className="input"
           style={{ borderColor: watch("base_hex") }}
           type="text"
@@ -32,6 +33,7 @@ const ThemeFormInputs: React.FC<Props> = ({ register, watch }) => {
             required: true,
             pattern: /^#([0-9a-f]{3}){1,2}$/i,
           })}
+          autoComplete="off"
           id="window-hex"
           style={{ borderColor: watch("base_hex") }}
           className="input"
@@ -51,6 +53,7 @@ const ThemeFormInputs: React.FC<Props> = ({ register, watch }) => {
             required: true,
             pattern: /^#([0-9a-f]{3}){1,2}$/i,
           })}
+          autoComplete="off"
           id="base-hex"
           style={{ borderColor: watch("base_hex") }}
           className="input"
@@ -70,6 +73,7 @@ const ThemeFormInputs: React.FC<Props> = ({ register, watch }) => {
             required: true,
             pattern: /^#([0-9a-f]{3}){1,2}$/i,
           })}
+          autoComplete="off"
           id="primary-hex"
           style={{ borderColor: watch("base_hex") }}
           className="input"
@@ -89,6 +93,7 @@ const ThemeFormInputs: React.FC<Props> = ({ register, watch }) => {
             required: true,
             pattern: /^#([0-9a-f]{3}){1,2}$/i,
           })}
+          autoComplete="off"
           id="text-hex"
           style={{ borderColor: watch("base_hex") }}
           className="input"

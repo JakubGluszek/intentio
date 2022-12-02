@@ -24,6 +24,7 @@ const ProjectsView: React.FC = () => {
       {/* Filter by name */}
       <div className="relative">
         <input
+          autoComplete="off"
           value={filter}
           onChange={(e) => setFilter(e.currentTarget.value)}
           placeholder="Filter by name"

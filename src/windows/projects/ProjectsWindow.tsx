@@ -49,13 +49,14 @@ const ProjectsWindow: React.FC = () => {
             <input
               autoFocus
               className="input"
+              autoComplete="off"
               placeholder="Name"
               type="text"
               onKeyUp={(e) =>
                 e.key === "Enter" && createProject(e.currentTarget.value)
               }
               minLength={1}
-              maxLength={16}
+              maxLength={24}
             />
             <Button transparent onClick={() => setViewCreate(false)}>
               <MdClose size={24} />

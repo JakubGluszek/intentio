@@ -88,6 +88,7 @@ const CreateSessionView: React.FC<Props> = ({ hide, save }) => {
               }}
             />
             <Button
+              type="button"
               transparent
               onClick={() =>
                 new WebviewWindow("projects", {
@@ -123,11 +124,11 @@ const CreateSessionView: React.FC<Props> = ({ hide, save }) => {
         </div>
         {/* Controls */}
         <div className="flex flex-row items-center justify-between">
-          <Button transparent onClick={() => hide()}>
+          <Button type="button" transparent onClick={() => hide()}>
             Cancel
           </Button>
           <Button
-            type="submit"
+            type="button"
             onClick={() =>
               save({ id: cuid(), duration, cycles, project_id: projectId })
             }

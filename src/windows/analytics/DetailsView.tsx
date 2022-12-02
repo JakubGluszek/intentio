@@ -75,6 +75,7 @@ const DetailsView: React.FC<Props> = ({ filter, setFilter }) => {
       {/* Filter by date */}
       <div className="relative">
         <input
+          autoComplete="off"
           value={filter}
           onChange={(e) => setFilter(e.currentTarget.value)}
           placeholder="Filter by date, e.g. 2022-11-*"
