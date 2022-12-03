@@ -115,6 +115,13 @@ export const useElapsedTime = ({
     setBgInterval(undefined);
   };
 
+  React.useEffect(() => {
+    startedTimerRef.current =
+      stoppedTimerRef.current +
+      startedTimerRef.current -
+      stoppedTimerRef.current;
+  }, [duration]);
+
   const reset = React.useCallback(
     (newStartAt?: number) => {
       cleanup();
@@ -166,6 +173,7 @@ export const useElapsedTime = ({
         );
         !visibilityRef.current && setDisplayTime(tempTimerRef.current);
       }, 250);
+
       setBgInterval(bgTimer);
     } else {
       clearInterval(bgInterval);
@@ -175,7 +183,7 @@ export const useElapsedTime = ({
 
     return cleanup;
     // start animation over when duration or updateInterval change
-  }, [isPlaying, duration, updateInterval]);
+  }, [isPlaying, updateInterval]);
 
   return { elapsedTime: displayTime, reset };
 };
