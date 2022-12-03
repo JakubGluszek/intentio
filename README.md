@@ -17,6 +17,12 @@ A pomodoro timer desktop app.
 
 Download the latest version from the [releases](https://github.com/JakubGluszek/sentio/releases) page.
 
+## Stack
+
+- Tauri
+- React (with TypeScript)
+- SurrealDB
+
 ## Development
 
 Make sure to install all [prerequisites](https://tauri.app/v1/guides/getting-started/prerequisites).
