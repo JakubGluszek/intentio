@@ -43,6 +43,8 @@ npm run tauri dev
 - [ ] Option to export data into multiple formats
 - [ ] More user preferences
   - [ ] Minimize behavior (to tray or taskbar)
+- [ ] Fullscreen mode
+- [ ] Ability to run bash scripts on certain events like: play, pause, break start/end etc...
 
 ## Acknowledgments
 
