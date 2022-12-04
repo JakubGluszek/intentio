@@ -83,7 +83,7 @@ const DetailsView: React.FC<Props> = ({ filter, setFilter }) => {
           className="input"
         />
         {filter.length > 0 && (
-          <div className="absolute top-[25%] bottom-[25%] right-2 animate-in fade-in scale-90">
+          <div className="absolute bottom-0 right-2 animate-in fade-in scale-90">
             <Button
               transparent
               onClick={() => {

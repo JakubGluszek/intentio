@@ -31,7 +31,7 @@ const App: React.FC = () => {
   const setCurrentProject = useGlobal((state) => state.setCurrentProject);
 
   React.useEffect(() => {
-    const noDragSelector = "input, a, button"; // CSS selector
+    const noDragSelector = "input, a, button, svg"; // CSS selector
 
     const handleMouseDown = async (e: MouseEvent) => {
       if (

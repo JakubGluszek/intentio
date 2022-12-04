@@ -97,9 +97,9 @@ const ProjectView: React.FC<ProjectViewProps> = ({ data }) => {
     <div ref={parent} className="flex flex-col gap-2 bg-base rounded p-2">
       {/* Header */}
       <div className="flex flex-row items-center justify-between text-lg">
-        <div className="flex-1 flex flex-row items-center justify-evenly gap-2">
+        <div className="flex-1 flex flex-row items-center justify-between gap-2">
           <span>{data.name}</span>
-          <span>
+          <span className="px-4">
             {(
               sessions
                 .filter((s) => s.project_id === data.id)
@@ -119,14 +119,21 @@ const ProjectView: React.FC<ProjectViewProps> = ({ data }) => {
       {/* Sessions */}
       {viewDetails && (
         <div className="flex flex-col gap-1">
-          {days_arr.slice(0, limit).map((day) => (
-            <div key={day.date} className="flex flex-row bg-window rounded p-1">
-              <div className="flex-1 text-center">{day.date}</div>
-              <div className="flex-1 text-center">
-                {day.duration.toFixed(2)}h
+          {days_arr.length > 0 ? (
+            days_arr.slice(0, limit).map((day) => (
+              <div
+                key={day.date}
+                className="flex flex-row bg-window rounded p-1"
+              >
+                <div className="flex-1 text-center">{day.date}</div>
+                <div className="flex-1 text-center">
+                  {day.duration.toFixed(2)}h
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            <p className="text-center">None</p>
+          )}
           {limit < days_arr.length && (
             <Button
               transparent
