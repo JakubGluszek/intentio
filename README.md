@@ -6,6 +6,8 @@ A pomodoro timer desktop app.
   <img alt="Sentio" src="https://github.com/JakubGluszek/sentio/blob/master/.github/images/sentio-preview.png" />
 </div>
 
+The Pomodoro Technique is a time management method developed by Francesco Cirillo in the late 1980s. The technique uses a timer to break down work into intervals, traditionally 25 minutes in length, separated by short breaks. These intervals are known as "pomodoros." The idea behind the technique is to use the time more efficiently, and to reduce the impact of interruptions on work. The technique has been widely adopted by individuals and organizations alike, and has been shown to be an effective way to improve productivity and focus.
+
 ## Features
 
 - **projects** - categorize what you spend your time on.
