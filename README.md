@@ -2,9 +2,7 @@
 
 A pomodoro timer desktop application.
 
-<div align="center">
-  <img alt="Sentio" src="https://github.com/JakubGluszek/sentio/blob/master/.github/images/sentio-preview.png" />
-</div>
+![](https://github.com/JakubGluszek/sentio/blob/master/.github/images/sentio-demo.gif)
 
 The Pomodoro Technique is a time management method developed by Francesco Cirillo in the late 1980s.
 
