@@ -38,11 +38,11 @@ const App: React.FC = () => {
         // @ts-ignore
         e.target?.closest(noDragSelector) ||
         // @ts-ignore
-        e.target?.dataset["tauri-disable-drag"] ||
+        e.target.getAttribute("data-tauri-disable-drag") ||
         // @ts-ignore
-        e.target?.parentElement.dataset["tauri-disable-drag"] ||
+        e.target?.parentNode.getAttribute("data-tauri-disable-drag") ||
         // @ts-ignore
-        e.target?.parentElement.parentElement.dataset["tauri-disable-drag"]
+        e.target?.parentNode.parentNode.getAttribute("data-tauri-disable-drag")
       )
         return; // a non-draggable element either in target or its ancestors
       await appWindow.startDragging();

@@ -86,8 +86,8 @@ fn create_tray_menu() -> SystemTrayMenu {
 }
 
 fn handle_on_system_tray_event(app: &tauri::AppHandle, event: SystemTrayEvent) {
-    if let SystemTrayEvent::MenuItemClick { id, .. } = event {
-        match id.as_str() {
+    match event {
+        SystemTrayEvent::MenuItemClick { id, .. } => match id.as_str() {
             "quit" => {
                 std::process::exit(0);
             }
@@ -96,6 +96,12 @@ fn handle_on_system_tray_event(app: &tauri::AppHandle, event: SystemTrayEvent) {
                 window.show().unwrap();
             }
             _ => {}
+        },
+        #[cfg(target_os = "windows")]
+        SystemTrayEvent::LeftClick { .. } => {
+            let window = app.get_window("main").unwrap();
+            window.show().unwrap();
         }
+        _ => {}
     }
 }

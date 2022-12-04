@@ -37,8 +37,9 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "sentio.dev",
-      "longDescription": "",
+      "identifier": "sentio.sentio.dev",
+      "shortDescription": "A pomodoro timer.",
+      "longDescription": "A pomodoro timer.",
       "macOS": {
         "entitlements": null,
         "exceptionDomain": "",
@@ -47,7 +48,7 @@
         "signingIdentity": null
       },
       "resources": ["./assets/audio/*"],
-      "shortDescription": "",
+      "shortDescription": "A pomodoro timer.",
       "targets": "all",
       "windows": {
         "certificateThumbprint": null,
