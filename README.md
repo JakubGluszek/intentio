@@ -57,6 +57,7 @@ npm run tauri dev
   - [ ] Minimize behavior (to tray or taskbar)
 - [ ] Fullscreen mode
 - [ ] Ability to run bash scripts on certain events like: play, pause, break start/end etc...
+- [ ] UI re-work
 
 ## Acknowledgments
 
