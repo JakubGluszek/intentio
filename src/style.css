@@ -54,10 +54,10 @@
   }
 
   :root {
-    --window-color: #222831;
-    --base-color: #393e46;
-    --primary-color: #00adb5;
-    --text-color: #eeeeee;
+    --window-color: 34 40 49;
+    --base-color: 57 62 70;
+    --primary-color: 0 173 181;
+    --text-color: 238 238 238;
   }
 
   html {
