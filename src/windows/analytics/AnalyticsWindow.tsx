@@ -52,14 +52,14 @@ const AnalyticsWindow: React.FC = () => {
   const dayStreak = React.useMemo(() => {
     let dayStreak = 1;
 
-    let sorted = sessions.sort(
+    const sorted = sessions.sort(
       (a, b) => parseInt(b.finished_at) - parseInt(a.finished_at)
     );
     let prevDay = new Date();
     // there might be timezone related issues
     for (let i = 0; i < sorted.length; i++) {
-      let s = sorted[i];
-      let date = new Date(parseInt(s.finished_at));
+      const s = sorted[i];
+      const date = new Date(parseInt(s.finished_at));
 
       if (date.toDateString() === prevDay.toDateString()) continue;
       date.setDate(date.getDate() + 1);
@@ -84,7 +84,7 @@ const AnalyticsWindow: React.FC = () => {
   }, [activeTab]);
 
   return (
-    <Layout Icon={<MdAnalytics size={32} />} label="Analytics">
+    <Layout label="Analytics" icon={<MdAnalytics size={32} />} >
       <ActivityView
         sessions={sessions}
         setDetailsView={(date: string) => {

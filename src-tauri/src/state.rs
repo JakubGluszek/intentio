@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
-use crate::model::{Project, QueueSession};
+use crate::model::{Intent, QueueSession};
 
 #[derive(Serialize, Deserialize, TS, Debug, Clone)]
 #[ts(export, export_to = "../src/bindings/")]
@@ -22,14 +22,14 @@ pub struct SessionQueue {
 
 pub struct State {
     pub session_queue: Option<SessionQueue>,
-    pub current_project: Option<Project>,
+    pub active_intent: Option<Intent>,
 }
 
 impl Default for State {
     fn default() -> Self {
         State {
             session_queue: None,
-            current_project: None,
+            active_intent: None,
         }
     }
 }

@@ -28,11 +28,11 @@ const DetailsView: React.FC<Props> = ({ filter, setFilter }) => {
   const handleFilter = (s: DayDetail): DayDetail | undefined => {
     if (filter.length === 0) return s;
 
-    let [fYear, fMonth, fDay] = filter.split("-");
+    const [fYear, fMonth, fDay] = filter.split("-");
 
     if (!fDay || !fMonth || !fYear) return undefined;
 
-    let [year, month, day] = s.date.split("-");
+    const [year, month, day] = s.date.split("-");
 
     if (fDay !== "*" && fDay !== day) {
       return undefined;
@@ -46,14 +46,14 @@ const DetailsView: React.FC<Props> = ({ filter, setFilter }) => {
   };
 
   const days = React.useMemo(() => {
-    let days: Map<string, DayDetail> = new Map();
+    const days: Map<string, DayDetail> = new Map();
     // group sessions by day
     for (let i = 0; i < sessions.length; i++) {
-      let date = new Date(parseInt(sessions[i].finished_at));
+      const date = new Date(parseInt(sessions[i].finished_at));
 
-      let iso_date = date.toISOString().split("T")[0];
+      const iso_date = date.toISOString().split("T")[0];
 
-      let day = days.get(iso_date);
+      const day = days.get(iso_date);
       if (day) {
         day.duration += sessions[i].duration / 60;
         day.sessions?.push(sessions[i]);

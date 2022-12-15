@@ -38,11 +38,8 @@ async fn main() -> Result<()> {
             // State
             get_session_queue,
             set_session_queue,
-            get_current_project,
-            set_current_project,
-            // Helpers
-            get_current_theme,
-            get_current_project,
+            get_active_intent,
+            set_active_intent,
             // Utils
             open_audio_directory,
             play_audio,
@@ -50,16 +47,18 @@ async fn main() -> Result<()> {
             get_settings,
             update_settings,
             // Theme
+            get_current_theme,
             get_theme,
             get_themes,
             create_theme,
             update_theme,
             delete_theme,
             // Project
-            get_project,
-            get_projects,
-            create_project,
-            delete_project,
+            get_intent,
+            get_intents,
+            create_intent,
+            update_intent,
+            delete_intent,
             // Session
             get_sessions,
             create_session,
@@ -92,6 +91,7 @@ fn handle_on_system_tray_event(app: &tauri::AppHandle, event: SystemTrayEvent) {
                 std::process::exit(0);
             }
             "open" => {
+                // handle error, can crash if window was closed
                 let window = app.get_window("main").unwrap();
                 window.show().unwrap();
             }

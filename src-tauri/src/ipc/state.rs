@@ -1,7 +1,7 @@
 use tauri::{command, AppHandle, Manager, Wry};
 
 use crate::{
-    model::Project,
+    model::Intent,
     state::{SessionQueue, State},
 };
 
@@ -29,24 +29,24 @@ pub async fn set_session_queue(
 }
 
 #[command]
-pub async fn get_current_project(
+pub async fn get_active_intent(
     state: tauri::State<'_, tokio::sync::Mutex<State>>,
-) -> Result<Option<Project>, ()> {
-    Ok(state.try_lock().unwrap().current_project.clone())
+) -> Result<Option<Intent>, ()> {
+    Ok(state.try_lock().unwrap().active_intent.clone())
 }
 
 #[command]
-pub async fn set_current_project(
-    data: Option<Project>,
+pub async fn set_active_intent(
+    data: Option<Intent>,
     app: AppHandle<Wry>,
     state: tauri::State<'_, tokio::sync::Mutex<State>>,
-) -> Result<Option<Project>, ()> {
+) -> Result<Option<Intent>, ()> {
     let mut state = state.try_lock().unwrap();
 
-    state.current_project = data;
+    state.active_intent = data;
 
-    app.emit_all("current_project_updated", state.current_project.clone())
+    app.emit_all("active_intent_updated", state.active_intent.clone())
         .unwrap();
 
-    Ok(state.current_project.clone())
+    Ok(state.active_intent.clone())
 }

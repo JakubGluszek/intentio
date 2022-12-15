@@ -1,6 +1,5 @@
-mod helpers;
+mod intent;
 mod params;
-mod project;
 mod queue;
 mod response;
 mod session;
@@ -9,9 +8,8 @@ mod state;
 mod theme;
 mod utils;
 
-pub use helpers::*;
+pub use intent::*;
 pub use params::*;
-pub use project::*;
 pub use queue::*;
 pub use response::*;
 pub use session::*;

@@ -58,7 +58,7 @@ const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
 
   const nextTrack = () => {
     for (let i = 0; i < tracks.length; i++) {
-      let track = tracks[i];
+      const track = tracks[i];
       if (track.name === currentTrack.name) {
         let nextTrack: FileEntry;
         if (i < tracks.length - 1) {
@@ -75,7 +75,7 @@ const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
 
   const previousTrack = () => {
     for (let i = 0; i < tracks.length; i++) {
-      let track = tracks[i];
+      const track = tracks[i];
       if (track.name === currentTrack.name) {
         let nextTrack: FileEntry;
         if (i > 0) {

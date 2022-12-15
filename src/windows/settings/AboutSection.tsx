@@ -23,21 +23,21 @@ const AboutSection: React.FC = () => {
         </div>
         <div className="w-2/3 flex flex-row items-center justify-between">
           <Tooltip withArrow label="Home page">
-            <a href={data.homePage} target="_blank">
+            <a href={data.homePage} target="_blank" rel="noreferrer">
               <Button transparent>
                 <IoIosGlobe size={42} />
               </Button>
             </a>
           </Tooltip>
           <Tooltip withArrow label="Source code">
-            <a href={data.sourceCode} target="_blank">
+            <a href={data.sourceCode} target="_blank" rel="noreferrer">
               <Button transparent>
                 <IoLogoGithub size={40} />
               </Button>
             </a>
           </Tooltip>
           <Tooltip withArrow label="Report a bug">
-            <a href={data.sourceCode + "/issues"} target="_blank">
+            <a href={data.sourceCode + "/issues"} target="_blank" rel="noreferrer">
               <Button transparent>
                 <IoIosBug size={42} />
               </Button>

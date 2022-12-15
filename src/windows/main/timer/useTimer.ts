@@ -108,7 +108,19 @@ const useTimer = (settings: Settings, queue: SessionQueue | null) => {
       setStartedAt(new Date());
     }
     setIsRunning(true);
-  }, [startedAt]);
+
+    switch (type) {
+      case "focus":
+        setKey("focus");
+        break;
+      case "break":
+        setKey("break");
+        break;
+      case "long break":
+        setKey("long break");
+        break;
+    }
+  }, [startedAt, type]);
 
   const pause = () => {
     setIsRunning(false);
@@ -195,7 +207,7 @@ const useTimer = (settings: Settings, queue: SessionQueue | null) => {
 
   // next session
   const next = React.useCallback(
-    (manual: boolean = false) => {
+    (manual = false) => {
       pause();
 
       if (type === "focus") {

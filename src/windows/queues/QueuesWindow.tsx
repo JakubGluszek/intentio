@@ -38,14 +38,7 @@ const QueuesWindow: React.FC = () => {
   }, []);
 
   return (
-    <Layout
-      Icon={
-        <div className="w-8 h-fit">
-          <QueueIcon />
-        </div>
-      }
-      label="Queues"
-    >
+    <Layout label="Queues" icon={<QueueIcon size={24} />}>
       <div className="flex flex-col gap-6 py-2">
         {/* Active queue */}
         {sessionQueue ? (

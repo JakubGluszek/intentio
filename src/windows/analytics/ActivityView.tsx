@@ -15,21 +15,21 @@ const ActivityView: React.FC<Props> = ({ sessions, setDetailsView }) => {
   const currentTheme = useGlobal((state) => state.currentTheme);
 
   const days = React.useMemo(() => {
-    let days: Map<string, Day> = new Map();
+    const days: Map<string, Day> = new Map();
 
     // sessions date range
-    let dateRange = new Date();
+    const dateRange = new Date();
     dateRange.setMonth(dateRange.getMonth() - 5);
 
     // transform sessions to appropriate Date objects
     for (let i = 0; i < sessions.length; i++) {
-      let date = new Date(parseInt(sessions[i].finished_at));
+      const date = new Date(parseInt(sessions[i].finished_at));
 
       if (date.getTime() < dateRange.getTime()) continue;
 
-      let iso_date = date.toISOString().split("T")[0];
+      const iso_date = date.toISOString().split("T")[0];
 
-      let day = days.get(iso_date);
+      const day = days.get(iso_date);
       if (day) {
         day.count += sessions[i].duration / 60;
       } else {
@@ -42,16 +42,16 @@ const ActivityView: React.FC<Props> = ({ sessions, setDetailsView }) => {
     }
 
     // dummy objects needed in order to render graph properly
-    let range_iso = dateRange.toISOString().split("T")[0];
+    const range_iso = dateRange.toISOString().split("T")[0];
     if (!days.has(range_iso)) {
       days.set(range_iso, { date: range_iso, count: 0, level: 0 });
     }
-    let today_iso = new Date().toISOString().split("T")[0];
+    const today_iso = new Date().toISOString().split("T")[0];
     if (!days.has(today_iso)) {
       days.set(today_iso, { date: today_iso, count: 0, level: 0 });
     }
 
-    let days_array = Array.from(days.values());
+    const days_array = Array.from(days.values());
 
     // level assigment based on hours spent
     // "count" equals "hours" in this case

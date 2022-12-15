@@ -1,13 +1,13 @@
 import React from "react";
 import { MdSettings } from "react-icons/md";
 
+import { ipc_invoke } from "@/app/ipc";
+import Layout from "@/components/Layout";
+import { Settings } from "@/bindings/Settings";
 import TimerSection from "./TimerSection";
 import ThemeSection from "./themes";
 import AlertSection from "./AlertSection";
 import AboutSection from "./AboutSection";
-import Layout from "../../components/Layout";
-import { Settings } from "../../bindings/Settings";
-import { ipc_invoke } from "../../app/ipc";
 
 const SettingsWindow: React.FC = () => {
   const [settings, setSettings] = React.useState<Settings>();
@@ -17,8 +17,8 @@ const SettingsWindow: React.FC = () => {
   }, []);
 
   return (
-    <Layout Icon={<MdSettings size={32} />} label="Settings">
-      <div className="flex flex-col gap-6 py-2">
+    <Layout label="Settings" icon={<MdSettings size={32} />}>
+      <div className="flex flex-col gap-6 py-2 px-4 overflow-y-auto">
         {settings && (
           <>
             <TimerSection settings={settings} setSettings={setSettings} />

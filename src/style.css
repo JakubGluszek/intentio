@@ -3,33 +3,33 @@
 @tailwind utilities;
 
 @font-face {
-  font-family: "cascadia";
-  src: url("fonts/CascadiaMono-Regular.woff2");
-  font-weight: normal;
+  font-family: "Quicksand";
+  src: url("Quicksand-Light.ttf");
+  font-weight: light;
 }
 
 @font-face {
-  font-family: "cascadia";
-  src: url("/fonts/CascadiaMono-Light.woff2");
-  font-weight: lighter;
+  font-family: "Quicksand";
+  src: url("Quicksand-Medium.ttf");
+  font-weight: medium;
 }
 
 @font-face {
-  font-family: "cascadia";
-  src: url("/fonts/CascadiaMono-SemiBold.woff2");
+  font-family: "Quicksand";
+  src: url("Quicksand-Regular.ttf");
+  font-weight: regular;
+}
+
+@font-face {
+  font-family: "Quicksand";
+  src: url("Quicksand-SemiBold.ttf");
   font-weight: bolder;
 }
 
 @font-face {
-  font-family: "cascadia";
-  src: url("/fonts/CascadiaMono-Bold.woff2");
+  font-family: "Quicksand";
+  src: url("Quicksand-Bold.ttf");
   font-weight: bold;
-}
-
-@font-face {
-  font-family: "cascadia";
-  src: url("/fonts/CascadiaMono-Italic.woff2");
-  font-style: italic;
 }
 
 @layer base {
@@ -49,6 +49,14 @@
     cursor: default;
   }
 
+  h1 {
+    @apply text-xl;
+  }
+
+  button {
+    @apply font-bold;
+  }
+
   button > * {
     cursor: pointer;
   }
@@ -61,7 +69,7 @@
   }
 
   html {
-    @apply font-cascadia text-text cursor-default transition-colors duration-200;
+    @apply font-quicksand text-text cursor-default transition-colors duration-200;
   }
 
   body {
@@ -79,13 +87,13 @@
   input[type="number"] {
     -moz-appearance: textfield;
   }
+
+  button {
+    outline: none;
+  }
 }
 
 @layer components {
-  .card {
-    @apply rounded hover:bg-base p-2;
-  }
-
   .input {
     @apply w-full bg-transparent border-b border-b-base focus:border-primary py-1 outline-none;
   }
@@ -98,5 +106,23 @@
     filter: sepia(5) /* add some color to grey so the rest works */
       saturate(100) /* increase strength of color channels */ invert(1)
       /* invert the color */ grayscale(1) /* make it grey */ contrast(9); /* make it black/white */
+  }
+
+  .card-magic-bg {
+    @apply bg-base border-b-2 border-primary/80;
+    background: linear-gradient(
+      to top,
+      rgba(var(--primary-color)) 50%,
+      rgba(var(--base-color)) 50%
+    );
+    background-size: 100% 200%;
+    background-position: top bottom;
+    transition: all 0.2s ease-in;
+  }
+
+  .card-magic-bg:hover {
+    background-position: right bottom;
+    color: rgb(var(--window-color));
+    border-color: rgb(var(--primary-color));
   }
 }

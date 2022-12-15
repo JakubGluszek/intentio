@@ -64,14 +64,14 @@ const ProjectView: React.FC<ProjectViewProps> = ({ data }) => {
   const sessions = useGlobal((state) => state.getSessionsByProjectId)(data.id);
 
   const days = React.useMemo(() => {
-    let days: Map<string, DayDetail> = new Map();
+    const days: Map<string, DayDetail> = new Map();
     // group sessions by day
     for (let i = 0; i < sessions.length; i++) {
-      let date = new Date(parseInt(sessions[i].finished_at));
+      const date = new Date(parseInt(sessions[i].finished_at));
 
-      let iso_date = date.toISOString().split("T")[0];
+      const iso_date = date.toISOString().split("T")[0];
 
-      let day = days.get(iso_date);
+      const day = days.get(iso_date);
       if (day) {
         day.duration += sessions[i].duration / 60;
       } else {

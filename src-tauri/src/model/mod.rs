@@ -3,14 +3,14 @@
 use serde::Serialize;
 use ts_rs::TS;
 
-mod project;
+mod intent;
 mod queue;
 mod session;
 mod settings;
 mod theme;
 
 // Re-Exports
-pub use project::*;
+pub use intent::*;
 pub use queue::*;
 pub use session::*;
 pub use settings::*;

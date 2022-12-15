@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import { listen } from "@tauri-apps/api/event";
 import { invoke } from "@tauri-apps/api/tauri";
+import { appWindow } from "@tauri-apps/api/window";
 
 import { ipc_invoke } from "./app/ipc";
 import { Theme } from "./bindings/Theme";
@@ -14,15 +15,14 @@ import MainWindow from "./windows/main";
 import { Session } from "./bindings/Session";
 import { SessionQueue } from "./bindings/SessionQueue";
 import { ModelDeleteResultData } from "./bindings/ModelDeleteResultData";
-import { appWindow } from "@tauri-apps/api/window";
 
 import.meta.env.PROD &&
   document.addEventListener("contextmenu", (event) => event.preventDefault());
 
 const SettingsWindow = React.lazy(() => import("./windows/settings"));
-const ProjectsWindow = React.lazy(() => import("./windows/projects"));
 const AnalyticsWindow = React.lazy(() => import("./windows/analytics"));
 const QueuesWindow = React.lazy(() => import("./windows/queues"));
+const IntentsWindow = React.lazy(() => import("./windows/intents"));
 
 const App: React.FC = () => {
   const setSettings = useGlobal((state) => state.setSettings);
@@ -31,7 +31,7 @@ const App: React.FC = () => {
   const setCurrentProject = useGlobal((state) => state.setCurrentProject);
 
   React.useEffect(() => {
-    const noDragSelector = "input, a, button, svg"; // CSS selector
+    const noDragSelector = "input, a, button"; // CSS selector
 
     const handleMouseDown = async (e: MouseEvent) => {
       if (
@@ -80,12 +80,6 @@ const App: React.FC = () => {
       "set_session_queue",
       (event) => setSessionQueue(event.payload)
     );
-    const onThemePreview = listen<Theme>("preview_theme", (event) => {
-      applyTheme(event.payload);
-    });
-    const onSettingsUpdated = listen<Settings>("settings_updated", (event) => {
-      setSettings(event.payload);
-    });
     const onProjectCreated = listen<Project>("project_created", (event) => {
       addProject(event.payload);
     });
@@ -105,6 +99,12 @@ const App: React.FC = () => {
         setCurrentProject(event.payload);
       }
     );
+    const onThemePreview = listen<Theme>("preview_theme", (event) => {
+      applyTheme(event.payload);
+    });
+    const onSettingsUpdated = listen<Settings>("settings_updated", (event) => {
+      setSettings(event.payload);
+    });
     const onCurrentThemeUpdated = listen("current_theme_updated", () => {
       invoke<Theme>("get_current_theme").then((data) => {
         applyTheme(data);
@@ -130,7 +130,7 @@ const App: React.FC = () => {
       <Routes>
         <Route index element={<MainWindow />} />
         <Route path="settings" element={<SettingsWindow />} />
-        <Route path="projects" element={<ProjectsWindow />} />
+        <Route path="intents" element={<IntentsWindow />} />
         <Route path="analytics" element={<AnalyticsWindow />} />
         <Route path="queues" element={<QueuesWindow />} />
       </Routes>
@@ -140,12 +140,12 @@ const App: React.FC = () => {
           duration: 2000,
           style: {
             padding: 4,
-            backgroundColor: "var(--base-color)",
+            backgroundColor: "rgb(var(--base-color))",
             border: 2,
-            borderColor: "var(--window-color)",
+            borderColor: "rgb(var(--window-color))",
             borderRadius: 4,
             fontSize: 14,
-            color: "var(--text-color)",
+            color: "rgb(var(--text-color))",
             textAlign: "center",
           },
         }}

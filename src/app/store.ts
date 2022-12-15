@@ -7,6 +7,9 @@ import { Session } from "../bindings/Session";
 import { Settings } from "../bindings/Settings";
 import { Theme } from "../bindings/Theme";
 
+// Seperate into multiple stores, for example: useGlobal, useThemes
+// useGlobal could include settings, state, in future account too
+
 interface State {
   settings?: Settings;
   setSettings: (settings: Settings) => void;

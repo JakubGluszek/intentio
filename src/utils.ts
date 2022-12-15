@@ -1,17 +1,23 @@
 import { invoke } from "@tauri-apps/api/tauri";
-import Color from "color"
+import Color from "color";
 
 import { Theme } from "./bindings/Theme";
 import { ColorRGB } from "./types";
 
-export const formatTime = (sec: number): String => {
-  let seconds = sec % 60;
-  let minutes = ((sec - seconds) / 60).toFixed();
+export const formatTimeTimer = (sec: number): string => {
+  const seconds = sec % 60;
+  const minutes = ((sec - seconds) / 60).toFixed();
   return `
     ${minutes.length === 1 ? "0" : ""}${minutes}:${seconds < 10 && seconds > 0 ? "0" : ""
     }${seconds}${seconds === 0 ? "0" : ""}
   `;
 };
+
+export function formatTime(minutes: number): string {
+  const hours = Math.floor(minutes / 60);
+  const remainingMinutes = minutes % 60;
+  return `${hours}h ${remainingMinutes}min`;
+}
 
 export const applyTheme = (theme: Theme) => {
   document.documentElement.style.setProperty(
@@ -19,7 +25,8 @@ export const applyTheme = (theme: Theme) => {
     // @ts-ignore
     Color(theme.window_hex).rgb().color.join(" ")
   );
-  document.documentElement.style.setProperty("--base-color",
+  document.documentElement.style.setProperty(
+    "--base-color",
     // @ts-ignore
     Color(theme.base_hex).rgb().color.join(" ")
   );
@@ -28,7 +35,8 @@ export const applyTheme = (theme: Theme) => {
     // @ts-ignore
     Color(theme.primary_hex).rgb().color.join(" ")
   );
-  document.documentElement.style.setProperty("--text-color",
+  document.documentElement.style.setProperty(
+    "--text-color",
     // @ts-ignore
     Color(theme.text_hex).rgb().color.join(" ")
   );

@@ -2,7 +2,7 @@ import React from "react";
 import { MdTimer } from "react-icons/md";
 import { Checkbox } from "@mantine/core";
 
-import { formatTime } from "../../utils";
+import { formatTimeTimer } from "../../utils";
 import { Slider } from "../../components";
 import { Settings } from "../../bindings/Settings";
 import { ipc_invoke } from "../../app/ipc";
@@ -35,7 +35,7 @@ const TimerSection: React.FC<Props> = ({ settings, setSettings }) => {
             <span className="font-medium">Focus</span>
             <div className="bg-base group-hover:bg-window rounded px-2 py-1">
               <span className="text-sm">
-                {formatTime(settings.pomodoro_duration * 60)}
+                {formatTimeTimer(settings.pomodoro_duration * 60)}
               </span>
             </div>
             <Slider
@@ -53,7 +53,7 @@ const TimerSection: React.FC<Props> = ({ settings, setSettings }) => {
             <span className="text-sm font-medium">Break</span>
             <div className="group-hover:bg-window bg-base rounded px-2 py-1">
               <span className="text-sm">
-                {formatTime(settings.break_duration * 60)}
+                {formatTimeTimer(settings.break_duration * 60)}
               </span>
             </div>
             <Slider
@@ -71,7 +71,7 @@ const TimerSection: React.FC<Props> = ({ settings, setSettings }) => {
             <span className="text-sm font-medium">Long Break</span>
             <div className="bg-base group-hover:bg-window rounded px-2 py-1">
               <span className="text-sm">
-                {formatTime(settings.long_break_duration * 60)}
+                {formatTimeTimer(settings.long_break_duration * 60)}
               </span>
             </div>
             <Slider

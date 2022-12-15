@@ -1,9 +1,9 @@
 import React from "react";
-import { MdPauseCircle, MdPlayCircle, MdSkipNext } from "react-icons/md";
+import { MdPauseCircle, MdPlayCircle } from "react-icons/md";
 import { VscDebugRestart } from "react-icons/vsc";
 import toast from "react-hot-toast";
 
-import { formatTime, playAudio } from "../../../utils";
+import { formatTimeTimer, playAudio } from "../../../utils";
 import { Settings } from "../../../bindings/Settings";
 import useTimer from "./useTimer";
 import useGlobal from "../../../app/store";
@@ -13,16 +13,19 @@ import { CountdownCircleTimer } from "./CountdownCircleTimer";
 import { ColorFormat } from "@/types";
 
 interface TimerProps {
+  biRef: { nextFunc?: (manual?: boolean) => void };
   settings: Settings;
   sessionQueue: SessionQueue | null;
 }
 
-const Timer: React.FC<TimerProps> = ({ settings, sessionQueue }) => {
+const Timer: React.FC<TimerProps> = ({ biRef, settings, sessionQueue }) => {
   const timer = useTimer(settings, sessionQueue);
   const theme = useGlobal((state) => state.currentTheme);
 
+  biRef.nextFunc = timer.next;
+
   return (
-    <div className="grow mx-auto w-fit flex flex-col gap-4 items-center">
+    <div className="grow flex flex-col gap-6 items-center justify-center">
       {theme && (
         <div className="relative group">
           <CountdownCircleTimer
@@ -40,11 +43,19 @@ const Timer: React.FC<TimerProps> = ({ settings, sessionQueue }) => {
             trailColor={theme.base_hex as ColorFormat}
           >
             {({ remainingTime }) => (
-              <span className="text-4xl">{formatTime(remainingTime)}</span>
+              <span className="text-4xl">{formatTimeTimer(remainingTime)}</span>
             )}
           </CountdownCircleTimer>
-          <div className="absolute bottom-3 left-[70px] btn btn-ghost opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="absolute bottom-4 w-full flex flex-col items-center gap-1">
+            <span className="text-sm text-text/60 whitespace-nowrap">
+              {timer.type === "focus"
+                ? "Focus"
+                : timer.type === "break"
+                  ? "Break"
+                  : "Long break"}
+            </span>
             <Button
+              className="text-primary/80 hover:text-primary opacity-0 group-hover:opacity-100 transition-opacity"
               transparent
               onClick={() => {
                 timer.restart();
@@ -59,16 +70,6 @@ const Timer: React.FC<TimerProps> = ({ settings, sessionQueue }) => {
           </div>
         </div>
       )}
-      <div className="flex flex-col items-center gap-0.5 text-sm brightness-75">
-        <span>#{timer.iterations}</span>
-        <span>
-          {timer.type === "focus"
-            ? "Time to focus!"
-            : timer.type === "break"
-            ? "Time for a break!"
-            : "Time for a longer break!"}
-        </span>
-      </div>
       <div className="flex flex-row items-center justify-center gap-2 w-full h-10">
         {timer.isRunning ? (
           <Button
@@ -97,20 +98,6 @@ const Timer: React.FC<TimerProps> = ({ settings, sessionQueue }) => {
             <MdPlayCircle size={48} />
           </Button>
         )}
-        <div className="z-10 fixed right-4 bottom-3 btn btn-ghost">
-          <Button
-            transparent
-            onClick={() => {
-              timer.next(true);
-              toast("Session skipped", {
-                position: "top-center",
-                duration: 1200,
-              });
-            }}
-          >
-            <MdSkipNext size={32} />
-          </Button>
-        </div>
       </div>
     </div>
   );
