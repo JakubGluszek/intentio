@@ -4,6 +4,7 @@ import clsx from "clsx";
 import { Intent } from "..";
 import ActivityView from "./ActivityView";
 import SessionsView from "./SessionsView";
+import Button from "@/components/Button";
 
 type Tab = "activity" | "sessions";
 
@@ -37,30 +38,24 @@ interface TabsProps {
 const Tabs: React.FC<TabsProps> = (props) => {
   return (
     <div className="w-full h-full flex flex-row gap-0.5 rounded overflow-clip">
-      <button
+      <Button
+        primary={props.value === "activity"}
+        rounded={false}
+        size="fill"
         onClick={() => {
           props.setValue("activity");
         }}
-        className={clsx(
-          "w-full uppercase tracking-wider",
-          props.value === "activity"
-            ? "bg-primary/80 hover:bg-primary text-window"
-            : "bg-base/80 hover:bg-base text-text"
-        )}
       >
         Activity
-      </button>
-      <button
+      </Button>
+      <Button
+        primary={props.value === "sessions"}
+        rounded={false}
+        size="fill"
         onClick={() => props.setValue("sessions")}
-        className={clsx(
-          "w-full uppercase tracking-wider",
-          props.value === "sessions"
-            ? "bg-primary/80 hover:bg-primary text-window"
-            : "bg-base/80 hover:bg-base text-text"
-        )}
       >
         Sessions
-      </button>
+      </Button>
     </div>
   );
 };

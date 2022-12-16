@@ -67,7 +67,7 @@ export const IntentsList: React.FC<Props> = (props) => {
   }
 
   return (
-    <div className="grow flex overflow-y-auto p-1.5 bg-base rounded animate-in fade-in-0">
+    <div className="grow flex overflow-y-auto animate-in fade-in-0 duration-75">
       <div
         ref={containerRef}
         className="w-full max-h-0 flex flex-col gap-1 overflow-y"
@@ -117,7 +117,7 @@ const IntentView: React.FC<IntentViewProps> = (props) => {
         "w-full h-fit flex flex-col p-1 rounded transition-colors",
         props.selected
           ? "bg-primary/80 hover:bg-primary text-window"
-          : "bg-window/80 hover:bg-window text-text"
+          : "bg-base/80 hover:bg-base text-text"
       )}
       onClick={(e) => props.onSelected(e, data)}
     >
@@ -126,12 +126,7 @@ const IntentView: React.FC<IntentViewProps> = (props) => {
         <span className="text-left whitespace-nowrap overflow-ellipsis overflow-hidden">
           {data.label}
         </span>
-        {data.pinned ? (
-          <TiPin
-            size={24}
-            className="min-w-[24px]"
-          />
-        ) : null}
+        {data.pinned ? <TiPin size={24} className="min-w-[24px]" /> : null}
       </div>
 
       {/* Tags */}
@@ -139,7 +134,7 @@ const IntentView: React.FC<IntentViewProps> = (props) => {
         <div
           className={clsx(
             "flex flex-row gap-2 p-1 rounded transition-colors",
-            props.selected && "bg-window/80"
+            props.selected && "bg-window"
           )}
         >
           {data.tags.map((tag, i) => (

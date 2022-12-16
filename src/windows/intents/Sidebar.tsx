@@ -29,7 +29,7 @@ const Sidebar: React.FC<Props> = (props) => {
       <div className="h-8 flex flex-row items-center gap-2">
         {/* Toggle create intent view */}
         <Button
-          color="primary"
+          primary={true}
           size="fill"
           onClick={() => setViewCreate((visible) => !visible)}
         >
@@ -48,9 +48,7 @@ const Sidebar: React.FC<Props> = (props) => {
         {/* Sort by intent label */}
         <Button
           transparent
-          onClick={() =>
-            setSort((sort) => (sort === "asc" ? "desc" : "asc"))
-          }
+          onClick={() => setSort((sort) => (sort === "asc" ? "desc" : "asc"))}
         >
           {sort === "asc" ? (
             <AiOutlineSortAscending size={28} />
@@ -79,7 +77,7 @@ const CreateIntentView: React.FC = () => {
 
 // Search for filtering intents list in sidebar via their label
 const SearchBar: React.FC = () => {
-  return <div className="bg-darker/40">Search</div>;
+  return <div className="h-8 bg-darker/20 rounded">Search</div>;
 };
 
 export default Sidebar;

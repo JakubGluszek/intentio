@@ -35,58 +35,46 @@ const IntentDetails: React.FC<Props> = (props) => {
           </Button>
         </div>
       </div>
-      <div className="grow flex flex-col gap-1">
-        <div className="grow flex flex-col bg-base rounded">
+      <div className="grow flex flex-col gap-2">
+        <div className="grow flex flex-col">
           {tab === "activity" ? <ActivityView /> : null}
           {tab === "sessions" ? <SessionsView /> : null}
           {tab === "tasks" ? <TasksView /> : null}
           {tab === "notes" ? <NotesView /> : null}
         </div>
         <div className="w-full h-8 flex flex-row gap-0.5 rounded overflow-clip text-sm">
-          <button
+          <Button
+            size="fill"
+            rounded={false}
+            primary={tab === "activity"}
             onClick={() => setTab("activity")}
-            className={clsx(
-              "w-full uppercase tracking-wider",
-              tab === "activity"
-                ? "bg-primary/80 hover:bg-primary text-window"
-                : "bg-base/80 hover:bg-base text-text"
-            )}
           >
             Activity
-          </button>
-          <button
+          </Button>
+          <Button
+            size="fill"
+            rounded={false}
+            primary={tab === "sessions"}
             onClick={() => setTab("sessions")}
-            className={clsx(
-              "w-full uppercase tracking-wider",
-              tab === "sessions"
-                ? "bg-primary/80 hover:bg-primary text-window"
-                : "bg-base/80 hover:bg-base text-text"
-            )}
           >
             Sessions
-          </button>
-          <button
+          </Button>
+          <Button
+            size="fill"
+            rounded={false}
+            primary={tab === "tasks"}
             onClick={() => setTab("tasks")}
-            className={clsx(
-              "w-full uppercase tracking-wider",
-              tab === "tasks"
-                ? "bg-primary/80 hover:bg-primary text-window"
-                : "bg-base/80 hover:bg-base text-text"
-            )}
           >
             Tasks
-          </button>
-          <button
+          </Button>
+          <Button
+            size="fill"
+            rounded={false}
+            primary={tab === "notes"}
             onClick={() => setTab("notes")}
-            className={clsx(
-              "w-full uppercase tracking-wider",
-              tab === "notes"
-                ? "bg-primary/80 hover:bg-primary text-window"
-                : "bg-base/80 hover:bg-base text-text"
-            )}
           >
             Notes
-          </button>
+          </Button>
         </div>
       </div>
     </div>
@@ -94,19 +82,35 @@ const IntentDetails: React.FC<Props> = (props) => {
 };
 
 const ActivityView: React.FC = () => {
-  return <div className="grow flex flex-col gap-2 p-2">Activity</div>;
+  return (
+    <div className="grow flex flex-col gap-2 p-2 bg-darker/10 rounded">
+      Activity
+    </div>
+  );
 };
 
 const SessionsView: React.FC = () => {
-  return <div className="grow flex flex-col gap-2 p-2">Sessions</div>;
+  return (
+    <div className="grow flex flex-col gap-2 p-2 bg-darker/10 rounded">
+      Sessions
+    </div>
+  );
 };
 
 const TasksView: React.FC = () => {
-  return <div className="grow flex flex-col gap-2 p-2">Tasks</div>;
+  return (
+    <div className="grow flex flex-col gap-2 p-2 bg-darker/10 rounded">
+      Tasks
+    </div>
+  );
 };
 
 const NotesView: React.FC = () => {
-  return <div className="grow flex flex-col gap-2 p-2">Notes</div>;
+  return (
+    <div className="grow flex flex-col gap-2 p-2 bg-darker/10 rounded">
+      Notes
+    </div>
+  );
 };
 
 export default IntentDetails;

@@ -40,7 +40,7 @@ const MainWindow: React.FC = () => {
         }
       >
         <div
-          className="grow flex flex-col p-4 transition-opacity duration-300"
+          className="grow flex flex-col p-2 transition-opacity duration-300"
           style={{ opacity: viewSidebar ? 0.0 : 1.0 }}
         >
           {/* Timer countdown */}
@@ -85,7 +85,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = (props) => {
   return (
-    <div className="flex flex-row items-center justify-between p-4">
+    <div className="flex flex-row items-center justify-between p-2">
       <div className="flex flex-row items-center gap-2">
         <Button transparent onClick={props.expandSidebar}>
           <TbLayoutSidebarRightCollapse size={32} />
