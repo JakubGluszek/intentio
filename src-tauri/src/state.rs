@@ -20,6 +20,8 @@ pub struct SessionQueue {
     iterations: i64,
 }
 
+#[derive(Serialize, Deserialize, TS, Debug, Clone)]
+#[ts(export, export_to = "../src/bindings/")]
 pub struct State {
     pub session_queue: Option<SessionQueue>,
     pub active_intent: Option<Intent>,
@@ -32,4 +34,11 @@ impl Default for State {
             active_intent: None,
         }
     }
+}
+
+#[derive(Deserialize, TS, Debug, Clone)]
+#[ts(export, export_to = "../src/bindings/")]
+pub struct StateForUpdate {
+    pub session_queue: Option<Option<SessionQueue>>,
+    pub active_intent: Option<Option<Intent>>,
 }

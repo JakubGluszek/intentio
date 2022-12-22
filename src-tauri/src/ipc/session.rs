@@ -5,23 +5,27 @@ use tauri::{command, AppHandle, Wry};
 use crate::{
     ctx::Ctx,
     model::{Session, SessionBmc, SessionForCreate},
-    prelude::Error,
+    prelude::{Error, Result},
 };
 
-use super::IpcResponse;
-
 #[command]
-pub async fn get_sessions(app: AppHandle<Wry>) -> IpcResponse<Vec<Session>> {
+pub async fn get_sessions(app: AppHandle<Wry>) -> Result<Vec<Session>> {
     match Ctx::from_app(app) {
-        Ok(ctx) => SessionBmc::get_multi(ctx).await.into(),
+        Ok(ctx) => match SessionBmc::get_multi(ctx).await {
+            Ok(sessions) => Ok(sessions),
+            Err(err) => Err(err).into(),
+        },
         Err(_) => Err(Error::CtxFail).into(),
     }
 }
 
 #[command]
-pub async fn create_session(app: AppHandle<Wry>, data: SessionForCreate) -> IpcResponse<Session> {
+pub async fn create_session(app: AppHandle<Wry>, data: SessionForCreate) -> Result<Session> {
     match Ctx::from_app(app) {
-        Ok(ctx) => SessionBmc::create(ctx, data).await.into(),
+        Ok(ctx) => match SessionBmc::create(ctx, data).await {
+            Ok(session) => Ok(session),
+            Err(err) => Err(err).into(),
+        },
         Err(_) => Err(Error::CtxFail).into(),
     }
 }

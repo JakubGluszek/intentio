@@ -33,12 +33,31 @@
 }
 
 @layer base {
-  ::-webkit-scrollbar {
-    display: none;
+  :root {
+    --window-color: 34 40 49;
+    --base-color: 57 62 70;
+    --primary-color: 0 173 181;
+    --text-color: 238 238 238;
   }
 
   * {
     user-select: none;
+  }
+
+  ::selection {
+    @apply text-text bg-primary;
+  }
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  html {
+    @apply font-quicksand text-text cursor-default transition-colors duration-200;
+  }
+
+  body {
+    @apply bg-window;
   }
 
   span,
@@ -61,21 +80,6 @@
     cursor: pointer;
   }
 
-  :root {
-    --window-color: 34 40 49;
-    --base-color: 57 62 70;
-    --primary-color: 0 173 181;
-    --text-color: 238 238 238;
-  }
-
-  html {
-    @apply font-quicksand text-text cursor-default transition-colors duration-200;
-  }
-
-  body {
-    @apply bg-window;
-  }
-
   /* Hides controls in input of type "number" */
   /* Chrome, Safari, Edge, Opera */
   input::-webkit-outer-spin-button,
@@ -88,16 +92,24 @@
     -moz-appearance: textfield;
   }
 
+  input {
+    @apply w-full bg-darker/20 border-2 border-primary/20 focus:border-primary/60 outline-none py-1 px-2 rounded shadow-inner text-text;
+  }
+
+  input::placeholder {
+    @apply text-text/60;
+  }
+
+  input > * {
+    user-select: all;
+  }
+
   button {
     outline: none;
   }
 }
 
 @layer components {
-  .input {
-    @apply w-full bg-transparent border-b border-b-base focus:border-primary py-1 outline-none;
-  }
-
   .contrast-text {
     background: inherit;
     -webkit-background-clip: text;

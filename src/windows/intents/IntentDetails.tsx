@@ -1,24 +1,43 @@
 import React from "react";
 import { TiPin, TiPinOutline } from "react-icons/ti";
-import { MdInfo } from "react-icons/md";
-import clsx from "clsx";
+import {
+  MdClose,
+  MdInfo,
+  MdKeyboardArrowDown,
+  MdKeyboardArrowUp,
+  MdToday,
+} from "react-icons/md";
+import { AiFillFire } from "react-icons/ai";
+import { IoMdTime } from "react-icons/io";
+import ActivityCalendar, { Day } from "react-activity-calendar";
+import ReactTooltip from "react-tooltip";
+import Color from "color";
 
 import Button from "@/components/Button";
 import { Intent } from ".";
+import { Session } from "@/bindings/Session";
+import { formatTime } from "@/utils";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
+import { DayDetail } from "@/types";
+import { BsArrowsCollapse, BsArrowsExpand } from "react-icons/bs";
+import { clsx } from "@mantine/core";
+import { useStore } from "@/app/store";
 
 interface Props {
   data: Intent;
+  sessions: Session[];
 }
 
+type Tab = "activity" | "sessions" | "tasks" | "notes";
+
 const IntentDetails: React.FC<Props> = (props) => {
-  const [tab, setTab] = React.useState<
-    "activity" | "sessions" | "tasks" | "notes"
-  >("activity");
+  const [tab, setTab] = React.useState<Tab>("activity");
+  const [filter, setFilter] = React.useState("");
 
   const { data } = props;
 
   return (
-    <div className="grow flex flex-col gap-4 p-2 animate-in fade-in-0 duration-75">
+    <div className="grow flex flex-col gap-2 p-2 animate-in fade-in-0 duration-75">
       {/* Top */}
       <div className="w-full h-8 flex flex-row items-center justify-between">
         <div className="w-full overflow-hidden">
@@ -35,82 +54,438 @@ const IntentDetails: React.FC<Props> = (props) => {
           </Button>
         </div>
       </div>
-      <div className="grow flex flex-col gap-2">
-        <div className="grow flex flex-col">
-          {tab === "activity" ? <ActivityView /> : null}
-          {tab === "sessions" ? <SessionsView /> : null}
-          {tab === "tasks" ? <TasksView /> : null}
-          {tab === "notes" ? <NotesView /> : null}
+
+      <div className="grow flex flex-col justify-evenly bg-darker/20 p-2 rounded shadow-inner">
+        {tab === "activity" ? (
+          <ActivityView
+            sessions={props.sessions}
+            viewDayDetails={(date: string) => {
+              setTab("sessions");
+              setFilter(date);
+            }}
+          />
+        ) : null}
+        {tab === "sessions" ? (
+          <SessionsView
+            sessions={props.sessions}
+            filter={filter}
+            setFilter={(label: string) => setFilter(label)}
+          />
+        ) : null}
+        {tab === "tasks" ? <TasksView /> : null}
+        {tab === "notes" ? <NotesView /> : null}
+      </div>
+      <div className="w-full h-8 flex flex-row gap-0.5 rounded overflow-clip text-sm">
+        <Button
+          size="fill"
+          rounded={false}
+          primary={tab === "activity"}
+          onClick={() => setTab("activity")}
+        >
+          Activity
+        </Button>
+        <Button
+          size="fill"
+          rounded={false}
+          primary={tab === "sessions"}
+          onClick={() => setTab("sessions")}
+        >
+          Sessions
+        </Button>
+        <Button
+          size="fill"
+          rounded={false}
+          primary={tab === "tasks"}
+          onClick={() => setTab("tasks")}
+        >
+          Tasks
+        </Button>
+        <Button
+          size="fill"
+          rounded={false}
+          primary={tab === "notes"}
+          onClick={() => setTab("notes")}
+        >
+          Notes
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+interface ActivityViewProps {
+  sessions: Session[];
+  viewDayDetails: (date: string) => void;
+}
+
+const ActivityView: React.FC<ActivityViewProps> = (props) => {
+  const currentTheme = useStore((state) => state.currentTheme);
+
+  const today = new Date();
+
+  const totalFocused = React.useMemo(
+    () => (props.sessions.reduce((p, c) => p + c.duration, 0) / 60).toFixed(1),
+    [props.sessions]
+  );
+
+  const focusedToday = React.useMemo(
+    () =>
+      (
+        props.sessions
+          .filter(
+            (s) =>
+              new Date(parseInt(s.finished_at)).toDateString() ==
+              today.toDateString()
+          )
+          .reduce((p, c) => p + c.duration, 0) / 60
+      ).toFixed(1),
+    [props.sessions]
+  );
+
+  const dayStreak = React.useMemo(() => {
+    let dayStreak = 1;
+
+    const sorted = props.sessions.sort(
+      (a, b) => parseInt(b.finished_at) - parseInt(a.finished_at)
+    );
+    let prevDay = new Date();
+    // there might be timezone related issues
+    for (let i = 0; i < sorted.length; i++) {
+      const s = sorted[i];
+      const date = new Date(parseInt(s.finished_at));
+
+      if (date.toDateString() === prevDay.toDateString()) continue;
+      date.setDate(date.getDate() + 1);
+
+      if (date.toDateString() === prevDay.toDateString()) {
+        dayStreak += 1;
+        prevDay = new Date(parseInt(s.finished_at));
+      } else {
+        break;
+      }
+    }
+
+    return dayStreak;
+  }, [props.sessions]);
+
+  const days = React.useMemo(() => {
+    const days: Map<string, Day> = new Map();
+
+    // sessions date range
+    const dateRange = new Date();
+    dateRange.setMonth(dateRange.getMonth() - 5);
+
+    // transform sessions to appropriate Date objects
+    for (let i = 0; i < props.sessions.length; i++) {
+      const date = new Date(parseInt(props.sessions[i].finished_at));
+
+      if (date.getTime() < dateRange.getTime()) continue;
+
+      const iso_date = date.toISOString().split("T")[0];
+
+      const day = days.get(iso_date);
+      if (day) {
+        day.count += props.sessions[i].duration / 60;
+      } else {
+        days.set(iso_date, {
+          count: props.sessions[i].duration / 60,
+          date: iso_date,
+          level: 1,
+        });
+      }
+    }
+
+    // dummy objects needed in order to render graph properly
+    const range_iso = dateRange.toISOString().split("T")[0];
+    if (!days.has(range_iso)) {
+      days.set(range_iso, { date: range_iso, count: 0, level: 0 });
+    }
+    const today_iso = new Date().toISOString().split("T")[0];
+    if (!days.has(today_iso)) {
+      days.set(today_iso, { date: today_iso, count: 0, level: 0 });
+    }
+
+    const days_array = Array.from(days.values());
+
+    // level assigment based on hours spent
+    // "count" equals "hours" in this case
+    for (let i = 0; i < days_array.length; i++) {
+      if (days_array[i].count >= 9) {
+        days_array[i].level = 4;
+      } else if (days_array[i].count >= 6) {
+        days_array[i].level = 3;
+      } else if (days_array[i].count >= 3) {
+        days_array[i].level = 2;
+      } else if (days_array[i].count > 0) {
+        days_array[i].level = 1;
+      } else {
+        days_array[i].level = 0;
+      }
+
+      // needed for tooltip render
+      days_array[i].count = parseFloat(days_array[i].count.toFixed(2));
+    }
+    return days_array;
+  }, [props.sessions]);
+
+  return (
+    <div className="grow flex flex-col animate-in fade-in-0 duration-75">
+      {/* Summary view */}
+      <div className="grow flex flex-col justify-between rounded gap-4 pt-1">
+        <div className="w-full flex flex-row gap-1">
+          {/* Total time focused */}
+          <div className="w-full flex flex-col items-center gap-2">
+            <div className="w-full flex flex-row items-center justify-center gap-1">
+              <IoMdTime className="text-primary/80" size={28} />
+              <span className="text-lg font-semibold">Total</span>
+            </div>
+            <div className="bg-window border-b-2 border-primary/80 w-full flex flex-col items-center justify-center rounded px-1 py-4 shadow">
+              <span>{formatTime(parseFloat(totalFocused) * 60)}</span>
+            </div>
+          </div>
+          {/* Today's focused time */}
+          <div className="w-full flex flex-col items-center gap-2">
+            <div className="w-full flex flex-row items-center justify-center gap-1">
+              <MdToday className="text-primary/80" size={26} />
+              <span className="text-lg font-semibold">Today</span>
+            </div>
+            <div className="bg-window border-b-2 border-primary/80 w-full flex flex-col items-center justify-center rounded px-1 py-4 shadow">
+              <span>{formatTime(parseFloat(focusedToday))}</span>
+            </div>
+          </div>
+          {/* Day Streak */}
+          <div className="w-full flex flex-col items-center gap-2">
+            <div className="flex flex-row items-center justify-center gap-1">
+              <AiFillFire className="text-primary/80" size={28} />
+              <span className="text-lg font-semibold">Streak</span>
+            </div>
+            <div className="bg-window border-b-2 border-primary/80 w-full flex flex-col items-center justify-center rounded px-1 py-4 shadow">
+              <span>
+                {dayStreak} {dayStreak === 1 ? "day" : "days"}
+              </span>
+            </div>
+          </div>
         </div>
-        <div className="w-full h-8 flex flex-row gap-0.5 rounded overflow-clip text-sm">
-          <Button
-            size="fill"
-            rounded={false}
-            primary={tab === "activity"}
-            onClick={() => setTab("activity")}
-          >
-            Activity
+
+        <ActivityCalendar
+          eventHandlers={{
+            onClick: () => {
+              return (data) => props.viewDayDetails(data.date);
+            },
+          }}
+          style={{
+            marginLeft: "auto",
+            marginRight: "auto",
+            marginTop: 16,
+            marginBottom: 16,
+          }}
+          theme={{
+            level0: Color(currentTheme?.primary_hex).alpha(0.1).string(),
+            level1: Color(currentTheme?.primary_hex).alpha(0.4).string(),
+            level2: Color(currentTheme?.primary_hex).alpha(0.6).string(),
+            level3: Color(currentTheme?.primary_hex).alpha(0.8).string(),
+            level4: currentTheme?.primary_hex!,
+          }}
+          color={currentTheme?.primary_hex}
+          data={days.sort(
+            (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+          )}
+          labels={{
+            legend: {
+              less: "Less",
+              more: "More",
+            },
+            months: [
+              "Jan",
+              "Feb",
+              "Mar",
+              "Apr",
+              "May",
+              "Jun",
+              "Jul",
+              "Aug",
+              "Sep",
+              "Oct",
+              "Nov",
+              "Dec",
+            ],
+            tooltip: "<strong>Focused for {{count}}h</strong> on {{date}}",
+            weekdays: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+          }}
+          hideTotalCount
+        >
+          <ReactTooltip html />
+        </ActivityCalendar>
+      </div>
+    </div>
+  );
+};
+
+interface SessionViewProps {
+  sessions: Session[];
+  filter: string;
+  setFilter: (label: string) => void;
+}
+
+const SessionsView: React.FC<SessionViewProps> = (props) => {
+  const [skip, setSkip] = React.useState(0);
+  const [limit, setLimit] = React.useState(25);
+
+  const [parent] = useAutoAnimate<HTMLDivElement>();
+  const [collapseAll, setCollapseAll] = React.useState(false);
+
+  const handleFilter = (s: DayDetail): DayDetail | undefined => {
+    if (props.filter.length === 0) return s;
+
+    const [fYear, fMonth, fDay] = props.filter.split("-");
+
+    if (!fDay || !fMonth || !fYear) return undefined;
+
+    const [year, month, day] = s.date.split("-");
+
+    if (fDay !== "*" && fDay !== day) {
+      return undefined;
+    } else if (fMonth !== "*" && fMonth !== month) {
+      return undefined;
+    } else if (fYear !== "*" && fYear !== year) {
+      return undefined;
+    }
+
+    return s;
+  };
+
+  const days = React.useMemo(() => {
+    let days: Map<string, DayDetail> = new Map();
+    // group sessions by day
+    for (let i = 0; i < props.sessions.length; i++) {
+      const date = new Date(parseInt(props.sessions[i].finished_at));
+
+      const iso_date = date.toISOString().split("T")[0];
+
+      const day = days.get(iso_date);
+      if (day) {
+        day.duration += props.sessions[i].duration / 60;
+        day.sessions?.push(props.sessions[i]);
+      } else {
+        days.set(iso_date, {
+          duration: props.sessions[i].duration / 60,
+          date: iso_date,
+          sessions: [props.sessions[i]],
+        });
+      }
+    }
+
+    return Array.from(days.values()).filter(handleFilter);
+  }, [props.sessions, props.filter]);
+
+  return (
+    <div className="grow flex flex-col gap-2 animate-in fade-in-0 duration-75">
+      {/* Header */}
+      <div className="h-8 flex flex-row items-center gap-1">
+        <div className="relative w-full flex flex-row items-center gap-1">
+          <input
+            autoComplete="off"
+            value={props.filter}
+            onChange={(e) => props.setFilter(e.currentTarget.value)}
+            className="pr-8"
+            placeholder="Filter by date, e.g. 2022-11-*"
+            type="text"
+          />
+          {props.filter.length > 0 && (
+            <div className="absolute bottom-1 right-1 animate-in fade-in brightness-75">
+              <Button
+                transparent
+                onClick={() => {
+                  props.setFilter("");
+                }}
+              >
+                <MdClose size={28} />
+              </Button>
+            </div>
+          )}
+        </div>
+        <div className="flex flex-row items-center gap-2 px-2">
+          <Button transparent onClick={() => setCollapseAll((prev) => !prev)}>
+            {collapseAll ? (
+              <BsArrowsCollapse size={24} />
+            ) : (
+              <BsArrowsExpand size={24} />
+            )}
           </Button>
-          <Button
-            size="fill"
-            rounded={false}
-            primary={tab === "sessions"}
-            onClick={() => setTab("sessions")}
+        </div>
+      </div>
+      {/* Body */}
+      <div className="grow flex flex-col overflow-y-auto">
+        <div className="grow flex flex-col overflow-y-auto">
+          <div
+            ref={parent}
+            className="w-full max-h-0 flex flex-col gap-1 overflow-y"
           >
-            Sessions
-          </Button>
-          <Button
-            size="fill"
-            rounded={false}
-            primary={tab === "tasks"}
-            onClick={() => setTab("tasks")}
-          >
-            Tasks
-          </Button>
-          <Button
-            size="fill"
-            rounded={false}
-            primary={tab === "notes"}
-            onClick={() => setTab("notes")}
-          >
-            Notes
-          </Button>
+            {days.slice(skip, limit).map((day) => (
+              <DayView key={day.date} data={day} collapse={collapseAll} />
+            ))}
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-const ActivityView: React.FC = () => {
-  return (
-    <div className="grow flex flex-col gap-2 p-2 bg-darker/10 rounded">
-      Activity
-    </div>
-  );
-};
+interface DayViewProps {
+  data: DayDetail;
+  collapse: boolean;
+}
 
-const SessionsView: React.FC = () => {
+const DayView: React.FC<DayViewProps> = (props) => {
+  const { data } = props;
+
+  const [viewMore, setViewMore] = React.useState(false);
+
+  React.useEffect(() => {
+    setViewMore(props.collapse);
+  }, [props.collapse]);
+
   return (
-    <div className="grow flex flex-col gap-2 p-2 bg-darker/10 rounded">
-      Sessions
+    <div
+      data-tauri-disable-drag
+      className={clsx(
+        "flex flex-col p-1 transition-color rounded shadow",
+        viewMore ? "bg-base" : "bg-base/40"
+      )}
+    >
+      <div
+        className={clsx(
+          "h-8 w-full flex flex-row items-center justify-between"
+        )}
+      >
+        <span className="text-lg text-text/80">{data.date}</span>
+        <Button
+          tabIndex={-1}
+          transparent
+          onClick={() => setViewMore((v) => !v)}
+        >
+          {viewMore ? (
+            <MdKeyboardArrowUp size={28} />
+          ) : (
+            <MdKeyboardArrowDown size={28} />
+          )}
+        </Button>
+      </div>
+      {viewMore ? (
+        <div className="flex flex-col p-2 bg-window/80 rounded">
+          <h1>More</h1>
+        </div>
+      ) : null}
     </div>
   );
 };
 
 const TasksView: React.FC = () => {
-  return (
-    <div className="grow flex flex-col gap-2 p-2 bg-darker/10 rounded">
-      Tasks
-    </div>
-  );
+  return <div className="grow flex flex-col gap-2">Tasks</div>;
 };
 
 const NotesView: React.FC = () => {
-  return (
-    <div className="grow flex flex-col gap-2 p-2 bg-darker/10 rounded">
-      Notes
-    </div>
-  );
+  return <div className="grow flex flex-col gap-2">Notes</div>;
 };
 
 export default IntentDetails;

@@ -114,10 +114,10 @@ const IntentView: React.FC<IntentViewProps> = (props) => {
       ref={container}
       data-tauri-disable-drag
       className={clsx(
-        "w-full h-fit flex flex-col p-1 rounded transition-colors",
+        "w-full h-fit flex flex-col p-1 rounded transition-colors duration-75 shadow",
         props.selected
           ? "bg-primary/80 hover:bg-primary text-window"
-          : "bg-base/80 hover:bg-base text-text"
+          : "bg-base/60 hover:bg-base text-text"
       )}
       onClick={(e) => props.onSelected(e, data)}
     >
@@ -133,18 +133,19 @@ const IntentView: React.FC<IntentViewProps> = (props) => {
       {data.tags.length > 0 ? (
         <div
           className={clsx(
-            "flex flex-row gap-2 p-1 rounded transition-colors",
+            "flex flex-row gap-2 p-1 rounded transition-colors duration-75",
             props.selected && "bg-window"
           )}
         >
           {data.tags.map((tag, i) => (
             <button
               key={i}
+              tabIndex={-1}
               className={clsx(
-                "rounded text-sm font-semibold px-2 py-0.5 transition-colors",
+                "rounded text-sm font-semibold px-2 py-0.5 transition-colors duration-75",
                 props.selectedTags.includes(tag)
                   ? "bg-primary/80 hover:bg-primary text-window/80"
-                  : "bg-text/80 hover:bg-text text-window/80"
+                  : "bg-text/60 hover:bg-text/80 text-window"
               )}
               onClick={() => props.onTagSelect(tag)}
             >

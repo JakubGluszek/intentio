@@ -3,14 +3,11 @@ import toast from "react-hot-toast";
 import { sendNotification } from "@tauri-apps/api/notification";
 
 import { SessionQueue } from "../../../bindings/SessionQueue";
-import { Queue } from "../../../bindings/Queue";
 import { Settings } from "../../../bindings/Settings";
-import { ipc_invoke } from "../../../app/ipc";
-import useGlobal from "../../../app/store";
 import { TimerType } from "../../../types";
-import { MIN_SESSION_DURATION } from "../../../app/config";
 import { invoke } from "@tauri-apps/api";
-import { Project } from "@/bindings/Project";
+import { useStore } from "@/app/store";
+import services from "@/app/services";
 
 const useTimer = (settings: Settings, queue: SessionQueue | null) => {
   // custom key is needed to reset timer components inner state
@@ -26,39 +23,14 @@ const useTimer = (settings: Settings, queue: SessionQueue | null) => {
   const [isRunning, setIsRunning] = React.useState(false);
   const [iterations, setIterations] = React.useState(0);
 
-  const currentProject = useGlobal((state) => state.currentProject);
-  const setCurrentProjectById = useGlobal(
-    (state) => state.setCurrentProjectById
-  );
-  const setCurrentProject = useGlobal((state) => state.setCurrentProject);
-  const getTotalQueueCycles = useGlobal((state) => state.getTotalQueueCycles);
-
-  const queueRef = React.useRef<Queue | null>(null);
+  const state = useStore((state) => state.state);
 
   React.useEffect(() => {
-    // set session for a new qeueue
-    if (!queueRef.current && queue) {
-      setDuration(queue.sessions[queue.session_idx].duration);
-      setCurrentProjectById(queue.sessions[queue.session_idx].project_id);
-      setType("focus");
-      setKey("focus-queue");
-      // unset queue, set session from settings
-    } else if (queueRef.current && !queue) {
-      invoke<Project>("get_current_project").then((data) =>
-        setCurrentProject(data)
-      );
-      setDuration(settings.pomodoro_duration);
-      setType("focus");
-      setKey("focus");
-      // set a different queue
-    } else if (queue && queue.id !== queueRef.current?.id) {
-      setDuration(queue.sessions[queue.session_idx].duration);
-      setCurrentProjectById(queue.sessions[queue.session_idx].project_id);
-      setType("focus");
-      setKey("focus-queue-other");
-    }
-    queueRef.current = queue;
-  }, [queue]);
+    invoke("get_state");
+    setDuration(settings.pomodoro_duration);
+    setType("focus");
+    setKey("focus");
+  }, []);
 
   // Sync duration change on settings update
   React.useEffect(() => {
@@ -130,50 +102,21 @@ const useTimer = (settings: Settings, queue: SessionQueue | null) => {
 
   /** Saves a focus session */
   const save = React.useCallback(() => {
-    if (type !== "focus" || timeFocused < MIN_SESSION_DURATION * 60) return;
+    if (type !== "focus" || timeFocused < 60) return;
 
-    ipc_invoke("create_session", {
-      data: {
+    services
+      .createSession({
         duration: ~~((timeFocused + 1) / 60),
         started_at: startedAt!.getTime().toString(),
-        project_id: currentProject?.id,
-      },
-    }).then(() => {
-      setIterations((it) => it + 1);
-      toast("Session saved", { position: "top-center" });
-    });
-  }, [type, currentProject, timeFocused, startedAt]);
-
-  const nextQueueSession = React.useCallback(() => {
-    if (!queue) return;
-
-    // if queue is finished, deactivate it
-    if (queue.iterations >= getTotalQueueCycles()!) {
-      invoke("set_session_queue", { data: undefined });
-      return;
-    }
-
-    // determine which session to use
-    let session_idx = queue.session_idx;
-    let session_cycle = queue.session_cycle + 1;
-    if (queue.session_cycle === queue.sessions[session_idx].cycles) {
-      session_idx += 1;
-      session_cycle = 0;
-    }
-
-    setCurrentProjectById(queue.sessions[session_idx].project_id);
-    setDuration(queue.sessions[session_idx].duration);
-
-    // update activate queue
-    ipc_invoke("set_session_queue", {
-      data: {
-        ...queue,
-        iterations: queue.iterations + 1,
-        session_idx,
-        session_cycle,
-      },
-    }).catch((err) => console.log(err));
-  }, [queue]);
+        intent_id: state?.active_intent?.id ?? null,
+        paused_at: [],
+        resumed_at: [],
+      })
+      .then(() => {
+        setIterations((it) => it + 1);
+        toast("Session saved", { position: "top-center" });
+      });
+  }, [type, state, timeFocused, startedAt]);
 
   const switchSession = React.useCallback(
     (type: TimerType) => {
@@ -182,11 +125,7 @@ const useTimer = (settings: Settings, queue: SessionQueue | null) => {
 
       switch (type) {
         case "focus":
-          if (queue) {
-            nextQueueSession();
-          } else {
-            setDuration(settings.pomodoro_duration);
-          }
+          setDuration(settings.pomodoro_duration);
           setType("focus");
           setKey("focus");
           break;

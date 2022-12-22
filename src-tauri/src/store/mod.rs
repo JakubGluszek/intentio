@@ -11,8 +11,7 @@ use surrealdb::{Datastore, Session};
 mod try_froms;
 mod x_takes;
 
-const DATABASES: &[&str] = &["v1.1.0"];
-const DB_INDEX: usize = 0;
+const APP_VERSION: &'static str = "v1.1.0";
 
 pub trait Creatable: Into<Value> {}
 pub trait Patchable: Into<Value> {}
@@ -34,7 +33,7 @@ impl Store {
         let path = format!("file://{}/sentio.db", path);
 
         let ds = Datastore::new(&path).await?;
-        let ses = Session::for_db("appns", DATABASES[DB_INDEX]);
+        let ses = Session::for_db("appns", APP_VERSION);
 
         Ok(Store { ds, ses })
     }

@@ -5,12 +5,12 @@ import { MdCheckBox, MdOpenInNew, MdStickyNote2 } from "react-icons/md";
 import { useClickOutside } from "@mantine/hooks";
 import { WebviewWindow } from "@tauri-apps/api/window";
 
-import { WebviewConfig } from "@/app/config";
 import Button from "@/components/Button";
 import QueueIcon from "@/components/QueueIcon";
 import IntentsList from "../intents/IntentsList";
 import { DUMMY_INTENTS } from "../intents/mockData";
 import { Intent } from "../intents";
+import { CONFIG } from "@/app/config";
 
 interface Props {
   isVisible: boolean;
@@ -31,7 +31,7 @@ const Sidebar: React.FC<Props> = (props) => {
   return (
     <div
       ref={ref}
-      className="z-[9999] left-0 top-0 fixed w-[264px] h-full flex flex-col bg-window transition-opacity"
+      className="z-[9999] left-0 top-0 fixed w-[286px] h-full flex flex-col bg-window transition-opacity"
       style={{
         boxShadow: "8px 16px 24px -8px rgba(0, 0, 0, 0.60)",
         zIndex: props.isVisible ? 9999 : -1,
@@ -48,13 +48,6 @@ const Sidebar: React.FC<Props> = (props) => {
             <Button
               transparent
               onClick={() => {
-                new WebviewWindow("queues", {
-                  url: "/queues",
-                  title: "Queues",
-                  width: 450,
-                  height: 380,
-                  ...WebviewConfig,
-                });
                 props.collapse();
               }}
             >
@@ -64,15 +57,7 @@ const Sidebar: React.FC<Props> = (props) => {
           <Button
             transparent
             onClick={() => {
-              new WebviewWindow("intents", {
-                url: "/intents",
-                title: "Intents",
-                width: 640,
-                height: 480,
-                maxWidth: 640,
-                maxHeight: 480,
-                ...WebviewConfig,
-              });
+              new WebviewWindow("intents", CONFIG.webviews.intents);
               props.collapse();
             }}
           >
@@ -93,14 +78,14 @@ const Sidebar: React.FC<Props> = (props) => {
           {tab === "tasks" ? <TasksView /> : null}
           {tab === "notes" ? <NotesView /> : null}
           {/* Content Navigation */}
-          <div className="h-8 flex flex-row gap-0.5 rounded overflow-clip">
+          <div className="h-[28px] flex flex-row gap-0.5 rounded overflow-clip">
             <Button
               primary={tab === "intents"}
               rounded={false}
               size={tab === "intents" ? "fill" : undefined}
               onClick={() => setTab("intents")}
             >
-              <BiTargetLock size={28} />
+              <BiTargetLock size={24} />
               {tab === "intents" ? (
                 <span className="text-lg font-black">Intents</span>
               ) : undefined}
@@ -111,7 +96,7 @@ const Sidebar: React.FC<Props> = (props) => {
               rounded={false}
               onClick={() => setTab("tasks")}
             >
-              <MdCheckBox size={28} />
+              <MdCheckBox size={24} />
               {tab === "tasks" ? (
                 <span className="text-lg">Tasks</span>
               ) : undefined}
@@ -122,7 +107,7 @@ const Sidebar: React.FC<Props> = (props) => {
               rounded={false}
               onClick={() => setTab("notes")}
             >
-              <MdStickyNote2 size={28} />
+              <MdStickyNote2 size={24} />
               {tab === "notes" ? (
                 <span className="text-lg">Notes</span>
               ) : undefined}

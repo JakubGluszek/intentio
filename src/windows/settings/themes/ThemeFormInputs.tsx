@@ -1,11 +1,10 @@
+import { Theme } from "@/bindings/Theme";
 import React from "react";
 import { UseFormRegister, UseFormWatch } from "react-hook-form";
 
-import { ThemeFormData } from "@/types";
-
 interface Props {
-  register: UseFormRegister<ThemeFormData>;
-  watch: UseFormWatch<ThemeFormData>;
+  register: UseFormRegister<Partial<Theme>>;
+  watch: UseFormWatch<Partial<Theme>>;
 }
 
 const ThemeFormInputs: React.FC<Props> = ({ register, watch }) => {

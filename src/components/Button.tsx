@@ -7,6 +7,7 @@ interface Props extends HTMLMotionProps<"button"> {
   transparent?: boolean;
   primary?: boolean;
   rounded?: boolean;
+  shadow?: boolean;
   size?: "fill";
   innerRef?: React.MutableRefObject<HTMLButtonElement | null>;
 }
@@ -19,6 +20,7 @@ const Button: React.FC<Props> = (props) => {
     innerRef,
     primary = false,
     rounded = true,
+    shadow = false,
     disabled,
     style,
     ...restProps
@@ -29,11 +31,12 @@ const Button: React.FC<Props> = (props) => {
       className={clsx(
         "flex flex-row items-center justify-center font-bold gap-1 tracking-wider uppercase",
         rounded && "rounded",
+        shadow && "shadow-2xl",
         transparent
-          ? "bg-transparent text-primary/80 hover:text-primary"
+          ? "bg-transparent text-primary/80 hover:text-primary focus:text-primary"
           : primary
-            ? "bg-primary/80 hover:bg-primary px-2 text-window py-1"
-            : "bg-primary/40 hover:bg-primary/80 px-2 text-window py-1"
+            ? "bg-primary/80 hover:bg-primary px-2 text-window py-1 focus:bg-primary"
+            : "bg-primary/40 hover:bg-primary/80 px-2 text-window py-1 focus:bg-primary"
       )}
       style={{
         width: size === "fill" ? "100%" : undefined,

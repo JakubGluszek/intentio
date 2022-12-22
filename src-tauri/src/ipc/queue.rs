@@ -6,29 +6,36 @@ use crate::{
     prelude::Error,
 };
 
-use super::IpcResponse;
-
 #[command]
-pub async fn create_queue(app: AppHandle<Wry>, data: QueueForCreate) -> IpcResponse<Queue> {
+pub async fn create_queue(app: AppHandle<Wry>, data: QueueForCreate) -> Result<Queue, String> {
     match Ctx::from_app(app) {
-        Ok(ctx) => QueueBmc::create(ctx, data).await.into(),
-        Err(_) => Err(Error::CtxFail).into(),
+        Ok(ctx) => match QueueBmc::create(ctx, data).await {
+            Ok(queue) => Ok(queue),
+            Err(err) => Err(format!("{err}")),
+        },
+        Err(_) => Err(Error::CtxFail.to_string()),
     }
 }
 
 #[command]
-pub async fn get_queue(app: AppHandle<Wry>, id: String) -> IpcResponse<Queue> {
+pub async fn get_queue(app: AppHandle<Wry>, id: String) -> Result<Queue, String> {
     match Ctx::from_app(app) {
-        Ok(ctx) => QueueBmc::get(ctx, &id).await.into(),
-        Err(_) => Err(Error::CtxFail).into(),
+        Ok(ctx) => match QueueBmc::get(ctx, &id).await {
+            Ok(queue) => Ok(queue),
+            Err(err) => Err(format!("{err}")),
+        },
+        Err(_) => Err(Error::CtxFail.to_string()),
     }
 }
 
 #[command]
-pub async fn get_queues(app: AppHandle<Wry>) -> IpcResponse<Vec<Queue>> {
+pub async fn get_queues(app: AppHandle<Wry>) -> Result<Vec<Queue>, String> {
     match Ctx::from_app(app) {
-        Ok(ctx) => QueueBmc::list(ctx).await.into(),
-        Err(_) => Err(Error::CtxFail).into(),
+        Ok(ctx) => match QueueBmc::list(ctx).await {
+            Ok(queues) => Ok(queues),
+            Err(err) => Err(format!("{err}")),
+        },
+        Err(_) => Err(Error::CtxFail.to_string()),
     }
 }
 
@@ -37,17 +44,26 @@ pub async fn update_queue(
     app: AppHandle<Wry>,
     id: String,
     data: QueueForUpdate,
-) -> IpcResponse<Queue> {
+) -> Result<Queue, String> {
     match Ctx::from_app(app) {
-        Ok(ctx) => QueueBmc::update(ctx, &id, data).await.into(),
-        Err(_) => Err(Error::CtxFail).into(),
+        Ok(ctx) => match QueueBmc::update(ctx, &id, data).await {
+            Ok(queue) => Ok(queue),
+            Err(err) => Err(format!("{err}")),
+        },
+        Err(_) => Err(Error::CtxFail.to_string()),
     }
 }
 
 #[command]
-pub async fn delete_queue(app: AppHandle<Wry>, id: String) -> IpcResponse<ModelDeleteResultData> {
+pub async fn delete_queue(
+    app: AppHandle<Wry>,
+    id: String,
+) -> Result<ModelDeleteResultData, String> {
     match Ctx::from_app(app) {
-        Ok(ctx) => QueueBmc::delete(ctx, &id).await.into(),
-        Err(_) => Err(Error::CtxFail).into(),
+        Ok(ctx) => match QueueBmc::delete(ctx, &id).await {
+            Ok(data) => Ok(data),
+            Err(err) => Err(format!("{err}")),
+        },
+        Err(_) => Err(Error::CtxFail.to_string()),
     }
 }

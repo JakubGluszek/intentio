@@ -5,56 +5,42 @@ import { useForm, UseFormWatch } from "react-hook-form";
 
 import { Theme } from "@/bindings/Theme";
 import Button from "@/components/Button";
-import { Settings } from "@/bindings/Settings";
-import { ipc_invoke } from "@/app/ipc";
-import useGlobal from "@/app/store";
-import { ThemeFormData } from "@/types";
 import ThemeFormInputs from "./ThemeFormInputs";
-import { ModelDeleteResultData } from "@/bindings/ModelDeleteResultData";
+import { useStore } from "@/app/store";
+import services from "@/app/services";
+import { ThemeForUpdate } from "@/bindings/ThemeForUpdate";
 
 interface ThemeViewProps {
   theme: Theme;
 }
 
-// TODO: Extract useTheme hook
-
 const ThemeView: React.FC<ThemeViewProps> = ({ theme }) => {
   const [viewEdit, setViewEdit] = React.useState(false);
   const [viewDelete, setViewDelete] = React.useState(false);
 
-  const currentTheme = useGlobal((state) => state.currentTheme);
-  const removeTheme = useGlobal((state) => state.removeTheme);
-  const updateTheme = useGlobal((state) => state.updateTheme);
+  const currentTheme = useStore((state) => state.currentTheme);
+  const removeTheme = useStore((state) => state.removeTheme);
+  const patchTheme = useStore((state) => state.patchTheme);
 
   const containerRef = React.useRef<HTMLDivElement | null>(null);
 
-  const { register, handleSubmit, setValue, watch } = useForm<ThemeFormData>();
+  const { register, handleSubmit, setValue, watch } = useForm<ThemeForUpdate>();
 
   // update theme
   const onSubmit = handleSubmit((data) => {
-    ipc_invoke<Theme>("update_theme", {
-      id: theme.id,
-      data: { ...data, default: false },
-    }).then(() => {
+    services.updateTheme(theme.id, data).then((data) => {
       if (theme.id === currentTheme?.id) {
         emit("update_current_theme", theme);
       }
-      updateTheme(theme);
+      patchTheme(data.id, data);
       setViewEdit(false);
     });
   });
 
-  const deleteTheme = async () => {
-    const res = await ipc_invoke<ModelDeleteResultData>("delete_theme", {
-      id: theme.id,
-    });
-    removeTheme(res.data.id);
-    setViewDelete(false);
-  };
-
-  const setCurrentTheme = () => {
-    ipc_invoke<Settings>("update_settings", {
-      data: { current_theme_id: theme.id },
+  const deleteTheme = async (id: string) => {
+    await services.deleteTheme(id).then((data) => {
+      removeTheme(data.id);
+      setViewDelete(false);
     });
   };
 
@@ -100,7 +86,7 @@ const ThemeView: React.FC<ThemeViewProps> = ({ theme }) => {
         <button
           style={{ backgroundColor: watch("primary_hex") }}
           className={`min-w-[48px] h-full cursor-pointer transition-transform duration-200`}
-          onClick={() => setCurrentTheme()}
+          onClick={() => services.setCurrentTheme(theme.id)}
         ></button>
 
         {/* Heading */}
@@ -150,7 +136,7 @@ const ThemeView: React.FC<ThemeViewProps> = ({ theme }) => {
             <DeleteModal
               watch={watch}
               cancel={() => setViewDelete(false)}
-              deleteTheme={deleteTheme}
+              deleteTheme={() => deleteTheme(theme.id)}
             />
           )}
           {/* Update theme form */}
@@ -187,7 +173,7 @@ const ThemeView: React.FC<ThemeViewProps> = ({ theme }) => {
 };
 
 interface DeleteModalProps {
-  watch: UseFormWatch<ThemeFormData>;
+  watch: UseFormWatch<Partial<Theme>>;
   cancel: () => void;
   deleteTheme: () => void;
 }

@@ -7,53 +7,30 @@ import ActivityCalendar, { Day } from "react-activity-calendar";
 import ReactTooltip from "react-tooltip";
 
 import { Session } from "@/bindings/Session";
-import useGlobal from "@/app/store";
 import { formatTime } from "@/utils";
 import { Intent } from "..";
-import { DUMMY_SESSIONS } from "../mockData";
+import { useStore } from "@/app/store";
 
 interface Props {
   intents: Intent[];
   tags: string[];
+  sessions: Session[];
+  viewDayDetails: (date: string) => void;
 }
 
 const ActivityView: React.FC<Props> = (props) => {
-  const [sessions, setSessions] = React.useState(DUMMY_SESSIONS);
-
-  let reducedSessions = sessions;
-  let intents = props.intents;
-
-  // reduce intents by given tags
-  if (props.tags.length > 0) {
-    if (props.tags.length === 1) {
-      intents = intents.filter((intent) =>
-        props.tags.some((tag) => intent.tags.includes(tag))
-      );
-    } else if (props.tags.length > 1) {
-      intents = intents.filter((intent) =>
-        props.tags.every((tag) => intent.tags.includes(tag))
-      );
-    }
-
-    // reduce sessions by leftover intents
-    reducedSessions = sessions.filter((session) =>
-      intents.some((intent) => intent.id === session.intent_id)
-    );
-  }
-
   return (
-    <div className="grow flex flex-col justify-between animate-in fade-in-0 duration-75">
+    <div className="grow flex flex-col justify-evenly animate-in fade-in-0 duration-75">
       <SummaryView
-        // @ts-ignore
-        sessions={reducedSessions}
-        tags={props.tags}
-        intents={intents}
-      />
-      <CalendarView
-        // @ts-ignore
-        sessions={reducedSessions}
+        sessions={props.sessions}
         tags={props.tags}
         intents={props.intents}
+      />
+      <CalendarView
+        sessions={props.sessions}
+        tags={props.tags}
+        intents={props.intents}
+        viewDayDetails={props.viewDayDetails}
       />
     </div>
   );
@@ -114,23 +91,23 @@ const SummaryView: React.FC<SummaryViewProps> = (props) => {
   }, [props.sessions]);
 
   return (
-    <div className="flex flex-col bg-base rounded gap-1 p-2 pt-1">
+    <div className="flex flex-col rounded gap-4 pt-1">
       <h1 className="text-primary/80 text-center font-semibold">
         {`SUMMARY OF ${props.tags.length === 0
-          ? "ALL INTENTS"
-          : props.intents.length === 1
-            ? "1 INTENT"
-            : `${props.intents.length} INTENTS`
+            ? "ALL ACTIVITY"
+            : props.intents.length === 1
+              ? "1 INTENT"
+              : `${props.intents.length} INTENTS`
           }`}
       </h1>
-      <div className="w-full flex flex-row gap-1 bg-window/80 rounded p-2">
+      <div className="w-full flex flex-row gap-1">
         {/* Total time focused */}
         <div className="w-full flex flex-col items-center gap-2">
           <div className="w-full flex flex-row items-center justify-center gap-1">
             <IoMdTime className="text-primary/80" size={28} />
             <span className="text-lg font-semibold">Total</span>
           </div>
-          <div className="bg-base border-b-2 border-primary/80 w-full flex flex-col items-center justify-center rounded px-1 py-4">
+          <div className="bg-window border-b-2 border-primary/80 w-full flex flex-col items-center justify-center rounded px-1 py-4 shadow">
             <span>{formatTime(parseFloat(totalFocused) * 60)}</span>
           </div>
         </div>
@@ -140,7 +117,7 @@ const SummaryView: React.FC<SummaryViewProps> = (props) => {
             <MdToday className="text-primary/80" size={26} />
             <span className="text-lg font-semibold">Today</span>
           </div>
-          <div className="bg-base border-b-2 border-primary/80 w-full flex flex-col items-center justify-center rounded px-1 py-4">
+          <div className="bg-window border-b-2 border-primary/80 w-full flex flex-col items-center justify-center rounded px-1 py-4 shadow">
             <span>{formatTime(parseFloat(focusedToday))}</span>
           </div>
         </div>
@@ -150,7 +127,7 @@ const SummaryView: React.FC<SummaryViewProps> = (props) => {
             <AiFillFire className="text-primary/80" size={28} />
             <span className="text-lg font-semibold">Streak</span>
           </div>
-          <div className="bg-base border-b-2 border-primary/80 w-full flex flex-col items-center justify-center rounded px-1 py-4">
+          <div className="bg-window border-b-2 border-primary/80 w-full flex flex-col items-center justify-center rounded px-1 py-4 shadow">
             <span>
               {dayStreak} {dayStreak === 1 ? "day" : "days"}
             </span>
@@ -165,10 +142,11 @@ interface CalendarViewProps {
   sessions: Session[];
   intents: Intent[];
   tags: string[];
+  viewDayDetails: (date: string) => void;
 }
 
 const CalendarView: React.FC<CalendarViewProps> = (props) => {
-  const currentTheme = useGlobal((state) => state.currentTheme);
+  const currentTheme = useStore((state) => state.currentTheme);
 
   const days = React.useMemo(() => {
     const days: Map<string, Day> = new Map();
@@ -232,6 +210,11 @@ const CalendarView: React.FC<CalendarViewProps> = (props) => {
 
   return days ? (
     <ActivityCalendar
+      eventHandlers={{
+        onClick: () => {
+          return (data) => props.viewDayDetails(data.date);
+        },
+      }}
       style={{
         marginLeft: "auto",
         marginRight: "auto",
@@ -239,7 +222,7 @@ const CalendarView: React.FC<CalendarViewProps> = (props) => {
         marginBottom: 16,
       }}
       theme={{
-        level0: currentTheme?.base_hex!,
+        level0: Color(currentTheme?.primary_hex).alpha(0.1).string(),
         level1: Color(currentTheme?.primary_hex).alpha(0.4).string(),
         level2: Color(currentTheme?.primary_hex).alpha(0.6).string(),
         level3: Color(currentTheme?.primary_hex).alpha(0.8).string(),

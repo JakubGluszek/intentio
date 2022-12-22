@@ -5,35 +5,27 @@ use tauri::{command, AppHandle, Wry};
 use crate::{
     ctx::Ctx,
     model::{Intent, IntentBmc, IntentForCreate, IntentForUpdate, ModelDeleteResultData},
-    prelude::Error,
+    prelude::{Error, Result},
 };
 
-use super::IpcResponse;
-
 #[command]
-pub async fn get_intent(app: AppHandle<Wry>, id: String) -> IpcResponse<Intent> {
+pub async fn get_intents(app: AppHandle<Wry>) -> Result<Vec<Intent>> {
     match Ctx::from_app(app) {
-        Ok(ctx) => IntentBmc::get(ctx, &id).await.into(),
+        Ok(ctx) => match IntentBmc::list(ctx.get_store()).await {
+            Ok(intents) => Ok(intents),
+            Err(err) => Err(err).into(),
+        },
         Err(_) => Err(Error::CtxFail).into(),
     }
 }
 
 #[command]
-pub async fn get_intents(app: AppHandle<Wry>) -> IpcResponse<Vec<Intent>> {
+pub async fn create_intent(app: AppHandle<Wry>, data: IntentForCreate) -> Result<Intent> {
     match Ctx::from_app(app) {
-        Ok(ctx) => {
-            let projects = IntentBmc::list(ctx.get_store()).await;
-
-            projects.into()
-        }
-        Err(_) => Err(Error::CtxFail).into(),
-    }
-}
-
-#[command]
-pub async fn create_intent(app: AppHandle<Wry>, data: IntentForCreate) -> IpcResponse<Intent> {
-    match Ctx::from_app(app) {
-        Ok(ctx) => IntentBmc::create(ctx, data).await.into(),
+        Ok(ctx) => match IntentBmc::create(ctx, data).await {
+            Ok(intent) => Ok(intent),
+            Err(err) => Err(err).into(),
+        },
         Err(_) => Err(Error::CtxFail).into(),
     }
 }
@@ -43,17 +35,23 @@ pub async fn update_intent(
     app: AppHandle<Wry>,
     id: String,
     data: IntentForUpdate,
-) -> IpcResponse<Intent> {
+) -> Result<Intent> {
     match Ctx::from_app(app) {
-        Ok(ctx) => IntentBmc::update(ctx, &id, data).await.into(),
+        Ok(ctx) => match IntentBmc::update(ctx, &id, data).await {
+            Ok(intent) => Ok(intent),
+            Err(err) => Err(err).into(),
+        },
         Err(_) => Err(Error::CtxFail).into(),
     }
 }
 
 #[command]
-pub async fn delete_intent(app: AppHandle<Wry>, id: String) -> IpcResponse<ModelDeleteResultData> {
+pub async fn delete_intent(app: AppHandle<Wry>, id: String) -> Result<ModelDeleteResultData> {
     match Ctx::from_app(app) {
-        Ok(ctx) => IntentBmc::delete(ctx, &id).await.into(),
+        Ok(ctx) => match IntentBmc::delete(ctx, &id).await {
+            Ok(data) => Ok(data),
+            Err(err) => Err(err).into(),
+        },
         Err(_) => Err(Error::CtxFail).into(),
     }
 }

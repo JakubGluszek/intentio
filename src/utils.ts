@@ -112,3 +112,5 @@ export const getIsColorBetweenColors = (
     getIsInRange(c, startRGB[index], endRGB[index])
   );
 };
+
+export * as default from "./utils";

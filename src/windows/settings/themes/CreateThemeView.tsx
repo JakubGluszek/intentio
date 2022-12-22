@@ -3,13 +3,13 @@ import { useForm } from "react-hook-form";
 import { RiEyeCloseFill, RiEyeFill } from "react-icons/ri";
 import { emit } from "@tauri-apps/api/event";
 
-import { ThemeFormData } from "@/types";
-import useGlobal from "@/app/store";
 import Button from "@/components/Button";
 import { Theme } from "@/bindings/Theme";
-import { ipc_invoke } from "@/app/ipc";
 import ThemeFormInputs from "./ThemeFormInputs";
 import { toast } from "react-hot-toast";
+import { useStore } from "@/app/store";
+import services from "@/app/services";
+import { ThemeForCreate } from "@/bindings/ThemeForCreate";
 
 interface Props {
   hide: () => void;
@@ -20,17 +20,15 @@ const CreateThemeView: React.FC<Props> = ({ theme, hide }) => {
   const [viewThemePreview, setViewThemePreview] = React.useState(false);
 
   const { register, handleSubmit, setValue, watch, getValues } =
-    useForm<ThemeFormData>();
+    useForm<ThemeForCreate>();
 
-  const addTheme = useGlobal((state) => state.addTheme);
+  const addTheme = useStore((state) => state.addTheme);
 
   const containerRef = React.useRef<HTMLFormElement | null>(null);
 
-  const onSubmit = handleSubmit((data) => {
-    ipc_invoke<Theme>("create_theme", {
-      data: { ...data, default: false },
-    }).then((res) => {
-      addTheme(res.data);
+  const onSubmit = handleSubmit(async (data) => {
+    await services.createTheme(data).then((data) => {
+      addTheme(data);
       hide();
       toast("Theme created");
     });

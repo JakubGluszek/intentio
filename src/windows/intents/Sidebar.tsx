@@ -5,6 +5,7 @@ import {
   AiOutlineSortDescending,
 } from "react-icons/ai";
 import { MdAddCircle, MdSearch } from "react-icons/md";
+
 import Button from "@/components/Button";
 import IntentsList from "./IntentsList";
 import { Intent, Sort } from ".";
@@ -24,7 +25,7 @@ const Sidebar: React.FC<Props> = (props) => {
   const [viewSearch, setViewSearch] = React.useState(false);
 
   return (
-    <div className="w-60 h-full flex flex-col p-2 gap-4">
+    <div className="w-60 h-full flex flex-col p-2 gap-2">
       {/* Performs operations related to intents array */}
       <div className="h-8 flex flex-row items-center gap-2">
         {/* Toggle create intent view */}

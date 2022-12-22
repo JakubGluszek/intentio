@@ -4,29 +4,30 @@ import { VscDebugRestart } from "react-icons/vsc";
 import toast from "react-hot-toast";
 
 import { formatTimeTimer, playAudio } from "../../../utils";
-import { Settings } from "../../../bindings/Settings";
 import useTimer from "./useTimer";
-import useGlobal from "../../../app/store";
-import { SessionQueue } from "../../../bindings/SessionQueue";
 import Button from "../../../components/Button";
 import { CountdownCircleTimer } from "./CountdownCircleTimer";
 import { ColorFormat } from "@/types";
+import Color from "color";
+import { State } from "@/bindings/State";
+import { Settings } from "@/bindings/Settings";
+import { useStore } from "@/app/store";
 
-interface TimerProps {
+interface Props {
   biRef: { nextFunc?: (manual?: boolean) => void };
+  state: State;
   settings: Settings;
-  sessionQueue: SessionQueue | null;
 }
 
-const Timer: React.FC<TimerProps> = ({ biRef, settings, sessionQueue }) => {
-  const timer = useTimer(settings, sessionQueue);
-  const theme = useGlobal((state) => state.currentTheme);
+const Timer: React.FC<Props> = (props) => {
+  const timer = useTimer(props.settings, props.state.session_queue);
+  const currentTheme = useStore((state) => state.currentTheme);
 
-  biRef.nextFunc = timer.next;
+  props.biRef.nextFunc = timer.next;
 
   return (
-    <div className="grow flex flex-col gap-6 items-center justify-center">
-      {theme && (
+    <div className="grow flex flex-col items-center justify-evenly">
+      {currentTheme && (
         <div className="relative group">
           <CountdownCircleTimer
             key={timer.key}
@@ -37,17 +38,21 @@ const Timer: React.FC<TimerProps> = ({ biRef, settings, sessionQueue }) => {
               playAudio();
               timer.next();
             }}
-            strokeWidth={8}
-            size={168}
-            colors={theme.primary_hex as ColorFormat}
-            trailColor={theme.base_hex as ColorFormat}
+            strokeWidth={10}
+            size={192}
+            colors={currentTheme.primary_hex as ColorFormat}
+            trailColor={
+              Color(currentTheme.primary_hex).darken(0.75).hex() as ColorFormat
+            }
           >
             {({ remainingTime }) => (
-              <span className="text-4xl">{formatTimeTimer(remainingTime)}</span>
+              <span className="text-[44px] text-primary">
+                {formatTimeTimer(remainingTime)}
+              </span>
             )}
           </CountdownCircleTimer>
           <div className="absolute bottom-4 w-full flex flex-col items-center gap-1">
-            <span className="text-sm text-text/60 whitespace-nowrap">
+            <span className="text-lg text-text/60 whitespace-nowrap">
               {timer.type === "focus"
                 ? "Focus"
                 : timer.type === "break"
