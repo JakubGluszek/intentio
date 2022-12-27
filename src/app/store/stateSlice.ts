@@ -1,15 +1,22 @@
 import { StateCreator } from "zustand";
 
-import { State } from "@/bindings/State";
+import { Intent } from "@/bindings/Intent";
+import { IntentsSlice } from "./intentsSlice";
 
 export interface StateSlice {
-  state?: State;
-  setState: (data: State) => void;
+  activeIntentId?: string;
+  setActiveIntentId: (id: string | undefined) => void;
+  getActiveIntent: () => Intent | undefined;
 }
 
-export const createStateSlice: StateCreator<StateSlice, [], [], StateSlice> = (
-  set
-) => ({
-  state: undefined,
-  setState: (state) => set(() => ({ state })),
+export const createStateSlice: StateCreator<
+  StateSlice & IntentsSlice,
+  [],
+  [],
+  StateSlice
+> = (set, get) => ({
+  activeIntentId: undefined,
+  setActiveIntentId: (activeIntentId) => set(() => ({ activeIntentId })),
+  getActiveIntent: () =>
+    get().intents.find((intent) => intent.id === get().activeIntentId),
 });

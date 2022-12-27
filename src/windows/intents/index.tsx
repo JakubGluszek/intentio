@@ -2,49 +2,54 @@ import React from "react";
 import { BiTargetLock } from "react-icons/bi";
 
 import Layout from "@/components/Layout";
-import { DUMMY_INTENTS, DUMMY_SESSIONS } from "./mockData";
 import Sidebar from "./Sidebar";
 import Dashboard from "./dashboard";
 import IntentDetails from "./IntentDetails";
+import { useStore } from "@/app/store";
+import { useEvent } from "@/hooks";
+import services from "@/app/services";
 
 export type Sort = "asc" | "desc";
 
-export interface Intent {
-  id: string | number;
-  label: string;
-  pinned: boolean;
-  tags: string[];
-}
-
 const IntentsWindow: React.FC = () => {
-  const [intents, setIntents] = React.useState<Intent[]>(DUMMY_INTENTS);
-  const [selected, setSelected] = React.useState<Intent>();
+  const [selectedId, setSelectedId] = React.useState<string>();
   const [selectedTags, setSelectedTags] = React.useState<string[]>([]);
-  const [sessions, setSessions] = React.useState(DUMMY_SESSIONS);
+
+  const store = useStore();
+
+  useEvent("intent_created", (event) => store.addIntent(event.payload));
+  useEvent("intent_updated", (event) =>
+    store.patchIntent(event.payload.id, event.payload)
+  );
+
+  React.useEffect(() => {
+    services.getIntents().then((data) => store.setIntents(data));
+    services.getSessions().then((data) => store.setSessions(data));
+  }, []);
+
+  const intent = store.getIntentById(selectedId);
 
   return (
     <Layout icon={<BiTargetLock size={32} />} label="Intents">
       <div className="grow flex flex-row">
         <Sidebar
-          intents={intents}
-          selected={selected}
-          setSelected={setSelected}
+          intents={store.intents}
+          selectedId={selectedId}
+          setSelectedId={setSelectedId}
           selectedTags={selectedTags}
           setSelectedTags={setSelectedTags}
         />
-        {selected ? (
+        {intent ? (
           <IntentDetails
-            data={selected}
-            // @ts-ignore
-            sessions={sessions.filter(
-              (session) => session.intent_id === selected?.id
+            data={intent}
+            sessions={store.sessions.filter(
+              (session) => session.intent_id === selectedId
             )}
           />
         ) : (
           <Dashboard
-            // @ts-ignore
-            sessions={sessions}
-            intents={intents}
+            sessions={store.sessions}
+            intents={store.intents}
             tags={selectedTags}
           />
         )}

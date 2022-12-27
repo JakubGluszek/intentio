@@ -42,10 +42,6 @@ export const applyTheme = (theme: Theme) => {
   );
 };
 
-export const playAudio = async (path?: string) => {
-  await invoke("play_audio", { path });
-};
-
 export const getPathProps = (
   size: number,
   strokeWidth: number,

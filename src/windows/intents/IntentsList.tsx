@@ -3,14 +3,15 @@ import { TiPin } from "react-icons/ti";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import clsx from "clsx";
 
-import { Intent, Sort } from ".";
+import { Sort } from ".";
+import { Intent } from "@/bindings/Intent";
 
 interface Props {
   data: Intent[];
-  selectedIntent: Intent | undefined;
+  selectedIntentId?: string;
   selectedTags: string[];
   sort?: Sort;
-  onSelected: (intent?: Intent) => void;
+  onSelected: (id?: string) => void;
   onTagSelected: (tags: string[]) => void;
 }
 
@@ -34,7 +35,7 @@ export const IntentsList: React.FC<Props> = (props) => {
     // @ts-ignore - abort if child button element was clicked
     if (e.target.closest("button")) return;
 
-    const newSelect = props.selectedIntent?.id === data.id ? undefined : data;
+    const newSelect = props.selectedIntentId === data.id ? undefined : data.id;
 
     props.onSelected(newSelect);
   };
@@ -76,7 +77,7 @@ export const IntentsList: React.FC<Props> = (props) => {
           <IntentView
             key={intent.id}
             data={intent}
-            selected={props.selectedIntent?.id === intent.id}
+            selected={props.selectedIntentId === intent.id}
             selectedTags={props.selectedTags}
             onSelected={onSelected}
             onTagSelect={onTagSelect}
@@ -122,7 +123,7 @@ const IntentView: React.FC<IntentViewProps> = (props) => {
       onClick={(e) => props.onSelected(e, data)}
     >
       {/* Label */}
-      <div className="h-8 w-full flex flex-row items-center justify-between px-1">
+      <div className="h-6 w-full flex flex-row items-center justify-between px-1">
         <span className="text-left whitespace-nowrap overflow-ellipsis overflow-hidden">
           {data.label}
         </span>

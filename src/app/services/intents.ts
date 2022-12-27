@@ -13,7 +13,10 @@ export const createIntent = async (data: IntentForCreate) => {
   return await invoke<Intent>("create_intent", { data });
 };
 
-export const updateIntent = async (id: string, data: IntentForUpdate) => {
+export const updateIntent = async (
+  id: string,
+  data: Partial<IntentForUpdate>
+) => {
   return await invoke<Intent>("update_intent", { id, data });
 };
 

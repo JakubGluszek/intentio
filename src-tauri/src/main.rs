@@ -36,8 +36,8 @@ async fn main() -> Result<()> {
         .on_system_tray_event(handle_on_system_tray_event)
         .invoke_handler(tauri::generate_handler![
             // State
-            get_state,
-            update_state,
+            get_active_intent_id,
+            set_active_intent_id,
             // Utils
             open_audio_dir,
             play_audio,

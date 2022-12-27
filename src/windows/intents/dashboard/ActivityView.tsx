@@ -8,8 +8,8 @@ import ReactTooltip from "react-tooltip";
 
 import { Session } from "@/bindings/Session";
 import { formatTime } from "@/utils";
-import { Intent } from "..";
 import { useStore } from "@/app/store";
+import { Intent } from "@/bindings/Intent";
 
 interface Props {
   intents: Intent[];
@@ -46,21 +46,19 @@ const SummaryView: React.FC<SummaryViewProps> = (props) => {
   const today = new Date();
 
   const totalFocused = React.useMemo(
-    () => (props.sessions.reduce((p, c) => p + c.duration, 0) / 60).toFixed(1),
+    () => props.sessions.reduce((p, c) => p + c.duration, 0) / 60,
     [props.sessions]
   );
 
   const focusedToday = React.useMemo(
     () =>
-      (
-        props.sessions
-          .filter(
-            (s) =>
-              new Date(parseInt(s.finished_at)).toDateString() ==
-              today.toDateString()
-          )
-          .reduce((p, c) => p + c.duration, 0) / 60
-      ).toFixed(1),
+      props.sessions
+        .filter(
+          (s) =>
+            new Date(parseInt(s.finished_at)).toDateString() ==
+            today.toDateString()
+        )
+        .reduce((p, c) => p + c.duration, 0) / 60,
     [props.sessions]
   );
 
@@ -108,7 +106,7 @@ const SummaryView: React.FC<SummaryViewProps> = (props) => {
             <span className="text-lg font-semibold">Total</span>
           </div>
           <div className="bg-window border-b-2 border-primary/80 w-full flex flex-col items-center justify-center rounded px-1 py-4 shadow">
-            <span>{formatTime(parseFloat(totalFocused) * 60)}</span>
+            <span>{formatTime(totalFocused * 60)}</span>
           </div>
         </div>
         {/* Today's focused time */}
@@ -118,7 +116,7 @@ const SummaryView: React.FC<SummaryViewProps> = (props) => {
             <span className="text-lg font-semibold">Today</span>
           </div>
           <div className="bg-window border-b-2 border-primary/80 w-full flex flex-col items-center justify-center rounded px-1 py-4 shadow">
-            <span>{formatTime(parseFloat(focusedToday))}</span>
+            <span>{formatTime(focusedToday * 60)}</span>
           </div>
         </div>
         {/* Day Streak */}
@@ -190,7 +188,7 @@ const CalendarView: React.FC<CalendarViewProps> = (props) => {
     // level assigment based on hours spent
     // "count" equals "hours" in this case
     for (let i = 0; i < days_array.length; i++) {
-      if (days_array[i].count >= 9) {
+      if (days_array[i].count >= 8) {
         days_array[i].level = 4;
       } else if (days_array[i].count >= 6) {
         days_array[i].level = 3;

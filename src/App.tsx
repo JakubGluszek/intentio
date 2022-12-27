@@ -5,7 +5,7 @@ import { Toaster } from "react-hot-toast";
 import utils from "@/utils";
 import services from "@/app/services";
 import { useStore } from "@/app/store";
-import { useEvent } from "@/hooks/useEvents";
+import { useEvent } from "@/hooks";
 
 import.meta.env.PROD &&
   document.addEventListener("contextmenu", (event) => event.preventDefault());
@@ -20,7 +20,6 @@ const App: React.FC = () => {
   React.useEffect(() => {
     services.getCurrentTheme().then((data) => store.setCurrentTheme(data));
     services.getSettings().then((data) => store.setSettings(data));
-    services.getState().then((data) => store.setState(data));
   }, []);
 
   useEvent("settings_updated", (event) => store.setSettings(event.payload));

@@ -1,32 +1,26 @@
 use tauri::{command, AppHandle, Manager, Wry};
 
-use crate::{
-    prelude::Result,
-    state::{State, StateForUpdate},
-};
+use crate::{prelude::Result, state::State};
 
 #[command]
-pub async fn get_state(state: tauri::State<'_, tokio::sync::Mutex<State>>) -> Result<State> {
-    Ok(state.try_lock().unwrap().clone())
+pub async fn get_active_intent_id(
+    state: tauri::State<'_, tokio::sync::Mutex<State>>,
+) -> Result<Option<String>> {
+    Ok(state.try_lock().unwrap().active_intent_id.clone())
 }
 
 #[command]
-pub async fn update_state(
-    data: StateForUpdate,
+pub async fn set_active_intent_id(
+    data: Option<String>,
     app: AppHandle<Wry>,
     state: tauri::State<'_, tokio::sync::Mutex<State>>,
-) -> Result<State> {
+) -> Result<Option<String>> {
     let mut state = state.try_lock().unwrap();
 
-    if let Some(session_queue) = data.session_queue {
-        state.session_queue = session_queue;
-    }
+    state.active_intent_id = data;
 
-    if let Some(active_intent) = data.active_intent {
-        state.active_intent = active_intent;
-    }
+    app.emit_all("active_intent_id_updated", state.clone())
+        .unwrap();
 
-    app.emit_all("state_updated", state.clone()).unwrap();
-
-    Ok(state.clone())
+    Ok(state.active_intent_id.clone())
 }

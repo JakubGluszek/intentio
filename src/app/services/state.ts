@@ -1,11 +1,9 @@
-import { State } from "@/bindings/State";
-import { StateForUpdate } from "@/bindings/StateForUpdate";
 import { invoke } from "@tauri-apps/api";
 
-export const getState = async () => {
-  return await invoke<State>("get_state");
+export const get_active_intent_id = async () => {
+  return await invoke<string | undefined>("get_active_intent_id");
 };
 
-export const updateState = async (data: Partial<StateForUpdate>) => {
-  return await invoke<State>("update_state", { data });
+export const set_active_intent_id = async (data: string | undefined) => {
+  return await invoke<string | undefined>("set_active_intent_id", { data });
 };

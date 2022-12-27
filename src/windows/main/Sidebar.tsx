@@ -8,9 +8,9 @@ import { WebviewWindow } from "@tauri-apps/api/window";
 import Button from "@/components/Button";
 import QueueIcon from "@/components/QueueIcon";
 import IntentsList from "../intents/IntentsList";
-import { DUMMY_INTENTS } from "../intents/mockData";
-import { Intent } from "../intents";
 import { CONFIG } from "@/app/config";
+import services from "@/app/services";
+import { useStore } from "@/app/store";
 
 interface Props {
   isVisible: boolean;
@@ -21,12 +21,19 @@ type Tab = "intents" | "tasks" | "notes";
 
 const Sidebar: React.FC<Props> = (props) => {
   const [tab, setTab] = React.useState<Tab>("intents");
-  const [selectedIntent, setSelectedIntent] = React.useState<Intent>();
+  const [selectedIntentId, setSelectedIntentId] = React.useState<string>();
   const [selectedIntentTags, setSelectedIntentTags] = React.useState<string[]>(
     []
   );
 
   const ref = useClickOutside(() => props.collapse());
+
+  const store = useStore();
+
+  const onIntentChange = async (id: string | undefined) => {
+    setSelectedIntentId(id);
+    await services.set_active_intent_id(id);
+  };
 
   return (
     <div
@@ -43,7 +50,7 @@ const Sidebar: React.FC<Props> = (props) => {
         <div className="w-full flex flex-row items-center justify-between">
           <div className="flex flex-row items-center gap-2">
             <Button transparent onClick={props.collapse}>
-              <TbLayoutSidebarLeftCollapse size={32} />
+              <TbLayoutSidebarLeftCollapse size={28} />
             </Button>
             <Button
               transparent
@@ -51,7 +58,7 @@ const Sidebar: React.FC<Props> = (props) => {
                 props.collapse();
               }}
             >
-              <QueueIcon size={32} />
+              <QueueIcon size={28} />
             </Button>
           </div>
           <Button
@@ -61,24 +68,32 @@ const Sidebar: React.FC<Props> = (props) => {
               props.collapse();
             }}
           >
-            <MdOpenInNew size={32} />
+            <MdOpenInNew size={28} />
           </Button>
         </div>
         {/* Content */}
         <div className="grow flex flex-col gap-1">
           {tab === "intents" ? (
-            <IntentsList
-              data={DUMMY_INTENTS}
-              selectedIntent={selectedIntent}
-              selectedTags={selectedIntentTags}
-              onSelected={(data) => setSelectedIntent(data)}
-              onTagSelected={(data) => setSelectedIntentTags(data)}
-            />
+            <>
+              {store.intents.length > 0 ? (
+                <IntentsList
+                  data={store.intents}
+                  selectedIntentId={selectedIntentId}
+                  selectedTags={selectedIntentTags}
+                  onSelected={onIntentChange}
+                  onTagSelected={(data) => setSelectedIntentTags(data)}
+                />
+              ) : (
+                <div className="m-auto text-sm text-text/80 text-center">
+                  You have 0 targets.
+                </div>
+              )}
+            </>
           ) : null}
           {tab === "tasks" ? <TasksView /> : null}
           {tab === "notes" ? <NotesView /> : null}
           {/* Content Navigation */}
-          <div className="h-[28px] flex flex-row gap-0.5 rounded overflow-clip">
+          <div className="h-7 flex flex-row gap-0.5 rounded-sm overflow-clip">
             <Button
               primary={tab === "intents"}
               rounded={false}
@@ -86,9 +101,7 @@ const Sidebar: React.FC<Props> = (props) => {
               onClick={() => setTab("intents")}
             >
               <BiTargetLock size={24} />
-              {tab === "intents" ? (
-                <span className="text-lg font-black">Intents</span>
-              ) : undefined}
+              {tab === "intents" ? <span>Intents</span> : undefined}
             </Button>
             <Button
               size={tab === "tasks" ? "fill" : undefined}
@@ -97,9 +110,7 @@ const Sidebar: React.FC<Props> = (props) => {
               onClick={() => setTab("tasks")}
             >
               <MdCheckBox size={24} />
-              {tab === "tasks" ? (
-                <span className="text-lg">Tasks</span>
-              ) : undefined}
+              {tab === "tasks" ? <span>Tasks</span> : undefined}
             </Button>
             <Button
               size={tab === "notes" ? "fill" : undefined}
@@ -108,9 +119,7 @@ const Sidebar: React.FC<Props> = (props) => {
               onClick={() => setTab("notes")}
             >
               <MdStickyNote2 size={24} />
-              {tab === "notes" ? (
-                <span className="text-lg">Notes</span>
-              ) : undefined}
+              {tab === "notes" ? <span>Notes</span> : undefined}
             </Button>
           </div>
         </div>

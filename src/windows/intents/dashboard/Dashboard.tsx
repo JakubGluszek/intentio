@@ -1,10 +1,10 @@
 import React from "react";
 
-import { Intent } from "..";
 import ActivityView from "./ActivityView";
 import TimelineView from "./TimelineView";
 import Button from "@/components/Button";
 import { Session } from "@/bindings/Session";
+import { Intent } from "@/bindings/Intent";
 
 type Tab = "activity" | "timeline";
 
@@ -63,7 +63,7 @@ const Dashboard: React.FC<Props> = (props) => {
           />
         )}
       </div>
-      <div className="h-8 flex flex-row items-center gap-2">
+      <div className="h-7 flex flex-row items-center gap-2">
         <Tabs value={tab} setValue={setTab} />
       </div>
     </div>

@@ -11,7 +11,7 @@ import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { Session } from "@/bindings/Session";
 import Button from "@/components/Button";
 import { DayDetail } from "@/types";
-import { Intent } from "..";
+import { Intent } from "@/bindings/Intent";
 
 interface Props {
   intents: Intent[];
@@ -74,7 +74,7 @@ const TimelineView: React.FC<Props> = (props) => {
   return (
     <div className="grow flex flex-col gap-2 animate-in fade-in-0 duration-75">
       {/* Header */}
-      <div className="h-8 flex flex-row items-center gap-1">
+      <div className="h-8 flex flex-row items-center gap-2">
         <div className="relative w-full flex flex-row items-center gap-1">
           <input
             autoComplete="off"
@@ -97,7 +97,7 @@ const TimelineView: React.FC<Props> = (props) => {
             </div>
           )}
         </div>
-        <div className="flex flex-row items-center gap-2 px-2">
+        <div className="flex flex-row items-center gap-2">
           <Button transparent onClick={() => setCollapseAll((prev) => !prev)}>
             {collapseAll ? (
               <BsArrowsCollapse size={24} />
@@ -110,14 +110,20 @@ const TimelineView: React.FC<Props> = (props) => {
       {/* Body */}
       <div className="grow flex flex-col overflow-y-auto">
         <div className="grow flex flex-col overflow-y-auto">
-          <div
-            ref={parent}
-            className="w-full max-h-0 flex flex-col gap-1 overflow-y"
-          >
-            {days.slice(skip, limit).map((day) => (
-              <DayView key={day.date} data={day} collapse={collapseAll} />
-            ))}
-          </div>
+          {days.length > 0 ? (
+            <div
+              ref={parent}
+              className="w-full max-h-0 flex flex-col gap-1 overflow-y"
+            >
+              {days.slice(skip, limit).map((day) => (
+                <DayView key={day.date} data={day} collapse={collapseAll} />
+              ))}
+            </div>
+          ) : (
+            <div className="m-auto text-sm text-text/80 text-center">
+              There are no saved sessions.
+            </div>
+          )}
         </div>
       </div>
     </div>

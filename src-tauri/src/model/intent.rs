@@ -2,7 +2,7 @@ use std::collections::BTreeMap;
 use std::sync::Arc;
 
 use serde::{Deserialize, Serialize};
-use surrealdb::sql::{Array, Object, Value};
+use surrealdb::sql::{Array, Datetime, Object, Value};
 use ts_rs::TS;
 
 use crate::prelude::*;
@@ -56,8 +56,15 @@ pub struct IntentForCreate {
 
 impl From<IntentForCreate> for Value {
     fn from(val: IntentForCreate) -> Value {
-        let data = map![
+        let now = Datetime::default().timestamp_millis().to_string();
+        let tags: Vec<String> = vec![];
+        let tags = tags.into_iter().map(Value::from).collect::<Vec<Value>>();
+
+        let data: BTreeMap<_, Value> = map![
             "label".into() => val.label.into(),
+            "pinned".into() => false.into(),
+            "tags".into() => tags.into(),
+            "created_at".into() => now.into(),
         ];
 
         Value::Object(data.into())
@@ -113,7 +120,11 @@ impl IntentBmc {
     }
 
     pub async fn update(ctx: Arc<Ctx>, id: &str, data: IntentForUpdate) -> Result<Intent> {
-        ctx.get_store().exec_merge(id, data).await?.try_into()
+        let obj = ctx.get_store().exec_merge(id, data).await?;
+
+        ctx.emit_event("intent_updated", obj.clone());
+
+        obj.try_into()
     }
 
     pub async fn delete(ctx: Arc<Ctx>, id: &str) -> Result<ModelDeleteResultData> {

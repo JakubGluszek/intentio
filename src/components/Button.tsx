@@ -29,14 +29,14 @@ const Button: React.FC<Props> = (props) => {
   return (
     <motion.button
       className={clsx(
-        "flex flex-row items-center justify-center font-bold gap-1 tracking-wider uppercase",
+        "flex flex-row items-center justify-center font-bold gap-1 tracking-wider uppercase text-sm",
         rounded && "rounded",
         shadow && "shadow-2xl",
         transparent
           ? "bg-transparent text-primary/80 hover:text-primary focus:text-primary"
           : primary
-            ? "bg-primary/80 hover:bg-primary px-2 text-window py-1 focus:bg-primary"
-            : "bg-primary/40 hover:bg-primary/80 px-2 text-window py-1 focus:bg-primary"
+            ? "bg-primary/80 hover:bg-primary px-2 text-window py-1"
+            : "bg-primary/40 hover:bg-primary/80 px-2 text-window py-1"
       )}
       style={{
         width: size === "fill" ? "100%" : undefined,
@@ -45,7 +45,7 @@ const Button: React.FC<Props> = (props) => {
       }}
       disabled={disabled}
       whileTap={{
-        scale: transparent ? 0.9 : undefined,
+        scale: transparent ? 0.9 : 0.975,
       }}
       ref={innerRef}
       {...restProps}

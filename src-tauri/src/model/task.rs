@@ -7,7 +7,7 @@ use ts_rs::TS;
 use crate::{
     ctx::Ctx,
     prelude::{Error, Result, W},
-    store::{Creatable, Patchable, Store},
+    store::{Creatable, Patchable},
     utils::{map, XTake, XTakeVal},
 };
 

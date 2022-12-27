@@ -9,19 +9,22 @@ import {
 } from "react-icons/md";
 import { AiFillFire } from "react-icons/ai";
 import { IoMdTime } from "react-icons/io";
+import { BsArrowsCollapse, BsArrowsExpand } from "react-icons/bs";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 import ActivityCalendar, { Day } from "react-activity-calendar";
 import ReactTooltip from "react-tooltip";
 import Color from "color";
 
 import Button from "@/components/Button";
-import { Intent } from ".";
 import { Session } from "@/bindings/Session";
 import { formatTime } from "@/utils";
-import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { DayDetail } from "@/types";
-import { BsArrowsCollapse, BsArrowsExpand } from "react-icons/bs";
 import { clsx } from "@mantine/core";
 import { useStore } from "@/app/store";
+import { Intent } from "@/bindings/Intent";
+import services from "@/app/services";
+import { useClickOutside } from "@mantine/hooks";
+import { useForm } from "react-hook-form";
 
 interface Props {
   data: Intent;
@@ -33,21 +36,41 @@ type Tab = "activity" | "sessions" | "tasks" | "notes";
 const IntentDetails: React.FC<Props> = (props) => {
   const [tab, setTab] = React.useState<Tab>("activity");
   const [filter, setFilter] = React.useState("");
+  const [viewEditLabel, setViewEditLabel] = React.useState(false);
 
   const { data } = props;
 
   return (
     <div className="grow flex flex-col gap-2 p-2 animate-in fade-in-0 duration-75">
       {/* Top */}
-      <div className="w-full h-8 flex flex-row items-center justify-between">
+      <div className="w-full h-7 flex flex-row items-center justify-between gap-2">
         <div className="w-full overflow-hidden">
-          <h1 className="whitespace-nowrap overflow-ellipsis overflow-hidden text-lg">
-            {data.label}
-          </h1>
+          {viewEditLabel ? (
+            <EditLabelView
+              label={data.label}
+              update={async (label) =>
+                services.updateIntent(data.id, { label })
+              }
+              hide={() => setViewEditLabel(false)}
+            />
+          ) : (
+            <h1
+              data-tauri-disable-drag
+              className="whitespace-nowrap overflow-ellipsis overflow-hidden text-lg"
+              onClick={() => setViewEditLabel(true)}
+            >
+              {data.label}
+            </h1>
+          )}
         </div>
         <div className="min-w-fit flex flex-row items-center gap-1">
-          <Button transparent>
-            {data.pinned ? <TiPin size={32} /> : <TiPinOutline size={32} />}
+          <Button
+            transparent
+            onClick={() =>
+              services.updateIntent(data.id, { pinned: !data.pinned })
+            }
+          >
+            {data.pinned ? <TiPin size={28} /> : <TiPinOutline size={28} />}
           </Button>
           <Button transparent>
             <MdInfo size={28} />
@@ -75,7 +98,7 @@ const IntentDetails: React.FC<Props> = (props) => {
         {tab === "tasks" ? <TasksView /> : null}
         {tab === "notes" ? <NotesView /> : null}
       </div>
-      <div className="w-full h-8 flex flex-row gap-0.5 rounded overflow-clip text-sm">
+      <div className="w-full h-7 flex flex-row gap-0.5 rounded-sm overflow-clip text-sm">
         <Button
           size="fill"
           rounded={false}
@@ -113,6 +136,42 @@ const IntentDetails: React.FC<Props> = (props) => {
   );
 };
 
+interface EditLabelViewProps {
+  label: string;
+  update: (label: string) => void;
+  hide: () => void;
+}
+
+const EditLabelView: React.FC<EditLabelViewProps> = (props) => {
+  const { register, handleSubmit, setValue } = useForm<{ label: string }>();
+
+  const ref = useClickOutside(() => props.hide());
+
+  const onSubmit = handleSubmit(({ label }) => {
+    props.update(label);
+    props.hide();
+  });
+
+  React.useEffect(() => {
+    setValue("label", props.label);
+  }, []);
+
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        onSubmit();
+      }}
+      ref={ref}
+    >
+      <input
+        autoFocus
+        {...register("label", { required: true, minLength: 1, maxLength: 24 })}
+      />
+    </form>
+  );
+};
+
 interface ActivityViewProps {
   sessions: Session[];
   viewDayDetails: (date: string) => void;
@@ -124,21 +183,19 @@ const ActivityView: React.FC<ActivityViewProps> = (props) => {
   const today = new Date();
 
   const totalFocused = React.useMemo(
-    () => (props.sessions.reduce((p, c) => p + c.duration, 0) / 60).toFixed(1),
+    () => props.sessions.reduce((p, c) => p + c.duration, 0) / 60,
     [props.sessions]
   );
 
   const focusedToday = React.useMemo(
     () =>
-      (
-        props.sessions
-          .filter(
-            (s) =>
-              new Date(parseInt(s.finished_at)).toDateString() ==
-              today.toDateString()
-          )
-          .reduce((p, c) => p + c.duration, 0) / 60
-      ).toFixed(1),
+      props.sessions
+        .filter(
+          (s) =>
+            new Date(parseInt(s.finished_at)).toDateString() ==
+            today.toDateString()
+        )
+        .reduce((p, c) => p + c.duration, 0) / 60,
     [props.sessions]
   );
 
@@ -231,7 +288,7 @@ const ActivityView: React.FC<ActivityViewProps> = (props) => {
   return (
     <div className="grow flex flex-col animate-in fade-in-0 duration-75">
       {/* Summary view */}
-      <div className="grow flex flex-col justify-between rounded gap-4 pt-1">
+      <div className="grow flex flex-col justify-evenly rounded gap-4 pt-1">
         <div className="w-full flex flex-row gap-1">
           {/* Total time focused */}
           <div className="w-full flex flex-col items-center gap-2">
@@ -240,7 +297,7 @@ const ActivityView: React.FC<ActivityViewProps> = (props) => {
               <span className="text-lg font-semibold">Total</span>
             </div>
             <div className="bg-window border-b-2 border-primary/80 w-full flex flex-col items-center justify-center rounded px-1 py-4 shadow">
-              <span>{formatTime(parseFloat(totalFocused) * 60)}</span>
+              <span>{formatTime(totalFocused * 60)}</span>
             </div>
           </div>
           {/* Today's focused time */}
@@ -250,7 +307,7 @@ const ActivityView: React.FC<ActivityViewProps> = (props) => {
               <span className="text-lg font-semibold">Today</span>
             </div>
             <div className="bg-window border-b-2 border-primary/80 w-full flex flex-col items-center justify-center rounded px-1 py-4 shadow">
-              <span>{formatTime(parseFloat(focusedToday))}</span>
+              <span>{formatTime(focusedToday * 60)}</span>
             </div>
           </div>
           {/* Day Streak */}

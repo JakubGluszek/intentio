@@ -1,5 +1,5 @@
 export { getSettings, updateSettings } from "./settings";
-export { getState, updateState } from "./state";
+export { get_active_intent_id, set_active_intent_id } from "./state";
 export {
   getIntents,
   createIntent,

@@ -1,7 +1,6 @@
 import React from "react";
-import { MdSettings, MdRemove, MdClose, MdSkipNext } from "react-icons/md";
+import { MdSettings, MdRemove, MdClose } from "react-icons/md";
 import { TbLayoutSidebarRightCollapse } from "react-icons/tb";
-import toast from "react-hot-toast";
 import { appWindow, WebviewWindow } from "@tauri-apps/api/window";
 import { exit } from "@tauri-apps/api/process";
 
@@ -11,14 +10,25 @@ import Timer from "./timer";
 import Sidebar from "./Sidebar";
 import { useStore } from "@/app/store";
 import { CONFIG } from "@/app/config";
+import { useEvent } from "@/hooks";
+import services from "@/app/services";
 
 const MainWindow: React.FC = () => {
-  const settings = useStore((state) => state.settings);
-  const state = useStore((state) => state.state);
-
   const [viewSidebar, setViewSidebar] = React.useState(false);
-  // neat little trick to call function defined in child component
-  const biRef: { nextFunc?: (manual?: boolean) => void | undefined } = {};
+
+  const store = useStore();
+
+  useEvent("active_intent_id_updated", (event) => {
+    store.setActiveIntentId(event.payload.active_intent_id);
+  });
+  useEvent("intent_created", (event) => store.addIntent(event.payload));
+  useEvent("intent_updated", (event) =>
+    store.patchIntent(event.payload.id, event.payload)
+  );
+
+  React.useEffect(() => {
+    services.getIntents().then((data) => store.setIntents(data));
+  }, []);
 
   return (
     <React.Fragment>
@@ -36,27 +46,9 @@ const MainWindow: React.FC = () => {
             opacity: viewSidebar ? 0.0 : 1.0,
           }}
         >
-          {settings && state?.session_queue !== undefined && (
-            <Timer biRef={biRef} settings={settings} state={state} />
-          )}
-          <div className="flex flex-row items-center justify-between">
-            <span className="text-primary/80 font-bold w-8 text-center text-lg">
-              #0
-            </span>
-            <span className="text-text/80 text-lg">intent</span>
-            <Button
-              transparent
-              onClick={() => {
-                biRef.nextFunc && biRef.nextFunc(true);
-                toast("Session skipped", {
-                  position: "top-center",
-                  duration: 1200,
-                });
-              }}
-            >
-              <MdSkipNext size={32} />
-            </Button>
-          </div>
+          {store.settings && store.currentTheme ? (
+            <Timer settings={store.settings} theme={store.currentTheme} />
+          ) : null}
         </div>
       </Layout>
 
@@ -75,7 +67,7 @@ const Header: React.FC<HeaderProps> = (props) => {
     <div className="flex flex-row items-center justify-between p-2">
       <div className="flex flex-row items-center gap-2">
         <Button transparent onClick={props.expandSidebar}>
-          <TbLayoutSidebarRightCollapse size={32} />
+          <TbLayoutSidebarRightCollapse size={28} />
         </Button>
         <div
           className="transition-opacity duration-400"
@@ -87,7 +79,7 @@ const Header: React.FC<HeaderProps> = (props) => {
               new WebviewWindow("settings", CONFIG.webviews.settings)
             }
           >
-            <MdSettings size={32} />
+            <MdSettings size={28} />
           </Button>
         </div>
       </div>
@@ -98,11 +90,16 @@ const Header: React.FC<HeaderProps> = (props) => {
         Intentio
       </h1>
       <div className="flex flex-row items-center gap-2">
-        <Button transparent onClick={() => appWindow.hide()}>
-          <MdRemove size={32} />
-        </Button>
+        <div
+          className="transition-opacity duration-300"
+          style={{ opacity: props.sidebarVisibility ? 0.0 : 1.0 }}
+        >
+          <Button transparent onClick={() => appWindow.hide()}>
+            <MdRemove size={28} />
+          </Button>
+        </div>
         <Button transparent onClick={() => exit(1)}>
-          <MdClose size={32} />
+          <MdClose size={28} />
         </Button>
       </div>
     </div>

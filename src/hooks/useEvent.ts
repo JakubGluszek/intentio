@@ -2,12 +2,14 @@ import React from "react";
 import { Event, listen } from "@tauri-apps/api/event";
 
 import { Settings } from "@/bindings/Settings";
-import { State } from "@/bindings/State";
+import { Intent } from "@/bindings/Intent";
 
 type Events = {
   settings_updated: Settings;
-  state_updated: State;
+  active_intent_id_updated: { active_intent_id: string | undefined };
   current_theme_updated: undefined;
+  intent_created: Intent;
+  intent_updated: Intent;
 };
 
 type Callback<T> = (data: Event<T>) => void;

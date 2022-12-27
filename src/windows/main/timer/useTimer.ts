@@ -1,32 +1,25 @@
 import React from "react";
-import toast from "react-hot-toast";
 import { sendNotification } from "@tauri-apps/api/notification";
+import toast from "react-hot-toast";
 
-import { SessionQueue } from "../../../bindings/SessionQueue";
-import { Settings } from "../../../bindings/Settings";
-import { TimerType } from "../../../types";
-import { invoke } from "@tauri-apps/api";
-import { useStore } from "@/app/store";
+import { Settings } from "@/bindings/Settings";
+import { TimerType } from "@/types";
 import services from "@/app/services";
+import { useStore } from "@/app/store";
 
-const useTimer = (settings: Settings, queue: SessionQueue | null) => {
+const useTimer = (settings: Settings) => {
   // custom key is needed to reset timer components inner state
   const [key, setKey] = React.useState("focus");
   const [type, setType] = React.useState<TimerType>("focus");
-  const [duration, setDuration] = React.useState(
-    queue
-      ? queue.sessions[queue.session_idx].duration
-      : settings.pomodoro_duration
-  );
+  const [duration, setDuration] = React.useState(settings.pomodoro_duration);
   const [startedAt, setStartedAt] = React.useState<Date>();
   const [timeFocused, setTimeFocused] = React.useState(0);
   const [isRunning, setIsRunning] = React.useState(false);
   const [iterations, setIterations] = React.useState(0);
 
-  const state = useStore((state) => state.state);
+  const store = useStore();
 
   React.useEffect(() => {
-    invoke("get_state");
     setDuration(settings.pomodoro_duration);
     setType("focus");
     setKey("focus");
@@ -36,9 +29,7 @@ const useTimer = (settings: Settings, queue: SessionQueue | null) => {
   React.useEffect(() => {
     switch (type) {
       case "focus":
-        if (!queue) {
-          setDuration(settings.pomodoro_duration);
-        }
+        setDuration(settings.pomodoro_duration);
         break;
       case "break":
         setDuration(settings.break_duration);
@@ -57,11 +48,7 @@ const useTimer = (settings: Settings, queue: SessionQueue | null) => {
 
     switch (type) {
       case "focus":
-        if (queue) {
-          setDuration(queue.sessions[queue.session_idx].duration);
-        } else {
-          setDuration(settings.pomodoro_duration);
-        }
+        setDuration(settings.pomodoro_duration);
         setKey("focus-restart");
         break;
       case "break":
@@ -108,7 +95,7 @@ const useTimer = (settings: Settings, queue: SessionQueue | null) => {
       .createSession({
         duration: ~~((timeFocused + 1) / 60),
         started_at: startedAt!.getTime().toString(),
-        intent_id: state?.active_intent?.id ?? null,
+        intent_id: store.activeIntentId ?? null,
         paused_at: [],
         resumed_at: [],
       })
@@ -116,7 +103,7 @@ const useTimer = (settings: Settings, queue: SessionQueue | null) => {
         setIterations((it) => it + 1);
         toast("Session saved", { position: "top-center" });
       });
-  }, [type, state, timeFocused, startedAt]);
+  }, [type, store.activeIntentId, timeFocused, startedAt]);
 
   const switchSession = React.useCallback(
     (type: TimerType) => {
@@ -141,7 +128,7 @@ const useTimer = (settings: Settings, queue: SessionQueue | null) => {
           break;
       }
     },
-    [queue, settings]
+    [settings]
   );
 
   // next session
@@ -194,7 +181,7 @@ const useTimer = (settings: Settings, queue: SessionQueue | null) => {
         }
       }
     },
-    [type, settings, queue, iterations, timeFocused]
+    [type, settings, iterations, timeFocused]
   );
 
   return {

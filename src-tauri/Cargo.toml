@@ -1,6 +1,6 @@
 [package]
-name = "sentio"
-version = "1.0.0"
+name = "intentio"
+version = "1.1.0"
 description = "A pomodoro timer desktop app."
 authors = ["Jacob <jacobgluszek03@gmail.com>"]
 license = "GPL-3.0-or-later"
@@ -23,7 +23,7 @@ tauri-build = { version = "1.1", features = [] }
 serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
 serde_with_macros = "2"
-tauri = { version = "1.2", features = ["api-all", "system-tray"] }
+tauri = { version = "1.2.3", features = ["api-all", "system-tray"] }
 window-shadows = "0.2.0"
 chrono = { version = "0.4.22", features = ["serde"] }
 cuid = "1.2.0"

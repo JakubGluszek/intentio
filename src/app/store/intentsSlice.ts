@@ -8,6 +8,7 @@ export interface IntentsSlice {
   addIntent: (data: Intent) => void;
   patchIntent: (id: string, data: Intent) => void;
   removeIntent: (id: string) => void;
+  getIntentById: (id?: string) => Intent | undefined;
 }
 
 export const createIntentsSlice: StateCreator<
@@ -15,7 +16,7 @@ export const createIntentsSlice: StateCreator<
   [],
   [],
   IntentsSlice
-> = (set) => ({
+> = (set, get) => ({
   intents: [],
   setIntents: (intents) => set(() => ({ intents })),
   addIntent: (intent) =>
@@ -26,4 +27,5 @@ export const createIntentsSlice: StateCreator<
     })),
   removeIntent: (id) =>
     set((state) => ({ intents: state.intents.filter((i) => i.id !== id) })),
+  getIntentById: (id) => get().intents.find((intent) => intent.id === id),
 });

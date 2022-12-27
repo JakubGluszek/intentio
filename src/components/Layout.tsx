@@ -29,7 +29,7 @@ const Layout: React.FC<Props> = ({ children, icon, label, header }) => {
               <span className="text-xl">{label}</span>
             </div>
             <Button tabIndex={-1} transparent onClick={() => appWindow.close()}>
-              <MdClose size={32} />
+              <MdClose size={28} />
             </Button>
           </div>
         </div>
@@ -42,7 +42,7 @@ const Layout: React.FC<Props> = ({ children, icon, label, header }) => {
 
 const useDetectNoDrag = () => {
   React.useEffect(() => {
-    const noDragSelector = "input, a, button, svg"; // CSS selector
+    const noDragSelector = "input, a, button, svg, label"; // CSS selector
 
     const handleMouseDown = async (e: MouseEvent) => {
       if (

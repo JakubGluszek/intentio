@@ -5,7 +5,6 @@ import { useForm, UseFormWatch } from "react-hook-form";
 
 import { Theme } from "@/bindings/Theme";
 import Button from "@/components/Button";
-import ThemeFormInputs from "./ThemeFormInputs";
 import { useStore } from "@/app/store";
 import services from "@/app/services";
 import { ThemeForUpdate } from "@/bindings/ThemeForUpdate";
@@ -18,28 +17,26 @@ const ThemeView: React.FC<ThemeViewProps> = ({ theme }) => {
   const [viewEdit, setViewEdit] = React.useState(false);
   const [viewDelete, setViewDelete] = React.useState(false);
 
-  const currentTheme = useStore((state) => state.currentTheme);
-  const removeTheme = useStore((state) => state.removeTheme);
-  const patchTheme = useStore((state) => state.patchTheme);
+  const { register, handleSubmit, setValue, watch } = useForm<ThemeForUpdate>();
 
   const containerRef = React.useRef<HTMLDivElement | null>(null);
 
-  const { register, handleSubmit, setValue, watch } = useForm<ThemeForUpdate>();
+  const store = useStore();
 
   // update theme
   const onSubmit = handleSubmit((data) => {
     services.updateTheme(theme.id, data).then((data) => {
-      if (theme.id === currentTheme?.id) {
+      if (theme.id === store.currentTheme?.id) {
         emit("update_current_theme", theme);
       }
-      patchTheme(data.id, data);
+      store.patchTheme(data.id, data);
       setViewEdit(false);
     });
   });
 
   const deleteTheme = async (id: string) => {
     await services.deleteTheme(id).then((data) => {
-      removeTheme(data.id);
+      store.removeTheme(data.id);
       setViewDelete(false);
     });
   };
@@ -115,7 +112,7 @@ const ThemeView: React.FC<ThemeViewProps> = ({ theme }) => {
         </div>
 
         {/* Current theme indicator */}
-        {theme.id === currentTheme?.id && (
+        {theme.id === store.currentTheme?.id && (
           <div
             style={{ backgroundColor: watch("primary_hex") }}
             className="w-full h-1 absolute bottom-0"
@@ -142,7 +139,99 @@ const ThemeView: React.FC<ThemeViewProps> = ({ theme }) => {
           {/* Update theme form */}
           <form className="flex flex-col gap-6 p-4 text-sm" onSubmit={onSubmit}>
             <div className="flex flex-col gap-4">
-              <ThemeFormInputs register={register} watch={watch} />
+              <div className="flex flex-row items-center gap-4">
+                <label className="min-w-[64px]" htmlFor="color-scheme-name">
+                  Name
+                </label>
+                <input
+                  {...register("name", { required: true, maxLength: 16 })}
+                  id="color-scheme-name"
+                  autoComplete="off"
+                  className="input"
+                  style={{ borderColor: watch("base_hex") }}
+                  type="text"
+                />
+              </div>
+              <div className="flex flex-row items-center gap-4">
+                <label className="min-w-[64px]" htmlFor="window-hex">
+                  Window
+                </label>
+                <input
+                  {...register("window_hex", {
+                    required: true,
+                    pattern: /^#([0-9a-f]{3}){1,2}$/i,
+                  })}
+                  autoComplete="off"
+                  id="window-hex"
+                  style={{ borderColor: watch("base_hex") }}
+                  className="input"
+                  type="text"
+                />
+                <div
+                  style={{ backgroundColor: watch("window_hex") }}
+                  className="min-w-[40px] h-8 shadow-lg rounded"
+                ></div>
+              </div>
+              <div className="flex flex-row items-center gap-4">
+                <label className="min-w-[64px]" htmlFor="base-hex">
+                  Base
+                </label>
+                <input
+                  {...register("base_hex", {
+                    required: true,
+                    pattern: /^#([0-9a-f]{3}){1,2}$/i,
+                  })}
+                  autoComplete="off"
+                  id="base-hex"
+                  style={{ borderColor: watch("base_hex") }}
+                  className="input"
+                  type="text"
+                />
+                <div
+                  style={{ backgroundColor: watch("base_hex") }}
+                  className="min-w-[40px] h-8 shadow-lg rounded"
+                ></div>
+              </div>
+              <div className="flex flex-row items-center gap-4">
+                <label className="min-w-[64px]" htmlFor="primary-hex">
+                  Primary
+                </label>
+                <input
+                  {...register("primary_hex", {
+                    required: true,
+                    pattern: /^#([0-9a-f]{3}){1,2}$/i,
+                  })}
+                  autoComplete="off"
+                  id="primary-hex"
+                  style={{ borderColor: watch("base_hex") }}
+                  className="input"
+                  type="text"
+                />
+                <div
+                  style={{ backgroundColor: watch("primary_hex") }}
+                  className="min-w-[40px] h-8 shadow-lg rounded"
+                ></div>
+              </div>
+              <div className="flex flex-row items-center gap-4">
+                <label className="min-w-[64px]" htmlFor="text-hex">
+                  Text
+                </label>
+                <input
+                  {...register("text_hex", {
+                    required: true,
+                    pattern: /^#([0-9a-f]{3}){1,2}$/i,
+                  })}
+                  autoComplete="off"
+                  id="text-hex"
+                  style={{ borderColor: watch("base_hex") }}
+                  className="input"
+                  type="text"
+                />
+                <div
+                  style={{ backgroundColor: watch("text_hex") }}
+                  className="min-w-[40px] h-8 shadow-lg rounded"
+                ></div>
+              </div>
             </div>
             {/* Form actions */}
             <div className="flex flex-row items-center justify-between">
