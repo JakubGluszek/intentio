@@ -1,16 +1,18 @@
 # Sentio
 
-A pomodoro timer desktop application.
+It's a pomodoro timer desktop application.
 
-![Preview](https://github.com/JakubGluszek/sentio/blob/master/.github/images/sentio-demo.gif)
+## About
 
 The Pomodoro Technique is a time management method developed by Francesco Cirillo in the late 1980s.
 
-The technique uses a timer to break down work into intervals, traditionally 25 minutes in length, separated by short breaks. These intervals are known as "pomodoros."
-
-The idea behind the technique is to use the time more efficiently, and to reduce the impact of interruptions on work.
+The technique uses a timer to break down work into intervals, traditionally 25 minutes in length, separated by short breaks. These intervals are known as "pomodoros". The idea behind the technique is to use the time more efficiently, and to reduce the impact of interruptions on work.
 
 The technique has been widely adopted by individuals and organizations alike, and has been shown to be an effective way to improve productivity and focus.
+
+## Preview
+
+![Preview](https://github.com/JakubGluszek/sentio/blob/master/.github/images/sentio-demo.gif)
 
 ## Features
 
@@ -25,13 +27,20 @@ Download the latest version from the [releases](https://github.com/JakubGluszek/
 
 ## Stack
 
-- Tauri
-- React (with TypeScript)
-- SurrealDB
+Client Stack
+
+- React (user interface library)
+- TailwindCSS (css framework)
+- Zustand (state manager)
+
+Backend stack
+
+- Tauri (constructs app itself)
+- SurrealDB (local database)
 
 ## Development
 
-Make sure to install all [prerequisites](https://tauri.app/v1/guides/getting-started/prerequisites).
+Make sure to install all [dependencies](https://tauri.app/v1/guides/getting-started/prerequisites) needed for your system.
 
 Another prerequisite on linux is "libasound2-dev":
 
