@@ -42,9 +42,11 @@ Backend stack
 
 Make sure to install all [dependencies](https://tauri.app/v1/guides/getting-started/prerequisites) needed for your system.
 
-Another prerequisite on linux is "libasound2-dev":
-
-`sudo apt install libasound2-dev`
+Other prerequisites include:
+```bash
+sudo apt install librust-alsa-sys-dev
+sudo apt-get install libclang-dev
+```
 
 ```bash
 git clone https://github.com/JakubGluszek/sentio.git
@@ -58,15 +60,12 @@ npm run tauri dev
 
 ## Roadmap
 
-- [ ] Cloud synchronization
-- [ ] Summaries
-- [ ] Color pickers for theme creation
+- [ ] Ability to take notes
+- [ ] Ability to define & finish tasks
 - [ ] Option to export data into multiple formats
-- [ ] More user preferences
-  - [ ] Minimize behavior (to tray or taskbar)
-- [ ] Fullscreen mode
+- [ ] More customizable user preferences, like windows behavior etc
 - [ ] Ability to run bash scripts on certain events like: play, pause, break start/end etc...
-- [ ] UI re-work
+- [ ] External server for syncronizing data between desktops
 
 ## Acknowledgments
 
