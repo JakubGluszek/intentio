@@ -4,7 +4,7 @@ import { BiTargetLock } from "react-icons/bi";
 import Layout from "@/components/Layout";
 import Sidebar from "./Sidebar";
 import Dashboard from "./dashboard";
-import IntentDetails from "./IntentDetails";
+import IntentView from "./IntentView";
 import { useStore } from "@/app/store";
 import { useEvent } from "@/hooks";
 import services from "@/app/services";
@@ -21,9 +21,13 @@ const IntentsWindow: React.FC = () => {
   useEvent("intent_updated", (event) =>
     store.patchIntent(event.payload.id, event.payload)
   );
+  useEvent("intent_deleted", (event) => store.removeIntent(event.payload.id));
 
   React.useEffect(() => {
-    services.getIntents().then((data) => store.setIntents(data));
+    services
+      .getIntents()
+      .then((data) => store.setIntents(data))
+      .catch((err) => console.log("getIntents", err));
     services.getSessions().then((data) => store.setSessions(data));
   }, []);
 
@@ -33,14 +37,13 @@ const IntentsWindow: React.FC = () => {
     <Layout icon={<BiTargetLock size={32} />} label="Intents">
       <div className="grow flex flex-row">
         <Sidebar
-          intents={store.intents}
           selectedId={selectedId}
           setSelectedId={setSelectedId}
           selectedTags={selectedTags}
           setSelectedTags={setSelectedTags}
         />
         {intent ? (
-          <IntentDetails
+          <IntentView
             data={intent}
             sessions={store.sessions.filter(
               (session) => session.intent_id === selectedId

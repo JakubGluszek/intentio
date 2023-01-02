@@ -85,7 +85,7 @@ const Sidebar: React.FC<Props> = (props) => {
                 />
               ) : (
                 <div className="m-auto text-sm text-text/80 text-center">
-                  You have 0 targets.
+                  <p>There are no defined intents</p>
                 </div>
               )}
             </>

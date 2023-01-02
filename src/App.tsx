@@ -38,7 +38,8 @@ const App: React.FC = () => {
         <Route path="intents" element={<IntentsWindow />} />
       </Routes>
       <Toaster
-        position="bottom-right"
+        position="top-center"
+        containerStyle={{ top: 8 }}
         toastOptions={{
           duration: 2000,
           style: {

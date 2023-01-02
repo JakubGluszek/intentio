@@ -30,7 +30,7 @@ impl Store {
             .unwrap()
             .to_owned();
 
-        let path = format!("file://{}/sentio.db", path);
+        let path = format!("file://{}/intentio.db", path);
 
         let ds = Datastore::new(&path).await?;
         let ses = Session::for_db("appns", APP_VERSION);

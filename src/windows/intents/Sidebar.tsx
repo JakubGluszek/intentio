@@ -4,19 +4,18 @@ import {
   AiOutlineSortAscending,
   AiOutlineSortDescending,
 } from "react-icons/ai";
-import { MdAddCircle, MdSearch } from "react-icons/md";
+import { MdAddCircle } from "react-icons/md";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 
 import Button from "@/components/Button";
 import IntentsList from "./IntentsList";
 import { Sort } from ".";
-import { Intent } from "@/bindings/Intent";
 import { IntentForCreate } from "@/bindings/IntentForCreate";
 import services from "@/app/services";
+import { useStore } from "@/app/store";
 
 interface Props {
-  intents: Intent[];
   selectedId?: string;
   setSelectedId: (id: string | undefined) => void;
   selectedTags: string[];
@@ -27,12 +26,13 @@ const Sidebar: React.FC<Props> = (props) => {
   const [sort, setSort] = React.useState<Sort>("asc");
 
   const [viewCreate, setViewCreate] = React.useState(false);
-  const [viewSearch, setViewSearch] = React.useState(false);
+
+  const intents = useStore((state) => state.intents);
 
   return (
-    <div className="w-60 h-full flex flex-col p-2 pr-0 gap-2">
+    <div className="w-60 min-w-[240px] h-full flex flex-col p-2 pr-0 gap-2">
       {/* Performs operations related to intents array */}
-      {!viewCreate && !viewSearch ? (
+      {!viewCreate ? (
         <div className="h-7 flex flex-row items-center gap-2">
           {/* Toggle create intent view */}
           <Button
@@ -42,14 +42,6 @@ const Sidebar: React.FC<Props> = (props) => {
           >
             <MdAddCircle size={24} />
             <span>Create</span>
-          </Button>
-
-          {/* Toggle search input */}
-          <Button
-            transparent
-            onClick={() => setViewSearch((visible) => !visible)}
-          >
-            <MdSearch size={28} />
           </Button>
 
           {/* Sort by intent label */}
@@ -68,10 +60,9 @@ const Sidebar: React.FC<Props> = (props) => {
       {viewCreate ? (
         <CreateIntentView hide={() => setViewCreate(false)} />
       ) : null}
-      {viewSearch ? <SearchBar /> : null}
-      {props.intents.length > 0 ? (
+      {intents.length > 0 ? (
         <IntentsList
-          data={props.intents}
+          data={intents}
           selectedTags={props.selectedTags}
           selectedIntentId={props.selectedId}
           sort={sort}
@@ -80,7 +71,7 @@ const Sidebar: React.FC<Props> = (props) => {
         />
       ) : (
         <div className="m-auto text-sm text-center text-text/80">
-          <p>You have 0 targets.</p>
+          <p>There are no defined intents</p>
         </div>
       )}
     </div>
@@ -94,10 +85,14 @@ interface CreateIntentViewProps {
 const CreateIntentView: React.FC<CreateIntentViewProps> = (props) => {
   const { handleSubmit, register } = useForm<IntentForCreate>();
 
-  const onSubmit = handleSubmit(async (data) => {
-    await services.createIntent(data);
-    toast("Intent created");
-    props.hide();
+  const onSubmit = handleSubmit((data) => {
+    services
+      .createIntent(data)
+      .then(() => {
+        toast("Intent created");
+        props.hide();
+      })
+      .catch((err) => console.log("create_intent", err));
   });
 
   return (
@@ -125,11 +120,6 @@ const CreateIntentView: React.FC<CreateIntentViewProps> = (props) => {
       </form>
     </div>
   );
-};
-
-// Search for filtering intents list in sidebar via their label
-const SearchBar: React.FC = () => {
-  return <div className="h-8 bg-darker/20 rounded">Search</div>;
 };
 
 export default Sidebar;

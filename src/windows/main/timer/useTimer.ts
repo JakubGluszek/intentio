@@ -101,7 +101,7 @@ const useTimer = (settings: Settings) => {
       })
       .then(() => {
         setIterations((it) => it + 1);
-        toast("Session saved", { position: "top-center" });
+        toast("Session saved");
       });
   }, [type, store.activeIntentId, timeFocused, startedAt]);
 

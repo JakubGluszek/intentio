@@ -103,7 +103,7 @@ const SummaryView: React.FC<SummaryViewProps> = (props) => {
         <div className="w-full flex flex-col items-center gap-2">
           <div className="w-full flex flex-row items-center justify-center gap-1">
             <IoMdTime className="text-primary/80" size={28} />
-            <span className="text-lg font-semibold">Total</span>
+            <span className="text-lg">Total</span>
           </div>
           <div className="bg-window border-b-2 border-primary/80 w-full flex flex-col items-center justify-center rounded px-1 py-4 shadow">
             <span>{formatTime(totalFocused * 60)}</span>
@@ -113,7 +113,7 @@ const SummaryView: React.FC<SummaryViewProps> = (props) => {
         <div className="w-full flex flex-col items-center gap-2">
           <div className="w-full flex flex-row items-center justify-center gap-1">
             <MdToday className="text-primary/80" size={26} />
-            <span className="text-lg font-semibold">Today</span>
+            <span className="text-lg">Today</span>
           </div>
           <div className="bg-window border-b-2 border-primary/80 w-full flex flex-col items-center justify-center rounded px-1 py-4 shadow">
             <span>{formatTime(focusedToday * 60)}</span>
@@ -123,7 +123,7 @@ const SummaryView: React.FC<SummaryViewProps> = (props) => {
         <div className="w-full flex flex-col items-center gap-2">
           <div className="flex flex-row items-center justify-center gap-1">
             <AiFillFire className="text-primary/80" size={28} />
-            <span className="text-lg font-semibold">Streak</span>
+            <span className="text-lg">Streak</span>
           </div>
           <div className="bg-window border-b-2 border-primary/80 w-full flex flex-col items-center justify-center rounded px-1 py-4 shadow">
             <span>
@@ -208,6 +208,7 @@ const CalendarView: React.FC<CalendarViewProps> = (props) => {
 
   return days ? (
     <ActivityCalendar
+      hideMonthLabels
       eventHandlers={{
         onClick: () => {
           return (data) => props.viewDayDetails(data.date);

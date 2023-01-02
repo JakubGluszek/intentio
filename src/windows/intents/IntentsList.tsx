@@ -68,9 +68,10 @@ export const IntentsList: React.FC<Props> = (props) => {
   }
 
   return (
-    <div className="grow flex overflow-y-auto animate-in fade-in-0 duration-75">
+    <div className="grow flex overflow-y-auto">
       <div
-        ref={containerRef}
+        // FIX: figure out why this thing causes the window to crash when an item is deleted
+        // ref={containerRef}
         className="w-full max-h-0 flex flex-col gap-1 overflow-y"
       >
         {intents.map((intent) => (
@@ -115,7 +116,7 @@ const IntentView: React.FC<IntentViewProps> = (props) => {
       ref={container}
       data-tauri-disable-drag
       className={clsx(
-        "w-full h-fit flex flex-col p-1 rounded transition-colors duration-75 shadow",
+        "w-full h-fit flex flex-col p-1 rounded shadow",
         props.selected
           ? "bg-primary/80 hover:bg-primary text-window"
           : "bg-base/60 hover:bg-base text-text"
@@ -134,7 +135,7 @@ const IntentView: React.FC<IntentViewProps> = (props) => {
       {data.tags.length > 0 ? (
         <div
           className={clsx(
-            "flex flex-row gap-2 p-1 rounded transition-colors duration-75",
+            "flex flex-row gap-2 p-1 rounded",
             props.selected && "bg-window"
           )}
         >
@@ -143,7 +144,7 @@ const IntentView: React.FC<IntentViewProps> = (props) => {
               key={i}
               tabIndex={-1}
               className={clsx(
-                "rounded text-sm font-semibold px-2 py-0.5 transition-colors duration-75",
+                "rounded text-sm font-semibold px-2 py-0.5",
                 props.selectedTags.includes(tag)
                   ? "bg-primary/80 hover:bg-primary text-window/80"
                   : "bg-text/60 hover:bg-text/80 text-window"

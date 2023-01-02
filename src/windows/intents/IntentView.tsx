@@ -14,17 +14,18 @@ import { useAutoAnimate } from "@formkit/auto-animate/react";
 import ActivityCalendar, { Day } from "react-activity-calendar";
 import ReactTooltip from "react-tooltip";
 import Color from "color";
+import { useClickOutside } from "@mantine/hooks";
+import { useForm } from "react-hook-form";
+import { clsx, Textarea } from "@mantine/core";
 
 import Button from "@/components/Button";
 import { Session } from "@/bindings/Session";
 import { formatTime } from "@/utils";
 import { DayDetail } from "@/types";
-import { clsx } from "@mantine/core";
 import { useStore } from "@/app/store";
 import { Intent } from "@/bindings/Intent";
 import services from "@/app/services";
-import { useClickOutside } from "@mantine/hooks";
-import { useForm } from "react-hook-form";
+import { toast } from "react-hot-toast";
 
 interface Props {
   data: Intent;
@@ -33,35 +34,29 @@ interface Props {
 
 type Tab = "activity" | "sessions" | "tasks" | "notes";
 
-const IntentDetails: React.FC<Props> = (props) => {
-  const [tab, setTab] = React.useState<Tab>("activity");
-  const [filter, setFilter] = React.useState("");
-  const [viewEditLabel, setViewEditLabel] = React.useState(false);
-
+const IntentView: React.FC<Props> = (props) => {
   const { data } = props;
+
+  const [tab, setTab] = React.useState<Tab>("activity");
+  // string to filter sessions by label
+  const [filter, setFilter] = React.useState("");
+  const [viewDetails, setViewDetails] = React.useState(false);
+  const [description, setDescription] = React.useState(data.description ?? "");
+
+  const switchTab = (tab: Tab) => {
+    setViewDetails(false);
+    setTab(tab);
+  };
 
   return (
     <div className="grow flex flex-col gap-2 p-2 animate-in fade-in-0 duration-75">
-      {/* Top */}
+      {/* Heading */}
       <div className="w-full h-7 flex flex-row items-center justify-between gap-2">
         <div className="w-full overflow-hidden">
-          {viewEditLabel ? (
-            <EditLabelView
-              label={data.label}
-              update={async (label) =>
-                services.updateIntent(data.id, { label })
-              }
-              hide={() => setViewEditLabel(false)}
-            />
-          ) : (
-            <h1
-              data-tauri-disable-drag
-              className="whitespace-nowrap overflow-ellipsis overflow-hidden text-lg"
-              onClick={() => setViewEditLabel(true)}
-            >
-              {data.label}
-            </h1>
-          )}
+          <IntentLabelView
+            label={data.label}
+            update={async (label) => services.updateIntent(data.id, { label })}
+          />
         </div>
         <div className="min-w-fit flex flex-row items-center gap-1">
           <Button
@@ -72,54 +67,99 @@ const IntentDetails: React.FC<Props> = (props) => {
           >
             {data.pinned ? <TiPin size={28} /> : <TiPinOutline size={28} />}
           </Button>
-          <Button transparent>
+          <Button transparent onClick={() => setViewDetails(!viewDetails)}>
             <MdInfo size={28} />
           </Button>
         </div>
       </div>
 
-      <div className="grow flex flex-col justify-evenly bg-darker/20 p-2 rounded shadow-inner">
-        {tab === "activity" ? (
-          <ActivityView
-            sessions={props.sessions}
-            viewDayDetails={(date: string) => {
-              setTab("sessions");
-              setFilter(date);
-            }}
-          />
-        ) : null}
-        {tab === "sessions" ? (
-          <SessionsView
-            sessions={props.sessions}
-            filter={filter}
-            setFilter={(label: string) => setFilter(label)}
-          />
-        ) : null}
-        {tab === "tasks" ? <TasksView /> : null}
-        {tab === "notes" ? <NotesView /> : null}
+      {/* Main */}
+      <div className="relative grow flex flex-col bg-darker/20 rounded shadow-inner overflow-clip">
+        {/* Tab content */}
+        {!viewDetails ? (
+          <div className="grow flex flex-col justify-evenly p-2">
+            {tab === "activity" ? (
+              <ActivityView
+                sessions={props.sessions}
+                viewDayDetails={(date: string) => {
+                  switchTab("sessions");
+                  setFilter(date);
+                }}
+              />
+            ) : null}
+            {tab === "sessions" ? (
+              <SessionsView
+                sessions={props.sessions}
+                filter={filter}
+                setFilter={(label: string) => setFilter(label)}
+              />
+            ) : null}
+            {tab === "tasks" ? <TasksView /> : null}
+            {tab === "notes" ? <NotesView /> : null}
+          </div>
+        ) : (
+          <div className="grow flex flex-col justify-between p-2 animate-in fade-in-0 duration-150">
+            <div className="flex flex-col gap-2 bg-window shadow rounded p-2">
+              <p className="flex flex-row items-center justify-between">
+                <span>Created at</span>
+                <span>
+                  {new Date(parseInt(data.created_at)).toLocaleString()}
+                </span>
+              </p>
+              {data.archived_at ? (
+                <p className="flex flex-row items-center justify-between">
+                  <span>Archived at</span>
+                  <span>
+                    {new Date(parseInt(data.archived_at)).toLocaleString()}
+                  </span>
+                </p>
+              ) : null}
+              <Textarea
+                value={description}
+                onChange={(e) => setDescription(e.currentTarget.value)}
+                classNames={{
+                  input: "bg-darker/20 border-none text-text",
+                  label: "text-text",
+                }}
+                placeholder="Add a description here"
+                maxLength={128}
+                autosize
+                maxRows={4}
+              />
+            </div>
+            <div className="flex flex-row gap-2">
+              <Button primary size="fill">
+                Archive
+              </Button>
+              <Button
+                size="fill"
+                onClick={() =>
+                  services
+                    .deleteIntent(data.id)
+                    .then(() => toast("Intent deleted"))
+                }
+              >
+                Delete
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
+      {/* Tab navigation */}
       <div className="w-full h-7 flex flex-row gap-0.5 rounded-sm overflow-clip text-sm">
         <Button
           size="fill"
           rounded={false}
           primary={tab === "activity"}
-          onClick={() => setTab("activity")}
+          onClick={() => switchTab("activity")}
         >
           Activity
         </Button>
         <Button
           size="fill"
           rounded={false}
-          primary={tab === "sessions"}
-          onClick={() => setTab("sessions")}
-        >
-          Sessions
-        </Button>
-        <Button
-          size="fill"
-          rounded={false}
           primary={tab === "tasks"}
-          onClick={() => setTab("tasks")}
+          onClick={() => switchTab("tasks")}
         >
           Tasks
         </Button>
@@ -127,36 +167,44 @@ const IntentDetails: React.FC<Props> = (props) => {
           size="fill"
           rounded={false}
           primary={tab === "notes"}
-          onClick={() => setTab("notes")}
+          onClick={() => switchTab("notes")}
         >
           Notes
+        </Button>
+        <Button
+          size="fill"
+          rounded={false}
+          primary={tab === "sessions"}
+          onClick={() => switchTab("sessions")}
+        >
+          Sessions
         </Button>
       </div>
     </div>
   );
 };
 
-interface EditLabelViewProps {
+interface IntentLabelViewProps {
   label: string;
   update: (label: string) => void;
-  hide: () => void;
 }
 
-const EditLabelView: React.FC<EditLabelViewProps> = (props) => {
-  const { register, handleSubmit, setValue } = useForm<{ label: string }>();
+const IntentLabelView: React.FC<IntentLabelViewProps> = (props) => {
+  const [viewEdit, setViewEdit] = React.useState(false);
 
-  const ref = useClickOutside(() => props.hide());
+  const { register, handleSubmit, setValue } = useForm<{ label: string }>();
+  const ref = useClickOutside(() => setViewEdit(false));
 
   const onSubmit = handleSubmit(({ label }) => {
     props.update(label);
-    props.hide();
+    setViewEdit(false);
   });
 
   React.useEffect(() => {
     setValue("label", props.label);
   }, []);
 
-  return (
+  return viewEdit ? (
     <form
       onSubmit={(e) => {
         e.preventDefault();
@@ -169,6 +217,14 @@ const EditLabelView: React.FC<EditLabelViewProps> = (props) => {
         {...register("label", { required: true, minLength: 1, maxLength: 24 })}
       />
     </form>
+  ) : (
+    <h1
+      data-tauri-disable-drag
+      className="whitespace-nowrap overflow-ellipsis overflow-hidden text-lg"
+      onClick={() => setViewEdit(true)}
+    >
+      {props.label}
+    </h1>
   );
 };
 
@@ -325,6 +381,7 @@ const ActivityView: React.FC<ActivityViewProps> = (props) => {
         </div>
 
         <ActivityCalendar
+          hideMonthLabels
           eventHandlers={{
             onClick: () => {
               return (data) => props.viewDayDetails(data.date);
@@ -545,4 +602,4 @@ const NotesView: React.FC = () => {
   return <div className="grow flex flex-col gap-2">Notes</div>;
 };
 
-export default IntentDetails;
+export default IntentView;

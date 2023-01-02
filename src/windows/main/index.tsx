@@ -25,6 +25,7 @@ const MainWindow: React.FC = () => {
   useEvent("intent_updated", (event) =>
     store.patchIntent(event.payload.id, event.payload)
   );
+  useEvent("intent_deleted", (event) => store.removeIntent(event.payload.id));
 
   React.useEffect(() => {
     services.getIntents().then((data) => store.setIntents(data));

@@ -42,7 +42,7 @@ const Layout: React.FC<Props> = ({ children, icon, label, header }) => {
 
 const useDetectNoDrag = () => {
   React.useEffect(() => {
-    const noDragSelector = "input, a, button, svg, label"; // CSS selector
+    const noDragSelector = "input, a, button, svg, label, textarea"; // CSS selector
 
     const handleMouseDown = async (e: MouseEvent) => {
       if (
