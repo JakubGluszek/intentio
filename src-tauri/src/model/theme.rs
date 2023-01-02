@@ -47,7 +47,6 @@ impl TryFrom<Object> for Theme {
 #[ts(export, export_to = "../src/bindings/")]
 pub struct ThemeForCreate {
     name: String,
-    default: bool,
     window_hex: String,
     base_hex: String,
     primary_hex: String,
@@ -58,7 +57,7 @@ impl From<ThemeForCreate> for Value {
     fn from(val: ThemeForCreate) -> Value {
         let data = map![
             "name".into() => val.name.into(),
-            "default".into() => val.default.into(),
+            "default".into() => false.into(),
             "window_hex".into() => val.window_hex.into(),
             "base_hex".into() => val.base_hex.into(),
             "primary_hex".into() => val.primary_hex.into(),
@@ -161,19 +160,26 @@ impl ThemeBmc {
     }
 
     pub async fn create(ctx: Arc<Ctx>, data: ThemeForCreate) -> Result<Theme> {
-        ctx.get_store()
-            .exec_create(Self::ENTITY, data)
-            .await?
-            .try_into()
+        let result = ctx.get_store().exec_create(Self::ENTITY, data).await?;
+
+        ctx.emit_event("theme_created", result.clone());
+
+        result.try_into()
     }
 
     pub async fn update(ctx: Arc<Ctx>, id: &str, data: ThemeForUpdate) -> Result<Theme> {
-        ctx.get_store().exec_merge(id, data).await?.try_into()
+        let result = ctx.get_store().exec_merge(id, data).await?;
+
+        ctx.emit_event("theme_updated", result.clone());
+
+        result.try_into()
     }
 
     pub async fn delete(ctx: Arc<Ctx>, id: &str) -> Result<ModelDeleteResultData> {
         let id = ctx.get_store().exec_delete(id).await?;
         let result = ModelDeleteResultData::from(id);
+
+        ctx.emit_event("theme_deleted", result.clone());
 
         let mut settings = SettingsBmc::get()?;
 

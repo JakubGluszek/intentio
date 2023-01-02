@@ -1,33 +1,45 @@
 import { invoke } from "@tauri-apps/api/tauri";
+import Color from "color";
 
 import { Theme } from "./bindings/Theme";
 import { ColorRGB } from "./types";
 
-export const formatTime = (sec: number): String => {
-  let seconds = sec % 60;
-  let minutes = ((sec - seconds) / 60).toFixed();
+export const formatTimeTimer = (sec: number): string => {
+  const seconds = sec % 60;
+  const minutes = ((sec - seconds) / 60).toFixed();
   return `
-    ${minutes.length === 1 ? "0" : ""}${minutes}:${
-    seconds < 10 && seconds > 0 ? "0" : ""
-  }${seconds}${seconds === 0 ? "0" : ""}
+    ${minutes.length === 1 ? "0" : ""}${minutes}:${seconds < 10 && seconds > 0 ? "0" : ""
+    }${seconds}${seconds === 0 ? "0" : ""}
   `;
 };
+
+export function formatTime(minutes: number): string {
+  const hours = Math.floor(minutes / 60);
+  const remainingMinutes = minutes % 60;
+  return `${hours}h ${remainingMinutes}min`;
+}
 
 export const applyTheme = (theme: Theme) => {
   document.documentElement.style.setProperty(
     "--window-color",
-    theme.window_hex
+    // @ts-ignore
+    Color(theme.window_hex).rgb().color.join(" ")
   );
-  document.documentElement.style.setProperty("--base-color", theme.base_hex);
+  document.documentElement.style.setProperty(
+    "--base-color",
+    // @ts-ignore
+    Color(theme.base_hex).rgb().color.join(" ")
+  );
   document.documentElement.style.setProperty(
     "--primary-color",
-    theme.primary_hex
+    // @ts-ignore
+    Color(theme.primary_hex).rgb().color.join(" ")
   );
-  document.documentElement.style.setProperty("--text-color", theme.text_hex);
-};
-
-export const playAudio = async (path?: string) => {
-  await invoke("play_audio", { path });
+  document.documentElement.style.setProperty(
+    "--text-color",
+    // @ts-ignore
+    Color(theme.text_hex).rgb().color.join(" ")
+  );
 };
 
 export const getPathProps = (
@@ -96,3 +108,5 @@ export const getIsColorBetweenColors = (
     getIsInRange(c, startRGB[index], endRGB[index])
   );
 };
+
+export * as default from "./utils";

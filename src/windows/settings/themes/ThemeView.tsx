@@ -5,56 +5,39 @@ import { useForm, UseFormWatch } from "react-hook-form";
 
 import { Theme } from "@/bindings/Theme";
 import Button from "@/components/Button";
-import { Settings } from "@/bindings/Settings";
-import { ipc_invoke } from "@/app/ipc";
-import useGlobal from "@/app/store";
-import { ThemeFormData } from "@/types";
-import ThemeFormInputs from "./ThemeFormInputs";
-import { ModelDeleteResultData } from "@/bindings/ModelDeleteResultData";
+import { useStore } from "@/app/store";
+import services from "@/app/services";
+import { ThemeForUpdate } from "@/bindings/ThemeForUpdate";
 
 interface ThemeViewProps {
   theme: Theme;
 }
 
-// TODO: Extract useTheme hook
-
 const ThemeView: React.FC<ThemeViewProps> = ({ theme }) => {
   const [viewEdit, setViewEdit] = React.useState(false);
   const [viewDelete, setViewDelete] = React.useState(false);
 
-  const currentTheme = useGlobal((state) => state.currentTheme);
-  const removeTheme = useGlobal((state) => state.removeTheme);
-  const updateTheme = useGlobal((state) => state.updateTheme);
+  const { register, handleSubmit, setValue, watch } = useForm<ThemeForUpdate>();
 
   const containerRef = React.useRef<HTMLDivElement | null>(null);
 
-  const { register, handleSubmit, setValue, watch } = useForm<ThemeFormData>();
+  const store = useStore();
 
   // update theme
   const onSubmit = handleSubmit((data) => {
-    ipc_invoke<Theme>("update_theme", {
-      id: theme.id,
-      data: { ...data, default: false },
-    }).then(() => {
-      if (theme.id === currentTheme?.id) {
+    services.updateTheme(theme.id, data).then((data) => {
+      if (theme.id === store.currentTheme?.id) {
         emit("update_current_theme", theme);
       }
-      updateTheme(theme);
+      store.patchTheme(data.id, data);
       setViewEdit(false);
     });
   });
 
-  const deleteTheme = async () => {
-    const res = await ipc_invoke<ModelDeleteResultData>("delete_theme", {
-      id: theme.id,
-    });
-    removeTheme(res.data.id);
-    setViewDelete(false);
-  };
-
-  const setCurrentTheme = () => {
-    ipc_invoke<Settings>("update_settings", {
-      data: { current_theme_id: theme.id },
+  const deleteTheme = async (id: string) => {
+    await services.deleteTheme(id).then((data) => {
+      store.removeTheme(data.id);
+      setViewDelete(false);
     });
   };
 
@@ -100,7 +83,7 @@ const ThemeView: React.FC<ThemeViewProps> = ({ theme }) => {
         <button
           style={{ backgroundColor: watch("primary_hex") }}
           className={`min-w-[48px] h-full cursor-pointer transition-transform duration-200`}
-          onClick={() => setCurrentTheme()}
+          onClick={() => services.setCurrentTheme(theme.id)}
         ></button>
 
         {/* Heading */}
@@ -129,7 +112,7 @@ const ThemeView: React.FC<ThemeViewProps> = ({ theme }) => {
         </div>
 
         {/* Current theme indicator */}
-        {theme.id === currentTheme?.id && (
+        {theme.id === store.currentTheme?.id && (
           <div
             style={{ backgroundColor: watch("primary_hex") }}
             className="w-full h-1 absolute bottom-0"
@@ -150,13 +133,105 @@ const ThemeView: React.FC<ThemeViewProps> = ({ theme }) => {
             <DeleteModal
               watch={watch}
               cancel={() => setViewDelete(false)}
-              deleteTheme={deleteTheme}
+              deleteTheme={() => deleteTheme(theme.id)}
             />
           )}
           {/* Update theme form */}
           <form className="flex flex-col gap-6 p-4 text-sm" onSubmit={onSubmit}>
             <div className="flex flex-col gap-4">
-              <ThemeFormInputs register={register} watch={watch} />
+              <div className="flex flex-row items-center gap-4">
+                <label className="min-w-[64px]" htmlFor="color-scheme-name">
+                  Name
+                </label>
+                <input
+                  {...register("name", { required: true, maxLength: 16 })}
+                  id="color-scheme-name"
+                  autoComplete="off"
+                  className="input"
+                  style={{ borderColor: watch("base_hex") }}
+                  type="text"
+                />
+              </div>
+              <div className="flex flex-row items-center gap-4">
+                <label className="min-w-[64px]" htmlFor="window-hex">
+                  Window
+                </label>
+                <input
+                  {...register("window_hex", {
+                    required: true,
+                    pattern: /^#([0-9a-f]{3}){1,2}$/i,
+                  })}
+                  autoComplete="off"
+                  id="window-hex"
+                  style={{ borderColor: watch("base_hex") }}
+                  className="input"
+                  type="text"
+                />
+                <div
+                  style={{ backgroundColor: watch("window_hex") }}
+                  className="min-w-[40px] h-8 shadow-lg rounded"
+                ></div>
+              </div>
+              <div className="flex flex-row items-center gap-4">
+                <label className="min-w-[64px]" htmlFor="base-hex">
+                  Base
+                </label>
+                <input
+                  {...register("base_hex", {
+                    required: true,
+                    pattern: /^#([0-9a-f]{3}){1,2}$/i,
+                  })}
+                  autoComplete="off"
+                  id="base-hex"
+                  style={{ borderColor: watch("base_hex") }}
+                  className="input"
+                  type="text"
+                />
+                <div
+                  style={{ backgroundColor: watch("base_hex") }}
+                  className="min-w-[40px] h-8 shadow-lg rounded"
+                ></div>
+              </div>
+              <div className="flex flex-row items-center gap-4">
+                <label className="min-w-[64px]" htmlFor="primary-hex">
+                  Primary
+                </label>
+                <input
+                  {...register("primary_hex", {
+                    required: true,
+                    pattern: /^#([0-9a-f]{3}){1,2}$/i,
+                  })}
+                  autoComplete="off"
+                  id="primary-hex"
+                  style={{ borderColor: watch("base_hex") }}
+                  className="input"
+                  type="text"
+                />
+                <div
+                  style={{ backgroundColor: watch("primary_hex") }}
+                  className="min-w-[40px] h-8 shadow-lg rounded"
+                ></div>
+              </div>
+              <div className="flex flex-row items-center gap-4">
+                <label className="min-w-[64px]" htmlFor="text-hex">
+                  Text
+                </label>
+                <input
+                  {...register("text_hex", {
+                    required: true,
+                    pattern: /^#([0-9a-f]{3}){1,2}$/i,
+                  })}
+                  autoComplete="off"
+                  id="text-hex"
+                  style={{ borderColor: watch("base_hex") }}
+                  className="input"
+                  type="text"
+                />
+                <div
+                  style={{ backgroundColor: watch("text_hex") }}
+                  className="min-w-[40px] h-8 shadow-lg rounded"
+                ></div>
+              </div>
             </div>
             {/* Form actions */}
             <div className="flex flex-row items-center justify-between">
@@ -187,7 +262,7 @@ const ThemeView: React.FC<ThemeViewProps> = ({ theme }) => {
 };
 
 interface DeleteModalProps {
-  watch: UseFormWatch<ThemeFormData>;
+  watch: UseFormWatch<Partial<Theme>>;
   cancel: () => void;
   deleteTheme: () => void;
 }

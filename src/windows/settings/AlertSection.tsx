@@ -13,24 +13,24 @@ import {
   MdVolumeUp,
 } from "react-icons/md";
 import { Checkbox } from "@mantine/core";
-import { type } from "@tauri-apps/api/os";
 import { readDir, BaseDirectory, FileEntry } from "@tauri-apps/api/fs";
+import services from "@/app/services";
 
 import { Slider } from "../../components";
 import { Settings } from "../../bindings/Settings";
-import { ipc_invoke } from "../../app/ipc";
 import Button from "../../components/Button";
+import { SettingsForUpdate } from "@/bindings/SettingsForUpdate";
 
 const AUDIO_FORMATS = [".mp3", ".ogg"];
 
 interface Props {
   settings: Settings;
-  setSettings: React.Dispatch<React.SetStateAction<Settings | undefined>>;
+  update: (data: Partial<SettingsForUpdate>) => Promise<Settings>;
 }
 
-const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
+const AlertSection: React.FC<Props> = (props) => {
   const [currentTrack, setCurrentTrack] = React.useState<FileEntry>({
-    name: settings.alert_audio,
+    name: props.settings.alert_audio,
     path: "",
   });
   const [tracks, setTracks] = React.useState<FileEntry[]>([]);
@@ -58,7 +58,7 @@ const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
 
   const nextTrack = () => {
     for (let i = 0; i < tracks.length; i++) {
-      let track = tracks[i];
+      const track = tracks[i];
       if (track.name === currentTrack.name) {
         let nextTrack: FileEntry;
         if (i < tracks.length - 1) {
@@ -75,7 +75,7 @@ const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
 
   const previousTrack = () => {
     for (let i = 0; i < tracks.length; i++) {
-      let track = tracks[i];
+      const track = tracks[i];
       if (track.name === currentTrack.name) {
         let nextTrack: FileEntry;
         if (i > 0) {
@@ -91,18 +91,14 @@ const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
   };
 
   const updateTrack = (track: FileEntry) => {
-    ipc_invoke<Settings>("update_settings", {
-      data: {
-        ...settings,
-        alert_audio: track.name,
-      },
-    }).then((res) => setSettings(res.data));
+    props.update({ alert_audio: track.name });
   };
 
   const playAudio = () => {
     currentTrack &&
       !playingAudio &&
-      ipc_invoke("play_audio", { data: currentTrack.path })
+      services
+        .playAudio(currentTrack.path)
         .then(() => setPlayingAudio(false))
         .catch(() => setPlayingAudio(false));
     !playingAudio && setPlayingAudio(true);
@@ -122,12 +118,10 @@ const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
           <Checkbox
             size="md"
             id="system-notifications"
-            defaultChecked={settings.system_notifications}
+            defaultChecked={props.settings.system_notifications}
             onChange={(value) =>
-              ipc_invoke("update_settings", {
-                data: {
-                  system_notifications: value.currentTarget.checked,
-                },
+              props.update({
+                system_notifications: value.currentTarget.checked,
               })
             }
             styles={{ icon: { color: "var(--primary-color) !important" } }}
@@ -154,18 +148,17 @@ const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
           <Button
             transparent
             onClick={() => {
-              ipc_invoke<Settings>("update_settings", {
-                data: {
-                  alert_volume: settings.alert_volume === 0 ? 0.5 : 0,
-                },
-              }).then((res) => {
-                setSettings(res.data);
-                setVolumeKey((key) => (key === undefined ? null : undefined));
-              });
+              props
+                .update({
+                  alert_volume: props.settings.alert_volume === 0 ? 0.5 : 0,
+                })
+                .then(() => {
+                  setVolumeKey((key) => (key === undefined ? null : undefined));
+                });
             }}
           >
-            {settings.alert_volume > 0 ? (
-              settings.alert_volume < 0.5 ? (
+            {props.settings.alert_volume > 0 ? (
+              props.settings.alert_volume < 0.5 ? (
                 <MdVolumeDown size={32} />
               ) : (
                 <MdVolumeUp size={32} />
@@ -178,16 +171,17 @@ const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
             key={volumeKey}
             min={0}
             max={100}
-            defaultValue={parseInt((settings.alert_volume * 100).toFixed())}
+            defaultValue={parseInt(
+              (props.settings.alert_volume * 100).toFixed()
+            )}
             onChangeEnd={(volume) =>
-              ipc_invoke<Settings>("update_settings", {
-                data: {
+              props
+                .update({
                   alert_volume: volume / 100,
-                },
-              }).then((res) => {
-                setSettings(res.data);
-                setVolumeKey(undefined);
-              })
+                })
+                .then(() => {
+                  setVolumeKey(undefined);
+                })
             }
           />
           <Button transparent onClick={() => playAudio()}>
@@ -204,25 +198,21 @@ const AlertSection: React.FC<Props> = ({ settings, setSettings }) => {
             <Button
               transparent
               onClick={() =>
-                settings.alert_repeat > 1 &&
-                ipc_invoke<Settings>("update_settings", {
-                  data: {
-                    alert_repeat: settings.alert_repeat - 1,
-                  },
-                }).then((res) => setSettings(res.data))
+                props.settings.alert_repeat > 1 &&
+                props.update({
+                  alert_repeat: props.settings.alert_repeat - 1,
+                })
               }
             >
               <MdRemove size={24} />
             </Button>
-            <span>{settings.alert_repeat}</span>
+            <span>{props.settings.alert_repeat}</span>
             <Button
               transparent
               onClick={() =>
-                ipc_invoke<Settings>("update_settings", {
-                  data: {
-                    alert_repeat: settings.alert_repeat + 1,
-                  },
-                }).then((res) => setSettings(res.data))
+                props.update({
+                  alert_repeat: props.settings.alert_repeat + 1,
+                })
               }
             >
               <MdAdd size={24} />
@@ -242,12 +232,7 @@ const OpenFileExplorerButton: React.FC = () => {
   return (
     <Button
       transparent
-      onClick={async () => {
-        const osType = await type();
-
-        // TODO: Handle os type on backend using appropriate macros
-        ipc_invoke("open_audio_directory", { osType });
-      }}
+      onClick={() => services.openAudioDir()}
       onMouseEnter={() => setFolderIcon("open")}
       onMouseLeave={() => setFolderIcon("closed")}
     >

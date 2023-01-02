@@ -2,26 +2,18 @@ import React from "react";
 import { MdTimer } from "react-icons/md";
 import { Checkbox } from "@mantine/core";
 
-import { formatTime } from "../../utils";
+import { formatTimeTimer } from "../../utils";
 import { Slider } from "../../components";
 import { Settings } from "../../bindings/Settings";
-import { ipc_invoke } from "../../app/ipc";
-import { SettingsForUpdate } from "../../bindings/SettingsForUpdate";
+import { updateSettings } from "@/app/services";
+import { SettingsForUpdate } from "@/bindings/SettingsForUpdate";
 
 interface Props {
   settings: Settings;
-  setSettings: React.Dispatch<React.SetStateAction<Settings | undefined>>;
+  update: (data: Partial<SettingsForUpdate>) => Promise<Settings>;
 }
 
-const TimerSection: React.FC<Props> = ({ settings, setSettings }) => {
-  const updateSettings = (update: Partial<SettingsForUpdate>) => {
-    ipc_invoke<Settings>("update_settings", {
-      data: { ...update },
-    }).then((res) => {
-      setSettings(res.data);
-    });
-  };
-
+const TimerSection: React.FC<Props> = (props) => {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-row items-center justify-center gap-2">
@@ -35,15 +27,15 @@ const TimerSection: React.FC<Props> = ({ settings, setSettings }) => {
             <span className="font-medium">Focus</span>
             <div className="bg-base group-hover:bg-window rounded px-2 py-1">
               <span className="text-sm">
-                {formatTime(settings.pomodoro_duration * 60)}
+                {formatTimeTimer(props.settings.pomodoro_duration * 60)}
               </span>
             </div>
             <Slider
               min={1}
               max={90}
-              defaultValue={settings.pomodoro_duration}
+              defaultValue={props.settings.pomodoro_duration}
               onChangeEnd={(minutes) =>
-                updateSettings({
+                props.update({
                   pomodoro_duration: minutes,
                 })
               }
@@ -53,15 +45,15 @@ const TimerSection: React.FC<Props> = ({ settings, setSettings }) => {
             <span className="text-sm font-medium">Break</span>
             <div className="group-hover:bg-window bg-base rounded px-2 py-1">
               <span className="text-sm">
-                {formatTime(settings.break_duration * 60)}
+                {formatTimeTimer(props.settings.break_duration * 60)}
               </span>
             </div>
             <Slider
               min={1}
               max={25}
-              defaultValue={settings.break_duration}
+              defaultValue={props.settings.break_duration}
               onChangeEnd={(minutes) =>
-                updateSettings({
+                props.update({
                   break_duration: minutes,
                 })
               }
@@ -71,15 +63,15 @@ const TimerSection: React.FC<Props> = ({ settings, setSettings }) => {
             <span className="text-sm font-medium">Long Break</span>
             <div className="bg-base group-hover:bg-window rounded px-2 py-1">
               <span className="text-sm">
-                {formatTime(settings.long_break_duration * 60)}
+                {formatTimeTimer(props.settings.long_break_duration * 60)}
               </span>
             </div>
             <Slider
               min={1}
               max={45}
-              defaultValue={settings.long_break_duration}
+              defaultValue={props.settings.long_break_duration}
               onChangeEnd={(minutes) =>
-                updateSettings({
+                props.update({
                   long_break_duration: minutes,
                 })
               }
@@ -88,12 +80,14 @@ const TimerSection: React.FC<Props> = ({ settings, setSettings }) => {
           <div className="group card flex flex-col items-center gap-2">
             <span className="text-sm font-medium">Long Break Interval</span>
             <div className="bg-base group-hover:bg-window rounded px-2 py-1">
-              <span className="text-sm">{settings.long_break_interval}</span>
+              <span className="text-sm">
+                {props.settings.long_break_interval}
+              </span>
             </div>
             <Slider
               min={2}
               max={16}
-              defaultValue={settings.long_break_interval}
+              defaultValue={props.settings.long_break_interval}
               onChangeEnd={(intervals) =>
                 updateSettings({
                   long_break_interval: intervals,
@@ -108,9 +102,9 @@ const TimerSection: React.FC<Props> = ({ settings, setSettings }) => {
             <Checkbox
               id="auto-start-pomodoros"
               size="md"
-              defaultChecked={settings.auto_start_pomodoros}
+              defaultChecked={props.settings.auto_start_pomodoros}
               onChange={(value) =>
-                updateSettings({
+                props.update({
                   auto_start_pomodoros: value.currentTarget.checked,
                 })
               }
@@ -126,9 +120,9 @@ const TimerSection: React.FC<Props> = ({ settings, setSettings }) => {
             <Checkbox
               size="md"
               id="auto-start-breaks"
-              defaultChecked={settings.auto_start_breaks}
+              defaultChecked={props.settings.auto_start_breaks}
               onChange={(value) =>
-                updateSettings({
+                props.update({
                   auto_start_breaks: value.currentTarget.checked,
                 })
               }

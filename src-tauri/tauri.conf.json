@@ -6,8 +6,8 @@
     "distDir": "../dist"
   },
   "package": {
-    "productName": "Sentio",
-    "version": "1.0.0"
+    "productName": "Intentio",
+    "version": "1.1.0"
   },
   "tauri": {
     "allowlist": {
@@ -19,7 +19,11 @@
         "readDir": true,
         "copyFile": true,
         "createDir": true,
-        "scope": ["$APP/*", "$APP", "$RESOURCE/*"]
+        "scope": [
+          "$APP/*",
+          "$APP",
+          "$RESOURCE/*"
+        ]
       }
     },
     "bundle": {
@@ -37,8 +41,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "sentio.sentio.dev",
-      "shortDescription": "A pomodoro timer.",
+      "identifier": "intentio.app",
       "longDescription": "A pomodoro timer.",
       "macOS": {
         "entitlements": null,
@@ -47,7 +50,9 @@
         "providerShortName": null,
         "signingIdentity": null
       },
-      "resources": ["./assets/audio/*"],
+      "resources": [
+        "./assets/audio/*"
+      ],
       "shortDescription": "A pomodoro timer.",
       "targets": "all",
       "windows": {
@@ -65,11 +70,11 @@
     "windows": [
       {
         "label": "main",
-        "title": "Sentio",
-        "width": 360,
-        "height": 420,
-        "maxWidth": 360,
-        "maxHeight": 420,
+        "title": "Intentio",
+        "width": 340,
+        "height": 380,
+        "maxWidth": 340,
+        "maxHeight": 380,
         "fullscreen": false,
         "resizable": false,
         "decorations": false,

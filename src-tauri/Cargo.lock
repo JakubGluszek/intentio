@@ -304,15 +304,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "bincode"
-version = "1.3.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b1f45e9417d87227c7a56d22e471c6206462cba514c7590c09aff4cf6d1ddcad"
-dependencies = [
- "serde",
-]
-
-[[package]]
 name = "bindgen"
 version = "0.60.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1978,6 +1969,26 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7a5bbe824c507c5da5956355e86a746d82e0e1464f65d862cc5e71da70e94b2c"
 dependencies = [
  "cfg-if",
+]
+
+[[package]]
+name = "intentio"
+version = "1.1.0"
+dependencies = [
+ "chrono",
+ "cuid",
+ "rodio",
+ "serde",
+ "serde_json",
+ "serde_with_macros 2.1.0",
+ "surrealdb",
+ "tauri",
+ "tauri-build",
+ "thiserror",
+ "tokio",
+ "toml",
+ "ts-rs",
+ "window-shadows",
 ]
 
 [[package]]
@@ -3662,27 +3673,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "sentio"
-version = "1.0.0"
-dependencies = [
- "chrono",
- "cuid",
- "rodio",
- "serde",
- "serde_json",
- "serde_with_macros 2.1.0",
- "surrealdb",
- "tauri",
- "tauri-build",
- "tauri-plugin-window-state",
- "thiserror",
- "tokio",
- "toml",
- "ts-rs",
- "window-shadows",
-]
-
-[[package]]
 name = "serde"
 version = "1.0.148"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4392,9 +4382,9 @@ dependencies = [
 
 [[package]]
 name = "tauri"
-version = "1.2.1"
+version = "1.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "18203448b9d4dcad55607eafeda6dc7fe135848e5f567cd8bdade6cafd8b1a85"
+checksum = "5b48820ee3bb6a5031a83b2b6e11f8630bdc5a2f68cb841ab8ebc7a15a916679"
 dependencies = [
  "anyhow",
  "attohttpc",
@@ -4500,18 +4490,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "tauri-plugin-window-state"
-version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2f15dab0be2ce3ce8a57d0d2de17d201d0c2f3230d68981ff3f0942684de03eb"
-dependencies = [
- "bincode",
- "serde",
- "tauri",
- "thiserror",
-]
-
-[[package]]
 name = "tauri-runtime"
 version = "0.12.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4533,9 +4511,9 @@ dependencies = [
 
 [[package]]
 name = "tauri-runtime-wry"
-version = "0.12.1"
+version = "0.12.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7821c34cf1bd6d89ff46b46a53f3a5050d92afaf2053569f1cc4531167257b24"
+checksum = "36b1c5764a41a13176a4599b5b7bd0881bea7d94dfe45e1e755f789b98317e30"
 dependencies = [
  "cocoa",
  "gtk",
@@ -5532,9 +5510,9 @@ dependencies = [
 
 [[package]]
 name = "wry"
-version = "0.22.5"
+version = "0.23.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e3b4906cc7b3c5959893f3984bb60882ec94539eb14622077e6529f5b3d008ee"
+checksum = "4c1ad8e2424f554cc5bdebe8aa374ef5b433feff817aebabca0389961fc7ef98"
 dependencies = [
  "base64",
  "block",

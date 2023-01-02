@@ -2,18 +2,54 @@
 
 use std::fs::File;
 
-use tauri::{command, AppHandle};
+use tauri::{command, AppHandle, Wry};
 
-use crate::model::SettingsBmc;
+use crate::{
+    ctx::Ctx,
+    model::{SettingsBmc, SettingsForUpdate, Theme, ThemeBmc},
+    prelude::{Error, Result},
+};
 
 #[command]
-pub async fn open_audio_directory(os_type: String, handle: AppHandle) {
-    let cmd = match os_type.as_str() {
-        "Linux" => "xdg-open",
-        "Darwin" => "open",
-        "Windows_NT" => "explorer",
-        _ => "xdp-open",
-    };
+pub async fn get_current_theme(app: AppHandle<Wry>) -> Result<Theme> {
+    match Ctx::from_app(app) {
+        Ok(ctx) => {
+            let settings = SettingsBmc::get().unwrap();
+            ThemeBmc::get(ctx, &settings.current_theme_id).await.into()
+        }
+        Err(_) => Err(Error::CtxFail).into(),
+    }
+}
+
+#[command]
+pub async fn set_current_theme(data: SettingsForUpdate, app: AppHandle<Wry>) -> Result<Theme> {
+    match Ctx::from_app(app) {
+        Ok(ctx) => {
+            SettingsBmc::update(ctx.clone(), data);
+
+            let settings = SettingsBmc::get().unwrap();
+
+            ThemeBmc::get(ctx, &settings.current_theme_id).await.into()
+        }
+        Err(_) => Err(Error::CtxFail).into(),
+    }
+}
+
+#[command]
+pub async fn open_audio_dir(handle: AppHandle) {
+    let mut cmd = "xdg-open";
+    #[cfg(target_os = "linux")]
+    {
+        cmd = "xdg-open";
+    }
+    #[cfg(target_os = "darwin")]
+    {
+        cmd = "open";
+    }
+    #[cfg(target_os = "windows")]
+    {
+        cmd = "explorer";
+    }
 
     let path = handle
         .path_resolver()

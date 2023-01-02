@@ -36,16 +36,13 @@ async fn main() -> Result<()> {
         .on_system_tray_event(handle_on_system_tray_event)
         .invoke_handler(tauri::generate_handler![
             // State
-            get_session_queue,
-            set_session_queue,
-            get_current_project,
-            set_current_project,
-            // Helpers
-            get_current_theme,
-            get_current_project,
+            get_active_intent_id,
+            set_active_intent_id,
             // Utils
-            open_audio_directory,
+            open_audio_dir,
             play_audio,
+            get_current_theme,
+            set_current_theme,
             // Settings
             get_settings,
             update_settings,
@@ -55,11 +52,21 @@ async fn main() -> Result<()> {
             create_theme,
             update_theme,
             delete_theme,
-            // Project
-            get_project,
-            get_projects,
-            create_project,
-            delete_project,
+            // Intent
+            get_intents,
+            create_intent,
+            update_intent,
+            delete_intent,
+            // Note
+            create_note,
+            update_note,
+            delete_note,
+            get_notes,
+            // Task
+            create_task,
+            update_task,
+            delete_task,
+            get_tasks,
             // Session
             get_sessions,
             create_session,
@@ -92,6 +99,7 @@ fn handle_on_system_tray_event(app: &tauri::AppHandle, event: SystemTrayEvent) {
                 std::process::exit(0);
             }
             "open" => {
+                // handle error, can crash if window was closed
                 let window = app.get_window("main").unwrap();
                 window.show().unwrap();
             }

@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use serde::{Deserialize, Serialize};
-use surrealdb::sql::{Datetime, Object, Value};
+use surrealdb::sql::{Array, Datetime, Object, Value};
 use ts_rs::TS;
 
 use crate::{
@@ -17,12 +17,13 @@ use super::Minutes;
 #[ts(export, export_to = "../src/bindings/")]
 pub struct Session {
     id: String,
-    started_at: String,
-    finished_at: String,
-    project_id: Option<String>,
-
     #[ts(type = "number")]
     duration: Minutes,
+    intent_id: Option<String>,
+    started_at: String,
+    finished_at: String,
+    paused_at: Vec<String>,
+    resumed_at: Vec<String>,
 }
 
 impl TryFrom<Object> for Session {
@@ -31,10 +32,20 @@ impl TryFrom<Object> for Session {
     fn try_from(mut val: Object) -> Result<Self> {
         let session = Self {
             id: val.x_take_val("id")?,
+            duration: val.x_take_val("duration")?,
+            intent_id: val.x_take("intent_id")?,
             started_at: val.x_take_val("started_at")?,
             finished_at: val.x_take_val("finished_at")?,
-            project_id: val.x_take("project_id")?,
-            duration: val.x_take_val("duration")?,
+            paused_at: val
+                .x_take_val::<Array>("paused_at")?
+                .into_iter()
+                .map(|v| W(v).try_into())
+                .collect::<Result<Vec<_>>>()?,
+            resumed_at: val
+                .x_take_val::<Array>("resumed_at")?
+                .into_iter()
+                .map(|v| W(v).try_into())
+                .collect::<Result<Vec<_>>>()?,
         };
 
         Ok(session)
@@ -44,22 +55,37 @@ impl TryFrom<Object> for Session {
 #[derive(Deserialize, TS, Debug)]
 #[ts(export, export_to = "../src/bindings/")]
 pub struct SessionForCreate {
-    started_at: String,
-    project_id: Option<String>,
-
     #[ts(type = "number")]
     duration: Minutes,
+    intent_id: Option<String>,
+    started_at: String,
+    paused_at: Vec<String>,
+    resumed_at: Vec<String>,
 }
 
 impl From<SessionForCreate> for Value {
     fn from(val: SessionForCreate) -> Value {
+        let paused_at = val
+            .paused_at
+            .into_iter()
+            .map(Value::from)
+            .collect::<Vec<Value>>();
+
+        let resumed_at = val
+            .resumed_at
+            .into_iter()
+            .map(Value::from)
+            .collect::<Vec<Value>>();
+
         let mut data = map![
             "duration".into() => val.duration.into(),
             "started_at".into() => val.started_at.into(),
+            "paused_at".into() => paused_at.into(),
+            "resumed_at".into() => resumed_at.into(),
         ];
 
-        if let Some(project_id) = val.project_id {
-            data.insert("project_id".into(), project_id.into());
+        if let Some(intent_id) = val.intent_id {
+            data.insert("intent_id".into(), intent_id.into());
         }
 
         Value::Object(data.into())
@@ -124,7 +150,9 @@ mod tests {
         let data = SessionForCreate {
             started_at: Datetime::default().timestamp().to_string(),
             duration: 25,
-            project_id: None,
+            intent_id: None,
+            paused_at: vec![],
+            resumed_at: vec![],
         };
 
         let session = SessionBmc::create(ctx, data).await?;

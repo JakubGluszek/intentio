@@ -2,7 +2,6 @@
 
 export interface ThemeForCreate {
   name: string;
-  default: boolean;
   window_hex: string;
   base_hex: string;
   primary_hex: string;

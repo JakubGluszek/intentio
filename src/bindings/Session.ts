@@ -2,8 +2,10 @@
 
 export interface Session {
   id: string;
+  duration: number;
+  intent_id: string | null;
   started_at: string;
   finished_at: string;
-  project_id: string | null;
-  duration: number;
+  paused_at: Array<string>;
+  resumed_at: Array<string>;
 }

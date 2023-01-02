@@ -3,17 +3,21 @@
 use serde::Serialize;
 use ts_rs::TS;
 
-mod project;
+mod intent;
+mod note;
 mod queue;
 mod session;
 mod settings;
+mod task;
 mod theme;
 
 // Re-Exports
-pub use project::*;
+pub use intent::*;
+pub use note::*;
 pub use queue::*;
 pub use session::*;
 pub use settings::*;
+pub use task::*;
 pub use theme::*;
 
 pub type Minutes = i64;

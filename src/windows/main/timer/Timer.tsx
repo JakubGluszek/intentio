@@ -1,118 +1,118 @@
 import React from "react";
 import { MdPauseCircle, MdPlayCircle, MdSkipNext } from "react-icons/md";
 import { VscDebugRestart } from "react-icons/vsc";
-import toast from "react-hot-toast";
+import Color from "color";
 
-import { formatTime, playAudio } from "../../../utils";
-import { Settings } from "../../../bindings/Settings";
-import useTimer from "./useTimer";
-import useGlobal from "../../../app/store";
-import { SessionQueue } from "../../../bindings/SessionQueue";
-import Button from "../../../components/Button";
-import { CountdownCircleTimer } from "./CountdownCircleTimer";
+import Button from "@/components/Button";
 import { ColorFormat } from "@/types";
+import { Settings } from "@/bindings/Settings";
+import { useStore } from "@/app/store";
+import { Intent } from "@/bindings/Intent";
+import { Theme } from "@/bindings/Theme";
+import utils from "@/utils";
+import useTimer from "./useTimer";
+import { CountdownCircleTimer } from "./CountdownCircleTimer";
+import services from "@/app/services";
 
-interface TimerProps {
+interface Props {
+  activeIntent?: Intent;
   settings: Settings;
-  sessionQueue: SessionQueue | null;
+  theme: Theme;
 }
 
-const Timer: React.FC<TimerProps> = ({ settings, sessionQueue }) => {
-  const timer = useTimer(settings, sessionQueue);
-  const theme = useGlobal((state) => state.currentTheme);
+const Timer: React.FC<Props> = (props) => {
+  const timer = useTimer(props.settings);
+
+  const store = useStore();
 
   return (
-    <div className="grow mx-auto w-fit flex flex-col gap-4 items-center">
-      {theme && (
-        <div className="relative group">
-          <CountdownCircleTimer
-            key={timer.key}
-            isPlaying={timer.isRunning}
-            duration={timer.duration * 60}
-            onUpdate={timer.onUpdate}
-            onComplete={() => {
-              playAudio();
-              timer.next();
-            }}
-            strokeWidth={8}
-            size={168}
-            colors={theme.primary_hex as ColorFormat}
-            trailColor={theme.base_hex as ColorFormat}
-          >
-            {({ remainingTime }) => (
-              <span className="text-4xl">{formatTime(remainingTime)}</span>
-            )}
-          </CountdownCircleTimer>
-          <div className="absolute bottom-3 left-[70px] btn btn-ghost opacity-0 group-hover:opacity-100 transition-opacity">
+    <>
+      <div className="grow flex flex-col items-center justify-evenly">
+        {store.currentTheme && (
+          <div className="relative group">
+            <CountdownCircleTimer
+              key={timer.key}
+              isPlaying={timer.isRunning}
+              duration={timer.duration * 60}
+              onUpdate={timer.onUpdate}
+              onComplete={() => {
+                services.playAudio();
+                timer.next();
+              }}
+              strokeWidth={8}
+              size={186}
+              colors={store.currentTheme.primary_hex as ColorFormat}
+              trailColor={
+                Color(store.currentTheme.window_hex)
+                  .darken(0.15)
+                  .hex() as ColorFormat
+              }
+            >
+              {({ remainingTime }) => (
+                <span className="text-[44px] text-primary">
+                  {utils.formatTimeTimer(remainingTime)}
+                </span>
+              )}
+            </CountdownCircleTimer>
+            <div className="absolute bottom-4 w-full flex flex-col items-center gap-1">
+              <span className="text-lg text-text/60 whitespace-nowrap">
+                {timer.type === "focus"
+                  ? "Focus"
+                  : timer.type === "break"
+                    ? "Break"
+                    : "Long break"}
+              </span>
+              <Button
+                className="text-primary/80 hover:text-primary opacity-0 group-hover:opacity-100 transition-opacity"
+                transparent
+                onClick={() => {
+                  timer.restart();
+                }}
+              >
+                <VscDebugRestart size={24} />
+              </Button>
+            </div>
+          </div>
+        )}
+        <div className="flex flex-row items-center justify-center gap-2 w-full h-10">
+          {timer.isRunning ? (
             <Button
               transparent
               onClick={() => {
-                timer.restart();
-                toast("Session restarted", {
-                  position: "top-center",
-                  duration: 1200,
-                });
+                timer.pause();
               }}
             >
-              <VscDebugRestart size={24} />
+              <MdPauseCircle size={48} />
             </Button>
+          ) : (
+            <Button
+              transparent
+              onClick={() => {
+                timer.start();
+              }}
+            >
+              <MdPlayCircle size={48} />
+            </Button>
+          )}
+        </div>
+      </div>
+      <div className="flex flex-row items-center justify-between">
+        <span className="text-primary/80 font-bold w-7 text-center">#0</span>
+        {store.activeIntentId ? (
+          <div className="flex flex-row items-center gap-0.5 text-text/80">
+            <span>{store.getActiveIntent()?.label}</span>
           </div>
-        </div>
-      )}
-      <div className="flex flex-col items-center gap-0.5 text-sm brightness-75">
-        <span>#{timer.iterations}</span>
-        <span>
-          {timer.type === "focus"
-            ? "Time to focus!"
-            : timer.type === "break"
-            ? "Time for a break!"
-            : "Time for a longer break!"}
-        </span>
+        ) : null}
+        <Button
+          transparent
+          onClick={() => {
+            timer.next(true);
+          }}
+        >
+          <MdSkipNext size={28} />
+        </Button>
       </div>
-      <div className="flex flex-row items-center justify-center gap-2 w-full h-10">
-        {timer.isRunning ? (
-          <Button
-            transparent
-            onClick={() => {
-              timer.pause();
-              toast("Session paused", {
-                position: "top-center",
-                duration: 1200,
-              });
-            }}
-          >
-            <MdPauseCircle size={48} />
-          </Button>
-        ) : (
-          <Button
-            transparent
-            onClick={() => {
-              timer.start();
-              toast("Session started", {
-                position: "top-center",
-                duration: 1200,
-              });
-            }}
-          >
-            <MdPlayCircle size={48} />
-          </Button>
-        )}
-        <div className="z-10 fixed right-4 bottom-3 btn btn-ghost">
-          <Button
-            transparent
-            onClick={() => {
-              timer.next(true);
-              toast("Session skipped", {
-                position: "top-center",
-                duration: 1200,
-              });
-            }}
-          >
-            <MdSkipNext size={32} />
-          </Button>
-        </div>
-      </div>
-    </div>
+    </>
   );
 };
 

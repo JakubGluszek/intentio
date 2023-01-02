@@ -167,7 +167,7 @@ export const useElapsedTime = ({
       startedTimerRef.current =
         Date.now() + startedTimerRef.current - stoppedTimerRef.current;
 
-      let bgTimer = setInterval(() => {
+      const bgTimer = setInterval(() => {
         tempTimerRef.current = Math.floor(
           (Date.now() - startedTimerRef.current) / 1000
         );

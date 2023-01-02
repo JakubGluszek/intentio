@@ -2,24 +2,23 @@ import React from "react";
 import { MdAddCircle, MdColorLens } from "react-icons/md";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 
-import { Theme } from "@/bindings/Theme";
-import { ipc_invoke } from "@/app/ipc";
-import useGlobal from "@/app/store";
 import Button from "@/components/Button";
 import ThemeView from "./ThemeView";
 import CreateThemeView from "./CreateThemeView";
+import { useStore } from "@/app/store";
+import services from "@/app/services";
 
 const ThemeSection: React.FC = () => {
   const [viewCreate, setViewCreate] = React.useState(false);
 
-  const themes = useGlobal((state) => state.themes);
-  const setThemes = useGlobal((state) => state.setThemes);
-  const currentTheme = useGlobal((state) => state.currentTheme);
+  const themes = useStore((state) => state.themes);
+  const setThemes = useStore((state) => state.setThemes);
+  const currentTheme = useStore((state) => state.currentTheme);
 
   const [containerRef] = useAutoAnimate<HTMLDivElement>();
 
   React.useEffect(() => {
-    ipc_invoke<Theme[]>("get_themes").then((res) => setThemes(res.data));
+    services.getThemes().then((data) => setThemes(data));
   }, []);
 
   return (
