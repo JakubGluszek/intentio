@@ -20,7 +20,7 @@ interface Props {
 
 const ActivityView: React.FC<Props> = (props) => {
   return (
-    <div className="grow flex flex-col justify-evenly animate-in fade-in-0 duration-75">
+    <div className="grow flex flex-col justify-evenly">
       <SummaryView
         sessions={props.sessions}
         tags={props.tags}

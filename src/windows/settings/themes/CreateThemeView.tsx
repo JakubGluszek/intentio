@@ -51,7 +51,7 @@ const CreateThemeView: React.FC<Props> = ({ theme, hide }) => {
   return (
     <form
       ref={containerRef}
-      className="flex flex-col gap-6 p-2 text-sm animate-in duration-200 fade-in zoom-in-90 bg-base rounded"
+      className="flex flex-col gap-6 p-2 text-sm bg-base rounded"
       onSubmit={onSubmit}
     >
       <div className="flex flex-col gap-4 bg-window rounded p-4">

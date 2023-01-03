@@ -1,6 +1,5 @@
 import React from "react";
 import { MdAddCircle, MdColorLens } from "react-icons/md";
-import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 import Button from "@/components/Button";
 import ThemeView from "./ThemeView";
@@ -14,8 +13,6 @@ const ThemeSection: React.FC = () => {
   const themes = useStore((state) => state.themes);
   const setThemes = useStore((state) => state.setThemes);
   const currentTheme = useStore((state) => state.currentTheme);
-
-  const [containerRef] = useAutoAnimate<HTMLDivElement>();
 
   React.useEffect(() => {
     services.getThemes().then((data) => setThemes(data));

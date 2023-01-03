@@ -96,7 +96,7 @@ const CreateIntentView: React.FC<CreateIntentViewProps> = (props) => {
   });
 
   return (
-    <div className="flex flex-col p-2 bg-darker/20 shadow-inner rounded animate-in fade-in zoom-in-90">
+    <div className="flex flex-col p-2 bg-darker/20 shadow-inner rounded">
       <form onSubmit={onSubmit} className="flex flex-col gap-2">
         <div className="flex flex-col gap-1 focus-within:text-primary/60">
           <input

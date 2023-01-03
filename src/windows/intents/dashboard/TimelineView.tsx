@@ -6,7 +6,6 @@ import {
 } from "react-icons/md";
 import { BsArrowsCollapse, BsArrowsExpand } from "react-icons/bs";
 import clsx from "clsx";
-import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 import { Session } from "@/bindings/Session";
 import Button from "@/components/Button";
@@ -24,7 +23,6 @@ const TimelineView: React.FC<Props> = (props) => {
   const [skip, setSkip] = React.useState(0);
   const [limit, setLimit] = React.useState(25);
 
-  const [parent] = useAutoAnimate<HTMLDivElement>();
   const [collapseAll, setCollapseAll] = React.useState(false);
 
   const handleFilter = (s: DayDetail): DayDetail | undefined => {
@@ -72,7 +70,7 @@ const TimelineView: React.FC<Props> = (props) => {
   }, [props.sessions, props.filter]);
 
   return (
-    <div className="grow flex flex-col gap-2 animate-in fade-in-0 duration-75">
+    <div className="grow flex flex-col gap-2">
       {/* Header */}
       <div className="h-8 flex flex-row items-center gap-2">
         <div className="relative w-full flex flex-row items-center gap-1">
@@ -85,7 +83,7 @@ const TimelineView: React.FC<Props> = (props) => {
             type="text"
           />
           {props.filter.length > 0 && (
-            <div className="absolute bottom-[5px] right-2 animate-in fade-in scale-90">
+            <div className="absolute bottom-[5px] right-2">
               <Button
                 transparent
                 onClick={() => {
@@ -111,10 +109,7 @@ const TimelineView: React.FC<Props> = (props) => {
       <div className="grow flex flex-col overflow-y-auto">
         <div className="grow flex flex-col overflow-y-auto">
           {days.length > 0 ? (
-            <div
-              ref={parent}
-              className="w-full max-h-0 flex flex-col gap-1 overflow-y"
-            >
+            <div className="w-full max-h-0 flex flex-col gap-1 overflow-y">
               {days.slice(skip, limit).map((day) => (
                 <DayView key={day.date} data={day} collapse={collapseAll} />
               ))}
@@ -145,7 +140,7 @@ const DayView: React.FC<DayViewProps> = (props) => {
   }, [props.collapse]);
 
   return (
-    <div className="flex flex-col p-1 transition-color rounded shadow bg-window">
+    <div className="flex flex-col p-1 rounded shadow bg-window">
       <div
         className={clsx(
           "h-8 w-full flex flex-row items-center justify-between"

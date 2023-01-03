@@ -53,7 +53,7 @@
   }
 
   html {
-    @apply font-quicksand text-text cursor-default transition-colors duration-200;
+    @apply font-quicksand text-text cursor-default;
   }
 
   body {
@@ -106,35 +106,5 @@
 
   button {
     outline: none;
-  }
-}
-
-@layer components {
-  .contrast-text {
-    background: inherit;
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    filter: sepia(5) /* add some color to grey so the rest works */
-      saturate(100) /* increase strength of color channels */ invert(1)
-      /* invert the color */ grayscale(1) /* make it grey */ contrast(9); /* make it black/white */
-  }
-
-  .card-magic-bg {
-    @apply bg-base border-b-2 border-primary/80;
-    background: linear-gradient(
-      to top,
-      rgba(var(--primary-color)) 50%,
-      rgba(var(--base-color)) 50%
-    );
-    background-size: 100% 200%;
-    background-position: top bottom;
-    transition: all 0.2s ease-in;
-  }
-
-  .card-magic-bg:hover {
-    background-position: right bottom;
-    color: rgb(var(--window-color));
-    border-color: rgb(var(--primary-color));
   }
 }

@@ -13,7 +13,6 @@ import { AiFillFire } from "react-icons/ai";
 import { IoMdTime } from "react-icons/io";
 import { BsArrowsCollapse, BsArrowsExpand } from "react-icons/bs";
 import { BiArchiveIn } from "react-icons/bi";
-import { useAutoAnimate } from "@formkit/auto-animate/react";
 import ActivityCalendar, { Day } from "react-activity-calendar";
 import ReactTooltip from "react-tooltip";
 import Color from "color";
@@ -62,7 +61,7 @@ const IntentView: React.FC<Props> = (props) => {
           document.getElementById("root")!
         )
         : null}
-      <div className="grow flex flex-col gap-2 p-2 animate-in fade-in-0 duration-75">
+      <div className="grow flex flex-col gap-2 p-2">
         {/* Heading */}
         <div className="w-full h-7 flex flex-row items-center justify-between gap-2">
           <div className="w-full overflow-hidden">
@@ -367,7 +366,7 @@ const ActivityView: React.FC<ActivityViewProps> = (props) => {
   }, [props.sessions]);
 
   return (
-    <div className="grow flex flex-col animate-in fade-in-0 duration-75">
+    <div className="grow flex flex-col">
       {/* Summary view */}
       <div className="grow flex flex-col justify-evenly rounded gap-4 pt-1">
         <div className="w-full flex flex-row gap-1">
@@ -470,7 +469,6 @@ const SessionsView: React.FC<SessionViewProps> = (props) => {
   const [skip, setSkip] = React.useState(0);
   const [limit, setLimit] = React.useState(25);
 
-  const [parent] = useAutoAnimate<HTMLDivElement>();
   const [collapseAll, setCollapseAll] = React.useState(false);
 
   const handleFilter = (s: DayDetail): DayDetail | undefined => {
@@ -518,7 +516,7 @@ const SessionsView: React.FC<SessionViewProps> = (props) => {
   }, [props.sessions, props.filter]);
 
   return (
-    <div className="grow flex flex-col gap-2 animate-in fade-in-0 duration-75">
+    <div className="grow flex flex-col gap-2">
       {/* Header */}
       <div className="h-8 flex flex-row items-center gap-1">
         <div className="relative w-full flex flex-row items-center gap-1">
@@ -531,7 +529,7 @@ const SessionsView: React.FC<SessionViewProps> = (props) => {
             type="text"
           />
           {props.filter.length > 0 && (
-            <div className="absolute bottom-1 right-1 animate-in fade-in brightness-75">
+            <div className="absolute bottom-1 right-1">
               <Button
                 transparent
                 onClick={() => {
@@ -556,10 +554,7 @@ const SessionsView: React.FC<SessionViewProps> = (props) => {
       {/* Body */}
       <div className="grow flex flex-col overflow-y-auto">
         <div className="grow flex flex-col overflow-y-auto">
-          <div
-            ref={parent}
-            className="w-full max-h-0 flex flex-col gap-1 overflow-y"
-          >
+          <div className="w-full max-h-0 flex flex-col gap-1 overflow-y">
             {days.slice(skip, limit).map((day) => (
               <DayView key={day.date} data={day} collapse={collapseAll} />
             ))}
@@ -588,7 +583,7 @@ const DayView: React.FC<DayViewProps> = (props) => {
     <div
       data-tauri-disable-drag
       className={clsx(
-        "flex flex-col p-1 transition-color rounded shadow",
+        "flex flex-col p-1 rounded shadow",
         viewMore ? "bg-base" : "bg-base/40"
       )}
     >
