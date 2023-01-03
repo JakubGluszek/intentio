@@ -22,8 +22,7 @@ pub struct Session {
     intent_id: Option<String>,
     started_at: String,
     finished_at: String,
-    paused_at: Vec<String>,
-    resumed_at: Vec<String>,
+    timestamps: Vec<String>, // [paused_at, resumed_at, paused_at, ...] epoch in milliseconds
 }
 
 impl TryFrom<Object> for Session {
@@ -36,13 +35,8 @@ impl TryFrom<Object> for Session {
             intent_id: val.x_take("intent_id")?,
             started_at: val.x_take_val("started_at")?,
             finished_at: val.x_take_val("finished_at")?,
-            paused_at: val
-                .x_take_val::<Array>("paused_at")?
-                .into_iter()
-                .map(|v| W(v).try_into())
-                .collect::<Result<Vec<_>>>()?,
-            resumed_at: val
-                .x_take_val::<Array>("resumed_at")?
+            timestamps: val
+                .x_take_val::<Array>("timestamps")?
                 .into_iter()
                 .map(|v| W(v).try_into())
                 .collect::<Result<Vec<_>>>()?,
@@ -59,20 +53,13 @@ pub struct SessionForCreate {
     duration: Minutes,
     intent_id: Option<String>,
     started_at: String,
-    paused_at: Vec<String>,
-    resumed_at: Vec<String>,
+    timestamps: Vec<String>,
 }
 
 impl From<SessionForCreate> for Value {
     fn from(val: SessionForCreate) -> Value {
-        let paused_at = val
-            .paused_at
-            .into_iter()
-            .map(Value::from)
-            .collect::<Vec<Value>>();
-
-        let resumed_at = val
-            .resumed_at
+        let timestamps = val
+            .timestamps
             .into_iter()
             .map(Value::from)
             .collect::<Vec<Value>>();
@@ -80,8 +67,7 @@ impl From<SessionForCreate> for Value {
         let mut data = map![
             "duration".into() => val.duration.into(),
             "started_at".into() => val.started_at.into(),
-            "paused_at".into() => paused_at.into(),
-            "resumed_at".into() => resumed_at.into(),
+            "timestamps".into() => timestamps.into(),
         ];
 
         if let Some(intent_id) = val.intent_id {
@@ -151,8 +137,7 @@ mod tests {
             started_at: Datetime::default().timestamp().to_string(),
             duration: 25,
             intent_id: None,
-            paused_at: vec![],
-            resumed_at: vec![],
+            timestamps: vec![],
         };
 
         let session = SessionBmc::create(ctx, data).await?;

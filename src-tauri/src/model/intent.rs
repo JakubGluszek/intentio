@@ -26,8 +26,6 @@ pub struct Intent {
     tags: Vec<String>,
     created_at: String,
     archived_at: Option<String>,
-    description: String,
-    objective: Option<String>,
 }
 
 impl TryFrom<Object> for Intent {
@@ -44,8 +42,6 @@ impl TryFrom<Object> for Intent {
                 .collect::<Result<Vec<_>>>()?,
             created_at: val.x_take_val("created_at")?,
             archived_at: val.x_take("archived_at")?,
-            description: val.x_take_val("description")?,
-            objective: val.x_take("objective")?,
         };
 
         Ok(intent)
@@ -69,7 +65,6 @@ impl From<IntentForCreate> for Value {
             "created_at".into() => now.into(),
             "pinned".into() => false.into(),
             "tags".into() => tags.into(),
-            "description".into() => String::from("").into(),
         ];
 
         Value::Object(data.into())
@@ -84,8 +79,6 @@ pub struct IntentForUpdate {
     label: Option<String>,
     pinned: Option<bool>,
     tags: Option<Vec<String>>,
-    objective: Option<Option<String>>,
-    description: Option<String>,
 }
 
 impl From<IntentForUpdate> for Value {
@@ -101,12 +94,6 @@ impl From<IntentForUpdate> for Value {
             let tags = tags.into_iter().map(Value::from).collect::<Vec<Value>>();
 
             data.insert("tags".into(), tags.into());
-        }
-        if let Some(objective) = val.objective {
-            data.insert("objective".into(), objective.into());
-        }
-        if let Some(description) = val.description {
-            data.insert("description".into(), description.into());
         }
 
         Value::Object(data.into())

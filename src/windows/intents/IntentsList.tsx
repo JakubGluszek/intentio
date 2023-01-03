@@ -119,7 +119,7 @@ const IntentView: React.FC<IntentViewProps> = (props) => {
         "w-full h-fit flex flex-col p-1 rounded shadow",
         props.selected
           ? "bg-primary/80 hover:bg-primary text-window"
-          : "bg-base/60 hover:bg-base text-text"
+          : "bg-base/80 hover:bg-base text-text"
       )}
       onClick={(e) => props.onSelected(e, data)}
     >

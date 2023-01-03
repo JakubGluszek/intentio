@@ -145,12 +145,7 @@ const DayView: React.FC<DayViewProps> = (props) => {
   }, [props.collapse]);
 
   return (
-    <div
-      className={clsx(
-        "flex flex-col p-1 transition-color rounded shadow",
-        viewMore ? "bg-base" : "bg-base/40 hover:bg-base"
-      )}
-    >
+    <div className="flex flex-col p-1 transition-color rounded shadow bg-window">
       <div
         className={clsx(
           "h-8 w-full flex flex-row items-center justify-between"

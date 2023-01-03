@@ -7,6 +7,4 @@ export interface Intent {
   tags: Array<string>;
   created_at: string;
   archived_at: string | null;
-  description: string;
-  objective: string | null;
 }

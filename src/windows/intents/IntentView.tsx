@@ -1,7 +1,9 @@
 import React from "react";
+import { createPortal } from "react-dom";
 import { TiPin, TiPinOutline } from "react-icons/ti";
 import {
   MdClose,
+  MdDelete,
   MdInfo,
   MdKeyboardArrowDown,
   MdKeyboardArrowUp,
@@ -10,13 +12,14 @@ import {
 import { AiFillFire } from "react-icons/ai";
 import { IoMdTime } from "react-icons/io";
 import { BsArrowsCollapse, BsArrowsExpand } from "react-icons/bs";
+import { BiArchiveIn } from "react-icons/bi";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import ActivityCalendar, { Day } from "react-activity-calendar";
 import ReactTooltip from "react-tooltip";
 import Color from "color";
 import { useClickOutside } from "@mantine/hooks";
 import { useForm } from "react-hook-form";
-import { clsx, Textarea } from "@mantine/core";
+import { clsx } from "@mantine/core";
 
 import Button from "@/components/Button";
 import { Session } from "@/bindings/Session";
@@ -25,7 +28,6 @@ import { DayDetail } from "@/types";
 import { useStore } from "@/app/store";
 import { Intent } from "@/bindings/Intent";
 import services from "@/app/services";
-import { toast } from "react-hot-toast";
 
 interface Props {
   data: Intent;
@@ -41,7 +43,6 @@ const IntentView: React.FC<Props> = (props) => {
   // string to filter sessions by label
   const [filter, setFilter] = React.useState("");
   const [viewDetails, setViewDetails] = React.useState(false);
-  const [description, setDescription] = React.useState(data.description ?? "");
 
   const switchTab = (tab: Tab) => {
     setViewDetails(false);
@@ -49,34 +50,47 @@ const IntentView: React.FC<Props> = (props) => {
   };
 
   return (
-    <div className="grow flex flex-col gap-2 p-2 animate-in fade-in-0 duration-75">
-      {/* Heading */}
-      <div className="w-full h-7 flex flex-row items-center justify-between gap-2">
-        <div className="w-full overflow-hidden">
-          <IntentLabelView
-            label={data.label}
-            update={async (label) => services.updateIntent(data.id, { label })}
-          />
+    <>
+      {viewDetails
+        ? createPortal(
+          <DetailsModal
+            data={data}
+            totalSessions={0}
+            avgSessionDuration={0}
+            exit={() => setViewDetails(false)}
+          />,
+          document.getElementById("root")!
+        )
+        : null}
+      <div className="grow flex flex-col gap-2 p-2 animate-in fade-in-0 duration-75">
+        {/* Heading */}
+        <div className="w-full h-7 flex flex-row items-center justify-between gap-2">
+          <div className="w-full overflow-hidden">
+            <IntentLabelView
+              label={data.label}
+              update={async (label) =>
+                services.updateIntent(data.id, { label })
+              }
+            />
+          </div>
+          <div className="min-w-fit flex flex-row items-center gap-1">
+            <Button
+              transparent
+              onClick={() =>
+                services.updateIntent(data.id, { pinned: !data.pinned })
+              }
+            >
+              {data.pinned ? <TiPin size={28} /> : <TiPinOutline size={28} />}
+            </Button>
+            <Button transparent onClick={() => setViewDetails(!viewDetails)}>
+              <MdInfo size={28} />
+            </Button>
+          </div>
         </div>
-        <div className="min-w-fit flex flex-row items-center gap-1">
-          <Button
-            transparent
-            onClick={() =>
-              services.updateIntent(data.id, { pinned: !data.pinned })
-            }
-          >
-            {data.pinned ? <TiPin size={28} /> : <TiPinOutline size={28} />}
-          </Button>
-          <Button transparent onClick={() => setViewDetails(!viewDetails)}>
-            <MdInfo size={28} />
-          </Button>
-        </div>
-      </div>
 
-      {/* Main */}
-      <div className="relative grow flex flex-col bg-darker/20 rounded shadow-inner overflow-clip">
-        {/* Tab content */}
-        {!viewDetails ? (
+        {/* Main */}
+        <div className="relative grow flex flex-col bg-darker/20 rounded shadow-inner overflow-clip">
+          {/* Tab content */}
           <div className="grow flex flex-col justify-evenly p-2">
             {tab === "activity" ? (
               <ActivityView
@@ -97,88 +111,99 @@ const IntentView: React.FC<Props> = (props) => {
             {tab === "tasks" ? <TasksView /> : null}
             {tab === "notes" ? <NotesView /> : null}
           </div>
-        ) : (
-          <div className="grow flex flex-col justify-between p-2 animate-in fade-in-0 duration-150">
-            <div className="flex flex-col gap-2 bg-window shadow rounded p-2">
-              <p className="flex flex-row items-center justify-between">
-                <span>Created at</span>
-                <span>
-                  {new Date(parseInt(data.created_at)).toLocaleString()}
-                </span>
-              </p>
-              {data.archived_at ? (
-                <p className="flex flex-row items-center justify-between">
-                  <span>Archived at</span>
-                  <span>
-                    {new Date(parseInt(data.archived_at)).toLocaleString()}
-                  </span>
-                </p>
-              ) : null}
-              <Textarea
-                value={description}
-                onChange={(e) => setDescription(e.currentTarget.value)}
-                classNames={{
-                  input: "bg-darker/20 border-none text-text",
-                  label: "text-text",
-                }}
-                placeholder="Add a description here"
-                maxLength={128}
-                autosize
-                maxRows={4}
-              />
-            </div>
-            <div className="flex flex-row gap-2">
-              <Button primary size="fill">
-                Archive
-              </Button>
-              <Button
-                size="fill"
-                onClick={() =>
-                  services
-                    .deleteIntent(data.id)
-                    .then(() => toast("Intent deleted"))
-                }
-              >
-                Delete
-              </Button>
-            </div>
-          </div>
-        )}
+        </div>
+        {/* Tab navigation */}
+        <div className="w-full h-7 flex flex-row gap-0.5 rounded-sm overflow-clip text-sm">
+          <Button
+            size="fill"
+            rounded={false}
+            primary={tab === "activity"}
+            onClick={() => switchTab("activity")}
+          >
+            Activity
+          </Button>
+          <Button
+            size="fill"
+            rounded={false}
+            primary={tab === "tasks"}
+            onClick={() => switchTab("tasks")}
+          >
+            Tasks
+          </Button>
+          <Button
+            size="fill"
+            rounded={false}
+            primary={tab === "notes"}
+            onClick={() => switchTab("notes")}
+          >
+            Notes
+          </Button>
+          <Button
+            size="fill"
+            rounded={false}
+            primary={tab === "sessions"}
+            onClick={() => switchTab("sessions")}
+          >
+            Sessions
+          </Button>
+        </div>
       </div>
-      {/* Tab navigation */}
-      <div className="w-full h-7 flex flex-row gap-0.5 rounded-sm overflow-clip text-sm">
-        <Button
-          size="fill"
-          rounded={false}
-          primary={tab === "activity"}
-          onClick={() => switchTab("activity")}
-        >
-          Activity
-        </Button>
-        <Button
-          size="fill"
-          rounded={false}
-          primary={tab === "tasks"}
-          onClick={() => switchTab("tasks")}
-        >
-          Tasks
-        </Button>
-        <Button
-          size="fill"
-          rounded={false}
-          primary={tab === "notes"}
-          onClick={() => switchTab("notes")}
-        >
-          Notes
-        </Button>
-        <Button
-          size="fill"
-          rounded={false}
-          primary={tab === "sessions"}
-          onClick={() => switchTab("sessions")}
-        >
-          Sessions
-        </Button>
+    </>
+  );
+};
+
+interface DetailsModalProps {
+  data: Intent;
+  totalSessions: number;
+  avgSessionDuration: number;
+  exit: () => void;
+}
+
+const DetailsModal: React.FC<DetailsModalProps> = (props) => {
+  const ref = useClickOutside(() => props.exit());
+
+  return (
+    <div className="z-[1337420] fixed top-0 left-0 w-screen h-screen flex flex-col bg-darker/60">
+      <div
+        ref={ref}
+        className="m-auto w-80 p-2 flex flex-col gap-2 bg-base rounded"
+      >
+        <div className="flex flex-col gap-2 bg-window rounded p-1.5 text-sm">
+          <p className="flex flex-row items-center justify-between">
+            <span>Created at:</span>
+            <span>
+              {new Date(parseInt(props.data.created_at)).toLocaleString()}
+            </span>
+          </p>
+          {props.data.archived_at ? (
+            <p className="flex flex-row items-center justify-between">
+              <span>Archived at:</span>
+              <span>
+                {new Date(parseInt(props.data.created_at)).toLocaleString()}
+              </span>
+            </p>
+          ) : null}
+          <p className="flex flex-row items-center justify-between">
+            <span>Total sessions:</span>
+            <span>{props.totalSessions}</span>
+          </p>
+          <p className="flex flex-row items-center justify-between">
+            <span>Average session duration:</span>
+            <span>{props.avgSessionDuration} min</span>
+          </p>
+        </div>
+        <div className="flex flex-row items-cente justify-between h-7">
+          <Button>
+            <BiArchiveIn size={24} />
+            <span>Archive</span>
+          </Button>
+          <button>
+            <MdDelete
+              size={28}
+              className="text-[#FA3434]/80 hover:text-[#FA3434]"
+            />
+          </button>
+        </div>
       </div>
     </div>
   );
