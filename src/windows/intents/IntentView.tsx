@@ -83,7 +83,7 @@ const IntentView: React.FC<Props> = (props) => {
         </div>
 
         {/* Main */}
-        <div className="relative grow flex flex-col bg-darker/20 rounded shadow-inner overflow-clip">
+        <div className="relative grow flex flex-col bg-darker/20 rounded inner-shadow overflow-clip">
           {/* Tab content */}
           <div className="grow flex flex-col justify-evenly p-2">
             {tab === "activity" ? (
@@ -179,9 +179,9 @@ const DetailsModal: React.FC<DetailsModalProps> = (props) => {
     <div className="z-[1337420] fixed top-0 left-0 w-screen h-screen flex flex-col bg-darker/60">
       <div
         ref={ref}
-        className="m-auto w-80 p-2 flex flex-col gap-2 bg-base rounded"
+        className="m-auto w-80 p-4 flex flex-col gap-2 bg-base rounded"
       >
-        <div className="flex flex-col gap-2 bg-window rounded p-1.5 text-sm">
+        <div className="flex flex-col gap-2 bg-window rounded p-3 text-sm inner-shadow">
           <p className="flex flex-row items-center justify-between">
             <span>Created at:</span>
             <span>{new Date(parseInt(data.created_at)).toLocaleString()}</span>

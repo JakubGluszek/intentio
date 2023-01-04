@@ -12,6 +12,7 @@ import { useStore } from "@/app/store";
 import { CONFIG } from "@/app/config";
 import { useEvent } from "@/hooks";
 import services from "@/app/services";
+import { toast } from "react-hot-toast";
 
 const MainWindow: React.FC = () => {
   const [viewSidebar, setViewSidebar] = React.useState(false);
@@ -26,9 +27,23 @@ const MainWindow: React.FC = () => {
     store.patchIntent(event.payload.id, event.payload)
   );
   useEvent("intent_deleted", (event) => store.removeIntent(event.payload.id));
+  useEvent("intent_archived", (event) => {
+    if (store.activeIntentId === event.payload.id) {
+      services.setActiveIntentId(undefined).then((data) => {
+        store.setActiveIntentId(data);
+        toast("Active intent has been archived");
+      });
+    }
+
+    store.patchIntent(event.payload.id, event.payload);
+  });
+  useEvent("intent_unarchived", (event) =>
+    store.patchIntent(event.payload.id, event.payload)
+  );
 
   React.useEffect(() => {
     services.getIntents().then((data) => store.setIntents(data));
+    services.getActiveIntentId().then((data) => store.setActiveIntentId(data));
   }, []);
 
   return (

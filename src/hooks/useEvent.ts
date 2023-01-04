@@ -29,7 +29,7 @@ export function useEvent<K extends keyof Events>(
       callback(event)
     );
     return () => unlisten.then((f) => f()) as never;
-  }, []);
+  }, [callback]);
 
   return;
 }

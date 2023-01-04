@@ -21,7 +21,6 @@ type Tab = "intents" | "tasks" | "notes";
 
 const Sidebar: React.FC<Props> = (props) => {
   const [tab, setTab] = React.useState<Tab>("intents");
-  const [selectedIntentId, setSelectedIntentId] = React.useState<string>();
   const [selectedIntentTags, setSelectedIntentTags] = React.useState<string[]>(
     []
   );
@@ -31,8 +30,9 @@ const Sidebar: React.FC<Props> = (props) => {
   const store = useStore();
 
   const onIntentChange = async (id: string | undefined) => {
-    setSelectedIntentId(id);
-    await services.set_active_intent_id(id);
+    await services
+      .setActiveIntentId(id)
+      .then((data) => store.setActiveIntentId(data));
   };
 
   return (
@@ -77,8 +77,12 @@ const Sidebar: React.FC<Props> = (props) => {
             <>
               {store.intents.length > 0 ? (
                 <IntentsList
-                  data={store.intents}
-                  selectedIntentId={selectedIntentId}
+                  data={store.intents.filter(
+                    (intent) =>
+                      intent.archived_at === null ||
+                      intent.archived_at === undefined
+                  )}
+                  selectedIntentId={store.activeIntentId}
                   selectedTags={selectedIntentTags}
                   onSelected={onIntentChange}
                   onTagSelected={(data) => setSelectedIntentTags(data)}

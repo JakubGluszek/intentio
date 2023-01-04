@@ -14,6 +14,7 @@ import { Sort } from ".";
 import { IntentForCreate } from "@/bindings/IntentForCreate";
 import services from "@/app/services";
 import { useStore } from "@/app/store";
+import { BiArchive } from "react-icons/bi";
 
 interface Props {
   selectedId?: string;
@@ -26,6 +27,7 @@ const Sidebar: React.FC<Props> = (props) => {
   const [sort, setSort] = React.useState<Sort>("asc");
 
   const [viewCreate, setViewCreate] = React.useState(false);
+  const [viewArchived, setViewArchived] = React.useState(false);
 
   const intents = useStore((state) => state.intents);
 
@@ -55,6 +57,14 @@ const Sidebar: React.FC<Props> = (props) => {
               <AiOutlineSortDescending size={28} />
             )}
           </Button>
+          {/* Filter by archived_at property */}
+          <Button
+            style={{ opacity: viewArchived ? 1.0 : 0.5 }}
+            transparent
+            onClick={() => setViewArchived((view) => !view)}
+          >
+            <BiArchive size={28} />
+          </Button>
         </div>
       ) : null}
       {viewCreate ? (
@@ -62,7 +72,11 @@ const Sidebar: React.FC<Props> = (props) => {
       ) : null}
       {intents.length > 0 ? (
         <IntentsList
-          data={intents}
+          data={
+            viewArchived
+              ? intents
+              : intents.filter((intent) => !intent.archived_at)
+          }
           selectedTags={props.selectedTags}
           selectedIntentId={props.selectedId}
           sort={sort}
@@ -101,6 +115,7 @@ const CreateIntentView: React.FC<CreateIntentViewProps> = (props) => {
         <div className="flex flex-col gap-1 focus-within:text-primary/60">
           <input
             autoFocus
+            maxLength={24}
             placeholder="Intent label"
             {...register("label", {
               required: true,

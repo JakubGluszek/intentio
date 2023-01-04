@@ -4,6 +4,7 @@ import clsx from "clsx";
 
 import { Sort } from ".";
 import { Intent } from "@/bindings/Intent";
+import { BiArchive } from "react-icons/bi";
 
 interface Props {
   data: Intent[];
@@ -52,6 +53,9 @@ export const IntentsList: React.FC<Props> = (props) => {
 
   // sorts by pinned (meaning pinned intents are always first)
   intents.sort((a, b) => (a.pinned ? 0 : 1) - (b.pinned ? 0 : 1));
+
+  // sort by archived (meaning archive intents are always at the bottom)
+  intents.sort((a, b) => (b.archived_at ? 0 : 1) - (a.archived_at ? 0 : 1));
 
   // filter by selectedTags
   if (props.selectedTags.length === 1) {
@@ -117,11 +121,21 @@ const IntentView: React.FC<IntentViewProps> = (props) => {
       onClick={(e) => props.onSelected(e, data)}
     >
       {/* Label */}
-      <div className="h-6 w-full flex flex-row items-center justify-between px-1">
+      <div className="h-6 w-full flex flex-row items-center justify-between gap-1">
         <span className="text-left whitespace-nowrap overflow-ellipsis overflow-hidden">
           {data.label}
         </span>
-        {data.pinned ? <TiPin size={24} className="min-w-[24px]" /> : null}
+        <div
+          className={clsx(
+            "flex flex-row items-center gap-1",
+            !props.selected && "text-text/70"
+          )}
+        >
+          {data.pinned ? <TiPin size={24} className="min-w-[24px]" /> : null}
+          {data.archived_at ? (
+            <BiArchive size={24} className="min-w-[24px]" />
+          ) : null}
+        </div>
       </div>
 
       {/* Tags */}

@@ -6,6 +6,7 @@ import { Settings } from "@/bindings/Settings";
 import { TimerType } from "@/types";
 import services from "@/app/services";
 import { useStore } from "@/app/store";
+import { useEvent } from "@/hooks";
 
 const useTimer = (settings: Settings) => {
   // custom key is needed to reset timer components inner state
@@ -18,27 +19,6 @@ const useTimer = (settings: Settings) => {
   const [iterations, setIterations] = React.useState(0);
 
   const store = useStore();
-
-  React.useEffect(() => {
-    setDuration(settings.pomodoro_duration);
-    setType("focus");
-    setKey("focus");
-  }, []);
-
-  // Sync duration change on settings update
-  React.useEffect(() => {
-    switch (type) {
-      case "focus":
-        setDuration(settings.pomodoro_duration);
-        break;
-      case "break":
-        setDuration(settings.break_duration);
-        break;
-      case "long break":
-        setDuration(settings.long_break_duration);
-        break;
-    }
-  }, [settings]);
 
   const restart = () => {
     pause();
@@ -182,6 +162,27 @@ const useTimer = (settings: Settings) => {
     },
     [type, settings, iterations, timeFocused]
   );
+
+  React.useEffect(() => {
+    setDuration(settings.pomodoro_duration);
+    setType("focus");
+    setKey("focus");
+  }, []);
+
+  // Sync duration change on settings update
+  React.useEffect(() => {
+    switch (type) {
+      case "focus":
+        setDuration(settings.pomodoro_duration);
+        break;
+      case "break":
+        setDuration(settings.break_duration);
+        break;
+      case "long break":
+        setDuration(settings.long_break_duration);
+        break;
+    }
+  }, [settings]);
 
   return {
     key,
