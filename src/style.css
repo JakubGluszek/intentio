@@ -38,6 +38,7 @@
     --base-color: 57 62 70;
     --primary-color: 0 173 181;
     --text-color: 238 238 238;
+    --danger-color: 250 52 52;
   }
 
   * {

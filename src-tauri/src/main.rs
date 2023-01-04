@@ -57,6 +57,8 @@ async fn main() -> Result<()> {
             create_intent,
             update_intent,
             delete_intent,
+            archive_intent,
+            unarchive_intent,
             // Note
             create_note,
             update_note,

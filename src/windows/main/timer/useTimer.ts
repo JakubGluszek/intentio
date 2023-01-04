@@ -96,8 +96,7 @@ const useTimer = (settings: Settings) => {
         duration: ~~((timeFocused + 1) / 60),
         started_at: startedAt!.getTime().toString(),
         intent_id: store.activeIntentId ?? null,
-        paused_at: [],
-        resumed_at: [],
+        timestamps: [], // TODO: Track paused_at & resumed_at timestamps
       })
       .then(() => {
         setIterations((it) => it + 1);

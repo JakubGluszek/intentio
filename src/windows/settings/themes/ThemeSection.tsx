@@ -37,7 +37,7 @@ const ThemeSection: React.FC = () => {
             hide={() => setViewCreate(false)}
           />
         )}
-        <div ref={containerRef} className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2">
           {themes &&
             themes
               .sort((a, b) => (a.default ? 1 : 0) - (b.default ? 1 : 0))

@@ -2,7 +2,7 @@ use std::collections::BTreeMap;
 use std::sync::Arc;
 
 use serde::{Deserialize, Serialize};
-use surrealdb::sql::{Array, Datetime, Object, Value};
+use surrealdb::sql::{thing, Array, Datetime, Object, Value};
 use ts_rs::TS;
 
 use crate::prelude::*;
@@ -144,17 +144,57 @@ impl IntentBmc {
         objects.into_iter().map(|o| o.try_into()).collect()
     }
 
-    // pub async fn archive(ctx: Arc<Ctx>, id: &str) -> Result<Option<Intent>> {
-    //     let intent = Self::get(ctx.clone(), id).await?;
-    //
-    //     Ok(Some(intent))
-    // }
-    //
-    // pub async fn unarchive(ctx: Arc<Ctx>, id: &str) -> Result<Option<Intent>> {
-    //     let intent = Self::get(ctx.clone(), id).await?;
-    //
-    //     Ok(Some(intent))
-    // }
+    pub async fn archive(ctx: Arc<Ctx>, id: &str) -> Result<Intent> {
+        let store = ctx.get_store();
+
+        let now = Datetime::default().timestamp_millis().to_string();
+
+        let sql = "UPDATE $th SET archived_at = $timestamp RETURN AFTER";
+
+        let vars = map![
+			"th".into() => thing(id)?.into(),
+			"timestamp".into() => now.into()];
+
+        let ress = store.ds.execute(sql, &store.ses, Some(vars), true).await?;
+
+        let first_res = ress.into_iter().next().expect("object not returned");
+
+        let result = first_res.result?;
+
+        if let Value::Object(val) = result.first() {
+            ctx.emit_event("intent_archived", val.clone());
+
+            val.try_into()
+        } else {
+            Err(Error::StoreFailToCreate(f!(
+                "can't update {id}, nothing returned."
+            )))
+        }
+    }
+
+    pub async fn unarchive(ctx: Arc<Ctx>, id: &str) -> Result<Intent> {
+        let store = ctx.get_store();
+
+        let sql = "UPDATE $th SET archived_at = NONE RETURN AFTER";
+
+        let vars = map!["th".into() => thing(id)?.into()];
+
+        let ress = store.ds.execute(sql, &store.ses, Some(vars), true).await?;
+
+        let first_res = ress.into_iter().next().expect("object not returned");
+
+        let result = first_res.result?;
+
+        if let Value::Object(val) = result.first() {
+            ctx.emit_event("intent_unarchived", val.clone());
+
+            val.try_into()
+        } else {
+            Err(Error::StoreFailToCreate(f!(
+                "can't update {id}, nothing returned."
+            )))
+        }
+    }
 }
 
 #[cfg(test)]

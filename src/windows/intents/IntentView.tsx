@@ -52,12 +52,7 @@ const IntentView: React.FC<Props> = (props) => {
     <>
       {viewDetails
         ? createPortal(
-          <DetailsModal
-            data={data}
-            totalSessions={0}
-            avgSessionDuration={0}
-            exit={() => setViewDetails(false)}
-          />,
+          <DetailsModal data={data} exit={() => setViewDetails(false)} />,
           document.getElementById("root")!
         )
         : null}
@@ -153,13 +148,32 @@ const IntentView: React.FC<Props> = (props) => {
 
 interface DetailsModalProps {
   data: Intent;
-  totalSessions: number;
-  avgSessionDuration: number;
   exit: () => void;
 }
 
 const DetailsModal: React.FC<DetailsModalProps> = (props) => {
+  const { data } = props;
+
+  const [viewConfirmDelete, setViewConfirmDelete] = React.useState(false);
+
   const ref = useClickOutside(() => props.exit());
+
+  const sessions = useStore((state) => state.getSessionsByIntentId)(data.id);
+
+  const totalSessionsDuration = sessions.reduce((p, c) => (p += c.duration), 0);
+
+  React.useEffect(() => {
+    let hideConfirm: NodeJS.Timeout | undefined;
+    if (viewConfirmDelete) {
+      hideConfirm = setTimeout(() => {
+        setViewConfirmDelete(false);
+      }, 3000);
+    } else {
+      hideConfirm && clearTimeout(hideConfirm);
+    }
+
+    return () => hideConfirm && clearTimeout(hideConfirm);
+  }, [viewConfirmDelete]);
 
   return (
     <div className="z-[1337420] fixed top-0 left-0 w-screen h-screen flex flex-col bg-darker/60">
@@ -170,38 +184,59 @@ const DetailsModal: React.FC<DetailsModalProps> = (props) => {
         <div className="flex flex-col gap-2 bg-window rounded p-1.5 text-sm">
           <p className="flex flex-row items-center justify-between">
             <span>Created at:</span>
-            <span>
-              {new Date(parseInt(props.data.created_at)).toLocaleString()}
-            </span>
+            <span>{new Date(parseInt(data.created_at)).toLocaleString()}</span>
           </p>
-          {props.data.archived_at ? (
+          {data.archived_at ? (
             <p className="flex flex-row items-center justify-between">
               <span>Archived at:</span>
               <span>
-                {new Date(parseInt(props.data.created_at)).toLocaleString()}
+                {new Date(parseInt(data.archived_at)).toLocaleString()}
               </span>
             </p>
           ) : null}
           <p className="flex flex-row items-center justify-between">
             <span>Total sessions:</span>
-            <span>{props.totalSessions}</span>
+            <span>{sessions.length}</span>
+          </p>
+          <p className="flex flex-row items-center justify-between">
+            <span>Total focus duration:</span>
+            <span>{formatTime(totalSessionsDuration)}</span>
           </p>
           <p className="flex flex-row items-center justify-between">
             <span>Average session duration:</span>
-            <span>{props.avgSessionDuration} min</span>
+            <span>
+              {sessions.length > 0
+                ? (totalSessionsDuration / sessions.length).toFixed(1)
+                : 0}
+              min
+            </span>
           </p>
         </div>
         <div className="flex flex-row items-cente justify-between h-7">
-          <Button>
-            <BiArchiveIn size={24} />
-            <span>Archive</span>
-          </Button>
-          <button>
-            <MdDelete
-              size={28}
-              className="text-[#FA3434]/80 hover:text-[#FA3434]"
-            />
-          </button>
+          {data.archived_at ? (
+            <Button onClick={() => services.unarchiveIntent(data.id)}>
+              <BiArchiveIn size={24} />
+              <span>Unarchive</span>
+            </Button>
+          ) : (
+            <Button onClick={() => services.archiveIntent(data.id)}>
+              <BiArchiveIn size={24} />
+              <span>Archive</span>
+            </Button>
+          )}
+          {!viewConfirmDelete ? (
+            <button onClick={() => setViewConfirmDelete(true)}>
+              <MdDelete
+                size={28}
+                className="text-danger/80 hover:text-danger"
+              />
+            </button>
+          ) : (
+            <Button onClick={() => services.deleteIntent(data.id)}>
+              <MdDelete size={28} />
+              <span>Confirm</span>
+            </Button>
+          )}
         </div>
       </div>
     </div>

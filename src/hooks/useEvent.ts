@@ -4,6 +4,7 @@ import { Event, listen } from "@tauri-apps/api/event";
 import { Settings } from "@/bindings/Settings";
 import { Intent } from "@/bindings/Intent";
 import { ModelDeleteResultData } from "@/bindings/ModelDeleteResultData";
+import { Session } from "@/bindings/Session";
 
 type Events = {
   settings_updated: Settings;
@@ -12,6 +13,9 @@ type Events = {
   intent_created: Intent;
   intent_updated: Intent;
   intent_deleted: ModelDeleteResultData;
+  intent_archived: Intent;
+  intent_unarchived: Intent;
+  session_saved: Session;
 };
 
 type Callback<T> = (data: Event<T>) => void;

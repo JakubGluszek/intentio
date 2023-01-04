@@ -8,6 +8,7 @@ import IntentView from "./IntentView";
 import { useStore } from "@/app/store";
 import { useEvent } from "@/hooks";
 import services from "@/app/services";
+import { toast } from "react-hot-toast";
 
 export type Sort = "asc" | "desc";
 
@@ -21,7 +22,19 @@ const IntentsWindow: React.FC = () => {
   useEvent("intent_updated", (event) =>
     store.patchIntent(event.payload.id, event.payload)
   );
-  useEvent("intent_deleted", (event) => store.removeIntent(event.payload.id));
+  useEvent("intent_deleted", (event) => {
+    store.removeIntent(event.payload.id);
+    toast("Intent deleted");
+  });
+  useEvent("intent_archived", (event) => {
+    store.patchIntent(event.payload.id, event.payload);
+    toast("Intent has been archived");
+  });
+  useEvent("intent_unarchived", (event) => {
+    store.patchIntent(event.payload.id, event.payload);
+    toast("Intent removed from archive");
+  });
+  useEvent("session_saved", (event) => store.addSession(event.payload));
 
   React.useEffect(() => {
     services

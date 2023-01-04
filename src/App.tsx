@@ -39,7 +39,7 @@ const App: React.FC = () => {
       </Routes>
       <Toaster
         position="top-center"
-        containerStyle={{ top: 8 }}
+        containerStyle={{ top: 8, zIndex: 9999999 }}
         toastOptions={{
           duration: 2000,
           style: {

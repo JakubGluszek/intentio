@@ -23,3 +23,11 @@ export const updateIntent = async (
 export const deleteIntent = async (id: string) => {
   return await invoke<ModelDeleteResultData>("delete_intent", { id });
 };
+
+export const archiveIntent = async (id: string) => {
+  return await invoke<Intent>("archive_intent", { id });
+};
+
+export const unarchiveIntent = async (id: string) => {
+  return await invoke<Intent>("unarchive_intent", { id });
+};

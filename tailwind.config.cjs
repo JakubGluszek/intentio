@@ -8,6 +8,7 @@ module.exports = {
         base: "rgb(var(--base-color) / <alpha-value>)",
         primary: "rgb(var(--primary-color) / <alpha-value>)",
         text: "rgb(var(--text-color) / <alpha-value>)",
+        danger: "rgb(var(--danger-color) / <alpha-value>)",
         darker: "rgb(0 0 0 / <alpha-value>)",
         lighter: "rgb(255 255 255 / <alpha-value>)",
       },
@@ -15,7 +16,7 @@ module.exports = {
         medium: "1rem",
       },
       fontFamily: {
-        quicksand: ["Quicksand"]
+        quicksand: ["Quicksand"],
       },
     },
   },

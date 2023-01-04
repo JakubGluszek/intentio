@@ -55,3 +55,25 @@ pub async fn delete_intent(app: AppHandle<Wry>, id: String) -> Result<ModelDelet
         Err(_) => Err(Error::CtxFail).into(),
     }
 }
+
+#[command]
+pub async fn archive_intent(app: AppHandle<Wry>, id: String) -> Result<Intent> {
+    match Ctx::from_app(app) {
+        Ok(ctx) => match IntentBmc::archive(ctx, &id).await {
+            Ok(intent) => Ok(intent),
+            Err(err) => Err(err).into(),
+        },
+        Err(_) => Err(Error::CtxFail).into(),
+    }
+}
+
+#[command]
+pub async fn unarchive_intent(app: AppHandle<Wry>, id: String) -> Result<Intent> {
+    match Ctx::from_app(app) {
+        Ok(ctx) => match IntentBmc::unarchive(ctx, &id).await {
+            Ok(intent) => Ok(intent),
+            Err(err) => Err(err).into(),
+        },
+        Err(_) => Err(Error::CtxFail).into(),
+    }
+}
