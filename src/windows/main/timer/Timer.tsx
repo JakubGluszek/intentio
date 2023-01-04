@@ -62,15 +62,14 @@ const Timer: React.FC<Props> = (props) => {
                     ? "Break"
                     : "Long break"}
               </span>
-              <Button
-                className="text-primary/80 hover:text-primary opacity-0 group-hover:opacity-100 transition-opacity"
-                transparent
+              <button
+                className="text-primary/80 hover:text-primary opacity-0 group-hover:opacity-100"
                 onClick={() => {
                   timer.restart();
                 }}
               >
                 <VscDebugRestart size={24} />
-              </Button>
+              </button>
             </div>
           </div>
         )}

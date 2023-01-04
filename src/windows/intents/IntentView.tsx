@@ -109,33 +109,41 @@ const IntentView: React.FC<Props> = (props) => {
         {/* Tab navigation */}
         <div className="w-full h-7 flex flex-row gap-0.5 rounded-sm overflow-clip text-sm">
           <Button
-            size="fill"
+            style={{
+              width: tab === "activity" ? "100%" : "fit-content",
+            }}
+            opacity={tab !== "activity" ? 0.5 : undefined}
             rounded={false}
-            primary={tab === "activity"}
             onClick={() => switchTab("activity")}
           >
             Activity
           </Button>
           <Button
-            size="fill"
+            style={{
+              width: tab === "tasks" ? "100%" : "fit-content",
+            }}
+            opacity={tab !== "tasks" ? 0.5 : undefined}
             rounded={false}
-            primary={tab === "tasks"}
             onClick={() => switchTab("tasks")}
           >
             Tasks
           </Button>
           <Button
-            size="fill"
+            style={{
+              width: tab === "notes" ? "100%" : "fit-content",
+            }}
+            opacity={tab !== "notes" ? 0.5 : undefined}
             rounded={false}
-            primary={tab === "notes"}
             onClick={() => switchTab("notes")}
           >
             Notes
           </Button>
           <Button
-            size="fill"
+            style={{
+              width: tab === "sessions" ? "100%" : "fit-content",
+            }}
+            opacity={tab !== "sessions" ? 0.5 : undefined}
             rounded={false}
-            primary={tab === "sessions"}
             onClick={() => switchTab("sessions")}
           >
             Sessions

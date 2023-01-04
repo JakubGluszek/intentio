@@ -99,27 +99,33 @@ const Sidebar: React.FC<Props> = (props) => {
           {/* Content Navigation */}
           <div className="h-7 flex flex-row gap-0.5 rounded-sm overflow-clip">
             <Button
-              primary={tab === "intents"}
               rounded={false}
-              size={tab === "intents" ? "fill" : undefined}
+              style={{
+                width: tab === "intents" ? "100%" : "fit-content",
+              }}
+              opacity={tab !== "intents" ? 0.5 : undefined}
               onClick={() => setTab("intents")}
             >
               <BiTargetLock size={24} />
               {tab === "intents" ? <span>Intents</span> : undefined}
             </Button>
             <Button
-              size={tab === "tasks" ? "fill" : undefined}
-              primary={tab === "tasks"}
               rounded={false}
+              style={{
+                width: tab === "tasks" ? "100%" : "fit-content",
+              }}
+              opacity={tab !== "tasks" ? 0.5 : undefined}
               onClick={() => setTab("tasks")}
             >
               <MdCheckBox size={24} />
               {tab === "tasks" ? <span>Tasks</span> : undefined}
             </Button>
             <Button
-              size={tab === "notes" ? "fill" : undefined}
-              primary={tab === "notes"}
               rounded={false}
+              style={{
+                width: tab === "notes" ? "100%" : "fit-content",
+              }}
+              opacity={tab !== "notes" ? 0.5 : undefined}
               onClick={() => setTab("notes")}
             >
               <MdStickyNote2 size={24} />

@@ -38,8 +38,8 @@ const Sidebar: React.FC<Props> = (props) => {
         <div className="h-7 flex flex-row items-center gap-2">
           {/* Toggle create intent view */}
           <Button
-            primary={true}
-            size="fill"
+            color="primary"
+            style={{ width: "100%" }}
             onClick={() => setViewCreate((visible) => !visible)}
           >
             <MdAddCircle size={24} />
@@ -59,7 +59,7 @@ const Sidebar: React.FC<Props> = (props) => {
           </Button>
           {/* Filter by archived_at property */}
           <Button
-            style={{ opacity: viewArchived ? 1.0 : 0.5 }}
+            opacity={viewArchived ? 1.0 : 0.5}
             transparent
             onClick={() => setViewArchived((view) => !view)}
           >
@@ -128,7 +128,7 @@ const CreateIntentView: React.FC<CreateIntentViewProps> = (props) => {
           <Button transparent type="button" onClick={() => props.hide()}>
             Cancel
           </Button>
-          <Button primary type="submit">
+          <Button color="primary" type="submit">
             Create
           </Button>
         </div>
