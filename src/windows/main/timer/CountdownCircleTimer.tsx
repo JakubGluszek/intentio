@@ -1,17 +1,18 @@
 import React from "react";
 import { TimerProps } from "@/types";
+
 import { getWrapperStyle, timeStyle } from "@/utils";
 import { useCountdown } from "./useCountdown";
 
-const CountdownCircleTimer = (props: TimerProps) => {
+const CountdownCircleTimer: React.FC<TimerProps> = (props) => {
   const { children, strokeLinecap, trailColor, trailStrokeWidth } = props;
   const {
     path,
     pathLength,
-    stroke,
     strokeDashoffset,
     remainingTime,
     elapsedTime,
+    stroke,
     size,
     strokeWidth,
   } = useCountdown(props);
