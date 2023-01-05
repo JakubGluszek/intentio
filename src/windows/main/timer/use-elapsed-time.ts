@@ -1,3 +1,5 @@
+// Credits - https://github.com/vydimitrov/use-elapsed-time
+
 import React from "react";
 
 type MayBe<T> = T | null;

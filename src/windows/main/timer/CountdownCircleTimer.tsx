@@ -1,3 +1,5 @@
+// Credits - https://github.com/vydimitrov/react-countdown-circle-timer
+
 import React from "react";
 import { TimerProps } from "@/types";
 
