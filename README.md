@@ -69,7 +69,10 @@ npm run tauri dev
 
 ## Acknowledgments
 
+- Credits
+  - https://github.com/vydimitrov/react-countdown-circle-timer
+  - https://github.com/vydimitrov/use-elapsed-time
 - Inspirations
   - [Pomotroid](https://github.com/Splode/pomotroid)
   - [Pomofocus](https://pomofocus.io/)
-- App's default alerts audio made by [BAD](https://www.youtube.com/channel/UCCqowyNy72D-TVhYJzNHhpw)
+- Alerts audio made by a friend called [BAD](https://www.youtube.com/channel/UCCqowyNy72D-TVhYJzNHhpw) on social media
