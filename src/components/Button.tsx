@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  HTMLMotionProps,
-  motion,
-  MotionStyle,
-  TargetAndTransition,
-} from "framer-motion";
+import { HTMLMotionProps, motion, MotionStyle } from "framer-motion";
 
 interface Props extends HTMLMotionProps<"button"> {
   children: React.ReactNode;
@@ -30,48 +25,33 @@ const Button: React.FC<Props> = (props) => {
 
   const [hover, setHover] = React.useState(false);
 
-  const colors = (): { base: MotionStyle; hover: TargetAndTransition } => {
+  const colors = (): MotionStyle => {
     if (transparent) {
       return {
-        base: {
-          backgroundColor: "transparent",
-          color: "rgb(var(--primary-color) / 0.8)",
-        },
-        hover: {
-          color: "rgb(var(--primary-color) / 1.0)",
-        },
+        backgroundColor: "transparent",
+        color:
+          color === "primary"
+            ? "rgb(var(--primary-color) / 0.8)"
+            : "rgb(var(--danger-color) / 0.8)",
       };
     } else if (color === "primary") {
       return {
-        base: {
-          backgroundColor: "rgb(var(--primary-color) / 0.8)",
-          color: "rgb(var(--window-color))",
-        },
-        hover: {
-          backgroundColor: "rgb(var(--primary-color) / 1.0)",
-          color: "rgb(var(--window-color))",
-        },
+        backgroundColor: "rgb(var(--primary-color) / 0.8)",
+        color: "rgb(var(--window-color))",
       };
     } else if (color === "danger") {
       return {
-        base: {
-          backgroundColor: "rgb(var(--danger-color) / 0.8)",
-          color: "rgb(var(--window-color))",
-        },
-        hover: {
-          backgroundColor: "rgb(var(--danger-color) / 1.0)",
-          color: "rgb(var(--window-color) / 1.0)",
-        },
+        backgroundColor: "rgb(var(--danger-color) / 0.8)",
+        color: "rgb(var(--window-color))",
       };
     }
 
-    return { base: {}, hover: {} };
+    return {};
   };
 
   return (
     <motion.button
       style={{
-        // base
         display: "flex",
         flexDirection: "row",
         justifyContent: "center",
@@ -83,12 +63,12 @@ const Button: React.FC<Props> = (props) => {
         borderRadius: rounded ? "0.25rem" : undefined,
         paddingTop: !transparent ? "0.25rem" : undefined,
         paddingBottom: !transparent ? "0.25rem" : undefined,
-        paddingInline: !transparent ? "0.5rem" : undefined,
+        paddingInline: !transparent ? "0.75rem" : undefined,
         width: !transparent ? "100%" : undefined,
         height: !transparent ? "100%" : undefined,
         opacity: hover ? 1.0 : opacity,
 
-        ...colors().base,
+        ...colors(),
         ...style,
       }}
       onMouseEnter={() => setHover(true)}

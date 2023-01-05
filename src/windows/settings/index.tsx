@@ -1,18 +1,18 @@
 import React from "react";
 import { MdSettings } from "react-icons/md";
 
+import app from "@/app";
+import { updateSettings } from "@/app/services";
 import Layout from "@/components/Layout";
+import { SettingsForUpdate } from "@/bindings/SettingsForUpdate";
 import TimerSection from "./TimerSection";
 import ThemeSection from "./themes";
 import AlertSection from "./AlertSection";
 import AboutSection from "./AboutSection";
-import { useStore } from "@/app/store";
-import { updateSettings } from "@/app/services";
-import { SettingsForUpdate } from "@/bindings/SettingsForUpdate";
 
 const SettingsWindow: React.FC = () => {
-  const settings = useStore((state) => state.settings);
-  const setSettings = useStore((state) => state.setSettings);
+  const settings = app.useStore((state) => state.settings);
+  const setSettings = app.useStore((state) => state.setSettings);
 
   const update = async (data: Partial<SettingsForUpdate>) => {
     const result = await updateSettings(data);

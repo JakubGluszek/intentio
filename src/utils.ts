@@ -1,4 +1,3 @@
-import { invoke } from "@tauri-apps/api/tauri";
 import Color from "color";
 
 import { Theme } from "./bindings/Theme";

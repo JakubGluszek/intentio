@@ -1,24 +1,23 @@
 import React from "react";
+import { clsx } from "@mantine/core";
+import { BsArrowsCollapse, BsArrowsExpand } from "react-icons/bs";
 import {
   MdClose,
   MdKeyboardArrowDown,
   MdKeyboardArrowUp,
 } from "react-icons/md";
-import { BsArrowsCollapse, BsArrowsExpand } from "react-icons/bs";
 
 import { DayDetail } from "@/types";
 import Button from "@/components/Button";
 import { Session } from "@/bindings/Session";
-import { Intent } from "@/bindings/Intent";
 
 interface Props {
-  intents: Intent[];
   sessions: Session[];
   filter: string;
-  setFilter: React.Dispatch<React.SetStateAction<string>>;
+  setFilter: (label: string) => void;
 }
 
-const TimelineView: React.FC<Props> = (props) => {
+const SessionsView: React.FC<Props> = (props) => {
   const [skip, setSkip] = React.useState(0);
   const [limit, setLimit] = React.useState(25);
 
@@ -71,7 +70,7 @@ const TimelineView: React.FC<Props> = (props) => {
   return (
     <div className="grow flex flex-col gap-2">
       {/* Header */}
-      <div className="h-8 flex flex-row items-center gap-2">
+      <div className="h-8 flex flex-row items-center gap-1">
         <div className="relative w-full flex flex-row items-center gap-1">
           <input
             autoComplete="off"
@@ -82,19 +81,19 @@ const TimelineView: React.FC<Props> = (props) => {
             type="text"
           />
           {props.filter.length > 0 && (
-            <div className="absolute bottom-[5px] right-2">
+            <div className="absolute bottom-1 right-1">
               <Button
                 transparent
                 onClick={() => {
                   props.setFilter("");
                 }}
               >
-                <MdClose size={24} />
+                <MdClose size={28} />
               </Button>
             </div>
           )}
         </div>
-        <div className="flex flex-row items-center gap-2">
+        <div className="flex flex-row items-center gap-2 px-2">
           <Button transparent onClick={() => setCollapseAll((prev) => !prev)}>
             {collapseAll ? (
               <BsArrowsCollapse size={24} />
@@ -107,17 +106,11 @@ const TimelineView: React.FC<Props> = (props) => {
       {/* Body */}
       <div className="grow flex flex-col overflow-y-auto">
         <div className="grow flex flex-col overflow-y-auto">
-          {days.length > 0 ? (
-            <div className="w-full max-h-0 flex flex-col gap-1 overflow-y">
-              {days.slice(skip, limit).map((day) => (
-                <DayView key={day.date} data={day} collapse={collapseAll} />
-              ))}
-            </div>
-          ) : (
-            <div className="m-auto text-sm text-text/80 text-center">
-              There are no saved sessions.
-            </div>
-          )}
+          <div className="w-full max-h-0 flex flex-col gap-1 overflow-y">
+            {days.slice(skip, limit).map((day) => (
+              <DayView key={day.date} data={day} collapse={collapseAll} />
+            ))}
+          </div>
         </div>
       </div>
     </div>
@@ -139,7 +132,13 @@ const DayView: React.FC<DayViewProps> = (props) => {
   }, [props.collapse]);
 
   return (
-    <div className="flex flex-col p-1 rounded shadow bg-window">
+    <div
+      data-tauri-disable-drag
+      className={clsx(
+        "flex flex-col p-1 rounded shadow",
+        viewMore ? "bg-base" : "bg-base/40"
+      )}
+    >
       <div className="h-8 w-full flex flex-row items-center justify-between">
         <span className="text-lg text-text/80">{data.date}</span>
         <Button
@@ -163,4 +162,4 @@ const DayView: React.FC<DayViewProps> = (props) => {
   );
 };
 
-export default TimelineView;
+export default SessionsView;

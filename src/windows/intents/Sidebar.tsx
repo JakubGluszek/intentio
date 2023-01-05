@@ -4,17 +4,17 @@ import {
   AiOutlineSortAscending,
   AiOutlineSortDescending,
 } from "react-icons/ai";
+import { BiArchive } from "react-icons/bi";
 import { MdAddCircle } from "react-icons/md";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 
+import app from "@/app";
+import services from "@/app/services";
 import Button from "@/components/Button";
+import { IntentForCreate } from "@/bindings/IntentForCreate";
 import IntentsList from "./IntentsList";
 import { Sort } from ".";
-import { IntentForCreate } from "@/bindings/IntentForCreate";
-import services from "@/app/services";
-import { useStore } from "@/app/store";
-import { BiArchive } from "react-icons/bi";
 
 interface Props {
   selectedId?: string;
@@ -29,7 +29,7 @@ const Sidebar: React.FC<Props> = (props) => {
   const [viewCreate, setViewCreate] = React.useState(false);
   const [viewArchived, setViewArchived] = React.useState(false);
 
-  const intents = useStore((state) => state.intents);
+  const intents = app.useStore((state) => state.intents);
 
   return (
     <div className="w-60 min-w-[240px] h-full flex flex-col p-2 pr-0 gap-2">

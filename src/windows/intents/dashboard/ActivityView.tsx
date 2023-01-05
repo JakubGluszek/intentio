@@ -6,9 +6,9 @@ import Color from "color";
 import ActivityCalendar, { Day } from "react-activity-calendar";
 import ReactTooltip from "react-tooltip";
 
-import { Session } from "@/bindings/Session";
+import app from "@/app";
 import { formatTime } from "@/utils";
-import { useStore } from "@/app/store";
+import { Session } from "@/bindings/Session";
 import { Intent } from "@/bindings/Intent";
 
 interface Props {
@@ -144,7 +144,7 @@ interface CalendarViewProps {
 }
 
 const CalendarView: React.FC<CalendarViewProps> = (props) => {
-  const currentTheme = useStore((state) => state.currentTheme);
+  const currentTheme = app.useStore((state) => state.currentTheme);
 
   const days = React.useMemo(() => {
     const days: Map<string, Day> = new Map();

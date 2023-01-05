@@ -3,10 +3,10 @@ import { MdArrowDropDown, MdArrowDropUp } from "react-icons/md";
 import { emit } from "@tauri-apps/api/event";
 import { useForm, UseFormWatch } from "react-hook-form";
 
-import { Theme } from "@/bindings/Theme";
-import Button from "@/components/Button";
-import { useStore } from "@/app/store";
+import app from "@/app";
 import services from "@/app/services";
+import Button from "@/components/Button";
+import { Theme } from "@/bindings/Theme";
 import { ThemeForUpdate } from "@/bindings/ThemeForUpdate";
 
 interface ThemeViewProps {
@@ -21,7 +21,7 @@ const ThemeView: React.FC<ThemeViewProps> = ({ theme }) => {
 
   const containerRef = React.useRef<HTMLDivElement | null>(null);
 
-  const store = useStore();
+  const store = app.useStore();
 
   // update theme
   const onSubmit = handleSubmit((data) => {

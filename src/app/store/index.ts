@@ -18,7 +18,7 @@ type Store = SettingsSlice &
   NotesSlice &
   UtilsSlice;
 
-export const useStore = create<Store>()((...a) => ({
+const useStore = create<Store>()((...a) => ({
   ...createSettingsSlice(...a),
   ...createStateSlice(...a),
   ...createIntentsSlice(...a),
@@ -28,3 +28,5 @@ export const useStore = create<Store>()((...a) => ({
   ...createNotesSlice(...a),
   ...createUtilsSlice(...a),
 }));
+
+export default useStore;

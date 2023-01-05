@@ -8,7 +8,7 @@ const WebviewConfig = {
   focus: true,
 };
 
-export const CONFIG = {
+const config = {
   about: {
     version: "1.1.0",
     sourceCode: "https://github.com/JakubGluszek/intentio",
@@ -33,3 +33,5 @@ export const CONFIG = {
     },
   },
 };
+
+export default config;

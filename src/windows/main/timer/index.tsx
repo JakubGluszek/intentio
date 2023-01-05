@@ -3,16 +3,16 @@ import { MdPauseCircle, MdPlayCircle, MdSkipNext } from "react-icons/md";
 import { VscDebugRestart } from "react-icons/vsc";
 import Color from "color";
 
-import Button from "@/components/Button";
+import app from "@/app";
+import utils from "@/utils";
 import { ColorFormat } from "@/types";
+import services from "@/app/services";
+import Button from "@/components/Button";
 import { Settings } from "@/bindings/Settings";
-import { useStore } from "@/app/store";
 import { Intent } from "@/bindings/Intent";
 import { Theme } from "@/bindings/Theme";
-import utils from "@/utils";
 import useTimer from "./useTimer";
 import { CountdownCircleTimer } from "./CountdownCircleTimer";
-import services from "@/app/services";
 
 interface Props {
   activeIntent?: Intent;
@@ -23,7 +23,7 @@ interface Props {
 const Timer: React.FC<Props> = (props) => {
   const timer = useTimer(props.settings);
 
-  const store = useStore();
+  const store = app.useStore();
 
   const strokeColor = Color(store.currentTheme?.primary_hex)
     .darken(timer.isRunning ? 0.1 : 0.4)

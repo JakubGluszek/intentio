@@ -5,12 +5,11 @@ import { MdCheckBox, MdOpenInNew, MdStickyNote2 } from "react-icons/md";
 import { useClickOutside } from "@mantine/hooks";
 import { WebviewWindow } from "@tauri-apps/api/window";
 
+import app from "@/app";
+import services from "@/app/services";
 import Button from "@/components/Button";
 import QueueIcon from "@/components/QueueIcon";
 import IntentsList from "../intents/IntentsList";
-import { CONFIG } from "@/app/config";
-import services from "@/app/services";
-import { useStore } from "@/app/store";
 
 interface Props {
   isVisible: boolean;
@@ -27,13 +26,18 @@ const Sidebar: React.FC<Props> = (props) => {
 
   const ref = useClickOutside(() => props.collapse());
 
-  const store = useStore();
+  const store = app.useStore();
 
   const onIntentChange = async (id: string | undefined) => {
     await services
       .setActiveIntentId(id)
       .then((data) => store.setActiveIntentId(data));
   };
+
+  // TODO: Notify user when intent is selected
+  // on change, if the previous selectedIntent was not undefined
+  // save session and switch intent with a slightly different toast like
+  // "Switched focus to {intent.label}"
 
   return (
     <div
@@ -64,7 +68,7 @@ const Sidebar: React.FC<Props> = (props) => {
           <Button
             transparent
             onClick={() => {
-              new WebviewWindow("intents", CONFIG.webviews.intents);
+              new WebviewWindow("intents", app.config.webviews.intents);
               props.collapse();
             }}
           >

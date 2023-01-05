@@ -1,18 +1,18 @@
 import React from "react";
 import { MdAddCircle, MdColorLens } from "react-icons/md";
 
+import app from "@/app";
+import services from "@/app/services";
 import Button from "@/components/Button";
 import ThemeView from "./ThemeView";
 import CreateThemeView from "./CreateThemeView";
-import { useStore } from "@/app/store";
-import services from "@/app/services";
 
 const ThemeSection: React.FC = () => {
   const [viewCreate, setViewCreate] = React.useState(false);
 
-  const themes = useStore((state) => state.themes);
-  const setThemes = useStore((state) => state.setThemes);
-  const currentTheme = useStore((state) => state.currentTheme);
+  const themes = app.useStore((state) => state.themes);
+  const setThemes = app.useStore((state) => state.setThemes);
+  const currentTheme = app.useStore((state) => state.currentTheme);
 
   React.useEffect(() => {
     services.getThemes().then((data) => setThemes(data));

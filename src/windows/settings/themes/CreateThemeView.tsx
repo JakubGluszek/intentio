@@ -1,13 +1,13 @@
 import React from "react";
-import { useForm } from "react-hook-form";
 import { RiEyeCloseFill, RiEyeFill } from "react-icons/ri";
 import { emit } from "@tauri-apps/api/event";
+import { useForm } from "react-hook-form";
+import { toast } from "react-hot-toast";
 
+import app from "@/app";
+import services from "@/app/services";
 import Button from "@/components/Button";
 import { Theme } from "@/bindings/Theme";
-import { toast } from "react-hot-toast";
-import { useStore } from "@/app/store";
-import services from "@/app/services";
 import { ThemeForCreate } from "@/bindings/ThemeForCreate";
 
 interface Props {
@@ -22,7 +22,7 @@ const CreateThemeView: React.FC<Props> = ({ theme, hide }) => {
 
   const containerRef = React.useRef<HTMLFormElement | null>(null);
 
-  const store = useStore();
+  const store = app.useStore();
 
   const onSubmit = handleSubmit(async (data) => {
     await services.createTheme(data).then((data) => {

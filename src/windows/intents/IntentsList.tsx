@@ -1,10 +1,10 @@
 import React from "react";
 import { TiPin } from "react-icons/ti";
-import clsx from "clsx";
-
-import { Sort } from ".";
-import { Intent } from "@/bindings/Intent";
+import { clsx } from "@mantine/core";
 import { BiArchive } from "react-icons/bi";
+
+import { Intent } from "@/bindings/Intent";
+import { Sort } from ".";
 
 interface Props {
   data: Intent[];
