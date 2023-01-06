@@ -20,10 +20,29 @@ const Button: React.FC<Props> = (props) => {
     opacity = 0.8,
     style,
     innerRef,
+    onMouseEnter,
+    onMouseLeave,
     ...restProps
   } = props;
 
-  const [hover, setHover] = React.useState(false);
+  const [isHover, setIsHover] = React.useState(false);
+
+  const handleOnMouseEnter = () => {
+    setIsHover(true);
+  };
+
+  const handleOnMouseLeave = () => {
+    setIsHover(false);
+  };
+
+  // const handleOnClick = (
+  //   e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  // ) => {
+  //   if (transparent) {
+  //   }
+  //
+  //   onClick && onClick(e);
+  // };
 
   const colors = (): MotionStyle => {
     if (transparent) {
@@ -66,17 +85,15 @@ const Button: React.FC<Props> = (props) => {
         paddingInline: !transparent ? "0.75rem" : undefined,
         width: !transparent ? "100%" : undefined,
         height: !transparent ? "100%" : undefined,
-        opacity: hover ? 1.0 : opacity,
+        opacity: isHover ? 1.0 : opacity,
 
         ...colors(),
         ...style,
       }}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
+      whileTap={{ scale: transparent ? 0.8 : undefined }}
+      onMouseEnter={handleOnMouseEnter}
+      onMouseLeave={handleOnMouseLeave}
       disabled={disabled}
-      whileTap={{
-        scale: transparent ? 0.9 : 0.975,
-      }}
       ref={innerRef}
       {...restProps}
     >

@@ -128,7 +128,11 @@ const CreateIntentView: React.FC<CreateIntentViewProps> = (props) => {
           <Button transparent type="button" onClick={() => props.hide()}>
             Cancel
           </Button>
-          <Button color="primary" type="submit">
+          <Button
+            color="primary"
+            style={{ width: "fit-content" }}
+            type="submit"
+          >
             Create
           </Button>
         </div>

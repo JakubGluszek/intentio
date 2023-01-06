@@ -46,14 +46,12 @@ const IntentView: React.FC<Props> = (props) => {
           />
         </div>
         <div className="min-w-fit flex flex-row items-center gap-1">
-          <Button
-            transparent
+          <PinButton
+            isPinned={data.pinned}
             onClick={() =>
               services.updateIntent(data.id, { pinned: !data.pinned })
             }
-          >
-            {data.pinned ? <TiPin size={28} /> : <TiPinOutline size={28} />}
-          </Button>
+          />
           <Button transparent onClick={() => setViewDetails(!viewDetails)}>
             <MdInfo size={28} />
           </Button>
@@ -128,6 +126,50 @@ const IntentView: React.FC<Props> = (props) => {
         </Button>
       </div>
     </div>
+  );
+};
+
+interface PinButtonProps {
+  onClick: React.MouseEventHandler;
+  isPinned: boolean;
+}
+
+const PinButton: React.FC<PinButtonProps> = (props) => {
+  const [isAnimation, setIsAnimation] = React.useState(false);
+
+  React.useEffect(() => {
+    let animationTimeout: NodeJS.Timeout | undefined;
+
+    if (isAnimation) {
+      animationTimeout = setTimeout(() => setIsAnimation(false), 900);
+    } else {
+      clearTimeout(animationTimeout);
+    }
+
+    return () => clearTimeout(animationTimeout);
+  }, [isAnimation]);
+
+  return (
+    <Button
+      transparent
+      onClick={(e) => {
+        props.onClick(e);
+        setIsAnimation(true);
+      }}
+      animate={
+        isAnimation
+          ? {
+            rotateZ: [-20, 20, -10, 10, -5, 5, 0],
+          }
+          : { rotateZ: 0 }
+      }
+      transition={{
+        duration: 0.9,
+        times: [0, 0.2, 0.4, 0.6, 0.8, 1],
+      }}
+    >
+      {props.isPinned ? <TiPin size={28} /> : <TiPinOutline size={28} />}
+    </Button>
   );
 };
 
