@@ -22,6 +22,7 @@
         "scope": [
           "$APP/*",
           "$APP",
+          "$RESOURCE",
           "$RESOURCE/*"
         ]
       }
@@ -51,7 +52,7 @@
         "signingIdentity": null
       },
       "resources": [
-        "./assets/audio/*"
+        "./audio/*"
       ],
       "shortDescription": "A pomodoro timer.",
       "targets": "all",

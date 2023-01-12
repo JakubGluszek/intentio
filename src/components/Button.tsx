@@ -27,22 +27,19 @@ const Button: React.FC<Props> = (props) => {
 
   const [isHover, setIsHover] = React.useState(false);
 
-  const handleOnMouseEnter = () => {
+  const handleOnMouseEnter = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
     setIsHover(true);
+    onMouseEnter && onMouseEnter(e);
   };
 
-  const handleOnMouseLeave = () => {
+  const handleOnMouseLeave = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
     setIsHover(false);
+    onMouseLeave && onMouseLeave(e);
   };
-
-  // const handleOnClick = (
-  //   e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  // ) => {
-  //   if (transparent) {
-  //   }
-  //
-  //   onClick && onClick(e);
-  // };
 
   const colors = (): MotionStyle => {
     if (transparent) {

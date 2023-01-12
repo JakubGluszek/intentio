@@ -53,7 +53,7 @@ pub async fn open_audio_dir(handle: AppHandle) {
 
     let path = handle
         .path_resolver()
-        .resolve_resource("./assets/audio")
+        .resolve_resource("./audio")
         .expect("get audio directory");
 
     std::process::Command::new(cmd).arg(path).spawn().unwrap();
@@ -70,7 +70,7 @@ pub async fn play_audio(audio: Option<String>, handle: AppHandle) {
 
     let path = handle
         .path_resolver()
-        .resolve_resource(format!("./assets/audio/{}", &audio))
+        .resolve_resource(format!("./audio/{}", &audio))
         .expect("failed to resolve resource");
 
     let (_stream, stream_handle) = rodio::OutputStream::try_default().unwrap();
