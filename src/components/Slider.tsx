@@ -16,8 +16,8 @@ const Slider: React.FC<Props> = ({ min, max, defaultValue, onChangeEnd }) => {
         root: "w-full",
         bar: "bg-primary",
         thumb: "bg-primary border-primary",
-        track: "before:bg-base group-hover:before:bg-window",
-        label: "bg-base text-text",
+        track: "before:bg-base",
+        label: "bg-base text-text shadow border-2 px-2 -translate-y-2 border-primary",
       }}
       showLabelOnHover={false}
       onChangeEnd={onChangeEnd}

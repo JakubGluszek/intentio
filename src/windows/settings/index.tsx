@@ -13,11 +13,25 @@ import { Tooltip } from "@mantine/core";
 import app from "@/app";
 import Layout from "@/components/Layout";
 import Button from "@/components/Button";
+import { SettingsForUpdate } from "@/bindings/SettingsForUpdate";
+import services from "@/app/services";
+import TimerView from "./TimerView";
 
 type Tab = "timer" | "alerts" | "appearance" | "behavior" | "account";
 
 const SettingsWindow: React.FC = () => {
   const [tab, setTab] = React.useState<Tab>("timer");
+
+  const settings = app.useStore((state) => state.settings);
+  const setSettings = app.useStore((state) => state.setSettings);
+
+  const update = async (data: Partial<SettingsForUpdate>) => {
+    const result = await services.updateSettings(data);
+    setSettings(result);
+    return result;
+  };
+
+  if (!settings) return null;
 
   return (
     <Layout label="Settings" icon={<MdSettings size={32} />}>
@@ -129,7 +143,13 @@ const SettingsWindow: React.FC = () => {
         </div>
         {/* Main */}
         <div className="grow flex flex-col p-2 pl-0">
-          <div className="grow bg-darker/20 inner-shadow rounded"></div>
+          <div className="grow bg-darker/20 inner-shadow rounded p-2 overflow-y-auto">
+            <div className="max-h-0 overflow-y">
+              {tab === "timer" ? (
+                <TimerView settings={settings} update={update} />
+              ) : null}
+            </div>
+          </div>
         </div>
       </div>
     </Layout>
