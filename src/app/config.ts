@@ -18,8 +18,8 @@ const config = {
     settings: {
       url: "/settings",
       title: "Settings",
-      width: 328,
-      height: 480,
+      width: 480,
+      height: 360,
       ...WebviewConfig,
     },
     intents: {
