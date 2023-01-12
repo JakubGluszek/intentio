@@ -19,6 +19,10 @@ const useTimer = (settings: Settings) => {
 
   const store = app.useStore();
 
+  React.useEffect(() => {
+    setKey(type);
+  }, [type]);
+
   const restart = () => {
     pause();
     save();
@@ -159,14 +163,8 @@ const useTimer = (settings: Settings) => {
         }
       }
     },
-    [type, settings, iterations, timeFocused]
+    [settings, iterations, type, timeFocused]
   );
-
-  React.useEffect(() => {
-    setDuration(settings.pomodoro_duration);
-    setType("focus");
-    setKey("focus");
-  }, []);
 
   // Sync duration change on settings update
   React.useEffect(() => {

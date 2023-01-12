@@ -62,7 +62,11 @@ const MainWindow: React.FC = () => {
           }}
         >
           {store.settings && store.currentTheme ? (
-            <Timer settings={store.settings} theme={store.currentTheme} />
+            <Timer
+              settings={store.settings}
+              theme={store.currentTheme}
+              activeIntent={store.getActiveIntent()}
+            />
           ) : null}
         </div>
       </Layout>

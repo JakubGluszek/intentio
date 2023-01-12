@@ -3,7 +3,6 @@ import { MdPauseCircle, MdPlayCircle, MdSkipNext } from "react-icons/md";
 import { VscDebugRestart } from "react-icons/vsc";
 import Color from "color";
 
-import app from "@/app";
 import utils from "@/utils";
 import { ColorFormat } from "@/types";
 import services from "@/app/services";
@@ -23,60 +22,54 @@ interface Props {
 const Timer: React.FC<Props> = (props) => {
   const timer = useTimer(props.settings);
 
-  const store = app.useStore();
-
-  const strokeColor = Color(store.currentTheme?.primary_hex)
+  const strokeColor = Color(props.theme.primary_hex)
     .darken(timer.isRunning ? 0.1 : 0.4)
     .hex() as ColorFormat;
 
   return (
     <>
       <div className="grow flex flex-col items-center justify-evenly">
-        {store.currentTheme && (
-          <div className="relative group">
-            <CountdownCircleTimer
-              key={timer.key}
-              isPlaying={timer.isRunning}
-              duration={timer.duration * 60}
-              onUpdate={timer.onUpdate}
-              onComplete={() => {
-                services.playAudio();
-                timer.next();
-              }}
-              strokeWidth={8}
-              size={186}
-              colors={strokeColor}
-              trailColor={
-                Color(store.currentTheme.window_hex)
-                  .darken(0.2)
-                  .hex() as ColorFormat
-              }
-            >
-              {({ remainingTime, color }) => (
-                <span style={{ fontSize: 44, color }}>
-                  {utils.formatTimeTimer(remainingTime)}
-                </span>
-              )}
-            </CountdownCircleTimer>
-            <div className="absolute bottom-4 w-full flex flex-col items-center gap-1">
-              <span className="text-lg text-text/60 whitespace-nowrap">
-                {timer.type === "focus"
-                  ? "Focus"
-                  : timer.type === "break"
-                    ? "Break"
-                    : "Long break"}
+        <div className="relative group">
+          <CountdownCircleTimer
+            key={timer.key}
+            isPlaying={timer.isRunning}
+            duration={timer.duration * 60}
+            onUpdate={timer.onUpdate}
+            onComplete={() => {
+              services.playAudio();
+              timer.next();
+            }}
+            strokeWidth={8}
+            size={186}
+            colors={strokeColor}
+            trailColor={
+              Color(props.theme.window_hex).darken(0.2).hex() as ColorFormat
+            }
+          >
+            {({ remainingTime, color }) => (
+              <span style={{ fontSize: 44, color }}>
+                {utils.formatTimeTimer(remainingTime)}
               </span>
-              <button
-                className="text-primary/80 hover:text-primary opacity-0 group-hover:opacity-100"
-                onClick={() => {
-                  timer.restart();
-                }}
-              >
-                <VscDebugRestart size={24} />
-              </button>
-            </div>
+            )}
+          </CountdownCircleTimer>
+          <div className="absolute bottom-4 w-full flex flex-col items-center gap-1">
+            <span className="text-lg text-text/60 whitespace-nowrap">
+              {timer.type === "focus"
+                ? "Focus"
+                : timer.type === "break"
+                  ? "Break"
+                  : "Long break"}
+            </span>
+            <button
+              className="text-primary/80 hover:text-primary opacity-0 group-hover:opacity-100"
+              onClick={() => {
+                timer.restart();
+              }}
+            >
+              <VscDebugRestart size={24} />
+            </button>
           </div>
-        )}
+        </div>
         <div className="flex flex-row items-center justify-center gap-2 w-full h-10">
           {timer.isRunning ? (
             <Button
@@ -102,10 +95,10 @@ const Timer: React.FC<Props> = (props) => {
         </div>
       </div>
       <div className="flex flex-row items-center justify-between">
-        <span className="text-primary/80 font-bold w-7 text-center">#0</span>
-        {store.activeIntentId ? (
+        <span className="text-primary/80 font-bold w-7 text-center">#{timer.iterations}</span>
+        {props.activeIntent ? (
           <div className="flex flex-row items-center gap-0.5 text-text/80">
-            <span>{store.getActiveIntent()?.label}</span>
+            <span>{props.activeIntent.label}</span>
           </div>
         ) : null}
         <Button
