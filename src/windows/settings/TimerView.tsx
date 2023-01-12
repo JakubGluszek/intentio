@@ -13,52 +13,50 @@ interface Props {
 
 const TimerView: React.FC<Props> = (props) => {
   return (
-    <div className="flex flex-col gap-2 pb-2">
-      <div className="flex flex-col gap-1">
-        <div className="flex flex-row items-center justify-between rounded bg-window p-2">
-          <label htmlFor="auto-start-pomodoros">Auto Start Pomodoros</label>
-          <Checkbox
-            id="auto-start-pomodoros"
-            size="sm"
-            defaultChecked={props.settings.auto_start_pomodoros}
-            onChange={(value) =>
-              props.update({
-                auto_start_pomodoros: value.currentTarget.checked,
-              })
-            }
-            styles={{
-              icon: { color: "var(--primary-color) !important" },
-              root: { height: "20px" },
-            }}
-            classNames={{
-              input:
-                "border-primary checked:border-primary bg-transparent checked:bg-transparent border-2",
-            }}
-          />
-        </div>
-        <div className="flex flex-row items-center justify-between rounded bg-window p-2">
-          <label htmlFor="auto-start-breaks">Auto Start Breaks</label>
-          <Checkbox
-            size="sm"
-            id="auto-start-breaks"
-            defaultChecked={props.settings.auto_start_breaks}
-            onChange={(value) =>
-              props.update({
-                auto_start_breaks: value.currentTarget.checked,
-              })
-            }
-            styles={{
-              icon: { color: "var(--primary-color) !important" },
-              root: { height: "20px" },
-            }}
-            classNames={{
-              input:
-                "border-primary checked:border-primary bg-transparent checked:bg-transparent border-2",
-            }}
-          />
-        </div>
+    <div className="flex flex-col gap-4 p-2">
+      <div className="flex flex-row items-center justify-between rounded">
+        <label htmlFor="auto-start-pomodoros">Auto Start Pomodoros</label>
+        <Checkbox
+          id="auto-start-pomodoros"
+          size="sm"
+          defaultChecked={props.settings.auto_start_pomodoros}
+          onChange={(value) =>
+            props.update({
+              auto_start_pomodoros: value.currentTarget.checked,
+            })
+          }
+          styles={{
+            icon: { color: "var(--primary-color) !important" },
+            root: { height: "20px" },
+          }}
+          classNames={{
+            input:
+              "border-primary checked:border-primary bg-transparent checked:bg-transparent border-2",
+          }}
+        />
       </div>
-      <div className="flex flex-col gap-1 bg-window rounded p-2">
+      <div className="flex flex-row items-center justify-between rounded">
+        <label htmlFor="auto-start-breaks">Auto Start Breaks</label>
+        <Checkbox
+          size="sm"
+          id="auto-start-breaks"
+          defaultChecked={props.settings.auto_start_breaks}
+          onChange={(value) =>
+            props.update({
+              auto_start_breaks: value.currentTarget.checked,
+            })
+          }
+          styles={{
+            icon: { color: "var(--primary-color) !important" },
+            root: { height: "20px" },
+          }}
+          classNames={{
+            input:
+              "border-primary checked:border-primary bg-transparent checked:bg-transparent border-2",
+          }}
+        />
+      </div>
+      <div className="flex flex-col gap-1">
         <div className="flex flex-col items-center gap-2">
           <span className="font-medium">Focus</span>
           <div className="bg-base rounded px-2 py-1">
@@ -115,10 +113,10 @@ const TimerView: React.FC<Props> = (props) => {
         </div>
         <div className="flex flex-col items-center gap-2">
           <span className="text-sm font-medium">Long Break Interval</span>
-          <div className="bg-base rounded px-2 py-1">
-            <span className="text-sm">
-              {props.settings.long_break_interval}
-            </span>
+          <div className="bg-base rounded px-2 py-1 w-[50px]">
+            <div className="text-sm text-center">
+              - {props.settings.long_break_interval} -
+            </div>
           </div>
           <Slider
             min={2}

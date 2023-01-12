@@ -11,11 +11,12 @@ import { IoIosBug, IoIosGlobe, IoLogoGithub } from "react-icons/io";
 import { Tooltip } from "@mantine/core";
 
 import app from "@/app";
+import services from "@/app/services";
 import Layout from "@/components/Layout";
 import Button from "@/components/Button";
 import { SettingsForUpdate } from "@/bindings/SettingsForUpdate";
-import services from "@/app/services";
 import TimerView from "./TimerView";
+import AlertsView from "./AlertsView";
 
 type Tab = "timer" | "alerts" | "appearance" | "behavior" | "account";
 
@@ -41,7 +42,7 @@ const SettingsWindow: React.FC = () => {
           {/* Navigation */}
           <div className="flex flex-col gap-1 rounded overflow-clip">
             <Button
-              opacity={tab !== "timer" ? 0.5 : undefined}
+              opacity={tab !== "timer" ? 0.4 : undefined}
               rounded={false}
               onClick={() => setTab("timer")}
             >
@@ -53,7 +54,7 @@ const SettingsWindow: React.FC = () => {
               </div>
             </Button>
             <Button
-              opacity={tab !== "alerts" ? 0.5 : undefined}
+              opacity={tab !== "alerts" ? 0.4 : undefined}
               rounded={false}
               onClick={() => setTab("alerts")}
             >
@@ -65,7 +66,7 @@ const SettingsWindow: React.FC = () => {
               </div>
             </Button>
             <Button
-              opacity={tab !== "appearance" ? 0.5 : undefined}
+              opacity={tab !== "appearance" ? 0.4 : undefined}
               rounded={false}
               onClick={() => setTab("appearance")}
             >
@@ -77,7 +78,7 @@ const SettingsWindow: React.FC = () => {
               </div>
             </Button>
             <Button
-              opacity={tab !== "behavior" ? 0.5 : undefined}
+              opacity={tab !== "behavior" ? 0.4 : undefined}
               rounded={false}
               onClick={() => setTab("behavior")}
             >
@@ -89,7 +90,7 @@ const SettingsWindow: React.FC = () => {
               </div>
             </Button>
             <Button
-              opacity={tab !== "account" ? 0.5 : undefined}
+              opacity={tab !== "account" ? 0.4 : undefined}
               rounded={false}
               onClick={() => setTab("account")}
             >
@@ -147,6 +148,9 @@ const SettingsWindow: React.FC = () => {
             <div className="max-h-0 overflow-y">
               {tab === "timer" ? (
                 <TimerView settings={settings} update={update} />
+              ) : null}
+              {tab === "alerts" ? (
+                <AlertsView settings={settings} update={update} />
               ) : null}
             </div>
           </div>
