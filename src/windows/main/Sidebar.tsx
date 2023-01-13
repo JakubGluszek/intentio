@@ -49,7 +49,7 @@ const Sidebar: React.FC<Props> = (props) => {
         opacity: props.isVisible ? 1.0 : 0.0,
       }}
     >
-      <div className="grow flex flex-col gap-2 p-2 bg-darker/20">
+      <div className="grow flex flex-col p-2 bg-darker/20">
         {/* Sidebar Operations */}
         <div className="w-full flex flex-row items-center justify-between">
           <div className="flex flex-row items-center gap-2">

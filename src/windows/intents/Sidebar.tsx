@@ -15,6 +15,7 @@ import Button from "@/components/Button";
 import { IntentForCreate } from "@/bindings/IntentForCreate";
 import IntentsList from "./IntentsList";
 import { Sort } from ".";
+import { Tooltip } from "@mantine/core";
 
 interface Props {
   selectedId?: string;
@@ -32,7 +33,7 @@ const Sidebar: React.FC<Props> = (props) => {
   const intents = app.useStore((state) => state.intents);
 
   return (
-    <div className="w-60 min-w-[240px] h-full flex flex-col p-2 pr-0 gap-2">
+    <div className="w-60 min-w-[240px] h-full flex flex-col p-2 pr-0">
       {/* Performs operations related to intents array */}
       {!viewCreate ? (
         <div className="h-7 flex flex-row items-center gap-2">
@@ -58,13 +59,20 @@ const Sidebar: React.FC<Props> = (props) => {
             )}
           </Button>
           {/* Filter by archived_at property */}
-          <Button
-            opacity={viewArchived ? 1.0 : 0.5}
-            transparent
-            onClick={() => setViewArchived((view) => !view)}
+          <Tooltip
+            withArrow
+            label={viewArchived ? "Hide Archived" : "View Archived"}
           >
-            <BiArchive size={28} />
-          </Button>
+            <div>
+              <Button
+                opacity={viewArchived ? 1.0 : 0.5}
+                transparent
+                onClick={() => setViewArchived((view) => !view)}
+              >
+                <BiArchive size={28} />
+              </Button>
+            </div>
+          </Tooltip>
         </div>
       ) : null}
       {viewCreate ? (

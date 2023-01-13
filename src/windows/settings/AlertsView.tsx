@@ -126,7 +126,7 @@ const AlertsView: React.FC<Props> = (props) => {
         />
       </div>
       <div className="flex flex-row items-center gap-4">
-        <span className="text-sm">Sound</span>
+        <span className="text-sm">Audio</span>
         <div className="grow flex flex-row items-center justify-between px-2 py-0.5 bg-base rounded">
           <Button transparent onClick={() => previousTrack()}>
             <MdKeyboardArrowLeft size={24} />

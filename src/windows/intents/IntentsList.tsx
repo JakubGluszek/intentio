@@ -70,7 +70,7 @@ export const IntentsList: React.FC<Props> = (props) => {
 
   return (
     <div className="grow flex overflow-y-auto">
-      <div className="w-full max-h-0 flex flex-col gap-1 overflow-y">
+      <div className="w-full max-h-0 flex flex-col gap-1.5 overflow-y py-2">
         {intents.map((intent) => (
           <IntentView
             key={intent.id}
@@ -113,7 +113,7 @@ const IntentView: React.FC<IntentViewProps> = (props) => {
       ref={container}
       data-tauri-disable-drag
       className={clsx(
-        "w-full h-fit flex flex-col p-1 rounded shadow",
+        "w-full h-fit flex flex-col p-1 rounded shadow transition-transform hover:-translate-y-0.5 hover:shadow-2xl",
         props.selected
           ? "bg-primary/80 hover:bg-primary text-window"
           : "bg-base/80 hover:bg-base text-text"
