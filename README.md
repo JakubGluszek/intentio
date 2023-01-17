@@ -65,7 +65,7 @@ npm run tauri dev
 - [ ] Option to export data into multiple formats
 - [ ] More customizable user preferences, like windows behavior etc
 - [ ] Ability to run bash scripts on certain events like: play, pause, break start/end etc...
-- [ ] External server for syncronizing data between desktops
+- [ ] External server for synchronizing data between desktops
 
 ## Acknowledgments
 
