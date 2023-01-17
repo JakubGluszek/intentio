@@ -107,7 +107,7 @@ const Sidebar: React.FC<Props> = (props) => {
               style={{
                 width: tab === "intents" ? "100%" : "fit-content",
               }}
-              opacity={tab !== "intents" ? 0.5 : undefined}
+              color={tab === "intents" ? "primary" : "base"}
               onClick={() => setTab("intents")}
             >
               <BiTargetLock size={24} />
@@ -118,7 +118,7 @@ const Sidebar: React.FC<Props> = (props) => {
               style={{
                 width: tab === "tasks" ? "100%" : "fit-content",
               }}
-              opacity={tab !== "tasks" ? 0.5 : undefined}
+              color={tab === "tasks" ? "primary" : "base"}
               onClick={() => setTab("tasks")}
             >
               <MdCheckBox size={24} />
@@ -129,7 +129,7 @@ const Sidebar: React.FC<Props> = (props) => {
               style={{
                 width: tab === "notes" ? "100%" : "fit-content",
               }}
-              opacity={tab !== "notes" ? 0.5 : undefined}
+              color={tab === "notes" ? "primary" : "base"}
               onClick={() => setTab("notes")}
             >
               <MdStickyNote2 size={24} />

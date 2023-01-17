@@ -12,4 +12,5 @@ export interface SettingsForUpdate {
   system_notifications?: boolean;
   alert_repeat?: number;
   current_theme_id?: string;
+  display_live_countdown?: boolean;
 }

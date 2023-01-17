@@ -3,7 +3,7 @@ import { HTMLMotionProps, motion, MotionStyle } from "framer-motion";
 
 interface Props extends HTMLMotionProps<"button"> {
   children: React.ReactNode;
-  color?: "primary" | "danger";
+  color?: "primary" | "danger" | "base";
   transparent?: boolean;
   opacity?: number;
   rounded?: boolean;
@@ -59,6 +59,11 @@ const Button: React.FC<Props> = (props) => {
       return {
         backgroundColor: "rgb(var(--danger-color) / 0.8)",
         color: "rgb(var(--window-color))",
+      };
+    } else if (color === "base") {
+      return {
+        backgroundColor: "rgb(var(--base-color) / 0.8)",
+        color: "rgb(var(--primary-color))",
       };
     }
 

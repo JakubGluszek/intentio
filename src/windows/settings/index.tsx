@@ -12,13 +12,15 @@ import { Tooltip } from "@mantine/core";
 
 import app from "@/app";
 import services from "@/app/services";
-import Layout from "@/components/Layout";
-import Button from "@/components/Button";
+import { Layout, Button } from "@/components";
 import { SettingsForUpdate } from "@/bindings/SettingsForUpdate";
 import TimerView from "./TimerView";
 import AlertsView from "./AlertsView";
+import AppearanceView from "./appearanceView";
 
 type Tab = "timer" | "alerts" | "appearance" | "behavior" | "account";
+
+export type ColorType = "window" | "base" | "primary" | "text";
 
 const SettingsWindow: React.FC = () => {
   const [tab, setTab] = React.useState<Tab>("timer");
@@ -35,15 +37,15 @@ const SettingsWindow: React.FC = () => {
   if (!settings) return null;
 
   return (
-    <Layout label="Settings" icon={<MdSettings size={32} />}>
+    <Layout label="Settings" icon={<MdSettings size={28} />}>
       <div className="grow flex flex-row">
         {/* Sidebar */}
-        <div className="w-44 flex flex-col justify-between p-2">
+        <div className="min-w-[176px] flex flex-col justify-between p-2">
           {/* Navigation */}
-          <div className="flex flex-col gap-1 rounded overflow-clip">
+          <div className="flex flex-col gap-1.5 rounded">
             <Button
-              opacity={tab !== "timer" ? 0.4 : undefined}
-              rounded={false}
+              className="shadow transition-transform hover:-translate-y-0.5 hover:shadow-2xl"
+              color={tab === "timer" ? "primary" : "base"}
               onClick={() => setTab("timer")}
             >
               <div className="w-full flex flex-row gap-1">
@@ -54,8 +56,8 @@ const SettingsWindow: React.FC = () => {
               </div>
             </Button>
             <Button
-              opacity={tab !== "alerts" ? 0.4 : undefined}
-              rounded={false}
+              className="shadow transition-transform hover:-translate-y-0.5 hover:shadow-2xl"
+              color={tab === "alerts" ? "primary" : "base"}
               onClick={() => setTab("alerts")}
             >
               <div className="w-full flex flex-row gap-1">
@@ -66,8 +68,8 @@ const SettingsWindow: React.FC = () => {
               </div>
             </Button>
             <Button
-              opacity={tab !== "appearance" ? 0.4 : undefined}
-              rounded={false}
+              className="shadow transition-transform hover:-translate-y-0.5 hover:shadow-2xl"
+              color={tab === "appearance" ? "primary" : "base"}
               onClick={() => setTab("appearance")}
             >
               <div className="w-full flex flex-row gap-1">
@@ -78,8 +80,8 @@ const SettingsWindow: React.FC = () => {
               </div>
             </Button>
             <Button
-              opacity={tab !== "behavior" ? 0.4 : undefined}
-              rounded={false}
+              className="shadow transition-transform hover:-translate-y-0.5 hover:shadow-2xl"
+              color={tab === "behavior" ? "primary" : "base"}
               onClick={() => setTab("behavior")}
             >
               <div className="w-full flex flex-row gap-1">
@@ -90,8 +92,8 @@ const SettingsWindow: React.FC = () => {
               </div>
             </Button>
             <Button
-              opacity={tab !== "account" ? 0.4 : undefined}
-              rounded={false}
+              className="shadow transition-transform hover:-translate-y-0.5 hover:shadow-2xl"
+              color={tab === "account" ? "primary" : "base"}
               onClick={() => setTab("account")}
             >
               <div className="w-full flex flex-row gap-1">
@@ -124,7 +126,7 @@ const SettingsWindow: React.FC = () => {
                   rel="noreferrer"
                 >
                   <Button transparent>
-                    <IoLogoGithub size={24} />
+                    <IoLogoGithub size={22} />
                   </Button>
                 </a>
               </Tooltip>
@@ -143,7 +145,7 @@ const SettingsWindow: React.FC = () => {
           </div>
         </div>
         {/* Main */}
-        <div className="grow flex flex-col p-2 pl-0">
+        <div className="relative grow flex flex-col p-2 pl-0">
           <div className="grow bg-darker/20 inner-shadow rounded p-2 overflow-y-auto">
             <div className="max-h-0 overflow-y">
               {tab === "timer" ? (
@@ -151,6 +153,9 @@ const SettingsWindow: React.FC = () => {
               ) : null}
               {tab === "alerts" ? (
                 <AlertsView settings={settings} update={update} />
+              ) : null}
+              {tab === "appearance" ? (
+                <AppearanceView settings={settings} update={update} />
               ) : null}
             </div>
           </div>

@@ -35,6 +35,8 @@ pub struct Settings {
     pub alert_repeat: i64,
 
     pub current_theme_id: String,
+
+    pub display_live_countdown: bool,
 }
 
 impl Default for Settings {
@@ -51,6 +53,7 @@ impl Default for Settings {
             alert_repeat: 2,
             system_notifications: true,
             current_theme_id: DEFAULT_THEME.into(),
+            display_live_countdown: true,
         }
     }
 }
@@ -82,6 +85,8 @@ pub struct SettingsForUpdate {
     pub alert_repeat: Option<i64>,
 
     pub current_theme_id: Option<String>,
+
+    pub display_live_countdown: Option<bool>,
 }
 
 pub struct SettingsBmc;
@@ -163,6 +168,9 @@ impl SettingsBmc {
         if let Some(current_theme_id) = data.current_theme_id {
             settings.current_theme_id = current_theme_id;
             events.push("current_theme_updated");
+        }
+        if let Some(display_live_countdown) = data.display_live_countdown {
+            settings.display_live_countdown = display_live_countdown;
         }
 
         let path = Self::get_path();

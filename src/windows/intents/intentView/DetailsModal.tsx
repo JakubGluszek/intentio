@@ -1,5 +1,4 @@
 import React from "react";
-import { createPortal } from "react-dom";
 import { BiArchiveIn, BiArchiveOut } from "react-icons/bi";
 import { MdDelete } from "react-icons/md";
 import { useClickOutside } from "@mantine/hooks";
@@ -7,7 +6,7 @@ import { useClickOutside } from "@mantine/hooks";
 import app from "@/app";
 import utils from "@/utils";
 import services from "@/app/services";
-import Button from "@/components/Button";
+import { ModalContainer, Button } from "@/components";
 import { Intent } from "@/bindings/Intent";
 
 interface Props {
@@ -40,8 +39,8 @@ const DetailsModal: React.FC<Props> = (props) => {
     return () => hideConfirm && clearTimeout(hideConfirm);
   }, [viewConfirmDelete]);
 
-  return createPortal(
-    <div className="z-[1337420] fixed top-0 left-0 w-screen h-screen flex flex-col bg-darker/60">
+  return (
+    <ModalContainer>
       <div
         ref={ref}
         className="m-auto w-80 p-2 flex flex-col gap-2 bg-base rounded"
@@ -117,8 +116,7 @@ const DetailsModal: React.FC<Props> = (props) => {
           )}
         </div>
       </div>
-    </div>,
-    document.getElementById("root")!
+    </ModalContainer>
   );
 };
 

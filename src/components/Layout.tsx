@@ -6,6 +6,7 @@ import app from "@/app";
 import utils from "@/utils";
 import services from "@/app/services";
 import Button from "./Button";
+import { useEvent } from "@/hooks";
 
 interface Props {
   children: React.ReactNode;
@@ -27,12 +28,16 @@ const Layout: React.FC<Props> = ({ children, icon, label, header }) => {
     });
   }, []);
 
+  useEvent("preview_theme", (e) => {
+    utils.applyTheme(e.payload);
+  });
+
   if (!currentTheme) return null;
 
   return (
     <div className="w-screen h-screen max-h-screen flex flex-col gap-2 overflow-hidden">
       {header ?? (
-        <div className="h-10 flex flex-col gap-2 p-2">
+        <div className="h-8 flex flex-col gap-2 p-2">
           <div className="flex flex-row items-center justify-between">
             <div className="flex flex-row items-center gap-2">
               {icon ?? null}
@@ -52,18 +57,13 @@ const Layout: React.FC<Props> = ({ children, icon, label, header }) => {
 
 const useDetectNoDrag = () => {
   React.useEffect(() => {
-    const noDragSelector = "input, a, button, svg, label, textarea"; // CSS selector
-
     const handleMouseDown = async (e: MouseEvent) => {
       if (
-        // @ts-ignore
-        e.target?.closest(noDragSelector) ||
-        // @ts-ignore
-        e.target.getAttribute("data-tauri-disable-drag") ||
-        // @ts-ignore
-        e.target?.parentNode.getAttribute("data-tauri-disable-drag") ||
-        // @ts-ignore
-        e.target?.parentNode.parentNode.getAttribute("data-tauri-disable-drag")
+        checkAllowDragging(
+          "data-tauri-disable-drag",
+          e.target as HTMLElement,
+          10
+        )
       )
         return; // a non-draggable element either in target or its ancestors
       await appWindow.startDragging();
@@ -72,6 +72,29 @@ const useDetectNoDrag = () => {
     document.addEventListener("mousedown", handleMouseDown);
     return () => document.removeEventListener("mousedown", handleMouseDown);
   }, []);
+
+  const checkAllowDragging = (
+    attribute: string,
+    element: HTMLElement,
+    iterations: number
+  ): boolean => {
+    const noDragSelector = "input, a, button, svg, label, textarea"; // CSS selector
+
+    if (
+      iterations > 0 &&
+      (element.getAttribute(attribute) || element.closest(noDragSelector))
+    ) {
+      return true;
+    }
+
+    const parent = element.parentElement;
+
+    if (!parent) {
+      return false;
+    }
+
+    return checkAllowDragging(attribute, parent, iterations - 1);
+  };
 };
 
 export default Layout;

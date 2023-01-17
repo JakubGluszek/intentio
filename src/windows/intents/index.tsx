@@ -47,7 +47,7 @@ const IntentsWindow: React.FC = () => {
   const intent = store.getIntentById(selectedId);
 
   return (
-    <Layout icon={<BiTargetLock size={32} />} label="Intents">
+    <Layout icon={<BiTargetLock size={28} />} label="Intents">
       <div className="grow flex flex-row">
         <Sidebar
           selectedId={selectedId}

@@ -4,32 +4,30 @@
 
 @font-face {
   font-family: "Quicksand";
-  src: url("Quicksand-Light.ttf");
-  font-weight: light;
+  src: url("../public/fonts/Quicksand-Light.ttf");
+  font-weight: 300;
 }
 
 @font-face {
   font-family: "Quicksand";
-  src: url("Quicksand-Medium.ttf");
-  font-weight: medium;
+  src: url("../public/fonts/Quicksand-Regular.ttf");
+  font-weight: 400;
 }
 
 @font-face {
   font-family: "Quicksand";
-  src: url("Quicksand-Regular.ttf");
-  font-weight: regular;
+  src: url("../public/fonts/Quicksand-Medium.ttf");
+  font-weight: 500;
 }
-
 @font-face {
   font-family: "Quicksand";
-  src: url("Quicksand-SemiBold.ttf");
-  font-weight: bolder;
+  src: url("../public/fonts/Quicksand-SemiBold.ttf");
+  font-weight: 600;
 }
-
 @font-face {
   font-family: "Quicksand";
-  src: url("Quicksand-Bold.ttf");
-  font-weight: bold;
+  src: url("../public/fonts/Quicksand-Bold.ttf");
+  font-weight: 700;
 }
 
 @layer base {
@@ -39,9 +37,6 @@
     --primary-color: 0 173 181;
     --text-color: 238 238 238;
     --danger-color: 250 52 52;
-  }
-
-  * {
     user-select: none;
   }
 
@@ -54,7 +49,7 @@
   }
 
   html {
-    @apply font-quicksand text-text cursor-default;
+    @apply font-quicksand font-medium tracking-wider text-text cursor-default;
   }
 
   body {

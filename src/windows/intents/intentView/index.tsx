@@ -88,7 +88,7 @@ const IntentView: React.FC<Props> = (props) => {
           style={{
             width: tab === "activity" ? "100%" : "fit-content",
           }}
-          opacity={tab !== "activity" ? 0.5 : undefined}
+          color={tab === "activity" ? "primary" : "base"}
           rounded={false}
           onClick={() => switchTab("activity")}
         >
@@ -98,7 +98,7 @@ const IntentView: React.FC<Props> = (props) => {
           style={{
             width: tab === "tasks" ? "100%" : "fit-content",
           }}
-          opacity={tab !== "tasks" ? 0.5 : undefined}
+          color={tab === "tasks" ? "primary" : "base"}
           rounded={false}
           onClick={() => switchTab("tasks")}
         >
@@ -108,7 +108,7 @@ const IntentView: React.FC<Props> = (props) => {
           style={{
             width: tab === "notes" ? "100%" : "fit-content",
           }}
-          opacity={tab !== "notes" ? 0.5 : undefined}
+          color={tab === "notes" ? "primary" : "base"}
           rounded={false}
           onClick={() => switchTab("notes")}
         >
@@ -118,7 +118,7 @@ const IntentView: React.FC<Props> = (props) => {
           style={{
             width: tab === "sessions" ? "100%" : "fit-content",
           }}
-          opacity={tab !== "sessions" ? 0.5 : undefined}
+          color={tab === "sessions" ? "primary" : "base"}
           rounded={false}
           onClick={() => switchTab("sessions")}
         >

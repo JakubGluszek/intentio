@@ -8,6 +8,7 @@ import { BiArchive } from "react-icons/bi";
 import { MdAddCircle } from "react-icons/md";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
+import { Tooltip } from "@mantine/core";
 
 import app from "@/app";
 import services from "@/app/services";
@@ -15,7 +16,6 @@ import Button from "@/components/Button";
 import { IntentForCreate } from "@/bindings/IntentForCreate";
 import IntentsList from "./IntentsList";
 import { Sort } from ".";
-import { Tooltip } from "@mantine/core";
 
 interface Props {
   selectedId?: string;
@@ -33,7 +33,7 @@ const Sidebar: React.FC<Props> = (props) => {
   const intents = app.useStore((state) => state.intents);
 
   return (
-    <div className="w-60 min-w-[240px] h-full flex flex-col p-2 pr-0">
+    <div className="w-[240px] h-full flex flex-col p-2 pr-0">
       {/* Performs operations related to intents array */}
       {!viewCreate ? (
         <div className="h-7 flex flex-row items-center gap-2">
@@ -43,7 +43,7 @@ const Sidebar: React.FC<Props> = (props) => {
             style={{ width: "100%" }}
             onClick={() => setViewCreate((visible) => !visible)}
           >
-            <MdAddCircle size={24} />
+            <MdAddCircle size={22} />
             <span>Create</span>
           </Button>
 
@@ -132,7 +132,7 @@ const CreateIntentView: React.FC<CreateIntentViewProps> = (props) => {
             })}
           />
         </div>
-        <div className="flex flex-row items-center justify-between">
+        <div className="h-7 flex flex-row items-center justify-between">
           <Button transparent type="button" onClick={() => props.hide()}>
             Cancel
           </Button>

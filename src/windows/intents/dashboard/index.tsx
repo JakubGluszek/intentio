@@ -79,7 +79,7 @@ const Tabs: React.FC<TabsProps> = (props) => {
   return (
     <div className="w-full h-full flex flex-row gap-0.5 rounded overflow-clip">
       <Button
-        opacity={props.value !== "activity" ? 0.5 : undefined}
+        color={props.value === "activity" ? "primary" : "base"}
         rounded={false}
         onClick={() => {
           props.setValue("activity");
@@ -88,7 +88,7 @@ const Tabs: React.FC<TabsProps> = (props) => {
         Activity
       </Button>
       <Button
-        opacity={props.value !== "timeline" ? 0.5 : undefined}
+        color={props.value === "timeline" ? "primary" : "base"}
         rounded={false}
         onClick={() => props.setValue("timeline")}
       >
