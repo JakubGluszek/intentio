@@ -22,7 +22,6 @@ interface Props {
 
 const EditThemeModal: React.FC<Props> = ({ theme, hide }) => {
   const [viewThemePreview, setViewThemePreview] = React.useState(false);
-
   const [viewColorPicker, setViewColorPicker] = React.useState<ColorType>();
   const [colorPickerHex, setColorPickerHex] = React.useState("#000000");
 
@@ -33,7 +32,7 @@ const EditThemeModal: React.FC<Props> = ({ theme, hide }) => {
   const onSubmit = handleSubmit((data) => {
     services.updateTheme(theme.id, data).then((data) => {
       if (theme.id === store.currentTheme?.id) {
-        emit("update_current_theme", theme);
+        emit("current_theme_updated", theme);
       }
       store.patchTheme(data.id, data);
       hide();
@@ -120,10 +119,14 @@ const EditThemeModal: React.FC<Props> = ({ theme, hide }) => {
                   className="input"
                   type="text"
                 />
-                <div
+                <button
+                  onClick={() => {
+                    setColorPickerHex(theme.window_hex);
+                    setViewColorPicker("window");
+                  }}
                   style={{ backgroundColor: watch("window_hex") }}
                   className="min-w-[40px] h-8 shadow-lg rounded"
-                ></div>
+                ></button>
               </div>
               <div className="flex flex-row items-center gap-4">
                 <label className="min-w-[64px]" htmlFor="base-hex">
@@ -139,10 +142,14 @@ const EditThemeModal: React.FC<Props> = ({ theme, hide }) => {
                   className="input"
                   type="text"
                 />
-                <div
+                <button
+                  onClick={() => {
+                    setColorPickerHex(theme.base_hex);
+                    setViewColorPicker("base");
+                  }}
                   style={{ backgroundColor: watch("base_hex") }}
                   className="min-w-[40px] h-8 shadow-lg rounded"
-                ></div>
+                ></button>
               </div>
               <div className="flex flex-row items-center gap-4">
                 <label className="min-w-[64px]" htmlFor="primary-hex">
@@ -158,10 +165,14 @@ const EditThemeModal: React.FC<Props> = ({ theme, hide }) => {
                   className="input"
                   type="text"
                 />
-                <div
+                <button
+                  onClick={() => {
+                    setColorPickerHex(theme.primary_hex);
+                    setViewColorPicker("primary");
+                  }}
                   style={{ backgroundColor: watch("primary_hex") }}
                   className="min-w-[40px] h-8 shadow-lg rounded"
-                ></div>
+                ></button>
               </div>
               <div className="flex flex-row items-center gap-4">
                 <label className="min-w-[64px]" htmlFor="text-hex">
@@ -177,10 +188,14 @@ const EditThemeModal: React.FC<Props> = ({ theme, hide }) => {
                   className="input"
                   type="text"
                 />
-                <div
+                <button
+                  onClick={() => {
+                    setColorPickerHex(theme.text_hex);
+                    setViewColorPicker("text");
+                  }}
                   style={{ backgroundColor: watch("text_hex") }}
                   className="min-w-[40px] h-8 shadow-lg rounded"
-                ></div>
+                ></button>
               </div>
             </div>
             {/* Form actions */}

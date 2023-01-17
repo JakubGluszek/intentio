@@ -56,13 +56,15 @@ const TimerView: React.FC<Props> = (props) => {
           }}
         />
       </div>
-      <div className="flex flex-col gap-1">
-        <div className="flex flex-col items-center gap-2">
-          <span className="font-medium">Focus</span>
-          <div className="bg-base rounded px-2 py-1">
-            <span className="text-sm">
-              {formatTimeTimer(props.settings.pomodoro_duration * 60)}
-            </span>
+      <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 p-2 bg-window rounded shadow">
+          <div className="flex flex-row items-center justify-between">
+            <span className="font-medium">Focus</span>
+            <div className="bg-base rounded px-2 py-1">
+              <span className="text-sm">
+                {formatTimeTimer(props.settings.pomodoro_duration * 60)}
+              </span>
+            </div>
           </div>
           <Slider
             min={1}
@@ -75,12 +77,14 @@ const TimerView: React.FC<Props> = (props) => {
             }
           />
         </div>
-        <div className="flex flex-col items-center gap-2">
-          <span className="text-sm font-medium">Break</span>
-          <div className="bg-base rounded px-2 py-1">
-            <span className="text-sm">
-              {formatTimeTimer(props.settings.break_duration * 60)}
-            </span>
+        <div className="flex flex-col gap-2 p-2 bg-window rounded shadow">
+          <div className="flex flex-row items-center justify-between">
+            <span className="text-sm font-medium">Break</span>
+            <div className="bg-base rounded px-2 py-1">
+              <span className="text-sm">
+                {formatTimeTimer(props.settings.break_duration * 60)}
+              </span>
+            </div>
           </div>
           <Slider
             min={1}
@@ -93,12 +97,14 @@ const TimerView: React.FC<Props> = (props) => {
             }
           />
         </div>
-        <div className="flex flex-col items-center gap-2">
-          <span className="text-sm font-medium">Long Break</span>
-          <div className="bg-base rounded px-2 py-1">
-            <span className="text-sm">
-              {formatTimeTimer(props.settings.long_break_duration * 60)}
-            </span>
+        <div className="flex flex-col gap-2 p-2 bg-window rounded shadow">
+          <div className="flex flex-row items-center justify-between">
+            <span className="text-sm font-medium">Long Break</span>
+            <div className="bg-base rounded px-2 py-1">
+              <span className="text-sm">
+                {formatTimeTimer(props.settings.long_break_duration * 60)}
+              </span>
+            </div>
           </div>
           <Slider
             min={1}
@@ -111,11 +117,13 @@ const TimerView: React.FC<Props> = (props) => {
             }
           />
         </div>
-        <div className="flex flex-col items-center gap-2">
-          <span className="text-sm font-medium">Long Break Interval</span>
-          <div className="bg-base rounded px-2 py-1 w-[50px]">
-            <div className="text-sm text-center">
-              - {props.settings.long_break_interval} -
+        <div className="flex flex-col gap-2 p-2 bg-window rounded shadow">
+          <div className="flex flex-row items-center justify-between">
+            <span className="text-sm font-medium">Long Break Interval</span>
+            <div className="bg-base rounded px-2 py-1 w-[50px]">
+              <div className="text-sm text-center">
+                - {props.settings.long_break_interval} -
+              </div>
             </div>
           </div>
           <Slider

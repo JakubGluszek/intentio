@@ -63,15 +63,15 @@ const AppearanceView: React.FC<Props> = (props) => {
           />
         </div>
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 p-2 bg-window rounded shadow">
           {/* Display create theme modal */}
           {!viewCreate && (
             <Button
-              style={{ width: "fit-content", height: "28px" }}
+              style={{ height: "28px" }}
               onClick={() => setViewCreate(true)}
             >
               <MdAddCircle size={22} />
-              <span>Add theme</span>
+              <span>custom theme</span>
             </Button>
           )}
           {/* Array of themes */}

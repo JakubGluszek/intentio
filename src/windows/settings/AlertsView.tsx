@@ -127,11 +127,11 @@ const AlertsView: React.FC<Props> = (props) => {
       </div>
       <div className="flex flex-row items-center gap-4">
         <span className="text-sm">Audio</span>
-        <div className="grow flex flex-row items-center justify-between px-2 py-0.5 bg-base rounded">
+        <div className="w-10 grow flex flex-row items-center justify-between px-2 py-0.5 bg-base rounded">
           <Button transparent onClick={() => previousTrack()}>
             <MdKeyboardArrowLeft size={24} />
           </Button>
-          <span className="text-xs">{currentTrack?.name ?? "-"}</span>
+          <span className="text-sm text-center w-full whitespace-nowrap overflow-ellipsis overflow-hidden">{currentTrack?.name ?? "-"}</span>
           <Button transparent onClick={() => nextTrack()}>
             <MdKeyboardArrowRight size={24} />
           </Button>

@@ -31,6 +31,10 @@ const Layout: React.FC<Props> = ({ children, icon, label, header }) => {
   useEvent("preview_theme", (e) => {
     utils.applyTheme(e.payload);
   });
+  useEvent("current_theme_updated", (e) => {
+    utils.applyTheme(e.payload);
+    store.setCurrentTheme(e.payload);
+  });
 
   if (!currentTheme) return null;
 

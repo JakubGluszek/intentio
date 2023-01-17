@@ -17,6 +17,7 @@ import { SettingsForUpdate } from "@/bindings/SettingsForUpdate";
 import TimerView from "./TimerView";
 import AlertsView from "./AlertsView";
 import AppearanceView from "./appearanceView";
+import BehaviorView from "./BehaviorView";
 
 type Tab = "timer" | "alerts" | "appearance" | "behavior" | "account";
 
@@ -40,7 +41,7 @@ const SettingsWindow: React.FC = () => {
     <Layout label="Settings" icon={<MdSettings size={28} />}>
       <div className="grow flex flex-row">
         {/* Sidebar */}
-        <div className="min-w-[176px] flex flex-col justify-between p-2">
+        <div className="w-[176px] flex flex-col justify-between p-2">
           {/* Navigation */}
           <div className="flex flex-col gap-1.5 rounded">
             <Button
@@ -156,6 +157,9 @@ const SettingsWindow: React.FC = () => {
               ) : null}
               {tab === "appearance" ? (
                 <AppearanceView settings={settings} update={update} />
+              ) : null}
+              {tab === "behavior" ? (
+                <BehaviorView settings={settings} update={update} />
               ) : null}
             </div>
           </div>
