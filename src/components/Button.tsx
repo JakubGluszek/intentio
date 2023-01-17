@@ -12,6 +12,7 @@ interface Props extends HTMLMotionProps<"button"> {
 
 const Button: React.FC<Props> = (props) => {
   const {
+    type = "button",
     children,
     transparent = false,
     color = "primary",
@@ -72,6 +73,7 @@ const Button: React.FC<Props> = (props) => {
 
   return (
     <motion.button
+      type={type}
       style={{
         display: "flex",
         flexDirection: "row",

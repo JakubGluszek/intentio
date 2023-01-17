@@ -1,10 +1,10 @@
 import React from "react";
+import { Checkbox } from "@mantine/core";
 
 import { formatTimeTimer } from "@/utils";
 import { Settings } from "@/bindings/Settings";
 import { Slider } from "@/components";
 import { SettingsForUpdate } from "@/bindings/SettingsForUpdate";
-import { Checkbox } from "@mantine/core";
 
 interface Props {
   settings: Settings;

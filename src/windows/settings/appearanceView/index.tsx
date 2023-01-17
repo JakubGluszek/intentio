@@ -1,15 +1,15 @@
 import React from "react";
 import { createPortal } from "react-dom";
 import { MdAddCircle } from "react-icons/md";
+import { Checkbox } from "@mantine/core";
 
 import app from "@/app";
 import services from "@/app/services";
 import { Button } from "@/components";
-import CreateThemeModal from "./CreateThemeModal";
-import ThemeView from "./ThemeView";
-import { Checkbox } from "@mantine/core";
 import { Settings } from "@/bindings/Settings";
 import { SettingsForUpdate } from "@/bindings/SettingsForUpdate";
+import CreateThemeModal from "./CreateThemeModal";
+import ThemeView from "./ThemeView";
 
 interface Props {
   settings: Settings;
@@ -29,6 +29,7 @@ const AppearanceView: React.FC<Props> = (props) => {
 
   return (
     <>
+      {/* Create theme modal popup */}
       {viewCreate &&
         currentTheme &&
         createPortal(
@@ -39,6 +40,7 @@ const AppearanceView: React.FC<Props> = (props) => {
           document.getElementById("root")!
         )}
       <div className="flex flex-col gap-4 p-2">
+        {/* Display live countdown checkbox */}
         <div className="flex flex-row items-center justify-between rounded">
           <label htmlFor="display-live-countdown">Live countdown</label>
           <Checkbox
@@ -62,6 +64,7 @@ const AppearanceView: React.FC<Props> = (props) => {
         </div>
 
         <div className="flex flex-col gap-2">
+          {/* Display create theme modal */}
           {!viewCreate && (
             <Button
               style={{ width: "fit-content", height: "28px" }}
@@ -71,6 +74,7 @@ const AppearanceView: React.FC<Props> = (props) => {
               <span>Add theme</span>
             </Button>
           )}
+          {/* Array of themes */}
           <div className="flex flex-col gap-1.5">
             {themes &&
               themes

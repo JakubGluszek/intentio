@@ -1,17 +1,18 @@
+import React from "react";
+import { emit } from "@tauri-apps/api/event";
+import { useForm } from "react-hook-form";
+import { toast } from "react-hot-toast";
+import { RiEyeCloseFill, RiEyeFill } from "react-icons/ri";
+import { ChromePicker } from "react-color";
+import { Tooltip } from "@mantine/core";
+import { useClickOutside } from "@mantine/hooks";
+
 import app from "@/app";
 import services from "@/app/services";
 import { Theme } from "@/bindings/Theme";
 import { ThemeForCreate } from "@/bindings/ThemeForCreate";
 import { Button, ModalContainer } from "@/components";
-import { Tooltip } from "@mantine/core";
-import { useClickOutside } from "@mantine/hooks";
-import { emit } from "@tauri-apps/api/event";
-import React from "react";
-import { ChromePicker } from "react-color";
-import { useForm } from "react-hook-form";
-import { toast } from "react-hot-toast";
-import { MdDelete } from "react-icons/md";
-import { RiEyeCloseFill, RiEyeFill } from "react-icons/ri";
+import DeleteButton from "@/components/DeleteButton";
 import { ColorType } from "..";
 
 interface Props {
@@ -21,7 +22,6 @@ interface Props {
 
 const EditThemeModal: React.FC<Props> = ({ theme, hide }) => {
   const [viewThemePreview, setViewThemePreview] = React.useState(false);
-  const [viewConfirmDelete, setViewConfirmDelete] = React.useState(false);
 
   const [viewColorPicker, setViewColorPicker] = React.useState<ColorType>();
   const [colorPickerHex, setColorPickerHex] = React.useState("#000000");
@@ -62,19 +62,6 @@ const EditThemeModal: React.FC<Props> = ({ theme, hide }) => {
     setViewColorPicker(undefined);
   });
 
-  React.useEffect(() => {
-    let hideConfirm: NodeJS.Timeout | undefined;
-    if (viewConfirmDelete) {
-      hideConfirm = setTimeout(() => {
-        setViewConfirmDelete(false);
-      }, 3000);
-    } else {
-      hideConfirm && clearTimeout(hideConfirm);
-    }
-
-    return () => hideConfirm && clearTimeout(hideConfirm);
-  }, [viewConfirmDelete]);
-
   const disabled =
     watch("name") === theme.name &&
     watch("window_hex") === theme.window_hex &&
@@ -89,19 +76,6 @@ const EditThemeModal: React.FC<Props> = ({ theme, hide }) => {
     setValue("primary_hex", theme.primary_hex);
     setValue("text_hex", theme.text_hex);
   }, []);
-
-  React.useEffect(() => {
-    let hideConfirm: NodeJS.Timeout | undefined;
-    if (viewConfirmDelete) {
-      hideConfirm = setTimeout(() => {
-        setViewConfirmDelete(false);
-      }, 3000);
-    } else {
-      hideConfirm && clearTimeout(hideConfirm);
-    }
-
-    return () => hideConfirm && clearTimeout(hideConfirm);
-  }, [viewConfirmDelete]);
 
   return (
     <ModalContainer>
@@ -211,32 +185,15 @@ const EditThemeModal: React.FC<Props> = ({ theme, hide }) => {
             </div>
             {/* Form actions */}
             <div className="h-7 flex flex-row items-center justify-between">
-              {!viewConfirmDelete ? (
-                <Button
-                  type="button"
-                  transparent
-                  color="danger"
-                  onClick={() => setViewConfirmDelete(true)}
-                >
-                  <MdDelete size={28} />
-                </Button>
-              ) : (
-                <Button
-                  type="button"
-                  color="danger"
-                  style={{ width: "fit-content" }}
-                  onClick={() =>
-                    services.deleteTheme(theme.id).then((data) => {
-                      store.removeTheme(data.id);
-                      hide();
-                      toast("Theme deleted");
-                    })
-                  }
-                >
-                  <MdDelete size={24} />
-                  <span>Confirm</span>
-                </Button>
-              )}
+              <DeleteButton
+                onClick={() =>
+                  services.deleteTheme(theme.id).then((data) => {
+                    store.removeTheme(data.id);
+                    hide();
+                    toast("Theme deleted");
+                  })
+                }
+              />
               <div className="flex flex-row items-center gap-4">
                 <Tooltip withArrow position="left" label="Preview">
                   <div
@@ -260,7 +217,10 @@ const EditThemeModal: React.FC<Props> = ({ theme, hide }) => {
                 <Button
                   disabled={disabled}
                   type="submit"
-                  style={{ width: "fit-content" }}
+                  style={{
+                    width: "fit-content",
+                    opacity: disabled ? 0.4 : undefined,
+                  }}
                 >
                   Update
                 </Button>

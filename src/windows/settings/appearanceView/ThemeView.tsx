@@ -38,7 +38,6 @@ const ThemeView: React.FC<Props> = ({ theme }) => {
         }}
         className="relative h-9 flex flex-row items-center rounded border-2"
       >
-        {/* Area to set theme as the current theme */}
         <div
           style={{ backgroundColor: theme.primary_hex }}
           className="min-w-[40px] h-full"
@@ -54,7 +53,7 @@ const ThemeView: React.FC<Props> = ({ theme }) => {
           <span data-tauri-disable-drag style={{ color: theme.text_hex }}>
             {theme.name}
           </span>
-          {!theme.default && (
+          {!theme.default ? (
             <div className="hidden group-hover:flex">
               <Button
                 transparent
@@ -64,7 +63,7 @@ const ThemeView: React.FC<Props> = ({ theme }) => {
                 <MdSettings size={24} />
               </Button>
             </div>
-          )}
+          ) : null}
         </div>
 
         {/* Current theme indicator */}

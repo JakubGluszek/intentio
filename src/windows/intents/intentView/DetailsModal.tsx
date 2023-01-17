@@ -8,6 +8,7 @@ import utils from "@/utils";
 import services from "@/app/services";
 import { ModalContainer, Button } from "@/components";
 import { Intent } from "@/bindings/Intent";
+import DeleteButton from "@/components/DeleteButton";
 
 interface Props {
   data: Intent;
@@ -96,24 +97,7 @@ const DetailsModal: React.FC<Props> = (props) => {
               <span>Archive</span>
             </Button>
           )}
-          {!viewConfirmDelete ? (
-            <Button
-              transparent
-              color="danger"
-              onClick={() => setViewConfirmDelete(true)}
-            >
-              <MdDelete size={28} />
-            </Button>
-          ) : (
-            <Button
-              color="danger"
-              style={{ width: "fit-content" }}
-              onClick={() => services.deleteIntent(data.id)}
-            >
-              <MdDelete size={28} />
-              <span>Confirm</span>
-            </Button>
-          )}
+          <DeleteButton onClick={() => services.deleteIntent(data.id)} />
         </div>
       </div>
     </ModalContainer>

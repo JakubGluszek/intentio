@@ -1,16 +1,17 @@
+import React from "react";
+import { ChromePicker } from "react-color";
+import { useForm } from "react-hook-form";
+import { toast } from "react-hot-toast";
+import { emit } from "@tauri-apps/api/event";
+import { Tooltip } from "@mantine/core";
+import { useClickOutside } from "@mantine/hooks";
+import { RiEyeCloseFill, RiEyeFill } from "react-icons/ri";
+
 import app from "@/app";
 import services from "@/app/services";
 import { Theme } from "@/bindings/Theme";
 import { ThemeForCreate } from "@/bindings/ThemeForCreate";
 import { Button, ModalContainer } from "@/components";
-import { Tooltip } from "@mantine/core";
-import { useClickOutside } from "@mantine/hooks";
-import { emit } from "@tauri-apps/api/event";
-import React from "react";
-import { ChromePicker } from "react-color";
-import { useForm } from "react-hook-form";
-import { toast } from "react-hot-toast";
-import { RiEyeCloseFill, RiEyeFill } from "react-icons/ri";
 import { ColorType } from "..";
 
 interface Props {
