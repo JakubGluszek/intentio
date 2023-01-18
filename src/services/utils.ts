@@ -19,3 +19,11 @@ export const playAudio = async (path?: string) => {
 export const openAudioDir = async () => {
   return await invoke("open_audio_dir");
 };
+
+export const hideMainWindow = async () => {
+  return await invoke("hide_main_window");
+};
+
+export const exitMainWindow = async () => {
+  return await invoke("exit_main_window");
+};

@@ -2,11 +2,11 @@ import React from "react";
 import { appWindow } from "@tauri-apps/api/window";
 import { MdClose } from "react-icons/md";
 
-import app from "@/app";
 import utils from "@/utils";
-import services from "@/app/services";
+import services from "@/services";
 import Button from "./Button";
 import { useEvent } from "@/hooks";
+import useStore from "@/store";
 
 interface Props {
   children: React.ReactNode;
@@ -16,8 +16,8 @@ interface Props {
 }
 
 const Layout: React.FC<Props> = ({ children, icon, label, header }) => {
-  const currentTheme = app.useStore((state) => state.currentTheme);
-  const store = app.useStore();
+  const currentTheme = useStore((state) => state.currentTheme);
+  const store = useStore();
 
   useDetectNoDrag();
 

@@ -5,7 +5,7 @@ import Color from "color";
 
 import utils from "@/utils";
 import { ColorFormat } from "@/types";
-import services from "@/app/services";
+import services from "@/services";
 import Button from "@/components/Button";
 import { Settings } from "@/bindings/Settings";
 import { Intent } from "@/bindings/Intent";

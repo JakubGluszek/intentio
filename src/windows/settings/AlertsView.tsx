@@ -14,7 +14,7 @@ import { AiFillFolder, AiFillFolderOpen } from "react-icons/ai";
 import { Checkbox } from "@mantine/core";
 import { BaseDirectory, FileEntry, readDir } from "@tauri-apps/api/fs";
 
-import services from "@/app/services";
+import services from "@/services";
 import { Slider, Button } from "@/components";
 import { Settings } from "@/bindings/Settings";
 import { SettingsForUpdate } from "@/bindings/SettingsForUpdate";

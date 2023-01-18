@@ -7,12 +7,12 @@ import { Tooltip } from "@mantine/core";
 import { useClickOutside } from "@mantine/hooks";
 import { RiEyeCloseFill, RiEyeFill } from "react-icons/ri";
 
-import app from "@/app";
-import services from "@/app/services";
+import services from "@/services";
 import { Theme } from "@/bindings/Theme";
 import { ThemeForCreate } from "@/bindings/ThemeForCreate";
 import { Button, ModalContainer } from "@/components";
 import { ColorType } from "..";
+import useStore from "@/store";
 
 interface Props {
   hide: () => void;
@@ -27,7 +27,7 @@ const CreateThemeModal: React.FC<Props> = ({ theme, hide }) => {
   const { register, handleSubmit, setValue, watch, getValues } =
     useForm<ThemeForCreate>();
 
-  const store = app.useStore();
+  const store = useStore();
   const ref = useClickOutside(() => {
     if (!viewColorPicker) hide();
 

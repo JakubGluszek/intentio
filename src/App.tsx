@@ -2,10 +2,10 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 
-import app from "@/app";
 import utils from "@/utils";
 import { useEvent } from "@/hooks";
-import services from "@/app/services";
+import services from "@/services";
+import useStore from "@/store";
 
 import.meta.env.PROD &&
   document.addEventListener("contextmenu", (event) => event.preventDefault());
@@ -15,7 +15,7 @@ const SettingsWindow = React.lazy(() => import("./windows/settings"));
 const IntentsWindow = React.lazy(() => import("./windows/intents"));
 
 const App: React.FC = () => {
-  const store = app.useStore();
+  const store = useStore();
 
   useEvent("settings_updated", (event) => store.setSettings(event.payload));
   useEvent("current_theme_updated", () =>

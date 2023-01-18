@@ -7,13 +7,13 @@ import { ChromePicker } from "react-color";
 import { Tooltip } from "@mantine/core";
 import { useClickOutside } from "@mantine/hooks";
 
-import app from "@/app";
-import services from "@/app/services";
+import services from "@/services";
 import { Theme } from "@/bindings/Theme";
 import { ThemeForCreate } from "@/bindings/ThemeForCreate";
 import { Button, ModalContainer } from "@/components";
 import DeleteButton from "@/components/DeleteButton";
 import { ColorType } from "..";
+import useStore from "@/store";
 
 interface Props {
   hide: () => void;
@@ -39,7 +39,7 @@ const EditThemeModal: React.FC<Props> = ({ theme, hide }) => {
     });
   });
 
-  const store = app.useStore();
+  const store = useStore();
   const ref = useClickOutside(() => {
     if (!viewColorPicker) hide();
 

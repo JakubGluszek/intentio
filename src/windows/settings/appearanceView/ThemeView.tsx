@@ -2,11 +2,11 @@ import React from "react";
 import { createPortal } from "react-dom";
 import { MdSettings } from "react-icons/md";
 
-import app from "@/app";
-import services from "@/app/services";
+import services from "@/services";
 import { Theme } from "@/bindings/Theme";
 import { Button } from "@/components";
 import EditThemeModal from "./EditThemeModal";
+import useStore from "@/store";
 
 interface Props {
   theme: Theme;
@@ -15,7 +15,7 @@ interface Props {
 const ThemeView: React.FC<Props> = ({ theme }) => {
   const [viewEdit, setViewEdit] = React.useState(false);
 
-  const store = app.useStore();
+  const store = useStore();
 
   return viewEdit ? (
     createPortal(

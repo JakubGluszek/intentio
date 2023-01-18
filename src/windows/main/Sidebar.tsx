@@ -5,11 +5,12 @@ import { MdCheckBox, MdOpenInNew, MdStickyNote2 } from "react-icons/md";
 import { useClickOutside } from "@mantine/hooks";
 import { WebviewWindow } from "@tauri-apps/api/window";
 
-import app from "@/app";
-import services from "@/app/services";
+import services from "@/services";
 import Button from "@/components/Button";
 import QueueIcon from "@/components/QueueIcon";
 import IntentsList from "../intents/IntentsList";
+import useStore from "@/store";
+import config from "@/config";
 
 interface Props {
   isVisible: boolean;
@@ -26,7 +27,7 @@ const Sidebar: React.FC<Props> = (props) => {
 
   const ref = useClickOutside(() => props.collapse());
 
-  const store = app.useStore();
+  const store = useStore();
 
   const onIntentChange = async (id: string | undefined) => {
     await services
@@ -68,7 +69,7 @@ const Sidebar: React.FC<Props> = (props) => {
           <Button
             transparent
             onClick={() => {
-              new WebviewWindow("intents", app.config.webviews.intents);
+              new WebviewWindow("intents", config.webviews.intents);
               props.collapse();
             }}
           >

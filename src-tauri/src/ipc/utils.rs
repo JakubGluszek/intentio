@@ -2,7 +2,7 @@
 
 use std::fs::File;
 
-use tauri::{command, AppHandle, Wry};
+use tauri::{command, AppHandle, Manager, Wry};
 
 use crate::{
     ctx::Ctx,
@@ -57,6 +57,24 @@ pub async fn open_audio_dir(handle: AppHandle) {
         .expect("get audio directory");
 
     std::process::Command::new(cmd).arg(path).spawn().unwrap();
+}
+
+#[command]
+pub async fn hide_main_window(app: AppHandle) {
+    let settings = SettingsBmc::get().unwrap();
+
+    let window = app.get_window("main").unwrap();
+
+    if settings.main_window_to_tray {
+        window.hide().unwrap();
+    } else {
+        window.minimize().unwrap();
+    }
+}
+
+#[command]
+pub async fn exit_main_window() {
+    std::process::exit(0);
 }
 
 #[command]
