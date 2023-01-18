@@ -113,11 +113,11 @@ const Header: React.FC<HeaderProps> = (props) => {
           className="transition-opacity duration-300"
           style={{ opacity: props.sidebarVisibility ? 0.0 : 1.0 }}
         >
-          <Button transparent onClick={() => appWindow.hide()}>
+          <Button transparent onClick={() => services.hideMainWindow()}>
             <MdRemove size={28} />
           </Button>
         </div>
-        <Button transparent onClick={() => exit(1)}>
+        <Button transparent onClick={() => services.exitMainWindow()}>
           <MdClose size={28} />
         </Button>
       </div>

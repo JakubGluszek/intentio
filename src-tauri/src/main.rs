@@ -43,6 +43,8 @@ async fn main() -> Result<()> {
             play_audio,
             get_current_theme,
             set_current_theme,
+            hide_main_window,
+            exit_main_window,
             // Settings
             get_settings,
             update_settings,

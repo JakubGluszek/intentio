@@ -13,4 +13,5 @@ export interface Settings {
   alert_repeat: number;
   current_theme_id: string;
   display_live_countdown: boolean;
+  main_window_to_tray: boolean;
 }

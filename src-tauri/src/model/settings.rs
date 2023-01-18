@@ -37,6 +37,7 @@ pub struct Settings {
     pub current_theme_id: String,
 
     pub display_live_countdown: bool,
+    pub main_window_to_tray: bool,
 }
 
 impl Default for Settings {
@@ -54,6 +55,7 @@ impl Default for Settings {
             system_notifications: true,
             current_theme_id: DEFAULT_THEME.into(),
             display_live_countdown: true,
+            main_window_to_tray: true,
         }
     }
 }
@@ -87,6 +89,7 @@ pub struct SettingsForUpdate {
     pub current_theme_id: Option<String>,
 
     pub display_live_countdown: Option<bool>,
+    pub main_window_to_tray: Option<bool>,
 }
 
 pub struct SettingsBmc;
@@ -171,6 +174,9 @@ impl SettingsBmc {
         }
         if let Some(display_live_countdown) = data.display_live_countdown {
             settings.display_live_countdown = display_live_countdown;
+        }
+        if let Some(main_window_to_tray) = data.main_window_to_tray {
+            settings.main_window_to_tray = main_window_to_tray;
         }
 
         let path = Self::get_path();
