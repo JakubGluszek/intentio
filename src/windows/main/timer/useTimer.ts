@@ -2,10 +2,10 @@ import React from "react";
 import { sendNotification } from "@tauri-apps/api/notification";
 import toast from "react-hot-toast";
 
-import app from "@/app";
 import { TimerType } from "@/types";
-import services from "@/app/services";
+import services from "@/services";
 import { Settings } from "@/bindings/Settings";
+import useStore from "@/store";
 
 const useTimer = (settings: Settings) => {
   // custom key is needed to reset timer components inner state
@@ -17,7 +17,7 @@ const useTimer = (settings: Settings) => {
   const [isRunning, setIsRunning] = React.useState(false);
   const [iterations, setIterations] = React.useState(0);
 
-  const store = app.useStore();
+  const store = useStore();
 
   React.useEffect(() => {
     setKey(type);

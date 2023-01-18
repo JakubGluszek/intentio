@@ -3,13 +3,13 @@ import { createPortal } from "react-dom";
 import { MdAddCircle } from "react-icons/md";
 import { Checkbox } from "@mantine/core";
 
-import app from "@/app";
-import services from "@/app/services";
+import services from "@/services";
 import { Button } from "@/components";
 import { Settings } from "@/bindings/Settings";
 import { SettingsForUpdate } from "@/bindings/SettingsForUpdate";
 import CreateThemeModal from "./CreateThemeModal";
 import ThemeView from "./ThemeView";
+import useStore from "@/store";
 
 interface Props {
   settings: Settings;
@@ -19,9 +19,9 @@ interface Props {
 const AppearanceView: React.FC<Props> = (props) => {
   const [viewCreate, setViewCreate] = React.useState(false);
 
-  const themes = app.useStore((state) => state.themes);
-  const setThemes = app.useStore((state) => state.setThemes);
-  const currentTheme = app.useStore((state) => state.currentTheme);
+  const themes = useStore((state) => state.themes);
+  const setThemes = useStore((state) => state.setThemes);
+  const currentTheme = useStore((state) => state.currentTheme);
 
   React.useEffect(() => {
     services.getThemes().then((data) => setThemes(data));

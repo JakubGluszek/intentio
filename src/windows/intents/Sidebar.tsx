@@ -10,12 +10,12 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { Tooltip } from "@mantine/core";
 
-import app from "@/app";
-import services from "@/app/services";
+import services from "@/services";
 import Button from "@/components/Button";
 import { IntentForCreate } from "@/bindings/IntentForCreate";
 import IntentsList from "./IntentsList";
 import { Sort } from ".";
+import useStore from "@/store";
 
 interface Props {
   selectedId?: string;
@@ -30,7 +30,7 @@ const Sidebar: React.FC<Props> = (props) => {
   const [viewCreate, setViewCreate] = React.useState(false);
   const [viewArchived, setViewArchived] = React.useState(false);
 
-  const intents = app.useStore((state) => state.intents);
+  const intents = useStore((state) => state.intents);
 
   return (
     <div className="w-[240px] h-full flex flex-col p-2 pr-0">

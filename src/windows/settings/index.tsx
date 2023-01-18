@@ -10,14 +10,15 @@ import { RiToolsFill } from "react-icons/ri";
 import { IoIosBug, IoIosGlobe, IoLogoGithub } from "react-icons/io";
 import { Tooltip } from "@mantine/core";
 
-import app from "@/app";
-import services from "@/app/services";
+import services from "@/services";
 import { Layout, Button } from "@/components";
 import { SettingsForUpdate } from "@/bindings/SettingsForUpdate";
 import TimerView from "./TimerView";
 import AlertsView from "./AlertsView";
 import AppearanceView from "./appearanceView";
 import BehaviorView from "./BehaviorView";
+import useStore from "@/store";
+import config from "@/config";
 
 type Tab = "timer" | "alerts" | "appearance" | "behavior" | "account";
 
@@ -26,8 +27,8 @@ export type ColorType = "window" | "base" | "primary" | "text";
 const SettingsWindow: React.FC = () => {
   const [tab, setTab] = React.useState<Tab>("timer");
 
-  const settings = app.useStore((state) => state.settings);
-  const setSettings = app.useStore((state) => state.setSettings);
+  const settings = useStore((state) => state.settings);
+  const setSettings = useStore((state) => state.setSettings);
 
   const update = async (data: Partial<SettingsForUpdate>) => {
     const result = await services.updateSettings(data);
@@ -111,7 +112,7 @@ const SettingsWindow: React.FC = () => {
             <div className="flex flex-row items-center gap-1">
               <Tooltip withArrow label="Home page">
                 <a
-                  href={app.config.about.homePage}
+                  href={config.about.homePage}
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -122,7 +123,7 @@ const SettingsWindow: React.FC = () => {
               </Tooltip>
               <Tooltip withArrow label="Source code">
                 <a
-                  href={app.config.about.sourceCode}
+                  href={config.about.sourceCode}
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -133,7 +134,7 @@ const SettingsWindow: React.FC = () => {
               </Tooltip>
               <Tooltip withArrow label="Report a bug">
                 <a
-                  href={app.config.about.sourceCode + "/issues"}
+                  href={config.about.sourceCode + "/issues"}
                   target="_blank"
                   rel="noreferrer"
                 >

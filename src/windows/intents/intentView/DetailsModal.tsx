@@ -1,14 +1,13 @@
 import React from "react";
 import { BiArchiveIn, BiArchiveOut } from "react-icons/bi";
-import { MdDelete } from "react-icons/md";
 import { useClickOutside } from "@mantine/hooks";
 
-import app from "@/app";
 import utils from "@/utils";
-import services from "@/app/services";
+import services from "@/services";
 import { ModalContainer, Button } from "@/components";
 import { Intent } from "@/bindings/Intent";
 import DeleteButton from "@/components/DeleteButton";
+import useStore from "@/store";
 
 interface Props {
   data: Intent;
@@ -21,7 +20,7 @@ const DetailsModal: React.FC<Props> = (props) => {
   const [viewConfirmDelete, setViewConfirmDelete] = React.useState(false);
 
   const ref = useClickOutside(() => props.exit());
-  const sessions = app.useStore((state) => state.getSessionsByIntentId)(
+  const sessions = useStore((state) => state.getSessionsByIntentId)(
     data.id
   );
 

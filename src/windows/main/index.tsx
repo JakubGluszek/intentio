@@ -1,22 +1,22 @@
 import React from "react";
 import { MdSettings, MdRemove, MdClose } from "react-icons/md";
 import { TbLayoutSidebarRightCollapse } from "react-icons/tb";
-import { appWindow, WebviewWindow } from "@tauri-apps/api/window";
-import { exit } from "@tauri-apps/api/process";
+import { WebviewWindow } from "@tauri-apps/api/window";
 import { toast } from "react-hot-toast";
 
-import app from "@/app";
 import { useEvent } from "@/hooks";
-import services from "@/app/services";
+import services from "@/services";
 import Layout from "@/components/Layout";
 import Button from "@/components/Button";
 import Timer from "./timer";
 import Sidebar from "./Sidebar";
+import useStore from "@/store";
+import config from "@/config";
 
 const MainWindow: React.FC = () => {
   const [viewSidebar, setViewSidebar] = React.useState(false);
 
-  const store = app.useStore();
+  const store = useStore();
 
   useEvent("active_intent_id_updated", (event) => {
     store.setActiveIntentId(event.payload.active_intent_id);
@@ -95,7 +95,7 @@ const Header: React.FC<HeaderProps> = (props) => {
           <Button
             transparent
             onClick={() =>
-              new WebviewWindow("settings", app.config.webviews.settings)
+              new WebviewWindow("settings", config.webviews.settings)
             }
           >
             <MdSettings size={28} />

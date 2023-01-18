@@ -4,7 +4,7 @@ import { MdInfo } from "react-icons/md";
 import { useClickOutside } from "@mantine/hooks";
 import { useForm } from "react-hook-form";
 
-import services from "@/app/services";
+import services from "@/services";
 import Button from "@/components/Button";
 import { Session } from "@/bindings/Session";
 import { Intent } from "@/bindings/Intent";

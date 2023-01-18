@@ -6,9 +6,9 @@ import Color from "color";
 import ActivityCalendar, { Day } from "react-activity-calendar";
 import ReactTooltip from "react-tooltip";
 
-import app from "@/app";
 import utils from "@/utils";
 import { Session } from "@/bindings/Session";
+import useStore from "@/store";
 
 interface Props {
   sessions: Session[];
@@ -16,7 +16,7 @@ interface Props {
 }
 
 const ActivityView: React.FC<Props> = (props) => {
-  const currentTheme = app.useStore((state) => state.currentTheme);
+  const currentTheme = useStore((state) => state.currentTheme);
 
   const today = new Date();
 

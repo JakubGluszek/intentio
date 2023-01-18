@@ -2,13 +2,13 @@ import React from "react";
 import { BiTargetLock } from "react-icons/bi";
 import { toast } from "react-hot-toast";
 
-import app from "@/app";
 import { useEvent } from "@/hooks";
-import services from "@/app/services";
+import services from "@/services";
 import Layout from "@/components/Layout";
 import Sidebar from "./Sidebar";
 import Dashboard from "./dashboard";
 import IntentView from "./intentView";
+import useStore from "@/store";
 
 export type Sort = "asc" | "desc";
 
@@ -16,7 +16,7 @@ const IntentsWindow: React.FC = () => {
   const [selectedId, setSelectedId] = React.useState<string>();
   const [selectedTags, setSelectedTags] = React.useState<string[]>([]);
 
-  const store = app.useStore();
+  const store = useStore();
 
   useEvent("intent_created", (event) => store.addIntent(event.payload));
   useEvent("intent_updated", (event) =>
