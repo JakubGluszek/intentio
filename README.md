@@ -1,4 +1,4 @@
-# Sentio
+# Intentio
 
 It's a pomodoro timer desktop application.
 
@@ -12,7 +12,7 @@ The technique has been widely adopted by individuals and organizations alike, an
 
 ## Preview
 
-![Preview](https://github.com/JakubGluszek/sentio/blob/master/.github/images/sentio-demo.gif)
+![Preview](https://github.com/JakubGluszek/intentio/blob/master/.github/images/intentio-demo.gif)
 
 ## Features
 
@@ -23,7 +23,7 @@ The technique has been widely adopted by individuals and organizations alike, an
 
 ## Install
 
-Download the latest version from the [releases](https://github.com/JakubGluszek/sentio/releases) page.
+Download the latest version from the [releases](https://github.com/JakubGluszek/intentio/releases) page.
 
 ## Stack
 
@@ -49,9 +49,9 @@ sudo apt-get install libclang-dev
 ```
 
 ```bash
-git clone https://github.com/JakubGluszek/sentio.git
+git clone https://github.com/JakubGluszek/intentio.git
 
-cd sentio
+cd intentio
 
 npm install
 
