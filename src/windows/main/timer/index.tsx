@@ -12,6 +12,7 @@ import { Intent } from "@/bindings/Intent";
 import { Theme } from "@/bindings/Theme";
 import useTimer from "./useTimer";
 import { CountdownCircleTimer } from "./CountdownCircleTimer";
+import { toast } from "react-hot-toast";
 
 interface Props {
   activeIntent?: Intent;
@@ -46,12 +47,12 @@ const Timer: React.FC<Props> = (props) => {
               Color(props.theme.window_hex).darken(0.2).hex() as ColorFormat
             }
           >
-            {({ remainingTime, color }) => (
-              <div className="flex flex-col items-center justify-center">
+            {({ remainingTime }) => (
+              <div className="flex flex-col items-center gap-1 justify-center">
                 {props.settings.display_live_countdown ? (
                   <>
                     <span
-                      className="translate-y-2"
+                      className="translate-y-4 font-mono"
                       style={{
                         fontSize: 44,
                         color: timer.isRunning
@@ -86,6 +87,7 @@ const Timer: React.FC<Props> = (props) => {
               className="text-primary/80 hover:text-primary opacity-0 group-hover:opacity-100"
               onClick={() => {
                 timer.restart();
+                toast("Session restarted");
               }}
             >
               <VscDebugRestart size={24} />

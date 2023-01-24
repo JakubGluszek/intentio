@@ -40,14 +40,15 @@ const App: React.FC = () => {
         position="top-center"
         containerStyle={{ top: 8, zIndex: 9999999 }}
         toastOptions={{
-          duration: 2000,
+          duration: 1400,
           style: {
             padding: 4,
             backgroundColor: "rgb(var(--base-color))",
             border: 2,
-            borderColor: "rgb(var(--window-color))",
-            borderRadius: 4,
-            fontSize: 14,
+            borderColor: "rgb(var(--text-color))",
+            borderRadius: 2,
+            fontSize: 12,
+            width: 128,
             color: "rgb(var(--text-color))",
             textAlign: "center",
           },

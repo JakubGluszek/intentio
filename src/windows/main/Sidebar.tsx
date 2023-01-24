@@ -11,6 +11,8 @@ import QueueIcon from "@/components/QueueIcon";
 import IntentsList from "../intents/IntentsList";
 import useStore from "@/store";
 import config from "@/config";
+import { toast } from "react-hot-toast";
+import { Intent } from "@/bindings/Intent";
 
 interface Props {
   isVisible: boolean;
@@ -29,16 +31,11 @@ const Sidebar: React.FC<Props> = (props) => {
 
   const store = useStore();
 
-  const onIntentChange = async (id: string | undefined) => {
-    await services
-      .setActiveIntentId(id)
-      .then((data) => store.setActiveIntentId(data));
+  const onIntentChange = async (data: Intent | undefined) => {
+    await services.setActiveIntentId(data?.id).then(() => {
+      store.setActiveIntentId(data?.id);
+    });
   };
-
-  // TODO: Notify user when intent is selected
-  // on change, if the previous selectedIntent was not undefined
-  // save session and switch intent with a slightly different toast like
-  // "Switched focus to {intent.label}"
 
   return (
     <div

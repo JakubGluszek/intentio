@@ -11,7 +11,7 @@ interface Props {
   selectedIntentId?: string;
   selectedTags: string[];
   sort?: Sort;
-  onSelected: (id?: string) => void;
+  onSelected: (data?: Intent) => void;
   onTagSelected: (tags: string[]) => void;
 }
 
@@ -33,9 +33,7 @@ export const IntentsList: React.FC<Props> = (props) => {
     // @ts-ignore - abort if child button element was clicked
     if (e.target.closest("button")) return;
 
-    const newSelect = props.selectedIntentId === data.id ? undefined : data.id;
-
-    props.onSelected(newSelect);
+    props.onSelected(props.selectedIntentId === data.id ? undefined : data);
   };
 
   let intents = props.data;
