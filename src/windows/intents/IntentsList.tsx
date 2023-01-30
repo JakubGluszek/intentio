@@ -1,6 +1,6 @@
 import React from "react";
-import { TiPin } from "react-icons/ti";
 import { clsx } from "@mantine/core";
+import { TiPin } from "react-icons/ti";
 import { BiArchive } from "react-icons/bi";
 
 import { Intent } from "@/bindings/Intent";
@@ -111,15 +111,13 @@ const IntentView: React.FC<IntentViewProps> = (props) => {
       ref={container}
       data-tauri-disable-drag
       className={clsx(
-        "w-full h-fit flex flex-col p-1 rounded shadow transition-transform hover:-translate-y-0.5 hover:shadow-2xl",
-        props.selected
-          ? "bg-primary/80 hover:bg-primary text-window"
-          : "bg-base/80 hover:bg-base text-text"
+        "w-full h-fit flex flex-col border-b-2 p-1 rounded shadow transition-transform hover:-translate-y-[1px] bg-base/80 hover:bg-base text-text",
+        props.selected ? "border-primary/80" : "border-transparent"
       )}
       onClick={(e) => props.onSelected(e, data)}
     >
       {/* Label */}
-      <div className="h-6 w-full flex flex-row items-center justify-between gap-1">
+      <div className="h-6 w-full flex flex-row items-center gap-1">
         <span className="text-left whitespace-nowrap overflow-ellipsis overflow-hidden">
           {data.label}
         </span>

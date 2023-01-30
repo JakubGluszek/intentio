@@ -6,12 +6,11 @@ import { toast } from "react-hot-toast";
 
 import { useEvent } from "@/hooks";
 import services from "@/services";
-import Layout from "@/components/Layout";
-import Button from "@/components/Button";
-import Timer from "./timer";
-import Sidebar from "./Sidebar";
 import useStore from "@/store";
 import config from "@/config";
+import { Layout, Button } from "@/components";
+import Timer from "./timer";
+import Sidebar from "./sidebar";
 
 const MainWindow: React.FC = () => {
   const [viewSidebar, setViewSidebar] = React.useState(false);

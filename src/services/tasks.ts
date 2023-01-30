@@ -13,7 +13,7 @@ export const createTask = async (data: TaskForCreate) => {
   return await invoke<Task>("create_task", { data });
 };
 
-export const updateTask = async (id: string, data: TaskForUpdate) => {
+export const updateTask = async (id: string, data: Partial<TaskForUpdate>) => {
   return await invoke<Task>("update_task", { id, data });
 };
 

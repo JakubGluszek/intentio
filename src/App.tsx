@@ -42,13 +42,13 @@ const App: React.FC = () => {
         toastOptions={{
           duration: 1400,
           style: {
-            padding: 4,
+            padding: 1,
+            paddingInline: 2,
             backgroundColor: "rgb(var(--base-color))",
             border: 2,
             borderColor: "rgb(var(--text-color))",
             borderRadius: 2,
-            fontSize: 12,
-            width: 128,
+            fontSize: 14,
             color: "rgb(var(--text-color))",
             textAlign: "center",
           },

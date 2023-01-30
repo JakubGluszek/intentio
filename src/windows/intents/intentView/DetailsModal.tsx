@@ -2,12 +2,12 @@ import React from "react";
 import { BiArchiveIn, BiArchiveOut } from "react-icons/bi";
 import { useClickOutside } from "@mantine/hooks";
 
+import useStore from "@/store";
 import utils from "@/utils";
 import services from "@/services";
 import { ModalContainer, Button } from "@/components";
 import { Intent } from "@/bindings/Intent";
 import DeleteButton from "@/components/DeleteButton";
-import useStore from "@/store";
 
 interface Props {
   data: Intent;
@@ -20,9 +20,7 @@ const DetailsModal: React.FC<Props> = (props) => {
   const [viewConfirmDelete, setViewConfirmDelete] = React.useState(false);
 
   const ref = useClickOutside(() => props.exit());
-  const sessions = useStore((state) => state.getSessionsByIntentId)(
-    data.id
-  );
+  const sessions = useStore((state) => state.getSessionsByIntentId)(data.id);
 
   const totalSessionsDuration = sessions.reduce((p, c) => (p += c.duration), 0);
 
@@ -31,7 +29,7 @@ const DetailsModal: React.FC<Props> = (props) => {
     if (viewConfirmDelete) {
       hideConfirm = setTimeout(() => {
         setViewConfirmDelete(false);
-      }, 3000);
+      }, 2000);
     } else {
       hideConfirm && clearTimeout(hideConfirm);
     }

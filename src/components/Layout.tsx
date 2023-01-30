@@ -66,7 +66,7 @@ const useDetectNoDrag = () => {
         checkAllowDragging(
           "data-tauri-disable-drag",
           e.target as HTMLElement,
-          10
+          15
         )
       )
         return; // a non-draggable element either in target or its ancestors

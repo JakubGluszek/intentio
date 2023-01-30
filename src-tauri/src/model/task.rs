@@ -49,10 +49,13 @@ pub struct TaskForCreate {
 
 impl From<TaskForCreate> for Value {
     fn from(val: TaskForCreate) -> Self {
+        let now = Datetime::default().timestamp_millis().to_string();
+
         let data = map![
             "body".into() => val.body.into(),
             "intent_id".into() => val.intent_id.into(),
-            "done".into() => false.into()
+            "done".into() => false.into(),
+            "created_at".into() => now.into(),
         ];
 
         Value::Object(data.into())

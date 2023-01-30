@@ -6,6 +6,7 @@ import { Intent } from "@/bindings/Intent";
 import { ModelDeleteResultData } from "@/bindings/ModelDeleteResultData";
 import { Session } from "@/bindings/Session";
 import { Theme } from "@/bindings/Theme";
+import { Task } from "@/bindings/Task";
 
 type Events = {
   settings_updated: Settings;
@@ -18,6 +19,9 @@ type Events = {
   intent_unarchived: Intent;
   session_saved: Session;
   preview_theme: Theme;
+  task_created: Task;
+  task_updated: Task;
+  task_deleted: ModelDeleteResultData;
 };
 
 type Callback<T> = (data: Event<T>) => void;
