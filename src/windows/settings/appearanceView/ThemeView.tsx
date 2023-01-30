@@ -2,11 +2,11 @@ import React from "react";
 import { createPortal } from "react-dom";
 import { MdSettings } from "react-icons/md";
 
+import useStore from "@/store";
 import services from "@/services";
 import { Theme } from "@/bindings/Theme";
 import { Button } from "@/components";
 import EditThemeModal from "./EditThemeModal";
-import useStore from "@/store";
 
 interface Props {
   theme: Theme;
@@ -25,7 +25,7 @@ const ThemeView: React.FC<Props> = ({ theme }) => {
   ) : (
     <div
       style={{ color: theme.text_hex }}
-      className="group flex flex-col rounded overflow-clip shadow"
+      className="group flex flex-col rounded overflow-clip"
       onClick={(e) =>
         // @ts-ignore
         !e.target.closest("button") && services.setCurrentTheme(theme.id)
@@ -70,7 +70,7 @@ const ThemeView: React.FC<Props> = ({ theme }) => {
         {theme.id === store.currentTheme?.id && (
           <div
             style={{ backgroundColor: theme.primary_hex }}
-            className="w-full h-0.5 absolute bottom-0"
+            className="w-full h-1 absolute bottom-0"
           ></div>
         )}
       </div>

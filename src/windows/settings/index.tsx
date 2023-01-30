@@ -46,7 +46,7 @@ const SettingsWindow: React.FC = () => {
           {/* Navigation */}
           <div className="flex flex-col gap-1.5 rounded">
             <Button
-              className="shadow transition-transform hover:-translate-y-0.5 hover:shadow-2xl"
+              className="transition-transform hover:-translate-y-0.5 hover:shadow"
               color={tab === "timer" ? "primary" : "base"}
               onClick={() => setTab("timer")}
             >
@@ -58,7 +58,7 @@ const SettingsWindow: React.FC = () => {
               </div>
             </Button>
             <Button
-              className="shadow transition-transform hover:-translate-y-0.5 hover:shadow-2xl"
+              className="transition-transform hover:-translate-y-0.5 hover:shadow"
               color={tab === "alerts" ? "primary" : "base"}
               onClick={() => setTab("alerts")}
             >
@@ -70,7 +70,7 @@ const SettingsWindow: React.FC = () => {
               </div>
             </Button>
             <Button
-              className="shadow transition-transform hover:-translate-y-0.5 hover:shadow-2xl"
+              className="transition-transform hover:-translate-y-0.5 hover:shadow"
               color={tab === "appearance" ? "primary" : "base"}
               onClick={() => setTab("appearance")}
             >
@@ -148,7 +148,7 @@ const SettingsWindow: React.FC = () => {
         </div>
         {/* Main */}
         <div className="relative grow flex flex-col p-2 pl-0">
-          <div className="grow bg-darker/20 inner-shadow rounded p-2 overflow-y-auto">
+          <div className="grow bg-darker/20 shadow-inner rounded p-2 overflow-y-auto">
             <div className="max-h-0 overflow-y">
               {tab === "timer" ? (
                 <TimerView settings={settings} update={update} />

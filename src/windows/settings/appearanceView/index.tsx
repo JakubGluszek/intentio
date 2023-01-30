@@ -3,13 +3,13 @@ import { createPortal } from "react-dom";
 import { MdAddCircle } from "react-icons/md";
 import { Checkbox } from "@mantine/core";
 
+import useStore from "@/store";
 import services from "@/services";
 import { Button } from "@/components";
 import { Settings } from "@/bindings/Settings";
 import { SettingsForUpdate } from "@/bindings/SettingsForUpdate";
 import CreateThemeModal from "./CreateThemeModal";
 import ThemeView from "./ThemeView";
-import useStore from "@/store";
 
 interface Props {
   settings: Settings;
@@ -41,8 +41,9 @@ const AppearanceView: React.FC<Props> = (props) => {
         )}
       <div className="flex flex-col gap-4 p-2">
         {/* Display live countdown checkbox */}
-        <div className="flex flex-row items-center justify-between rounded">
-          <label htmlFor="display-live-countdown">Live countdown</label>
+        <div>Display</div>
+        <div className="flex flex-row items-center justify-between rounded p-1.5 bg-window shadow">
+          <label htmlFor="display-live-countdown">Timer countdown</label>
           <Checkbox
             id="display-live-countdown"
             size="sm"
@@ -63,24 +64,23 @@ const AppearanceView: React.FC<Props> = (props) => {
           />
         </div>
 
-        <div className="flex flex-col gap-2 p-2 bg-window rounded shadow">
-          {/* Display create theme modal */}
-          {!viewCreate && (
-            <Button
-              style={{ height: "28px" }}
-              onClick={() => setViewCreate(true)}
-            >
-              <MdAddCircle size={22} />
-              <span>custom theme</span>
-            </Button>
-          )}
+        <div className="flex flex-row items-center justify-between">
+          <div className="">Themes</div>
+          <Button
+            style={{ height: "28px" }}
+            transparent
+            onClick={() => setViewCreate(true)}
+          >
+            <MdAddCircle size={28} />
+          </Button>
+        </div>
+        <div className="flex flex-col gap-1.5">
           {/* Array of themes */}
-          <div className="flex flex-col gap-1.5">
-            {themes &&
-              themes
-                .sort((a, b) => (a.default ? 1 : 0) - (b.default ? 1 : 0))
-                .map((theme) => <ThemeView key={theme.id} theme={theme} />)}
-          </div>
+          {themes
+            .sort((a, b) => (a.default ? 1 : 0) - (b.default ? 1 : 0))
+            .map((theme) => (
+              <ThemeView key={theme.id} theme={theme} />
+            ))}
         </div>
       </div>
     </>

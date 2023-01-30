@@ -46,7 +46,7 @@ const DetailsModal: React.FC<Props> = (props) => {
         className="m-auto w-80 p-2 flex flex-col gap-2 bg-base rounded"
       >
         {/* Intent timestamps and stats */}
-        <div className="flex flex-col gap-2 bg-window rounded p-3 text-sm inner-shadow">
+        <div className="flex flex-col gap-2 bg-window rounded p-3 text-sm shadow-inner">
           <p className="flex flex-row items-center justify-between">
             <span>Created at:</span>
             <span>{new Date(parseInt(data.created_at)).toLocaleString()}</span>

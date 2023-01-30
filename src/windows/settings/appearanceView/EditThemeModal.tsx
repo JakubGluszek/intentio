@@ -7,13 +7,12 @@ import { ChromePicker } from "react-color";
 import { Tooltip } from "@mantine/core";
 import { useClickOutside } from "@mantine/hooks";
 
+import useStore from "@/store";
 import services from "@/services";
 import { Theme } from "@/bindings/Theme";
 import { ThemeForCreate } from "@/bindings/ThemeForCreate";
-import { Button, ModalContainer } from "@/components";
-import DeleteButton from "@/components/DeleteButton";
+import { Button, ModalContainer, DeleteButton } from "@/components";
 import { ColorType } from "..";
-import useStore from "@/store";
 
 interface Props {
   hide: () => void;
@@ -121,7 +120,7 @@ const EditThemeModal: React.FC<Props> = ({ theme, hide }) => {
                 />
                 <button
                   onClick={() => {
-                    setColorPickerHex(theme.window_hex);
+                    setColorPickerHex(watch("window_hex"));
                     setViewColorPicker("window");
                   }}
                   style={{ backgroundColor: watch("window_hex") }}
@@ -144,7 +143,7 @@ const EditThemeModal: React.FC<Props> = ({ theme, hide }) => {
                 />
                 <button
                   onClick={() => {
-                    setColorPickerHex(theme.base_hex);
+                    setColorPickerHex(watch("base_hex"));
                     setViewColorPicker("base");
                   }}
                   style={{ backgroundColor: watch("base_hex") }}
@@ -167,7 +166,7 @@ const EditThemeModal: React.FC<Props> = ({ theme, hide }) => {
                 />
                 <button
                   onClick={() => {
-                    setColorPickerHex(theme.primary_hex);
+                    setColorPickerHex(watch("primary_hex"));
                     setViewColorPicker("primary");
                   }}
                   style={{ backgroundColor: watch("primary_hex") }}
@@ -190,7 +189,7 @@ const EditThemeModal: React.FC<Props> = ({ theme, hide }) => {
                 />
                 <button
                   onClick={() => {
-                    setColorPickerHex(theme.text_hex);
+                    setColorPickerHex(watch("text_hex"));
                     setViewColorPicker("text");
                   }}
                   style={{ backgroundColor: watch("text_hex") }}

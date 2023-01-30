@@ -1,25 +1,24 @@
 import React from "react";
 import { BiTargetLock } from "react-icons/bi";
 import { TbLayoutSidebarLeftCollapse } from "react-icons/tb";
-import { MdCheckBox, MdOpenInNew, MdStickyNote2 } from "react-icons/md";
+import { MdOpenInNew } from "react-icons/md";
 import { useClickOutside } from "@mantine/hooks";
 import { WebviewWindow } from "@tauri-apps/api/window";
 
+import useStore from "@/store";
+import config from "@/config";
 import services from "@/services";
 import Button from "@/components/Button";
 import QueueIcon from "@/components/QueueIcon";
-import IntentsList from "../intents/IntentsList";
-import useStore from "@/store";
-import config from "@/config";
-import { toast } from "react-hot-toast";
 import { Intent } from "@/bindings/Intent";
+import IntentsList from "../intents/IntentsList";
 
 interface Props {
   isVisible: boolean;
   collapse: () => void;
 }
 
-type Tab = "intents" | "tasks" | "notes";
+type Tab = "intents" | "queue";
 
 const Sidebar: React.FC<Props> = (props) => {
   const [tab, setTab] = React.useState<Tab>("intents");
@@ -54,98 +53,79 @@ const Sidebar: React.FC<Props> = (props) => {
             <Button transparent onClick={props.collapse}>
               <TbLayoutSidebarLeftCollapse size={28} />
             </Button>
-            <Button
-              transparent
-              onClick={() => {
-                props.collapse();
-              }}
-            >
-              <QueueIcon size={28} />
-            </Button>
           </div>
           <Button
             transparent
-            onClick={() => {
-              new WebviewWindow("intents", config.webviews.intents);
-              props.collapse();
-            }}
+            onClick={() =>
+              new WebviewWindow("intents", config.webviews.intents)
+            }
           >
             <MdOpenInNew size={28} />
           </Button>
         </div>
         {/* Content */}
         <div className="grow flex flex-col gap-1">
-          {tab === "intents" ? (
+          {store.activeIntentId ? (
+            <div className="">Intent details</div>
+          ) : (
             <>
-              {store.intents.length > 0 ? (
-                <IntentsList
-                  data={store.intents.filter(
-                    (intent) =>
-                      intent.archived_at === null ||
-                      intent.archived_at === undefined
+              {tab === "intents" ? (
+                <>
+                  {store.intents.length > 0 ? (
+                    <IntentsList
+                      data={store.intents.filter(
+                        (intent) =>
+                          intent.archived_at === null ||
+                          intent.archived_at === undefined
+                      )}
+                      selectedIntentId={store.activeIntentId}
+                      selectedTags={selectedIntentTags}
+                      onSelected={onIntentChange}
+                      onTagSelected={(data) => setSelectedIntentTags(data)}
+                    />
+                  ) : (
+                    <div className="m-auto text-sm text-text/80 text-center">
+                      <p>There are no defined intents</p>
+                    </div>
                   )}
-                  selectedIntentId={store.activeIntentId}
-                  selectedTags={selectedIntentTags}
-                  onSelected={onIntentChange}
-                  onTagSelected={(data) => setSelectedIntentTags(data)}
-                />
-              ) : (
-                <div className="m-auto text-sm text-text/80 text-center">
-                  <p>There are no defined intents</p>
-                </div>
-              )}
+                </>
+              ) : null}
+              {tab === "queue" ? <QueueView /> : null}
+              {/* Content Navigation */}
+              <div className="h-7 flex flex-row gap-0.5 rounded-sm overflow-clip">
+                <Button
+                  rounded={false}
+                  style={{
+                    width: tab === "intents" ? "100%" : "fit-content",
+                  }}
+                  color={tab === "intents" ? "primary" : "base"}
+                  onClick={() => setTab("intents")}
+                >
+                  <BiTargetLock size={24} />
+                  {tab === "intents" ? <span>Intents</span> : undefined}
+                </Button>
+                <Button
+                  rounded={false}
+                  style={{
+                    width: tab === "queue" ? "100%" : "fit-content",
+                  }}
+                  color={tab === "queue" ? "primary" : "base"}
+                  onClick={() => setTab("queue")}
+                >
+                  <QueueIcon size={24} />
+                  {tab === "queue" ? <span>Queue</span> : undefined}
+                </Button>
+              </div>
             </>
-          ) : null}
-          {tab === "tasks" ? <TasksView /> : null}
-          {tab === "notes" ? <NotesView /> : null}
-          {/* Content Navigation */}
-          <div className="h-7 flex flex-row gap-0.5 rounded-sm overflow-clip">
-            <Button
-              rounded={false}
-              style={{
-                width: tab === "intents" ? "100%" : "fit-content",
-              }}
-              color={tab === "intents" ? "primary" : "base"}
-              onClick={() => setTab("intents")}
-            >
-              <BiTargetLock size={24} />
-              {tab === "intents" ? <span>Intents</span> : undefined}
-            </Button>
-            <Button
-              rounded={false}
-              style={{
-                width: tab === "tasks" ? "100%" : "fit-content",
-              }}
-              color={tab === "tasks" ? "primary" : "base"}
-              onClick={() => setTab("tasks")}
-            >
-              <MdCheckBox size={24} />
-              {tab === "tasks" ? <span>Tasks</span> : undefined}
-            </Button>
-            <Button
-              rounded={false}
-              style={{
-                width: tab === "notes" ? "100%" : "fit-content",
-              }}
-              color={tab === "notes" ? "primary" : "base"}
-              onClick={() => setTab("notes")}
-            >
-              <MdStickyNote2 size={24} />
-              {tab === "notes" ? <span>Notes</span> : undefined}
-            </Button>
-          </div>
+          )}
         </div>
       </div>
     </div>
   );
 };
 
-const TasksView: React.FC = () => {
-  return <div className="grow flex flex-col">Tasks</div>;
-};
-
-const NotesView: React.FC = () => {
-  return <div className="grow flex flex-col">Notes</div>;
+const QueueView: React.FC = () => {
+  return <div className="grow flex flex-col">Queue</div>;
 };
 
 export default Sidebar;

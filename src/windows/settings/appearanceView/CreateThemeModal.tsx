@@ -111,7 +111,7 @@ const CreateThemeModal: React.FC<Props> = ({ theme, hide }) => {
                 <button
                   type="button"
                   onClick={() => {
-                    setColorPickerHex(theme.window_hex);
+                    setColorPickerHex(watch("window_hex"));
                     setViewColorPicker("window");
                   }}
                   style={{ backgroundColor: watch("window_hex") }}
@@ -135,7 +135,7 @@ const CreateThemeModal: React.FC<Props> = ({ theme, hide }) => {
                 <button
                   type="button"
                   onClick={() => {
-                    setColorPickerHex(theme.base_hex);
+                    setColorPickerHex(watch("base_hex"));
                     setViewColorPicker("base");
                   }}
                   style={{ backgroundColor: watch("base_hex") }}
@@ -159,7 +159,7 @@ const CreateThemeModal: React.FC<Props> = ({ theme, hide }) => {
                 <button
                   type="button"
                   onClick={() => {
-                    setColorPickerHex(theme.primary_hex);
+                    setColorPickerHex(watch("primary_hex"));
                     setViewColorPicker("primary");
                   }}
                   style={{ backgroundColor: watch("primary_hex") }}
@@ -183,7 +183,7 @@ const CreateThemeModal: React.FC<Props> = ({ theme, hide }) => {
                 <button
                   type="button"
                   onClick={() => {
-                    setColorPickerHex(theme.text_hex);
+                    setColorPickerHex(watch("text_hex"));
                     setViewColorPicker("text");
                   }}
                   style={{ backgroundColor: watch("text_hex") }}

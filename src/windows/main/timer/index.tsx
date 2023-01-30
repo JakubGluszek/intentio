@@ -52,7 +52,13 @@ const Timer: React.FC<Props> = (props) => {
                 {props.settings.display_live_countdown ? (
                   <>
                     <span
-                      className="translate-y-4 font-mono"
+                      data-tauri-disable-drag
+                      className="translate-y-4 font-mono opacity-80"
+                      onClick={() =>
+                        services.updateSettings({
+                          display_live_countdown: false,
+                        })
+                      }
                       style={{
                         fontSize: 44,
                         color: timer.isRunning
@@ -71,7 +77,20 @@ const Timer: React.FC<Props> = (props) => {
                     </span>
                   </>
                 ) : (
-                  <span className="text-text/80 text-2xl font-medium whitespace-nowrap">
+                  <span
+                    className="opacity-80 text-3xl font-bold whitespace-nowrap text-primary"
+                    data-tauri-disable-drag
+                    onClick={() =>
+                      services.updateSettings({
+                        display_live_countdown: true,
+                      })
+                    }
+                    style={{
+                      color: timer.isRunning
+                        ? props.theme.primary_hex
+                        : props.theme.text_hex,
+                    }}
+                  >
                     {timer.type === "focus"
                       ? "Focus"
                       : timer.type === "break"

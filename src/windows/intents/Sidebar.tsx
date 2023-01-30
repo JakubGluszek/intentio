@@ -88,7 +88,7 @@ const Sidebar: React.FC<Props> = (props) => {
           selectedTags={props.selectedTags}
           selectedIntentId={props.selectedId}
           sort={sort}
-          onSelected={(data) => props.setSelectedId(data)}
+          onSelected={(data) => props.setSelectedId(data?.id)}
           onTagSelected={(data) => props.setSelectedTags(data)}
         />
       ) : (
