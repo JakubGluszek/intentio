@@ -39,7 +39,7 @@ const TasksView: React.FC = () => {
   }, []);
 
   return (
-    <div className="grow flex flex-col overflow-y-auto py-2 gap-1">
+    <div className="grow flex flex-col overflow-y-auto pt-2 gap-1">
       <CreateTaskView />
 
       {tasks.length > 0 ? (
@@ -196,7 +196,7 @@ const TaskView: React.FC<TaskViewProps> = (props) => {
   return (
     <div
       ref={containerRef}
-      className="min-h-fit flex flex-col gap-1.5 p-1 bg-base/80 hover:bg-base rounded shadow text-sm"
+      className="min-h-fit flex flex-col gap-1.5 p-1 bg-window/80 hover:bg-window rounded shadow text-sm"
       onMouseDown={(e) => {
         // @ts-ignore
         !e.target.closest("button") && setViewMore((prev) => !prev);
@@ -218,10 +218,12 @@ const TaskView: React.FC<TaskViewProps> = (props) => {
                 <MdCheckBox size={24} />
               </Button>
             )}
-            <div className="mt-0.5">{data.body}</div>
+            <div className="mt-0.5" style={{ wordBreak: "break-all" }}>
+              {data.body}
+            </div>
           </div>
           {viewMore ? (
-            <div className="flex flex-row gap-0.5 h-5 rounded overflow-clip">
+            <div className="flex flex-row items-center justify-end gap-0.5 h-5 rounded overflow-clip">
               <Button onClick={() => setViewEdit(true)} rounded={false}>
                 <MdEdit size={16} />
                 <span>Edit</span>
@@ -268,6 +270,7 @@ const TaskView: React.FC<TaskViewProps> = (props) => {
             defaultValue={data.body}
             autoFocus
             maxLength={96}
+            minLength={1}
           />
         </form>
       )}

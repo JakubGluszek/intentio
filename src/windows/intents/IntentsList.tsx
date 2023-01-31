@@ -111,7 +111,7 @@ const IntentView: React.FC<IntentViewProps> = (props) => {
       ref={container}
       data-tauri-disable-drag
       className={clsx(
-        "w-full h-fit flex flex-col border-b-2 p-1 rounded shadow transition-transform hover:-translate-y-[1px] bg-base/80 hover:bg-base text-text",
+        "w-full h-fit flex flex-col border-2 p-1 rounded shadow transition-transform hover:-translate-y-[1px] bg-base/80 hover:bg-base text-text",
         props.selected ? "border-primary/80" : "border-transparent"
       )}
       onClick={(e) => props.onSelected(e, data)}

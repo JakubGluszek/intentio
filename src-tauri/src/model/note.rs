@@ -47,8 +47,14 @@ pub struct NoteForCreate {
 
 impl From<NoteForCreate> for Value {
     fn from(val: NoteForCreate) -> Self {
-        let data =
-            map!["body".into() => val.body.into(), "intent_id".into() => val.intent_id.into()];
+        let now = Datetime::default().timestamp_millis().to_string();
+
+        let data = map![
+            "body".into() => val.body.into(),
+            "intent_id".into() => val.intent_id.into(),
+            "created_at".into() => now.clone().into(),
+            "modified_at".into() => now.into()
+        ];
 
         Value::Object(data.into())
     }

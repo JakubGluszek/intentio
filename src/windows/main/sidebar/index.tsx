@@ -7,7 +7,6 @@ import {
   MdSettings,
   MdStickyNote2,
 } from "react-icons/md";
-import { useClickOutside } from "@mantine/hooks";
 import { WebviewWindow } from "@tauri-apps/api/window";
 
 import useStore from "@/store";
@@ -29,11 +28,8 @@ type Tab = "intents" | "queue" | "notes" | "tasks";
 const Sidebar: React.FC<Props> = (props) => {
   const [tab, setTab] = React.useState<Tab>("intents");
 
-  const ref = useClickOutside(() => props.collapse());
-
   return (
     <div
-      ref={ref}
       className="z-[9999] left-0 top-0 fixed w-[286px] h-full flex flex-col bg-window transition-opacity"
       style={{
         boxShadow: "8px 16px 24px -8px rgba(0, 0, 0, 0.60)",
@@ -43,7 +39,7 @@ const Sidebar: React.FC<Props> = (props) => {
     >
       <div className="grow flex flex-col p-2 bg-darker/20">
         <Header onCollapse={() => props.collapse()} />
-        <div className="grow flex flex-col p-1">
+        <div className="grow flex flex-col py-1">
           {tab === "intents" ? <IntentsView /> : null}
           {tab === "tasks" ? <TasksView /> : null}
           {tab === "notes" ? <NotesView /> : null}

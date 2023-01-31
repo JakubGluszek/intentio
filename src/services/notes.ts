@@ -10,10 +10,10 @@ export const getNotes = async () => {
 };
 
 export const createNote = async (data: NoteForCreate) => {
-  return await invoke<Note>("create_notes", { data });
+  return await invoke<Note>("create_note", { data });
 };
 
-export const updateNote = async (id: string, data: NoteForUpdate) => {
+export const updateNote = async (id: string, data: Partial<NoteForUpdate>) => {
   return await invoke<Note>("update_note", { id, data });
 };
 

@@ -7,6 +7,7 @@ import { ModelDeleteResultData } from "@/bindings/ModelDeleteResultData";
 import { Session } from "@/bindings/Session";
 import { Theme } from "@/bindings/Theme";
 import { Task } from "@/bindings/Task";
+import { Note } from "@/bindings/Note";
 
 type Events = {
   settings_updated: Settings;
@@ -22,6 +23,9 @@ type Events = {
   task_created: Task;
   task_updated: Task;
   task_deleted: ModelDeleteResultData;
+  note_created: Note;
+  note_updated: Note;
+  note_deleted: ModelDeleteResultData;
 };
 
 type Callback<T> = (data: Event<T>) => void;
