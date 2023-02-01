@@ -15,6 +15,10 @@ const config = {
     homePage: "https://intentio.app",
   },
   webviews: {
+    main: {
+      width: 340,
+      height: 380,
+    },
     settings: {
       url: "/settings",
       title: "Settings",
