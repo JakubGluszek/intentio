@@ -20,3 +20,8 @@ export const updateNote = async (id: string, data: Partial<NoteForUpdate>) => {
 export const deleteNote = async (id: string) => {
   return await invoke<ModelDeleteResultData>("delete_note", { id });
 };
+
+export const deleteNotes = async (ids: string[]) => {
+  return await invoke<ModelDeleteResultData[]>("delete_notes", { ids });
+};
+

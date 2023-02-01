@@ -5,5 +5,5 @@ export interface Note {
   body: string;
   intent_id: string | null;
   created_at: string;
-  modified_at: string | null;
+  modified_at: string;
 }

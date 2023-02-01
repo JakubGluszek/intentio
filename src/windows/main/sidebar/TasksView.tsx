@@ -92,7 +92,12 @@ const TasksView: React.FC = () => {
                 <p>Don't let your tasks disappear into thin air.</p>
                 <p>Add some now!</p>
               </>,
-            ][Math.floor(Math.random() * 3)]
+              <>
+                <p>Break it down.</p>
+                <p>Complete.</p>
+                <p>Repeat.</p>
+              </>,
+            ][Math.floor(Math.random() * 4)]
           }
         </div>
       ) : null}

@@ -19,7 +19,7 @@ const Layout: React.FC<Props> = ({ children, icon, label, header }) => {
   const currentTheme = useStore((state) => state.currentTheme);
   const store = useStore();
 
-  useDetectNoDrag();
+  useDetectNoDrag(store.tauriDragEnabled);
 
   React.useEffect(() => {
     services.getCurrentTheme().then((data) => {
@@ -59,7 +59,7 @@ const Layout: React.FC<Props> = ({ children, icon, label, header }) => {
   );
 };
 
-const useDetectNoDrag = () => {
+const useDetectNoDrag = (tauriDragEnabled: boolean) => {
   React.useEffect(() => {
     const handleMouseDown = async (e: MouseEvent) => {
       if (
@@ -67,7 +67,8 @@ const useDetectNoDrag = () => {
           "data-tauri-disable-drag",
           e.target as HTMLElement,
           15
-        )
+        ) ||
+        !tauriDragEnabled
       )
         return; // a non-draggable element either in target or its ancestors
       await appWindow.startDragging();
@@ -75,7 +76,7 @@ const useDetectNoDrag = () => {
 
     document.addEventListener("mousedown", handleMouseDown);
     return () => document.removeEventListener("mousedown", handleMouseDown);
-  }, []);
+  }, [tauriDragEnabled]);
 
   const checkAllowDragging = (
     attribute: string,

@@ -26,6 +26,7 @@ type Events = {
   note_created: Note;
   note_updated: Note;
   note_deleted: ModelDeleteResultData;
+  notes_deleted: ModelDeleteResultData[];
 };
 
 type Callback<T> = (data: Event<T>) => void;

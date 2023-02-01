@@ -62,10 +62,11 @@ async fn main() -> Result<()> {
             archive_intent,
             unarchive_intent,
             // Note
+            get_notes,
             create_note,
             update_note,
             delete_note,
-            get_notes,
+            delete_notes,
             // Task
             create_task,
             update_task,

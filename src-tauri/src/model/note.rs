@@ -20,7 +20,7 @@ pub struct Note {
     body: String,
     intent_id: Option<String>,
     created_at: String,
-    modified_at: Option<String>,
+    modified_at: String,
 }
 
 impl TryFrom<Object> for Note {
@@ -31,7 +31,7 @@ impl TryFrom<Object> for Note {
             body: val.x_take_val("body")?,
             intent_id: val.x_take("intent_id")?,
             created_at: val.x_take_val("created_at")?,
-            modified_at: val.x_take("created_at")?,
+            modified_at: val.x_take_val("modified_at")?,
         };
 
         Ok(note)
@@ -113,6 +113,25 @@ impl NoteBmc {
         let data = ModelDeleteResultData::from(id.clone());
 
         ctx.emit_event("note_deleted", data.clone());
+
+        Ok(data)
+    }
+
+    pub async fn delete_multi(
+        ctx: Arc<Ctx>,
+        ids: Vec<String>,
+    ) -> Result<Vec<ModelDeleteResultData>> {
+        let store = ctx.get_store();
+
+        let mut data: Vec<ModelDeleteResultData> = vec![];
+
+        for id in ids {
+            let id = store.exec_delete(&id).await?;
+            let result = ModelDeleteResultData::from(id);
+            data.push(result);
+        }
+
+        ctx.emit_event("notes_deleted", data.clone());
 
         Ok(data)
     }

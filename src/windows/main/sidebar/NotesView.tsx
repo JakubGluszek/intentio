@@ -1,10 +1,16 @@
 import React from "react";
 import { createPortal } from "react-dom";
-import { MdAddCircle, MdCircle, MdDelete, MdEdit } from "react-icons/md";
+import {
+  MdAddCircle,
+  MdCircle,
+  MdClose,
+  MdDelete,
+  MdSearch,
+} from "react-icons/md";
 import { IoMdClipboard } from "react-icons/io";
 import { toast } from "react-hot-toast";
 import { useClickOutside } from "@mantine/hooks";
-import { Textarea } from "@mantine/core";
+import { clsx, Textarea } from "@mantine/core";
 import { writeText } from "@tauri-apps/api/clipboard";
 
 import useStore from "@/store";
@@ -15,11 +21,26 @@ import { Note } from "@/bindings/Note";
 import config from "@/config";
 
 const NotesView: React.FC = () => {
+  const [viewCreate, setViewCreate] = React.useState(false);
+  const [viewFilter, setViewFilter] = React.useState(false);
+  const [filterQuery, setFilterQuery] = React.useState("");
+  const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
+  const [viewConfirmDelete, setViewConfirmDelete] = React.useState(false);
+
   const store = useStore();
   const containerRef = React.useRef<HTMLDivElement>(null);
 
   var notes = useStore((state) => state.notes);
   notes = notes.filter((note) => note.intent_id === store.activeIntentId);
+
+  if (filterQuery.length > 0) {
+    let query = filterQuery.toLowerCase();
+    notes = notes.filter((note) => note.body.toLowerCase().includes(query));
+  }
+
+  notes = notes.sort((a, b) =>
+    parseInt(a.created_at) > parseInt(b.created_at) ? -1 : 1
+  );
 
   useEvent("note_created", (event) => {
     store.addNote(event.payload);
@@ -29,14 +50,85 @@ const NotesView: React.FC = () => {
     store.patchNote(event.payload.id, event.payload)
   );
   useEvent("note_deleted", (event) => store.removeNote(event.payload.id));
+  useEvent("notes_deleted", (event) =>
+    event.payload.forEach((data) => store.removeNote(data.id))
+  );
 
   React.useEffect(() => {
     services.getNotes().then((data) => store.setNotes(data));
   }, []);
 
+  React.useEffect(() => {
+    let hideConfirm: NodeJS.Timeout | undefined;
+    if (viewConfirmDelete) {
+      hideConfirm = setTimeout(() => {
+        setViewConfirmDelete(false);
+      }, 3000);
+    } else {
+      hideConfirm && clearTimeout(hideConfirm);
+    }
+
+    return () => hideConfirm && clearTimeout(hideConfirm);
+  }, [viewConfirmDelete]);
+
+  React.useEffect(() => {
+    setSelectedIds([]);
+  }, [viewCreate, viewFilter]);
+
   return (
     <div className="grow flex flex-col overflow-y-auto pt-2 gap-1">
-      <CreateNoteView />
+      <div className="w-full flex flex-row justify-between">
+        {!viewFilter ? (
+          <CreateNoteView
+            viewCreate={viewCreate}
+            setViewCreate={setViewCreate}
+          />
+        ) : null}
+        <div
+          className={clsx(
+            "flex flex-row items-center gap-2",
+            viewFilter ? "w-full" : "w-fit"
+          )}
+        >
+          {!viewCreate ? (
+            <FilterNotesView
+              query={filterQuery}
+              setQuery={setFilterQuery}
+              viewFilter={viewFilter}
+              setViewFilter={setViewFilter}
+            />
+          ) : null}
+          {!viewCreate && !viewFilter && selectedIds.length > 0 ? (
+            <>
+              {!viewConfirmDelete ? (
+                <Button
+                  // @ts-ignore
+                  onClick={() => setViewConfirmDelete(true)}
+                  transparent
+                  color="danger"
+                >
+                  <MdDelete size={20} />
+                  <div>{selectedIds.length}</div>
+                </Button>
+              ) : (
+                <Button
+                  onClick={() =>
+                    services.deleteNotes(selectedIds).then(() => {
+                      setSelectedIds([]);
+                      setViewConfirmDelete(false);
+                      toast("Notes deleted");
+                    })
+                  }
+                  transparent
+                  color="danger"
+                >
+                  Confirm
+                </Button>
+              )}
+            </>
+          ) : null}
+        </div>
+      </div>
 
       {notes.length > 0 ? (
         <div
@@ -48,7 +140,12 @@ const NotesView: React.FC = () => {
             className="w-full max-h-0 flex flex-col gap-1 pb-0.5"
           >
             {notes.map((note) => (
-              <NoteView key={note.id} data={note} />
+              <NoteView
+                key={note.id}
+                data={note}
+                selectedNotesIds={selectedIds}
+                setSelectedNotesIds={setSelectedIds}
+              />
             ))}
           </div>
         </div>
@@ -84,52 +181,10 @@ const NotesView: React.FC = () => {
   );
 };
 
-const CreateNoteView: React.FC = () => {
-  const [body, setBody] = React.useState("");
-  const [viewCreate, setViewCreate] = React.useState(false);
-
-  const store = useStore();
-  const ref = useClickOutside(() => {
-    setViewCreate(false);
-    setBody("");
-  });
-
-  const onSubmit = () => {
-    if (body.length === 0) return;
-    services
-      .createNote({ body, intent_id: store.activeIntentId! })
-      .then(() => {
-        toast("Note created");
-        setViewCreate(false);
-      })
-      .catch((err) => console.log("services.createNote", err));
-  };
-
-  return (
-    <div>
-      {!viewCreate ? (
-        <Button onClick={() => setViewCreate(true)}>
-          <MdAddCircle size={24} />
-          <span>Add note</span>
-        </Button>
-      ) : (
-        <div ref={ref}>
-          <NoteInput
-            value={body}
-            onChange={(value) => setBody(value)}
-            onSubmit={onSubmit}
-            onEscape={() => {
-              setViewCreate(false);
-            }}
-          />
-        </div>
-      )}
-    </div>
-  );
-};
-
 interface NoteViewProps {
   data: Note;
+  selectedNotesIds: string[];
+  setSelectedNotesIds: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 const NoteView: React.FC<NoteViewProps> = (props) => {
@@ -140,8 +195,10 @@ const NoteView: React.FC<NoteViewProps> = (props) => {
   const [viewExpand, setViewExpand] = React.useState(false);
   const [viewModal, setViewModal] = React.useState<{ x: number; y: number }>();
 
+  const store = useStore();
+
   const modalWidth = 120;
-  const modalHeight = 92;
+  const modalHeight = 62;
 
   const ref = useClickOutside<HTMLDivElement>(() => {
     setViewEdit(false);
@@ -156,12 +213,30 @@ const NoteView: React.FC<NoteViewProps> = (props) => {
     });
   };
 
+  const isSelected = props.selectedNotesIds.includes(props.data.id);
+
+  // fixes clicking outside where there is no `data-tauri-disable-drag property`
+  // otherwise context would not close because the window would start being dragged
+  React.useEffect(() => {
+    if (viewModal) {
+      store.setTauriDragEnabled(false);
+    } else {
+      store.setTauriDragEnabled(true);
+    }
+  }, [viewModal]);
+
   return (
     <>
       <div
         ref={ref}
-        className="min-h-fit flex flex-col gap-1.5 p-1 bg-window/80 hover:bg-window rounded shadow text-sm"
+        className={clsx(
+          "min-h-fit flex flex-col gap-1.5 p-1 rounded shadow text-sm",
+          isSelected
+            ? "bg-base/80 hover:bg-base"
+            : "bg-window/80 hover:bg-window"
+        )}
         onContextMenu={(e) => {
+          if (viewEdit) return;
           var x = e.pageX;
           var y = e.pageY;
 
@@ -178,14 +253,29 @@ const NoteView: React.FC<NoteViewProps> = (props) => {
             y = y - (y + modalHeight - root.height) - padding;
           }
 
+          props.setSelectedNotesIds([]);
           setViewModal({ x, y });
-          scrollToView(e);
         }}
         onMouseDown={(e) => {
           // @ts-ignore
           if (e.target.closest("button") || e.button === 2 || viewModal) return;
 
+          if (e.ctrlKey) {
+            if (isSelected) {
+              props.setSelectedNotesIds((ids) =>
+                ids.filter((id) => id !== data.id)
+              );
+            } else {
+              props.setSelectedNotesIds((ids) => [data.id, ...ids]);
+            }
+            return;
+          }
+
+          props.setSelectedNotesIds([]);
           setViewExpand((prev) => !prev);
+        }}
+        onDoubleClick={(e) => {
+          setViewEdit(true);
           scrollToView(e);
         }}
         data-tauri-disable-drag
@@ -233,6 +323,97 @@ const NoteView: React.FC<NoteViewProps> = (props) => {
         )
         : null}
     </>
+  );
+};
+
+interface FilterNotesViewProps {
+  query: string;
+  setQuery: (q: string) => void;
+  viewFilter: boolean;
+  setViewFilter: (view: boolean) => void;
+}
+
+const FilterNotesView: React.FC<FilterNotesViewProps> = (props) => {
+  return !props.viewFilter ? (
+    <Button transparent onClick={() => props.setViewFilter(true)}>
+      <MdSearch size={24} />
+    </Button>
+  ) : (
+    <div className="w-full">
+      <div className="relative">
+        <input
+          className="input"
+          autoFocus
+          value={props.query}
+          onChange={(e) => props.setQuery(e.currentTarget.value)}
+          onKeyDown={(e) => {
+            if (e.key !== "Escape") return;
+            props.setQuery("");
+            props.setViewFilter(false);
+          }}
+        />
+        <Button
+          style={{
+            position: "absolute",
+            right: 4,
+            top: 8,
+          }}
+          transparent
+          onClick={() => {
+            props.setQuery("");
+            props.setViewFilter(false);
+          }}
+        >
+          <MdClose size={20} />
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+interface CreateNoteViewProps {
+  viewCreate: boolean;
+  setViewCreate: (view: boolean) => void;
+}
+
+const CreateNoteView: React.FC<CreateNoteViewProps> = (props) => {
+  const [body, setBody] = React.useState("");
+
+  const store = useStore();
+  const ref = useClickOutside(() => {
+    props.setViewCreate(false);
+    setBody("");
+  });
+
+  const onSubmit = () => {
+    if (body.length === 0) return;
+    services
+      .createNote({ body, intent_id: store.activeIntentId! })
+      .then(() => {
+        toast("Note created");
+        setBody("");
+        props.setViewCreate(false);
+      })
+      .catch((err) => console.log("services.createNote", err));
+  };
+
+  return !props.viewCreate ? (
+    <Button transparent onClick={() => props.setViewCreate(true)}>
+      <MdAddCircle size={20} />
+      <span>Add note</span>
+    </Button>
+  ) : (
+    <div className="w-full" ref={ref}>
+      <NoteInput
+        value={body}
+        onChange={(value) => setBody(value)}
+        onSubmit={onSubmit}
+        onEscape={() => {
+          setBody("");
+          props.setViewCreate(false);
+        }}
+      />
+    </div>
   );
 };
 
@@ -305,16 +486,6 @@ const NoteModal: React.FC<NoteModalProps> = (props) => {
           <IoMdClipboard size={20} />
           <div className="w-full">Copy</div>
         </Button>
-        <Button
-          onClick={() => {
-            props.setViewEdit();
-            props.hide();
-          }}
-          rounded={false}
-        >
-          <MdEdit size={20} />
-          <div className="w-full">Edit</div>
-        </Button>
         {!viewConfirmDelete ? (
           <Button
             // @ts-ignore
@@ -357,7 +528,7 @@ const NoteInput: React.FC<NoteInputProps> = (props) => {
     <Textarea
       classNames={{
         input:
-          "bg-window border-2 border-primary/80 focus:border-primary/80 text-text p-1 placeholder:text-text/50 placeholder:font-mono",
+          "bg-window border-2 text-[15px] border-primary/80 focus:border-primary/80 text-text p-1 pt-1.5 placeholder:text-text/50 placeholder:font-mono placeholder:text-sm",
       }}
       value={props.value}
       onChange={(e) => {

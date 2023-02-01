@@ -8,6 +8,7 @@ import { createStateSlice, StateSlice } from "./stateSlice";
 import { createTasksSlice, TasksSlice } from "./tasksSlice";
 import { createThemesSlice, ThemesSlice } from "./themesSlice";
 import { createUtilsSlice, UtilsSlice } from "./utilsSlice";
+import { AppSlice, createAppSlice } from "./appSlice";
 
 type Store = SettingsSlice &
   StateSlice &
@@ -16,7 +17,8 @@ type Store = SettingsSlice &
   ThemesSlice &
   TasksSlice &
   NotesSlice &
-  UtilsSlice;
+  UtilsSlice &
+  AppSlice;
 
 const useStore = create<Store>()((...a) => ({
   ...createSettingsSlice(...a),
@@ -27,6 +29,7 @@ const useStore = create<Store>()((...a) => ({
   ...createTasksSlice(...a),
   ...createNotesSlice(...a),
   ...createUtilsSlice(...a),
+  ...createAppSlice(...a),
 }));
 
 export default useStore;
