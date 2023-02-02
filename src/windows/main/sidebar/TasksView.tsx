@@ -8,15 +8,15 @@ import {
 import { useClickOutside } from "@mantine/hooks";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
+import { createPortal } from "react-dom";
+import { clsx } from "@mantine/core";
 
 import useStore from "@/store";
 import services from "@/services";
 import { useEvent } from "@/hooks";
 import { Button } from "@/components";
 import { Task } from "@/bindings/Task";
-import { createPortal } from "react-dom";
 import config from "@/config";
-import { clsx } from "@mantine/core";
 
 const TasksView: React.FC = () => {
   const [viewCreate, setViewCreate] = React.useState(false);
@@ -234,9 +234,10 @@ const TaskView: React.FC<TaskViewProps> = (props) => {
   const [viewConfirmDelete, setViewConfirmDelete] = React.useState(false);
 
   const { register, handleSubmit, setValue } = useForm<{ body: string }>();
-  const containerRef = useClickOutside<HTMLDivElement>(
-    () => viewEdit && setViewEdit(false)
-  );
+  const containerRef = useClickOutside<HTMLDivElement>(() => {
+    viewEdit && setViewEdit(false);
+    setViewModal(undefined);
+  });
 
   const modalWidth = 120;
   const modalHeight = 32;
