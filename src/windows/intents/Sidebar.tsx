@@ -10,12 +10,12 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { Tooltip } from "@mantine/core";
 
+import useStore from "@/store";
 import services from "@/services";
 import Button from "@/components/Button";
 import { IntentForCreate } from "@/bindings/IntentForCreate";
 import IntentsList from "./IntentsList";
 import { Sort } from ".";
-import useStore from "@/store";
 
 interface Props {
   selectedId?: string;
@@ -78,24 +78,18 @@ const Sidebar: React.FC<Props> = (props) => {
       {viewCreate ? (
         <CreateIntentView hide={() => setViewCreate(false)} />
       ) : null}
-      {intents.length > 0 ? (
-        <IntentsList
-          data={
-            viewArchived
-              ? intents
-              : intents.filter((intent) => !intent.archived_at)
-          }
-          selectedTags={props.selectedTags}
-          selectedIntentId={props.selectedId}
-          sort={sort}
-          onSelected={(data) => props.setSelectedId(data?.id)}
-          onTagSelected={(data) => props.setSelectedTags(data)}
-        />
-      ) : (
-        <div className="m-auto text-sm text-center text-text/80">
-          <p>There are no defined intents</p>
-        </div>
-      )}
+      <IntentsList
+        data={
+          viewArchived
+            ? intents
+            : intents.filter((intent) => !intent.archived_at)
+        }
+        selectedTags={props.selectedTags}
+        selectedIntentId={props.selectedId}
+        sort={sort}
+        onSelected={(data) => props.setSelectedId(data?.id)}
+        onTagSelected={(data) => props.setSelectedTags(data)}
+      />
     </div>
   );
 };

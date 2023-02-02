@@ -66,7 +66,7 @@ export const IntentsList: React.FC<Props> = (props) => {
     );
   }
 
-  return (
+  return intents.length > 0 ? (
     <div className="grow flex overflow-y-auto">
       <div className="w-full max-h-0 flex flex-col gap-1.5 overflow-y py-2 font-semibold">
         {intents.map((intent) => (
@@ -80,6 +80,10 @@ export const IntentsList: React.FC<Props> = (props) => {
           />
         ))}
       </div>
+    </div>
+  ) : (
+    <div className="m-auto text-sm text-text/80 text-center">
+      <p>Create some intents and give your pomodoros a purpose!</p>
     </div>
   );
 };
