@@ -1,5 +1,16 @@
 use tauri::{command, AppHandle, Wry};
 
+#[command]
+pub async fn get_tasks(app: AppHandle<Wry>) -> Result<Vec<Task>> {
+    match Ctx::from_app(app) {
+        Ok(ctx) => match TaskBmc::get_multi(ctx).await {
+            Ok(tasks) => Ok(tasks),
+            Err(err) => Err(err).into(),
+        },
+        Err(_) => Err(Error::CtxFail).into(),
+    }
+}
+
 use crate::{
     ctx::Ctx,
     model::{ModelDeleteResultData, Task, TaskBmc, TaskForCreate, TaskForUpdate},
@@ -40,10 +51,13 @@ pub async fn delete_task(app: AppHandle<Wry>, id: String) -> Result<ModelDeleteR
 }
 
 #[command]
-pub async fn get_tasks(app: AppHandle<Wry>) -> Result<Vec<Task>> {
+pub async fn delete_tasks(
+    app: AppHandle<Wry>,
+    ids: Vec<String>,
+) -> Result<Vec<ModelDeleteResultData>> {
     match Ctx::from_app(app) {
-        Ok(ctx) => match TaskBmc::get_multi(ctx).await {
-            Ok(tasks) => Ok(tasks),
+        Ok(ctx) => match TaskBmc::delete_multi(ctx, ids).await {
+            Ok(data) => Ok(data),
             Err(err) => Err(err).into(),
         },
         Err(_) => Err(Error::CtxFail).into(),

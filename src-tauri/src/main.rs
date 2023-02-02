@@ -71,6 +71,7 @@ async fn main() -> Result<()> {
             create_task,
             update_task,
             delete_task,
+            delete_tasks,
             get_tasks,
             // Session
             get_sessions,

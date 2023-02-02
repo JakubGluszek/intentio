@@ -20,3 +20,7 @@ export const updateTask = async (id: string, data: Partial<TaskForUpdate>) => {
 export const deleteTask = async (id: string) => {
   return await invoke<ModelDeleteResultData>("delete_task", { id });
 };
+
+export const deleteTasks = async (ids: string[]) => {
+  return await invoke<ModelDeleteResultData>("delete_tasks", { ids });
+};

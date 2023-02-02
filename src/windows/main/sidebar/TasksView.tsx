@@ -4,7 +4,6 @@ import {
   MdCheckBox,
   MdCheckBoxOutlineBlank,
   MdDelete,
-  MdEdit,
 } from "react-icons/md";
 import { useClickOutside } from "@mantine/hooks";
 import { useForm } from "react-hook-form";
@@ -15,9 +14,15 @@ import services from "@/services";
 import { useEvent } from "@/hooks";
 import { Button } from "@/components";
 import { Task } from "@/bindings/Task";
+import { createPortal } from "react-dom";
+import config from "@/config";
+import { clsx } from "@mantine/core";
 
 const TasksView: React.FC = () => {
+  const [viewCreate, setViewCreate] = React.useState(false);
   const [viewFinished, setViewFinished] = React.useState(false);
+  const [viewConfirmDelete, setViewConfirmDelete] = React.useState(false);
+  const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
 
   const store = useStore();
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -33,14 +38,61 @@ const TasksView: React.FC = () => {
     store.patchTask(event.payload.id, event.payload)
   );
   useEvent("task_deleted", (event) => store.removeTask(event.payload.id));
+  useEvent("tasks_deleted", (event) =>
+    event.payload.forEach((data) => store.removeTask(data.id))
+  );
 
   React.useEffect(() => {
     services.getTasks().then((data) => store.setTasks(data));
   }, []);
 
+  React.useEffect(() => {
+    let hideConfirm: NodeJS.Timeout | undefined;
+    if (viewConfirmDelete) {
+      hideConfirm = setTimeout(() => {
+        setViewConfirmDelete(false);
+      }, 3000);
+    } else {
+      hideConfirm && clearTimeout(hideConfirm);
+    }
+
+    return () => hideConfirm && clearTimeout(hideConfirm);
+  }, [viewConfirmDelete]);
+
   return (
     <div className="grow flex flex-col overflow-y-auto pt-2 gap-1">
-      <CreateTaskView />
+      <div className="flex flex-row items-center justify-between">
+        <CreateTaskView viewCreate={viewCreate} setViewCreate={setViewCreate} />
+        {!viewCreate && selectedIds.length > 0 ? (
+          <>
+            {!viewConfirmDelete ? (
+              <Button
+                // @ts-ignore
+                onClick={() => setViewConfirmDelete(true)}
+                transparent
+                color="danger"
+              >
+                <MdDelete size={20} />
+                <div>{selectedIds.length}</div>
+              </Button>
+            ) : (
+              <Button
+                onClick={() =>
+                  services.deleteTasks(selectedIds).then(() => {
+                    setSelectedIds([]);
+                    setViewConfirmDelete(false);
+                    toast("Tasks deleted");
+                  })
+                }
+                transparent
+                color="danger"
+              >
+                Confirm
+              </Button>
+            )}
+          </>
+        ) : null}
+      </div>
 
       {tasks.length > 0 ? (
         <div className="grow flex flex-col overflow-y-auto gap-1">
@@ -50,7 +102,14 @@ const TasksView: React.FC = () => {
           >
             {/* Tasks yet unfinished */}
             {tasks.map((task) =>
-              !task.done ? <TaskView key={task.id} data={task} /> : null
+              !task.done ? (
+                <TaskView
+                  selectedTasksIds={selectedIds}
+                  setSelectedTasksIds={setSelectedIds}
+                  key={task.id}
+                  data={task}
+                />
+              ) : null
             )}
 
             {/* View finished tasks button */}
@@ -67,7 +126,14 @@ const TasksView: React.FC = () => {
             {/* Finished tasks list */}
             {viewFinished
               ? tasks.map((task) =>
-                task.done ? <TaskView key={task.id} data={task} /> : null
+                task.done ? (
+                  <TaskView
+                    selectedTasksIds={selectedIds}
+                    setSelectedTasksIds={setSelectedIds}
+                    key={task.id}
+                    data={task}
+                  />
+                ) : null
               )
               : null}
           </div>
@@ -105,29 +171,32 @@ const TasksView: React.FC = () => {
   );
 };
 
-const CreateTaskView: React.FC = () => {
-  const [viewCreate, setViewCreate] = React.useState(false);
+interface CreateTaskViewProps {
+  viewCreate: boolean;
+  setViewCreate: (view: boolean) => void;
+}
 
+const CreateTaskView: React.FC<CreateTaskViewProps> = (props) => {
   const store = useStore();
   const { register, handleSubmit, setValue } = useForm<{ body: string }>();
-  const ref = useClickOutside(() => setViewCreate(false));
+  const ref = useClickOutside(() => props.setViewCreate(false));
 
   const onSubmit = handleSubmit((data) => {
     services
       .createTask({ ...data, intent_id: store.activeIntentId! })
       .then(() => {
         toast("Task created");
-        setViewCreate(false);
+        props.setViewCreate(false);
         setValue("body", "");
       })
       .catch((err) => console.log("services.createTask", err));
   });
 
   return (
-    <div className="h-8">
-      {!viewCreate ? (
-        <Button onClick={() => setViewCreate(true)}>
-          <MdAddCircle size={24} />
+    <div className="h-8 w-full">
+      {!props.viewCreate ? (
+        <Button transparent onClick={() => props.setViewCreate(true)}>
+          <MdAddCircle size={20} />
           <span>Add task</span>
         </Button>
       ) : (
@@ -138,7 +207,7 @@ const CreateTaskView: React.FC = () => {
             className="input h-8"
             onKeyDown={(e) => {
               if (e.key !== "Escape") return;
-              setViewCreate(false);
+              props.setViewCreate(false);
               setValue("body", "");
             }}
             autoFocus
@@ -153,19 +222,26 @@ const CreateTaskView: React.FC = () => {
 
 interface TaskViewProps {
   data: Task;
+  selectedTasksIds: string[];
+  setSelectedTasksIds?: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 const TaskView: React.FC<TaskViewProps> = (props) => {
   const { data } = props;
 
-  const [viewMore, setViewMore] = React.useState(false);
   const [viewEdit, setViewEdit] = React.useState(false);
+  const [viewModal, setViewModal] = React.useState<{ x: number; y: number }>();
   const [viewConfirmDelete, setViewConfirmDelete] = React.useState(false);
 
   const { register, handleSubmit, setValue } = useForm<{ body: string }>();
   const containerRef = useClickOutside<HTMLDivElement>(
-    () => !viewEdit && setViewMore(false)
+    () => viewEdit && setViewEdit(false)
   );
+
+  const modalWidth = 120;
+  const modalHeight = 32;
+
+  const isSelected = props.selectedTasksIds.includes(props.data.id);
 
   const onEditSubmit = handleSubmit((obj) => {
     services.updateTask(data.id, obj).then(() => {
@@ -202,63 +278,68 @@ const TaskView: React.FC<TaskViewProps> = (props) => {
   return (
     <div
       ref={containerRef}
-      className="min-h-fit flex flex-col gap-1.5 p-1 bg-window/80 hover:bg-window rounded shadow text-sm"
+      className={clsx(
+        "min-h-fit flex flex-col gap-1.5 p-1 rounded shadow text-sm",
+        isSelected ? "bg-base/80 hover:bg-base" : "bg-window/80 hover:bg-window"
+      )}
       onMouseDown={(e) => {
         // @ts-ignore
-        !e.target.closest("button") && setViewMore((prev) => !prev);
-        containerRef.current.scrollIntoView({
-          block: "center",
-        });
+        if (e.target.closest("button") || e.button === 2 || viewModal) return;
+
+        if (e.ctrlKey) {
+          if (isSelected) {
+            props.setSelectedTasksIds &&
+              props.setSelectedTasksIds((ids) =>
+                ids.filter((id) => id !== data.id)
+              );
+          } else {
+            props.setSelectedTasksIds &&
+              props.setSelectedTasksIds((ids) => [data.id, ...ids]);
+          }
+          return;
+        }
+
+        props.setSelectedTasksIds && props.setSelectedTasksIds([]);
       }}
+      onContextMenu={(e) => {
+        if (viewEdit) return;
+        var x = e.pageX;
+        var y = e.pageY;
+
+        const root = config.webviews.main;
+        const padding = 8;
+
+        // fix possible x overflow
+        if (x + modalWidth > root.width) {
+          x = x - (x + modalWidth - root.width) - padding;
+        }
+
+        // fix possible y overflow
+        if (y + modalHeight > root.height) {
+          y = y - (y + modalHeight - root.height) - padding;
+        }
+
+        props.setSelectedTasksIds && props.setSelectedTasksIds([]);
+        setViewModal({ x, y });
+      }}
+      onDoubleClick={() => setViewEdit(true)}
       data-tauri-disable-drag
     >
       {!viewEdit ? (
-        <>
-          <div className="flex flex-row items-start gap-1">
-            {!data.done ? (
-              <Button onMouseDown={() => handleCheck()} transparent>
-                <MdCheckBoxOutlineBlank size={24} />
-              </Button>
-            ) : (
-              <Button onMouseDown={() => handleCheck()} transparent>
-                <MdCheckBox size={24} />
-              </Button>
-            )}
-            <div className="mt-0.5" style={{ wordBreak: "break-all" }}>
-              {data.body}
-            </div>
+        <div className="flex flex-row items-start gap-1">
+          {!data.done ? (
+            <Button onMouseDown={() => handleCheck()} transparent>
+              <MdCheckBoxOutlineBlank size={24} />
+            </Button>
+          ) : (
+            <Button onMouseDown={() => handleCheck()} transparent>
+              <MdCheckBox size={24} />
+            </Button>
+          )}
+          <div className="mt-0.5" style={{ wordBreak: "break-all" }}>
+            {data.body}
           </div>
-          {viewMore ? (
-            <div className="flex flex-row items-center justify-end gap-0.5 h-5 rounded overflow-clip">
-              <Button onClick={() => setViewEdit(true)} rounded={false}>
-                <MdEdit size={16} />
-                <span>Edit</span>
-              </Button>
-              {!viewConfirmDelete ? (
-                <Button
-                  onClick={() => setViewConfirmDelete(true)}
-                  rounded={false}
-                  color="danger"
-                >
-                  <MdDelete size={16} />
-                  <span>Delete</span>
-                </Button>
-              ) : (
-                <Button
-                  onClick={() =>
-                    services
-                      .deleteTask(data.id)
-                      .then(() => toast("Task deleted"))
-                  }
-                  rounded={false}
-                  color="danger"
-                >
-                  Confirm
-                </Button>
-              )}
-            </div>
-          ) : null}
-        </>
+        </div>
       ) : (
         <form onSubmit={onEditSubmit}>
           <input
@@ -266,7 +347,6 @@ const TaskView: React.FC<TaskViewProps> = (props) => {
             {...register("body")}
             onBlur={() => {
               setViewEdit(false);
-              setViewMore(false);
             }}
             onKeyDown={(e) => {
               if (e.key !== "Escape") return;
@@ -280,6 +360,108 @@ const TaskView: React.FC<TaskViewProps> = (props) => {
           />
         </form>
       )}
+
+      {viewModal
+        ? createPortal(
+          <TaskModal
+            data={data}
+            x={viewModal.x}
+            y={viewModal.y}
+            width={modalWidth}
+            height={modalHeight}
+            hide={() => setViewModal(undefined)}
+            setViewEdit={() => setViewEdit(true)}
+          />,
+          document.getElementById("root")!
+        )
+        : null}
+    </div>
+  );
+};
+
+interface TaskModalProps {
+  data: Task;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  hide: () => void;
+  setViewEdit: () => void;
+}
+
+const TaskModal: React.FC<TaskModalProps> = (props) => {
+  const [preventHide, setPreventHide] = React.useState(true);
+  const [viewConfirmDelete, setViewConfirmDelete] = React.useState(false);
+  const [deleteBtn, setDeleteBtn] = React.useState<HTMLButtonElement | null>(
+    null
+  );
+
+  React.useEffect(() => {
+    let hideConfirm: NodeJS.Timeout | undefined;
+    if (viewConfirmDelete) {
+      hideConfirm = setTimeout(() => {
+        setViewConfirmDelete(false);
+      }, 3000);
+    } else {
+      hideConfirm && clearTimeout(hideConfirm);
+    }
+
+    return () => hideConfirm && clearTimeout(hideConfirm);
+  }, [viewConfirmDelete]);
+
+  const ref = useClickOutside<HTMLDivElement>(
+    () => !preventHide && props.hide(),
+    ["click", "contextmenu"],
+    [deleteBtn]
+  );
+
+  React.useEffect(() => {
+    const timeout = setTimeout(() => {
+      setPreventHide(false);
+    }, 20);
+
+    return () => clearTimeout(timeout);
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      style={{
+        zIndex: 9999,
+        position: "fixed",
+        left: props.x,
+        top: props.y,
+        width: props.width,
+        height: props.height,
+      }}
+      className="bg-base rounded shadow-lg text-sm p-0.5"
+    >
+      <div className="flex flex-col gap-0.5 overflow-clip rounded">
+        {!viewConfirmDelete ? (
+          <Button
+            // @ts-ignore
+            innerRef={setDeleteBtn}
+            onClick={() => setViewConfirmDelete(true)}
+            rounded={false}
+            color="danger"
+          >
+            <MdDelete size={20} />
+            <div className="w-full">Delete</div>
+          </Button>
+        ) : (
+          <Button
+            onClick={() =>
+              services
+                .deleteTask(props.data.id)
+                .then(() => toast("Task deleted"))
+            }
+            rounded={false}
+            color="danger"
+          >
+            Confirm
+          </Button>
+        )}
+      </div>
     </div>
   );
 };

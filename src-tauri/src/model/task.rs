@@ -126,6 +126,25 @@ impl TaskBmc {
         Ok(data)
     }
 
+    pub async fn delete_multi(
+        ctx: Arc<Ctx>,
+        ids: Vec<String>,
+    ) -> Result<Vec<ModelDeleteResultData>> {
+        let store = ctx.get_store();
+
+        let mut data: Vec<ModelDeleteResultData> = vec![];
+
+        for id in ids {
+            let id = store.exec_delete(&id).await?;
+            let result = ModelDeleteResultData::from(id);
+            data.push(result);
+        }
+
+        ctx.emit_event("tasks_deleted", data.clone());
+
+        Ok(data)
+    }
+
     pub async fn get_multi(ctx: Arc<Ctx>) -> Result<Vec<Task>> {
         let objects = ctx.get_store().exec_select(Self::ENTITY).await?;
 
