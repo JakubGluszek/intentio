@@ -92,6 +92,7 @@ const CreateThemeModal: React.FC<Props> = ({ theme, hide }) => {
                   autoComplete="off"
                   className="input"
                   type="text"
+                  tabIndex={-2}
                 />
               </div>
               <div className="flex flex-row items-center gap-4">
@@ -107,8 +108,10 @@ const CreateThemeModal: React.FC<Props> = ({ theme, hide }) => {
                   id="window-hex"
                   className="input"
                   type="text"
+                  tabIndex={-2}
                 />
                 <button
+                  tabIndex={-2}
                   type="button"
                   onClick={() => {
                     setColorPickerHex(watch("window_hex"));
@@ -131,8 +134,10 @@ const CreateThemeModal: React.FC<Props> = ({ theme, hide }) => {
                   id="base-hex"
                   className="input"
                   type="text"
+                  tabIndex={-2}
                 />
                 <button
+                  tabIndex={-2}
                   type="button"
                   onClick={() => {
                     setColorPickerHex(watch("base_hex"));
@@ -155,8 +160,10 @@ const CreateThemeModal: React.FC<Props> = ({ theme, hide }) => {
                   id="primary-hex"
                   className="input"
                   type="text"
+                  tabIndex={-2}
                 />
                 <button
+                  tabIndex={-2}
                   type="button"
                   onClick={() => {
                     setColorPickerHex(watch("primary_hex"));
@@ -178,9 +185,11 @@ const CreateThemeModal: React.FC<Props> = ({ theme, hide }) => {
                   autoComplete="off"
                   id="text-hex"
                   className="input"
+                  tabIndex={-2}
                   type="text"
                 />
                 <button
+                  tabIndex={-2}
                   type="button"
                   onClick={() => {
                     setColorPickerHex(watch("text_hex"));

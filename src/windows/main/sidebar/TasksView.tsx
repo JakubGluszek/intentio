@@ -133,6 +133,7 @@ const CreateTaskView: React.FC = () => {
       ) : (
         <form ref={ref} onSubmit={onSubmit}>
           <input
+            tabIndex={-3}
             {...register("body")}
             className="input h-8"
             onKeyDown={(e) => {

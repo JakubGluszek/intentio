@@ -45,6 +45,7 @@ const AppearanceView: React.FC<Props> = (props) => {
         <div className="flex flex-row items-center justify-between rounded p-1.5 bg-window shadow">
           <label htmlFor="display-live-countdown">Timer countdown</label>
           <Checkbox
+            tabIndex={-2}
             id="display-live-countdown"
             size="sm"
             defaultChecked={props.settings.display_live_countdown}

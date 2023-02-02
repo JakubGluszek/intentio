@@ -16,6 +16,7 @@ const BehaviorView: React.FC<Props> = (props) => {
       <div className="flex flex-row items-center justify-between rounded">
         <label htmlFor="hide-to-tray">Hide to tray</label>
         <Checkbox
+          tabIndex={-2}
           id="hide-to-tray"
           size="sm"
           defaultChecked={props.settings.main_window_to_tray}

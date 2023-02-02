@@ -102,6 +102,7 @@ const EditThemeModal: React.FC<Props> = ({ theme, hide }) => {
                   autoComplete="off"
                   className="input"
                   type="text"
+                  tabIndex={-2}
                 />
               </div>
               <div className="flex flex-row items-center gap-4">
@@ -117,6 +118,7 @@ const EditThemeModal: React.FC<Props> = ({ theme, hide }) => {
                   id="window-hex"
                   className="input"
                   type="text"
+                  tabIndex={-2}
                 />
                 <button
                   onClick={() => {
@@ -125,6 +127,7 @@ const EditThemeModal: React.FC<Props> = ({ theme, hide }) => {
                   }}
                   style={{ backgroundColor: watch("window_hex") }}
                   className="min-w-[40px] h-8 shadow-lg rounded"
+                  tabIndex={-2}
                 ></button>
               </div>
               <div className="flex flex-row items-center gap-4">
@@ -140,6 +143,7 @@ const EditThemeModal: React.FC<Props> = ({ theme, hide }) => {
                   id="base-hex"
                   className="input"
                   type="text"
+                  tabIndex={-2}
                 />
                 <button
                   onClick={() => {
@@ -148,6 +152,7 @@ const EditThemeModal: React.FC<Props> = ({ theme, hide }) => {
                   }}
                   style={{ backgroundColor: watch("base_hex") }}
                   className="min-w-[40px] h-8 shadow-lg rounded"
+                  tabIndex={-2}
                 ></button>
               </div>
               <div className="flex flex-row items-center gap-4">
@@ -163,6 +168,7 @@ const EditThemeModal: React.FC<Props> = ({ theme, hide }) => {
                   id="primary-hex"
                   className="input"
                   type="text"
+                  tabIndex={-2}
                 />
                 <button
                   onClick={() => {
@@ -171,6 +177,7 @@ const EditThemeModal: React.FC<Props> = ({ theme, hide }) => {
                   }}
                   style={{ backgroundColor: watch("primary_hex") }}
                   className="min-w-[40px] h-8 shadow-lg rounded"
+                  tabIndex={-2}
                 ></button>
               </div>
               <div className="flex flex-row items-center gap-4">
@@ -186,6 +193,7 @@ const EditThemeModal: React.FC<Props> = ({ theme, hide }) => {
                   id="text-hex"
                   className="input"
                   type="text"
+                  tabIndex={-2}
                 />
                 <button
                   onClick={() => {
@@ -194,6 +202,7 @@ const EditThemeModal: React.FC<Props> = ({ theme, hide }) => {
                   }}
                   style={{ backgroundColor: watch("text_hex") }}
                   className="min-w-[40px] h-8 shadow-lg rounded"
+                  tabIndex={-2}
                 ></button>
               </div>
             </div>

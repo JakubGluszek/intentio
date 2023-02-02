@@ -17,6 +17,7 @@ const TimerView: React.FC<Props> = (props) => {
       <div className="flex flex-row items-center justify-between rounded">
         <label htmlFor="auto-start-pomodoros">Auto Start Pomodoros</label>
         <Checkbox
+          tabIndex={-2}
           id="auto-start-pomodoros"
           size="sm"
           defaultChecked={props.settings.auto_start_pomodoros}
@@ -38,6 +39,7 @@ const TimerView: React.FC<Props> = (props) => {
       <div className="flex flex-row items-center justify-between rounded">
         <label htmlFor="auto-start-breaks">Auto Start Breaks</label>
         <Checkbox
+          tabIndex={-2}
           size="sm"
           id="auto-start-breaks"
           defaultChecked={props.settings.auto_start_breaks}

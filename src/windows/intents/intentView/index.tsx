@@ -202,6 +202,7 @@ const IntentLabelView: React.FC<IntentLabelViewProps> = (props) => {
       ref={ref}
     >
       <input
+        tabIndex={-3}
         autoFocus
         maxLength={24}
         {...register("label", { required: true, minLength: 1, maxLength: 24 })}

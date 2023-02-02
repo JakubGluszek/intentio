@@ -107,6 +107,7 @@ const AlertsView: React.FC<Props> = (props) => {
       <div className="flex flex-row items-center justify-between">
         <label htmlFor="system-notifications">System notifications</label>
         <Checkbox
+          tabIndex={-2}
           size="sm"
           id="system-notifications"
           defaultChecked={props.settings.system_notifications}
@@ -131,7 +132,9 @@ const AlertsView: React.FC<Props> = (props) => {
           <Button transparent onClick={() => previousTrack()}>
             <MdKeyboardArrowLeft size={24} />
           </Button>
-          <span className="text-sm text-center w-full whitespace-nowrap overflow-ellipsis overflow-hidden">{currentTrack?.name ?? "-"}</span>
+          <span className="text-sm text-center w-full whitespace-nowrap overflow-ellipsis overflow-hidden">
+            {currentTrack?.name ?? "-"}
+          </span>
           <Button transparent onClick={() => nextTrack()}>
             <MdKeyboardArrowRight size={24} />
           </Button>

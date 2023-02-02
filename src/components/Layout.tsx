@@ -2,11 +2,11 @@ import React from "react";
 import { appWindow } from "@tauri-apps/api/window";
 import { MdClose } from "react-icons/md";
 
+import useStore from "@/store";
 import utils from "@/utils";
 import services from "@/services";
-import Button from "./Button";
 import { useEvent } from "@/hooks";
-import useStore from "@/store";
+import Button from "./Button";
 
 interface Props {
   children: React.ReactNode;
@@ -47,7 +47,7 @@ const Layout: React.FC<Props> = ({ children, icon, label, header }) => {
               {icon ?? null}
               <span className="text-xl">{label}</span>
             </div>
-            <Button tabIndex={-1} transparent onClick={() => appWindow.close()}>
+            <Button transparent onClick={() => appWindow.close()}>
               <MdClose size={28} />
             </Button>
           </div>

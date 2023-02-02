@@ -23,6 +23,7 @@ const Button: React.FC<Props> = (props) => {
     innerRef,
     onMouseEnter,
     onMouseLeave,
+    tabIndex = -2,
     ...restProps
   } = props;
 
@@ -95,9 +96,11 @@ const Button: React.FC<Props> = (props) => {
         ...style,
       }}
       whileTap={{ scale: transparent ? 0.8 : undefined }}
+      whileFocus={{ opacity: 1.0 }}
       onMouseEnter={handleOnMouseEnter}
       onMouseLeave={handleOnMouseLeave}
       disabled={disabled}
+      tabIndex={tabIndex}
       ref={innerRef}
       {...restProps}
     >

@@ -103,6 +103,7 @@ const Timer: React.FC<Props> = (props) => {
           </CountdownCircleTimer>
           <div className="absolute bottom-4 w-full flex flex-col items-center gap-1">
             <button
+              tabIndex={-2}
               className="text-primary/80 hover:text-primary opacity-0 group-hover:opacity-100"
               onClick={() => {
                 timer.restart();

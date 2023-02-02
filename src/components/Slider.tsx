@@ -9,6 +9,12 @@ interface Props {
 }
 
 const Slider: React.FC<Props> = ({ min, max, defaultValue, onChangeEnd }) => {
+  React.useEffect(() => {
+    const thumbs = document.querySelectorAll(".mantine-6xjpl8");
+    // @ts-ignore
+    thumbs.forEach((thumb) => (thumb.tabIndex = -2));
+  }, []);
+
   return (
     <SliderMantine
       data-tauri-disable-drag
@@ -17,7 +23,8 @@ const Slider: React.FC<Props> = ({ min, max, defaultValue, onChangeEnd }) => {
         bar: "bg-primary",
         thumb: "bg-primary border-primary",
         track: "before:bg-base",
-        label: "bg-base text-text shadow border-2 px-2 -translate-y-2 border-primary",
+        label:
+          "bg-base text-text shadow border-2 px-2 -translate-y-2 border-primary",
       }}
       showLabelOnHover={false}
       onChangeEnd={onChangeEnd}

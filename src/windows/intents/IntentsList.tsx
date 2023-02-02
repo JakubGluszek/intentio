@@ -118,9 +118,9 @@ const IntentView: React.FC<IntentViewProps> = (props) => {
     >
       {/* Label */}
       <div className="h-6 w-full flex flex-row items-center gap-1">
-        <span className="text-left whitespace-nowrap overflow-ellipsis overflow-hidden">
+        <div className="w-full text-left whitespace-nowrap overflow-ellipsis overflow-hidden">
           {data.label}
-        </span>
+        </div>
         <div
           className={clsx(
             "flex flex-row items-center gap-1",

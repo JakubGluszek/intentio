@@ -144,7 +144,7 @@ const NotesView: React.FC = () => {
                 key={note.id}
                 data={note}
                 selectedNotesIds={selectedIds}
-                setSelectedNotesIds={setSelectedIds}
+                setSelectedNotesIds={!viewFilter ? setSelectedIds : undefined}
               />
             ))}
           </div>
@@ -184,7 +184,7 @@ const NotesView: React.FC = () => {
 interface NoteViewProps {
   data: Note;
   selectedNotesIds: string[];
-  setSelectedNotesIds: React.Dispatch<React.SetStateAction<string[]>>;
+  setSelectedNotesIds?: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 const NoteView: React.FC<NoteViewProps> = (props) => {
@@ -253,7 +253,7 @@ const NoteView: React.FC<NoteViewProps> = (props) => {
             y = y - (y + modalHeight - root.height) - padding;
           }
 
-          props.setSelectedNotesIds([]);
+          props.setSelectedNotesIds && props.setSelectedNotesIds([]);
           setViewModal({ x, y });
         }}
         onMouseDown={(e) => {
@@ -262,16 +262,18 @@ const NoteView: React.FC<NoteViewProps> = (props) => {
 
           if (e.ctrlKey) {
             if (isSelected) {
-              props.setSelectedNotesIds((ids) =>
-                ids.filter((id) => id !== data.id)
-              );
+              props.setSelectedNotesIds &&
+                props.setSelectedNotesIds((ids) =>
+                  ids.filter((id) => id !== data.id)
+                );
             } else {
-              props.setSelectedNotesIds((ids) => [data.id, ...ids]);
+              props.setSelectedNotesIds &&
+                props.setSelectedNotesIds((ids) => [data.id, ...ids]);
             }
             return;
           }
 
-          props.setSelectedNotesIds([]);
+          props.setSelectedNotesIds && props.setSelectedNotesIds([]);
           setViewExpand((prev) => !prev);
         }}
         onDoubleClick={(e) => {
@@ -342,6 +344,7 @@ const FilterNotesView: React.FC<FilterNotesViewProps> = (props) => {
     <div className="w-full">
       <div className="relative">
         <input
+          tabIndex={-2}
           className="input"
           autoFocus
           value={props.query}

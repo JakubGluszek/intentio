@@ -73,6 +73,7 @@ const SessionsView: React.FC<Props> = (props) => {
       <div className="h-8 flex flex-row items-center gap-1">
         <div className="relative w-full flex flex-row items-center gap-1">
           <input
+            tabIndex={-3}
             autoComplete="off"
             value={props.filter}
             onChange={(e) => props.setFilter(e.currentTarget.value)}

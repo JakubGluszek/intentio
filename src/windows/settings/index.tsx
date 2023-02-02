@@ -108,10 +108,11 @@ const SettingsWindow: React.FC = () => {
           </div>
           {/* About */}
           <div className="flex flex-row items-center justify-between">
-            <span className="opacity-80 font-bold">v1.1.0</span>
+            <span className="opacity-80 font-bold">v2.0</span>
             <div className="flex flex-row items-center gap-1">
               <Tooltip withArrow label="Home page">
                 <a
+                  tabIndex={-2}
                   href={config.about.homePage}
                   target="_blank"
                   rel="noreferrer"
@@ -123,6 +124,7 @@ const SettingsWindow: React.FC = () => {
               </Tooltip>
               <Tooltip withArrow label="Source code">
                 <a
+                  tabIndex={-2}
                   href={config.about.sourceCode}
                   target="_blank"
                   rel="noreferrer"
@@ -134,6 +136,7 @@ const SettingsWindow: React.FC = () => {
               </Tooltip>
               <Tooltip withArrow label="Report a bug">
                 <a
+                  tabIndex={-2}
                   href={config.about.sourceCode + "/issues"}
                   target="_blank"
                   rel="noreferrer"
