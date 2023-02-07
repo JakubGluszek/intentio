@@ -1,7 +1,7 @@
 import React from "react";
 import {
-  MdAccountCircle,
   MdColorLens,
+  MdInfo,
   MdNotifications,
   MdSettings,
   MdTimer,
@@ -10,6 +10,8 @@ import { RiToolsFill } from "react-icons/ri";
 import { IoIosBug, IoIosGlobe, IoLogoGithub } from "react-icons/io";
 import { Tooltip } from "@mantine/core";
 
+import useStore from "@/store";
+import config from "@/config";
 import services from "@/services";
 import { Layout, Button } from "@/components";
 import { SettingsForUpdate } from "@/bindings/SettingsForUpdate";
@@ -17,10 +19,8 @@ import TimerView from "./TimerView";
 import AlertsView from "./AlertsView";
 import AppearanceView from "./appearanceView";
 import BehaviorView from "./BehaviorView";
-import useStore from "@/store";
-import config from "@/config";
 
-type Tab = "timer" | "alerts" | "appearance" | "behavior" | "account";
+type Tab = "timer" | "alerts" | "appearance" | "behavior" | "about";
 
 export type ColorType = "window" | "base" | "primary" | "text";
 
@@ -95,58 +95,56 @@ const SettingsWindow: React.FC = () => {
             </Button>
             <Button
               className="shadow transition-transform hover:-translate-y-0.5 hover:shadow-2xl"
-              color={tab === "account" ? "primary" : "base"}
-              onClick={() => setTab("account")}
+              color={tab === "about" ? "primary" : "base"}
+              onClick={() => setTab("about")}
             >
               <div className="w-full flex flex-row gap-1">
                 <div className="w-6">
-                  <MdAccountCircle size={24} />
+                  <MdInfo size={24} />
                 </div>
-                Account
+                About
               </div>
             </Button>
           </div>
           {/* About */}
-          <div className="flex flex-row items-center justify-between">
-            <span className="opacity-80 font-bold">v2.0</span>
-            <div className="flex flex-row items-center gap-1">
-              <Tooltip withArrow label="Home page">
-                <a
-                  tabIndex={-2}
-                  href={config.about.homePage}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <Button transparent>
-                    <IoIosGlobe size={24} />
-                  </Button>
-                </a>
-              </Tooltip>
-              <Tooltip withArrow label="Source code">
-                <a
-                  tabIndex={-2}
-                  href={config.about.sourceCode}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <Button transparent>
-                    <IoLogoGithub size={22} />
-                  </Button>
-                </a>
-              </Tooltip>
-              <Tooltip withArrow label="Report a bug">
-                <a
-                  tabIndex={-2}
-                  href={config.about.sourceCode + "/issues"}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <Button transparent>
-                    <IoIosBug size={24} />
-                  </Button>
-                </a>
-              </Tooltip>
-            </div>
+          <div className="flex flex-row items-center justify-end gap-1">
+            <Tooltip withArrow label="Home page">
+              <a
+                className="mr-auto"
+                tabIndex={-2}
+                href={config.about.homePage}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <Button transparent>
+                  <IoIosGlobe size={24} />
+                </Button>
+              </a>
+            </Tooltip>
+            <Tooltip withArrow label="Source code">
+              <a
+                tabIndex={-2}
+                href={config.about.sourceCode}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <Button transparent>
+                  <IoLogoGithub size={22} />
+                </Button>
+              </a>
+            </Tooltip>
+            <Tooltip withArrow label="Report a bug">
+              <a
+                tabIndex={-2}
+                href={config.about.sourceCode + "/issues"}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <Button transparent>
+                  <IoIosBug size={24} />
+                </Button>
+              </a>
+            </Tooltip>
           </div>
         </div>
         {/* Main */}
