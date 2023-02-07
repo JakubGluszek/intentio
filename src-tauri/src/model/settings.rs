@@ -95,7 +95,7 @@ pub struct SettingsForUpdate {
 pub struct SettingsBmc;
 
 impl SettingsBmc {
-    /// Writes default settings to "/sentio/settings.toml" if the file doesn't yet exist.
+    /// Writes default settings to "/intentio/settings.toml" if the file doesn't yet exist.
     pub fn init() -> Result<()> {
         let path = Self::get_path();
 
@@ -200,7 +200,7 @@ impl SettingsBmc {
             .unwrap()
             .to_owned();
 
-        let path = path + "/sentio/settings.toml";
+        let path = path + "/intentio/settings.toml";
 
         path
     }
