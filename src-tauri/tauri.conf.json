@@ -20,10 +20,38 @@
         "copyFile": true,
         "createDir": true,
         "scope": [
-          "$APP/*",
           "$APP",
+          "$APP/*",
           "$RESOURCE",
-          "$RESOURCE/*"
+          "$RESOURCE/*",
+          "$CONFIG",
+          "$CONFIG/*",
+          "$CONFIG/**/*"
+        ]
+      },
+      "shell": {
+        "open": true,
+        "scope": [
+          {
+            "name": "sh",
+            "cmd": "sh",
+            "args": [
+              "-c",
+              {
+                "validator": "\\S+"
+              }
+            ]
+          },
+          {
+            "name": "cmd",
+            "cmd": "cmd",
+            "args": [
+              "/C",
+              {
+                "validator": "\\S+"
+              }
+            ]
+          }
         ]
       }
     },

@@ -13,7 +13,7 @@ const BehaviorView: React.FC<Props> = (props) => {
   return (
     <div className="flex flex-col gap-2">
       {/* Display live countdown checkbox */}
-      <div className="flex flex-row items-center justify-between rounded p-2 bg-window">
+      <div className="flex flex-row items-center justify-between rounded p-1.5 bg-window">
         <label htmlFor="hide-to-tray">Hide main window to tray</label>
         <Checkbox
           tabIndex={-2}
@@ -34,9 +34,6 @@ const BehaviorView: React.FC<Props> = (props) => {
               "border-primary checked:border-primary bg-transparent checked:bg-transparent border-2",
           }}
         />
-      </div>
-      <div className="flex flex-col">
-        <div className="text-lg tracking-widest font-bold">Scripts</div>
       </div>
     </div>
   );

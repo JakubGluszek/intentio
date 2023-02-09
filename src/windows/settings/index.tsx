@@ -7,6 +7,7 @@ import {
   MdTimer,
 } from "react-icons/md";
 import { RiToolsFill } from "react-icons/ri";
+import { AiFillCode } from "react-icons/ai";
 import { IoIosBug, IoIosGlobe, IoLogoGithub } from "react-icons/io";
 import { Tooltip } from "@mantine/core";
 
@@ -19,8 +20,9 @@ import TimerView from "./TimerView";
 import AlertsView from "./AlertsView";
 import AppearanceView from "./appearanceView";
 import BehaviorView from "./BehaviorView";
+import ScriptsView from "./ScriptsView";
 
-type Tab = "timer" | "alerts" | "appearance" | "behavior" | "about";
+type Tab = "timer" | "alerts" | "appearance" | "behavior" | "scripts" | "about";
 
 export type ColorType = "window" | "base" | "primary" | "text";
 
@@ -95,6 +97,19 @@ const SettingsWindow: React.FC = () => {
             </Button>
             <Button
               className="shadow transition-transform hover:-translate-y-0.5 hover:shadow-2xl"
+              color={tab === "scripts" ? "primary" : "base"}
+              onClick={() => setTab("scripts")}
+            >
+              <div className="w-full flex flex-row gap-1">
+                <div className="w-6">
+                  <AiFillCode size={24} />
+                </div>
+                Scripts
+              </div>
+            </Button>
+
+            <Button
+              className="shadow transition-transform hover:-translate-y-0.5 hover:shadow-2xl"
               color={tab === "about" ? "primary" : "base"}
               onClick={() => setTab("about")}
             >
@@ -162,6 +177,9 @@ const SettingsWindow: React.FC = () => {
               ) : null}
               {tab === "behavior" ? (
                 <BehaviorView settings={settings} update={update} />
+              ) : null}
+              {tab === "scripts" ? (
+                <ScriptsView settings={settings} update={update} />
               ) : null}
             </div>
           </div>
