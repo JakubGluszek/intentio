@@ -60,8 +60,8 @@ npm run tauri dev
 
 ## Roadmap
 
-- [ ] Ability to take notes
-- [ ] Ability to define & finish tasks
+- [x] Ability to take notes
+- [x] Ability to define & finish tasks
 - [ ] Option to export data into multiple formats
 - [ ] More customizable user preferences, like windows behavior etc
 - [ ] Ability to run bash scripts on certain events like: play, pause, break start/end etc...
