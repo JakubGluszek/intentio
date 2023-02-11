@@ -13,7 +13,7 @@ interface Props {
 
 const TimerView: React.FC<Props> = (props) => {
   return (
-    <div className="flex flex-col gap-4 p-2">
+    <div className="flex flex-col gap-4 pb-2">
       <div className="flex flex-row items-center justify-between rounded">
         <label htmlFor="auto-start-pomodoros">Auto Start Pomodoros</label>
         <Checkbox

@@ -39,7 +39,7 @@ const AppearanceView: React.FC<Props> = (props) => {
           />,
           document.getElementById("root")!
         )}
-      <div className="flex flex-col gap-4 p-2">
+      <div className="flex flex-col gap-4 pb-2">
         {/* Display live countdown checkbox */}
         <div>Display</div>
         <div className="flex flex-row items-center justify-between rounded p-1.5 bg-window shadow">

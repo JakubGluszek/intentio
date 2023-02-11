@@ -103,7 +103,7 @@ const AlertsView: React.FC<Props> = (props) => {
   };
 
   return (
-    <div className="flex flex-col gap-4 p-2">
+    <div className="flex flex-col gap-4 pb-2">
       <div className="flex flex-row items-center justify-between">
         <label htmlFor="system-notifications">System notifications</label>
         <Checkbox

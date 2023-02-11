@@ -6,11 +6,10 @@ import {
   readTextFile,
 } from "@tauri-apps/api/fs";
 import { Command } from "@tauri-apps/api/shell";
-
-import { Button } from "@/components";
-import { VscDebugStart } from "react-icons/vsc";
 import { clsx } from "@mantine/core";
 import { toast } from "react-hot-toast";
+
+import { Button } from "@/components";
 
 const SCRIPT_FORMATS = [".sh"];
 
@@ -69,7 +68,7 @@ const ScriptView: React.FC<ScriptView> = (props) => {
   return (
     <div
       className={clsx(
-        "flex flex-row justify-between gap-1 bg-window p-2 rounded",
+        "flex flex-row justify-between gap-1 bg-window p-1.5 rounded",
         isExecuting && "border-b-4 border-primary/60"
       )}
     >
