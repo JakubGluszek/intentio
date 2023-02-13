@@ -170,7 +170,7 @@ impl SettingsBmc {
         }
         if let Some(current_theme_id) = data.current_theme_id {
             settings.current_theme_id = current_theme_id;
-            events.push("current_theme_updated");
+            events.push("current_theme_changed");
         }
         if let Some(display_live_countdown) = data.display_live_countdown {
             settings.display_live_countdown = display_live_countdown;

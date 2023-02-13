@@ -8,7 +8,7 @@ import { useEvent } from "@/hooks";
 import useStore from "@/store";
 import utils from "@/utils";
 import { ColorFormat } from "@/types";
-import services from "@/services";
+import ipc from "@/ipc";
 import Button from "@/components/Button";
 import { Settings } from "@/bindings/Settings";
 import { Intent } from "@/bindings/Intent";
@@ -33,7 +33,7 @@ const Timer: React.FC<Props> = (props) => {
   useEvent("script_deleted", (event) => store.removeScript(event.payload.id));
 
   React.useEffect(() => {
-    services.getScripts().then((data) => store.setScripts(data));
+    ipc.getScripts().then((data) => store.setScripts(data));
   }, []);
 
   const strokeColor = (
@@ -50,7 +50,7 @@ const Timer: React.FC<Props> = (props) => {
             duration={timer.duration * 60}
             onUpdate={timer.onUpdate}
             onComplete={() => {
-              services.playAudio();
+              ipc.playAudio();
               timer.next();
             }}
             strokeWidth={8}
@@ -68,7 +68,7 @@ const Timer: React.FC<Props> = (props) => {
                       data-tauri-disable-drag
                       className="translate-y-4 font-mono opacity-80"
                       onClick={() =>
-                        services.updateSettings({
+                        ipc.updateSettings({
                           display_live_countdown: false,
                         })
                       }
@@ -94,7 +94,7 @@ const Timer: React.FC<Props> = (props) => {
                     className="opacity-80 text-3xl font-bold whitespace-nowrap text-primary"
                     data-tauri-disable-drag
                     onClick={() =>
-                      services.updateSettings({
+                      ipc.updateSettings({
                         display_live_countdown: true,
                       })
                     }

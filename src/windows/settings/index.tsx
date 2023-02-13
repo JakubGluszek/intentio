@@ -13,7 +13,7 @@ import { Tooltip } from "@mantine/core";
 
 import useStore from "@/store";
 import config from "@/config";
-import services from "@/services";
+import ipc from "@/ipc";
 import { Layout, Button } from "@/components";
 import { SettingsForUpdate } from "@/bindings/SettingsForUpdate";
 import TimerView from "./TimerView";
@@ -33,7 +33,7 @@ const SettingsWindow: React.FC = () => {
   const setSettings = useStore((state) => state.setSettings);
 
   const update = async (data: Partial<SettingsForUpdate>) => {
-    const result = await services.updateSettings(data);
+    const result = await ipc.updateSettings(data);
     setSettings(result);
     return result;
   };

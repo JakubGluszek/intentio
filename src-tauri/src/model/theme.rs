@@ -188,7 +188,7 @@ impl ThemeBmc {
 
             SettingsBmc::save(&settings)?;
 
-            ctx.emit_event("current_theme_updated", "");
+            ctx.emit_event("current_theme_changed", "");
         }
 
         Ok(result)

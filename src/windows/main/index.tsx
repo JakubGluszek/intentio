@@ -5,7 +5,7 @@ import { WebviewWindow } from "@tauri-apps/api/window";
 import { toast } from "react-hot-toast";
 
 import { useEvent } from "@/hooks";
-import services from "@/services";
+import ipc from "@/ipc";
 import useStore from "@/store";
 import config from "@/config";
 import { Layout, Button } from "@/components";
@@ -27,7 +27,7 @@ const MainWindow: React.FC = () => {
   useEvent("intent_deleted", (event) => store.removeIntent(event.payload.id));
   useEvent("intent_archived", (event) => {
     if (store.activeIntentId === event.payload.id) {
-      services.setActiveIntentId(undefined).then((data) => {
+      ipc.setActiveIntentId(undefined).then((data) => {
         store.setActiveIntentId(data);
         toast("Active intent has been archived");
       });
@@ -40,8 +40,8 @@ const MainWindow: React.FC = () => {
   );
 
   React.useEffect(() => {
-    services.getIntents().then((data) => store.setIntents(data));
-    services.getActiveIntentId().then((data) => store.setActiveIntentId(data));
+    ipc.getIntents().then((data) => store.setIntents(data));
+    ipc.getActiveIntentId().then((data) => store.setActiveIntentId(data));
   }, []);
 
   return (
@@ -112,11 +112,11 @@ const Header: React.FC<HeaderProps> = (props) => {
           className="transition-opacity duration-300"
           style={{ opacity: props.sidebarVisibility ? 0.0 : 1.0 }}
         >
-          <Button transparent onClick={() => services.hideMainWindow()}>
+          <Button transparent onClick={() => ipc.hideMainWindow()}>
             <MdRemove size={28} />
           </Button>
         </div>
-        <Button transparent onClick={() => services.exitMainWindow()}>
+        <Button transparent onClick={() => ipc.exitMainWindow()}>
           <MdClose size={28} />
         </Button>
       </div>

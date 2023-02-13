@@ -3,7 +3,7 @@ import { BiTargetLock } from "react-icons/bi";
 import { toast } from "react-hot-toast";
 
 import { useEvent } from "@/hooks";
-import services from "@/services";
+import ipc from "@/ipc";
 import Layout from "@/components/Layout";
 import Sidebar from "./Sidebar";
 import Dashboard from "./dashboard";
@@ -37,11 +37,11 @@ const IntentsWindow: React.FC = () => {
   useEvent("session_saved", (event) => store.addSession(event.payload));
 
   React.useEffect(() => {
-    services
+    ipc
       .getIntents()
       .then((data) => store.setIntents(data))
       .catch((err) => console.log("getIntents", err));
-    services.getSessions().then((data) => store.setSessions(data));
+    ipc.getSessions().then((data) => store.setSessions(data));
   }, []);
 
   const intent = store.getIntentById(selectedId);

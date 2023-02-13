@@ -8,7 +8,7 @@ import { Tooltip } from "@mantine/core";
 import { useClickOutside } from "@mantine/hooks";
 
 import useStore from "@/store";
-import services from "@/services";
+import ipc from "@/ipc";
 import { Theme } from "@/bindings/Theme";
 import { ThemeForCreate } from "@/bindings/ThemeForCreate";
 import { Button, ModalContainer, DeleteButton } from "@/components";
@@ -29,7 +29,7 @@ const EditThemeModal: React.FC<Props> = ({ theme, hide }) => {
 
   // update theme
   const onSubmit = handleSubmit((data) => {
-    services.updateTheme(theme.id, data).then((data) => {
+    ipc.updateTheme(theme.id, data).then((data) => {
       if (theme.id === store.currentTheme?.id) {
         emit("current_theme_updated", theme);
       }
@@ -210,7 +210,7 @@ const EditThemeModal: React.FC<Props> = ({ theme, hide }) => {
             <div className="h-7 flex flex-row items-center justify-between">
               <DeleteButton
                 onClick={() =>
-                  services.deleteTheme(theme.id).then((data) => {
+                  ipc.deleteTheme(theme.id).then((data) => {
                     store.removeTheme(data.id);
                     hide();
                     toast("Theme deleted");

@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 
 import useStore from "@/store";
-import services from "@/services";
+import ipc from "@/ipc";
 import { Button, Editor } from "@/components";
 import utils from "@/utils";
 import { ScriptForCreate } from "@/bindings/ScriptForCreate";
@@ -19,7 +19,7 @@ const CreateScriptView: React.FC<CreateScriptViewProps> = (props) => {
   const { register, handleSubmit } = useForm<ScriptForCreate>();
 
   const onSubmit = handleSubmit((data) => {
-    services.createScript({ ...data, body }).then((data) => {
+    ipc.createScript({ ...data, body }).then((data) => {
       store.addScript(data);
       props.exit();
       toast("Script saved");

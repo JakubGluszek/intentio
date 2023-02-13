@@ -14,7 +14,7 @@ import { clsx, Textarea } from "@mantine/core";
 import { writeText } from "@tauri-apps/api/clipboard";
 
 import useStore from "@/store";
-import services from "@/services";
+import ipc from "@/ipc";
 import { useEvent } from "@/hooks";
 import { Button } from "@/components";
 import { Note } from "@/bindings/Note";
@@ -55,7 +55,7 @@ const NotesView: React.FC = () => {
   );
 
   React.useEffect(() => {
-    services.getNotes().then((data) => store.setNotes(data));
+    ipc.getNotes().then((data) => store.setNotes(data));
   }, []);
 
   React.useEffect(() => {
@@ -113,7 +113,7 @@ const NotesView: React.FC = () => {
               ) : (
                 <Button
                   onClick={() =>
-                    services.deleteNotes(selectedIds).then(() => {
+                    ipc.deleteNotes(selectedIds).then(() => {
                       setSelectedIds([]);
                       setViewConfirmDelete(false);
                       toast("Notes deleted");
@@ -207,7 +207,7 @@ const NoteView: React.FC<NoteViewProps> = (props) => {
 
   const onEditSubmit = () => {
     if (body.length === 0) return;
-    services.updateNote(data.id, { body }).then(() => {
+    ipc.updateNote(data.id, { body }).then(() => {
       setViewEdit(false);
       toast("Note updated");
     });
@@ -390,14 +390,14 @@ const CreateNoteView: React.FC<CreateNoteViewProps> = (props) => {
 
   const onSubmit = () => {
     if (body.length === 0) return;
-    services
+    ipc
       .createNote({ body, intent_id: store.activeIntentId! })
       .then(() => {
         toast("Note created");
         setBody("");
         props.setViewCreate(false);
       })
-      .catch((err) => console.log("services.createNote", err));
+      .catch((err) => console.log("ipc.createNote", err));
   };
 
   return !props.viewCreate ? (
@@ -501,7 +501,7 @@ const NoteModal: React.FC<NoteModalProps> = (props) => {
         ) : (
           <Button
             onClick={() =>
-              services
+              ipc
                 .deleteNote(props.data.id)
                 .then(() => toast("Note deleted"))
             }

@@ -4,7 +4,7 @@ import { MdClose } from "react-icons/md";
 
 import useStore from "@/store";
 import utils from "@/utils";
-import services from "@/services";
+import ipc from "@/ipc";
 import { useEvent } from "@/hooks";
 import Button from "./Button";
 
@@ -22,7 +22,7 @@ const Layout: React.FC<Props> = ({ children, icon, label, header }) => {
   useDetectNoDrag(store.tauriDragEnabled);
 
   React.useEffect(() => {
-    services.getCurrentTheme().then((data) => {
+    ipc.getCurrentTheme().then((data) => {
       utils.applyTheme(data);
       store.setCurrentTheme(data);
     });

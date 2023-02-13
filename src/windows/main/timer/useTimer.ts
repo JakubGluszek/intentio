@@ -3,7 +3,7 @@ import { sendNotification } from "@tauri-apps/api/notification";
 import toast from "react-hot-toast";
 
 import { TimerType } from "@/types";
-import services from "@/services";
+import ipc from "@/ipc";
 import { Settings } from "@/bindings/Settings";
 import useStore from "@/store";
 import utils from "@/utils";
@@ -108,7 +108,7 @@ const useTimer = (settings: Settings) => {
   const save = React.useCallback(() => {
     if (type !== "focus" || timeFocused < 60) return;
 
-    services
+    ipc
       .createSession({
         duration: ~~((timeFocused + 1) / 60),
         started_at: startedAt!.getTime().toString(),
