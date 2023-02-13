@@ -236,8 +236,8 @@ const TaskView: React.FC<TaskViewProps> = (props) => {
   const { register, handleSubmit, setValue } = useForm<{ body: string }>();
   const containerRef = useClickOutside<HTMLDivElement>(() => {
     viewEdit && setViewEdit(false);
-    setViewModal(undefined);
   });
+  const store = useStore();
 
   const modalWidth = 120;
   const modalHeight = 32;
@@ -276,92 +276,105 @@ const TaskView: React.FC<TaskViewProps> = (props) => {
     return () => hideConfirm && clearTimeout(hideConfirm);
   }, [viewConfirmDelete]);
 
+  // fixes clicking outside where there is no `data-tauri-disable-drag property`
+  // otherwise context would not close because the window would start being dragged
+  React.useEffect(() => {
+    if (viewModal) {
+      store.setTauriDragEnabled(false);
+    } else {
+      store.setTauriDragEnabled(true);
+    }
+  }, [viewModal]);
+
   return (
-    <div
-      ref={containerRef}
-      className={clsx(
-        "min-h-fit flex flex-col gap-1.5 p-1 rounded shadow text-sm",
-        isSelected ? "bg-base/80 hover:bg-base" : "bg-window/80 hover:bg-window"
-      )}
-      onMouseDown={(e) => {
-        // @ts-ignore
-        if (e.target.closest("button") || e.button === 2 || viewModal) return;
+    <>
+      <div
+        ref={containerRef}
+        className={clsx(
+          "min-h-fit flex flex-col gap-1.5 p-1 rounded shadow text-sm",
+          isSelected
+            ? "bg-base/80 hover:bg-base"
+            : "bg-window/80 hover:bg-window"
+        )}
+        onMouseDown={(e) => {
+          // @ts-ignore
+          if (e.target.closest("button") || e.button === 2 || viewModal) return;
 
-        if (e.ctrlKey) {
-          if (isSelected) {
-            props.setSelectedTasksIds &&
-              props.setSelectedTasksIds((ids) =>
-                ids.filter((id) => id !== data.id)
-              );
-          } else {
-            props.setSelectedTasksIds &&
-              props.setSelectedTasksIds((ids) => [data.id, ...ids]);
+          if (e.ctrlKey) {
+            if (isSelected) {
+              props.setSelectedTasksIds &&
+                props.setSelectedTasksIds((ids) =>
+                  ids.filter((id) => id !== data.id)
+                );
+            } else {
+              props.setSelectedTasksIds &&
+                props.setSelectedTasksIds((ids) => [data.id, ...ids]);
+            }
+            return;
           }
-          return;
-        }
 
-        props.setSelectedTasksIds && props.setSelectedTasksIds([]);
-      }}
-      onContextMenu={(e) => {
-        if (viewEdit) return;
-        var x = e.pageX;
-        var y = e.pageY;
+          props.setSelectedTasksIds && props.setSelectedTasksIds([]);
+        }}
+        onContextMenu={(e) => {
+          if (viewEdit) return;
+          var x = e.pageX;
+          var y = e.pageY;
 
-        const root = config.webviews.main;
-        const padding = 8;
+          const root = config.webviews.main;
+          const padding = 8;
 
-        // fix possible x overflow
-        if (x + modalWidth > root.width) {
-          x = x - (x + modalWidth - root.width) - padding;
-        }
+          // fix possible x overflow
+          if (x + modalWidth > root.width) {
+            x = x - (x + modalWidth - root.width) - padding;
+          }
 
-        // fix possible y overflow
-        if (y + modalHeight > root.height) {
-          y = y - (y + modalHeight - root.height) - padding;
-        }
+          // fix possible y overflow
+          if (y + modalHeight > root.height) {
+            y = y - (y + modalHeight - root.height) - padding;
+          }
 
-        props.setSelectedTasksIds && props.setSelectedTasksIds([]);
-        setViewModal({ x, y });
-      }}
-      onDoubleClick={() => setViewEdit(true)}
-      data-tauri-disable-drag
-    >
-      {!viewEdit ? (
-        <div className="flex flex-row items-start gap-1">
-          {!data.done ? (
-            <Button onMouseDown={() => handleCheck()} transparent>
-              <MdCheckBoxOutlineBlank size={24} />
-            </Button>
-          ) : (
-            <Button onMouseDown={() => handleCheck()} transparent>
-              <MdCheckBox size={24} />
-            </Button>
-          )}
-          <div className="mt-0.5" style={{ wordBreak: "break-all" }}>
-            {data.body}
+          props.setSelectedTasksIds && props.setSelectedTasksIds([]);
+          setViewModal({ x, y });
+        }}
+        onDoubleClick={() => setViewEdit(true)}
+        data-tauri-disable-drag
+      >
+        {!viewEdit ? (
+          <div className="flex flex-row items-start gap-1">
+            {!data.done ? (
+              <Button onMouseDown={() => handleCheck()} transparent>
+                <MdCheckBoxOutlineBlank size={24} />
+              </Button>
+            ) : (
+              <Button onMouseDown={() => handleCheck()} transparent>
+                <MdCheckBox size={24} />
+              </Button>
+            )}
+            <div className="mt-0.5" style={{ wordBreak: "break-all" }}>
+              {data.body}
+            </div>
           </div>
-        </div>
-      ) : (
-        <form onSubmit={onEditSubmit}>
-          <input
-            className="input"
-            {...register("body")}
-            onBlur={() => {
-              setViewEdit(false);
-            }}
-            onKeyDown={(e) => {
-              if (e.key !== "Escape") return;
-              setViewEdit(false);
-              setValue("body", data.body);
-            }}
-            defaultValue={data.body}
-            autoFocus
-            maxLength={96}
-            minLength={1}
-          />
-        </form>
-      )}
-
+        ) : (
+          <form onSubmit={onEditSubmit}>
+            <input
+              className="input"
+              {...register("body")}
+              onBlur={() => {
+                setViewEdit(false);
+              }}
+              onKeyDown={(e) => {
+                if (e.key !== "Escape") return;
+                setViewEdit(false);
+                setValue("body", data.body);
+              }}
+              defaultValue={data.body}
+              autoFocus
+              maxLength={96}
+              minLength={1}
+            />
+          </form>
+        )}
+      </div>
       {viewModal
         ? createPortal(
           <TaskModal
@@ -376,7 +389,7 @@ const TaskView: React.FC<TaskViewProps> = (props) => {
           document.getElementById("root")!
         )
         : null}
-    </div>
+    </>
   );
 };
 
@@ -393,8 +406,13 @@ interface TaskModalProps {
 const TaskModal: React.FC<TaskModalProps> = (props) => {
   const [preventHide, setPreventHide] = React.useState(true);
   const [viewConfirmDelete, setViewConfirmDelete] = React.useState(false);
-  const [deleteBtn, setDeleteBtn] = React.useState<HTMLButtonElement | null>(
-    null
+
+  const deleteRef = React.useRef<HTMLButtonElement>(null);
+
+  const ref = useClickOutside<HTMLDivElement>(
+    () => !preventHide && props.hide(),
+    ["click", "contextmenu"],
+    [deleteRef.current]
   );
 
   React.useEffect(() => {
@@ -409,12 +427,6 @@ const TaskModal: React.FC<TaskModalProps> = (props) => {
 
     return () => hideConfirm && clearTimeout(hideConfirm);
   }, [viewConfirmDelete]);
-
-  const ref = useClickOutside<HTMLDivElement>(
-    () => !preventHide && props.hide(),
-    ["click", "contextmenu"],
-    [deleteBtn]
-  );
 
   React.useEffect(() => {
     const timeout = setTimeout(() => {
@@ -440,8 +452,7 @@ const TaskModal: React.FC<TaskModalProps> = (props) => {
       <div className="flex flex-col gap-0.5 overflow-clip rounded">
         {!viewConfirmDelete ? (
           <Button
-            // @ts-ignore
-            innerRef={setDeleteBtn}
+            innerRef={deleteRef}
             onClick={() => setViewConfirmDelete(true)}
             rounded={false}
             color="danger"

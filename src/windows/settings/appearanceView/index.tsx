@@ -10,6 +10,7 @@ import { Settings } from "@/bindings/Settings";
 import { SettingsForUpdate } from "@/bindings/SettingsForUpdate";
 import CreateThemeModal from "./CreateThemeModal";
 import ThemeView from "./ThemeView";
+import { useEvent } from "@/hooks";
 
 interface Props {
   settings: Settings;
@@ -19,6 +20,8 @@ interface Props {
 const AppearanceView: React.FC<Props> = (props) => {
   const [viewCreate, setViewCreate] = React.useState(false);
 
+  const store = useStore();
+
   const themes = useStore((state) => state.themes);
   const setThemes = useStore((state) => state.setThemes);
   const currentTheme = useStore((state) => state.currentTheme);
@@ -26,6 +29,8 @@ const AppearanceView: React.FC<Props> = (props) => {
   React.useEffect(() => {
     services.getThemes().then((data) => setThemes(data));
   }, []);
+
+  useEvent("settings_updated", (event) => store.setSettings(event.payload));
 
   return (
     <>
@@ -48,7 +53,7 @@ const AppearanceView: React.FC<Props> = (props) => {
             tabIndex={-2}
             id="display-live-countdown"
             size="sm"
-            defaultChecked={props.settings.display_live_countdown}
+            checked={props.settings.display_live_countdown}
             onChange={(value) =>
               props.update({
                 display_live_countdown: value.currentTarget.checked,

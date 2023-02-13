@@ -212,7 +212,7 @@ const IntentLabelView: React.FC<IntentLabelViewProps> = (props) => {
     <h1
       data-tauri-disable-drag
       className="w-fit whitespace-nowrap overflow-ellipsis overflow-hidden text-lg"
-      onClick={() => setViewEdit(true)}
+      onDoubleClick={() => setViewEdit(true)}
     >
       {props.label}
     </h1>
