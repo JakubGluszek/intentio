@@ -2,7 +2,7 @@ import React from "react";
 import { toast } from "react-hot-toast";
 
 import useStore from "@/store";
-import services from "@/services";
+import ipc from "@/ipc";
 import { Button, Editor } from "@/components";
 import utils from "@/utils";
 import { Script } from "@/bindings/Script";
@@ -18,7 +18,7 @@ const EditScriptCode: React.FC<Props> = (props) => {
   const store = useStore();
 
   const handleUpdate = () =>
-    services.updateScript(props.data.id, { body }).then((data) => {
+    ipc.updateScript(props.data.id, { body }).then((data) => {
       store.patchScript(props.data.id, data);
       props.exit();
       toast("Script updated");

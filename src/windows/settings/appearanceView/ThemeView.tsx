@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import { MdSettings } from "react-icons/md";
 
 import useStore from "@/store";
-import services from "@/services";
+import ipc from "@/ipc";
 import { Theme } from "@/bindings/Theme";
 import { Button } from "@/components";
 import EditThemeModal from "./EditThemeModal";
@@ -28,7 +28,7 @@ const ThemeView: React.FC<Props> = ({ theme }) => {
       className="group flex flex-col rounded overflow-clip"
       onClick={(e) =>
         // @ts-ignore
-        !e.target.closest("button") && services.setCurrentTheme(theme.id)
+        !e.target.closest("button") && ipc.setCurrentTheme(theme.id)
       }
       data-tauri-disable-drag
     >

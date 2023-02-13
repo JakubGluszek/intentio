@@ -7,7 +7,7 @@ import { Tooltip } from "@mantine/core";
 import { useClickOutside } from "@mantine/hooks";
 import { RiEyeCloseFill, RiEyeFill } from "react-icons/ri";
 
-import services from "@/services";
+import ipc from "@/ipc";
 import { Theme } from "@/bindings/Theme";
 import { ThemeForCreate } from "@/bindings/ThemeForCreate";
 import { Button, ModalContainer } from "@/components";
@@ -50,7 +50,7 @@ const CreateThemeModal: React.FC<Props> = ({ theme, hide }) => {
   });
 
   const onSubmit = handleSubmit(async (data) => {
-    await services.createTheme(data).then((data) => {
+    await ipc.createTheme(data).then((data) => {
       store.addTheme(data);
       hide();
       toast("Theme created");

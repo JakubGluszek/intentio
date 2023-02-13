@@ -1,7 +1,7 @@
 import React from "react";
 
 import { Button } from "@/components";
-import services from "@/services";
+import ipc from "@/ipc";
 import useStore from "@/store";
 import ScriptView from "./ScriptView";
 import CreateScriptView from "./CreateScriptView";
@@ -12,7 +12,7 @@ const ScriptsView: React.FC = () => {
   const store = useStore();
 
   React.useEffect(() => {
-    services.getScripts().then((data) => store.setScripts(data));
+    ipc.getScripts().then((data) => store.setScripts(data));
   }, []);
 
   return (

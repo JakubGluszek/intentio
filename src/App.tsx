@@ -4,7 +4,7 @@ import { Toaster } from "react-hot-toast";
 
 import utils from "@/utils";
 import { useEvent } from "@/hooks";
-import services from "@/services";
+import ipc from "@/ipc";
 import useStore from "@/store";
 
 document.addEventListener("contextmenu", (event) => {
@@ -23,14 +23,14 @@ const App: React.FC = () => {
 
   useEvent("settings_updated", (event) => store.setSettings(event.payload));
   useEvent("current_theme_updated", () =>
-    services.getCurrentTheme().then((data) => {
+    ipc.getCurrentTheme().then((data) => {
       store.setCurrentTheme(data);
       utils.applyTheme(data);
     })
   );
 
   React.useEffect(() => {
-    services.getSettings().then((data) => store.setSettings(data));
+    ipc.getSettings().then((data) => store.setSettings(data));
   }, []);
 
   return (

@@ -4,7 +4,7 @@ import { MdAddCircle } from "react-icons/md";
 import { Checkbox } from "@mantine/core";
 
 import useStore from "@/store";
-import services from "@/services";
+import ipc from "@/ipc";
 import { Button } from "@/components";
 import { Settings } from "@/bindings/Settings";
 import { SettingsForUpdate } from "@/bindings/SettingsForUpdate";
@@ -27,7 +27,7 @@ const AppearanceView: React.FC<Props> = (props) => {
   const currentTheme = useStore((state) => state.currentTheme);
 
   React.useEffect(() => {
-    services.getThemes().then((data) => setThemes(data));
+    ipc.getThemes().then((data) => setThemes(data));
   }, []);
 
   useEvent("settings_updated", (event) => store.setSettings(event.payload));

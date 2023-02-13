@@ -4,7 +4,7 @@ import { useClickOutside } from "@mantine/hooks";
 
 import useStore from "@/store";
 import utils from "@/utils";
-import services from "@/services";
+import ipc from "@/ipc";
 import { ModalContainer, Button } from "@/components";
 import { Intent } from "@/bindings/Intent";
 import DeleteButton from "@/components/DeleteButton";
@@ -80,7 +80,7 @@ const DetailsModal: React.FC<Props> = (props) => {
           {data.archived_at ? (
             <Button
               style={{ width: "fit-content" }}
-              onClick={() => services.unarchiveIntent(data.id)}
+              onClick={() => ipc.unarchiveIntent(data.id)}
             >
               <BiArchiveOut size={24} />
               <span>Unarchive</span>
@@ -88,13 +88,13 @@ const DetailsModal: React.FC<Props> = (props) => {
           ) : (
             <Button
               style={{ width: "fit-content" }}
-              onClick={() => services.archiveIntent(data.id)}
+              onClick={() => ipc.archiveIntent(data.id)}
             >
               <BiArchiveIn size={24} />
               <span>Archive</span>
             </Button>
           )}
-          <DeleteButton onClick={() => services.deleteIntent(data.id)} />
+          <DeleteButton onClick={() => ipc.deleteIntent(data.id)} />
         </div>
       </div>
     </ModalContainer>

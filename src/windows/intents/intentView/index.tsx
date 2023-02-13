@@ -4,7 +4,7 @@ import { MdInfo } from "react-icons/md";
 import { useClickOutside } from "@mantine/hooks";
 import { useForm } from "react-hook-form";
 
-import services from "@/services";
+import ipc from "@/ipc";
 import Button from "@/components/Button";
 import { Session } from "@/bindings/Session";
 import { Intent } from "@/bindings/Intent";
@@ -42,14 +42,14 @@ const IntentView: React.FC<Props> = (props) => {
         <div className="w-full overflow-hidden">
           <IntentLabelView
             label={data.label}
-            update={async (label) => services.updateIntent(data.id, { label })}
+            update={async (label) => ipc.updateIntent(data.id, { label })}
           />
         </div>
         <div className="min-w-fit flex flex-row items-center gap-1">
           <PinButton
             isPinned={data.pinned}
             onClick={() =>
-              services.updateIntent(data.id, { pinned: !data.pinned })
+              ipc.updateIntent(data.id, { pinned: !data.pinned })
             }
           />
           <Button transparent onClick={() => setViewDetails(!viewDetails)}>

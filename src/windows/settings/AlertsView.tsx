@@ -14,7 +14,7 @@ import { AiFillFolder, AiFillFolderOpen } from "react-icons/ai";
 import { Checkbox } from "@mantine/core";
 import { BaseDirectory, FileEntry, readDir } from "@tauri-apps/api/fs";
 
-import services from "@/services";
+import ipc from "@/ipc";
 import { Slider, Button } from "@/components";
 import { Settings } from "@/bindings/Settings";
 import { SettingsForUpdate } from "@/bindings/SettingsForUpdate";
@@ -95,7 +95,7 @@ const AlertsView: React.FC<Props> = (props) => {
   const playAudio = () => {
     currentTrack &&
       !playingAudio &&
-      services
+      ipc
         .playAudio(currentTrack.path)
         .then(() => setPlayingAudio(false))
         .catch(() => setPlayingAudio(false));
@@ -226,7 +226,7 @@ const OpenFileExplorerButton: React.FC = () => {
   return (
     <Button
       transparent
-      onClick={() => services.openAudioDir()}
+      onClick={() => ipc.openAudioDir()}
       onMouseEnter={() => setFolderIcon("open")}
       onMouseLeave={() => setFolderIcon("closed")}
     >

@@ -4,7 +4,7 @@ import { toast } from "react-hot-toast";
 
 import { Script } from "@/bindings/Script";
 import { Button } from "@/components";
-import services from "@/services";
+import ipc from "@/ipc";
 import useStore from "@/store";
 
 interface ScriptContextMenuProps {
@@ -96,7 +96,7 @@ const ScriptContextMenu: React.FC<ScriptContextMenuProps> = (props) => {
         ) : (
           <Button
             onClick={() =>
-              services.deleteScript(props.data.id).then((data) => {
+              ipc.deleteScript(props.data.id).then((data) => {
                 store.removeScript(data.id);
                 toast("Script deleted");
               })

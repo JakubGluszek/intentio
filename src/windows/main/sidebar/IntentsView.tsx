@@ -1,7 +1,7 @@
 import React from "react";
 
 import useStore from "@/store";
-import services from "@/services";
+import ipc from "@/ipc";
 import { Intent } from "@/bindings/Intent";
 import IntentsList from "@/windows/intents/IntentsList";
 import { Button } from "@/components";
@@ -18,7 +18,7 @@ const IntentsView: React.FC = () => {
   const store = useStore();
 
   const onIntentChange = async (data: Intent | undefined) => {
-    await services.setActiveIntentId(data?.id).then(() => {
+    await ipc.setActiveIntentId(data?.id).then(() => {
       store.setActiveIntentId(data?.id);
     });
   };
@@ -50,14 +50,14 @@ const CreateIntentView: React.FC = () => {
   });
 
   const onSubmit = handleSubmit((data) => {
-    services
+    ipc
       .createIntent(data)
       .then(() => {
         toast("Intent created");
         setViewCreate(false);
         setValue("label", "");
       })
-      .catch((err) => console.log("services.createTask", err));
+      .catch((err) => console.log("ipc.createTask", err));
   });
 
   return (

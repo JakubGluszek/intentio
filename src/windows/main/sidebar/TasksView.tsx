@@ -12,7 +12,7 @@ import { createPortal } from "react-dom";
 import { clsx } from "@mantine/core";
 
 import useStore from "@/store";
-import services from "@/services";
+import ipc from "@/ipc";
 import { useEvent } from "@/hooks";
 import { Button } from "@/components";
 import { Task } from "@/bindings/Task";
@@ -43,7 +43,7 @@ const TasksView: React.FC = () => {
   );
 
   React.useEffect(() => {
-    services.getTasks().then((data) => store.setTasks(data));
+    ipc.getTasks().then((data) => store.setTasks(data));
   }, []);
 
   React.useEffect(() => {
@@ -78,7 +78,7 @@ const TasksView: React.FC = () => {
             ) : (
               <Button
                 onClick={() =>
-                  services.deleteTasks(selectedIds).then(() => {
+                  ipc.deleteTasks(selectedIds).then(() => {
                     setSelectedIds([]);
                     setViewConfirmDelete(false);
                     toast("Tasks deleted");
@@ -182,14 +182,14 @@ const CreateTaskView: React.FC<CreateTaskViewProps> = (props) => {
   const ref = useClickOutside(() => props.setViewCreate(false));
 
   const onSubmit = handleSubmit((data) => {
-    services
+    ipc
       .createTask({ ...data, intent_id: store.activeIntentId! })
       .then(() => {
         toast("Task created");
         props.setViewCreate(false);
         setValue("body", "");
       })
-      .catch((err) => console.log("services.createTask", err));
+      .catch((err) => console.log("ipc.createTask", err));
   });
 
   return (
@@ -245,14 +245,14 @@ const TaskView: React.FC<TaskViewProps> = (props) => {
   const isSelected = props.selectedTasksIds.includes(props.data.id);
 
   const onEditSubmit = handleSubmit((obj) => {
-    services.updateTask(data.id, obj).then(() => {
+    ipc.updateTask(data.id, obj).then(() => {
       setViewEdit(false);
       toast("Task updated");
     });
   });
 
   const handleCheck = () =>
-    services.updateTask(data.id, { done: !data.done }).then((task) => {
+    ipc.updateTask(data.id, { done: !data.done }).then((task) => {
       const icon = ["🎉", "🎊", "😁", "😀", "🥳", "💪", "✅"][
         Math.floor(Math.random() * 7)
       ];
@@ -463,7 +463,7 @@ const TaskModal: React.FC<TaskModalProps> = (props) => {
         ) : (
           <Button
             onClick={() =>
-              services
+              ipc
                 .deleteTask(props.data.id)
                 .then(() => toast("Task deleted"))
             }

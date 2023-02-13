@@ -11,7 +11,7 @@ import { toast } from "react-hot-toast";
 import { Tooltip } from "@mantine/core";
 
 import useStore from "@/store";
-import services from "@/services";
+import ipc from "@/ipc";
 import Button from "@/components/Button";
 import { IntentForCreate } from "@/bindings/IntentForCreate";
 import IntentsList from "./IntentsList";
@@ -102,7 +102,7 @@ const CreateIntentView: React.FC<CreateIntentViewProps> = (props) => {
   const { handleSubmit, register } = useForm<IntentForCreate>();
 
   const onSubmit = handleSubmit((data) => {
-    services
+    ipc
       .createIntent(data)
       .then(() => {
         toast("Intent created");

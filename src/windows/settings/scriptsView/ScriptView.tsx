@@ -5,7 +5,7 @@ import { MdCircle } from "react-icons/md";
 import { clsx, Tooltip } from "@mantine/core";
 import { useClickOutside } from "@mantine/hooks";
 
-import services from "@/services";
+import ipc from "@/ipc";
 import useStore from "@/store";
 import config from "@/config";
 import utils from "@/utils";
@@ -26,7 +26,7 @@ const ScriptView: React.FC<ScriptView> = (props) => {
   const store = useStore();
 
   const handleUpdate = async (data: Partial<ScriptForUpdate>) =>
-    await services
+    await ipc
       .updateScript(props.data.id, data)
       .then((data) => store.patchScript(props.data.id, data));
 
