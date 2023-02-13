@@ -433,9 +433,8 @@ interface NoteModalProps {
 const NoteModal: React.FC<NoteModalProps> = (props) => {
   const [preventHide, setPreventHide] = React.useState(true);
   const [viewConfirmDelete, setViewConfirmDelete] = React.useState(false);
-  const [deleteBtn, setDeleteBtn] = React.useState<HTMLButtonElement | null>(
-    null
-  );
+
+  const deleteRef = React.useRef<HTMLButtonElement>(null);
 
   React.useEffect(() => {
     let hideConfirm: NodeJS.Timeout | undefined;
@@ -453,7 +452,7 @@ const NoteModal: React.FC<NoteModalProps> = (props) => {
   const ref = useClickOutside<HTMLDivElement>(
     () => !preventHide && props.hide(),
     ["click", "contextmenu"],
-    [deleteBtn]
+    [deleteRef.current]
   );
 
   React.useEffect(() => {
@@ -491,8 +490,7 @@ const NoteModal: React.FC<NoteModalProps> = (props) => {
         </Button>
         {!viewConfirmDelete ? (
           <Button
-            // @ts-ignore
-            innerRef={setDeleteBtn}
+            innerRef={deleteRef}
             onClick={() => setViewConfirmDelete(true)}
             rounded={false}
             color="danger"
