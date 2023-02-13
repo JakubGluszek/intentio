@@ -14,6 +14,7 @@ type Events = {
   settings_updated: Settings;
   active_intent_id_updated: { active_intent_id: string | undefined };
   current_theme_updated: Theme;
+  current_theme_changed: undefined;
   intent_created: Intent;
   intent_updated: Intent;
   intent_deleted: ModelDeleteResultData;

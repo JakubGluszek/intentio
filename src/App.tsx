@@ -2,10 +2,10 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 
-import utils from "@/utils";
 import { useEvent } from "@/hooks";
 import ipc from "@/ipc";
 import useStore from "@/store";
+import utils from "./utils";
 
 document.addEventListener("contextmenu", (event) => {
   if (import.meta.env.PROD) event.preventDefault();
@@ -22,10 +22,12 @@ const App: React.FC = () => {
   const store = useStore();
 
   useEvent("settings_updated", (event) => store.setSettings(event.payload));
-  useEvent("current_theme_updated", () =>
+
+  useEvent("current_theme_changed", () =>
     ipc.getCurrentTheme().then((data) => {
-      store.setCurrentTheme(data);
+      console.log(data);
       utils.applyTheme(data);
+      store.setCurrentTheme(data);
     })
   );
 
