@@ -6,6 +6,7 @@ import { TimerType } from "@/types";
 import services from "@/services";
 import { Settings } from "@/bindings/Settings";
 import useStore from "@/store";
+import utils from "@/utils";
 
 const useTimer = (settings: Settings) => {
   // custom key is needed to reset timer components inner state
@@ -54,19 +55,52 @@ const useTimer = (settings: Settings) => {
     switch (type) {
       case "focus":
         setKey("focus");
+        store.scripts.forEach(
+          (script) =>
+            script.active &&
+            script.run_on_session_start &&
+            utils.executeScript(script.body)
+        );
         break;
       case "break":
         setKey("break");
+        store.scripts.forEach(
+          (script) =>
+            script.active &&
+            script.run_on_break_start &&
+            utils.executeScript(script.body)
+        );
         break;
       case "long break":
         setKey("long break");
+        store.scripts.forEach(
+          (script) =>
+            script.active &&
+            script.run_on_break_start &&
+            utils.executeScript(script.body)
+        );
         break;
     }
-  }, [startedAt, type]);
+  }, [startedAt, type, store.scripts]);
 
-  const pause = () => {
+  const pause = React.useCallback(() => {
     setIsRunning(false);
-  };
+    if (type === "focus") {
+      store.scripts.forEach(
+        (script) =>
+          script.active &&
+          script.run_on_session_pause &&
+          utils.executeScript(script.body)
+      );
+    } else {
+      store.scripts.forEach(
+        (script) =>
+          script.active &&
+          script.run_on_break_pause &&
+          utils.executeScript(script.body)
+      );
+    }
+  }, [type, store.scripts]);
 
   const onUpdate = () => setTimeFocused((focused) => focused + 1);
 
@@ -148,6 +182,13 @@ const useTimer = (settings: Settings) => {
         if (!manual && settings.auto_start_breaks) {
           start();
         }
+
+        store.scripts.forEach(
+          (script) =>
+            script.active &&
+            script.run_on_session_end &&
+            utils.executeScript(script.body)
+        );
       } else {
         switchSession("focus");
 
@@ -161,9 +202,16 @@ const useTimer = (settings: Settings) => {
         if (!manual && settings.auto_start_pomodoros) {
           start();
         }
+
+        store.scripts.forEach(
+          (script) =>
+            script.active &&
+            script.run_on_break_end &&
+            utils.executeScript(script.body)
+        );
       }
     },
-    [settings, iterations, type, timeFocused]
+    [settings, iterations, type, timeFocused, store.scripts]
   );
 
   // Sync duration change on settings update

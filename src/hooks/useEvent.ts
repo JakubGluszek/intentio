@@ -8,6 +8,7 @@ import { Session } from "@/bindings/Session";
 import { Theme } from "@/bindings/Theme";
 import { Task } from "@/bindings/Task";
 import { Note } from "@/bindings/Note";
+import { Script } from "@/bindings/Script";
 
 type Events = {
   settings_updated: Settings;
@@ -28,6 +29,9 @@ type Events = {
   note_updated: Note;
   note_deleted: ModelDeleteResultData;
   notes_deleted: ModelDeleteResultData[];
+  script_created: Script;
+  script_updated: Script;
+  script_deleted: ModelDeleteResultData;
 };
 
 type Callback<T> = (data: Event<T>) => void;

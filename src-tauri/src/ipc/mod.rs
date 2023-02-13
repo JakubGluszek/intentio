@@ -1,6 +1,7 @@
 mod intent;
 mod note;
 mod queue;
+mod script;
 mod session;
 mod settings;
 mod state;
@@ -11,6 +12,7 @@ mod utils;
 pub use intent::*;
 pub use note::*;
 pub use queue::*;
+pub use script::*;
 pub use session::*;
 pub use settings::*;
 pub use state::*;

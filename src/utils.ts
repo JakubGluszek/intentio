@@ -1,7 +1,18 @@
+import { Command } from "@tauri-apps/api/shell";
 import Color from "color";
 
 import { Theme } from "./bindings/Theme";
 import { ColorRGB } from "./types";
+
+export const capitalize = (string: string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
+export const executeScript = async (content: string) => {
+  const output = await new Command("sh", ["-c", content]).execute();
+
+  return output;
+};
 
 export const formatTimeTimer = (sec: number): string => {
   const seconds = sec % 60;
