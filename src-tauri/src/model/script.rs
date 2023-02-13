@@ -17,6 +17,7 @@ use super::ModelDeleteResultData;
 #[ts(export, export_to = "../src/bindings/")]
 pub struct Script {
     id: String,
+    label: String,
     body: String,
     active: bool,
     run_on_session_start: bool,
@@ -32,6 +33,7 @@ impl TryFrom<Object> for Script {
     fn try_from(mut val: Object) -> Result<Self> {
         let note = Self {
             id: val.x_take_val("id")?,
+            label: val.x_take_val("label")?,
             body: val.x_take_val("body")?,
             active: val.x_take_val("active")?,
             run_on_session_start: val.x_take_val("run_on_session_start")?,
@@ -49,12 +51,14 @@ impl TryFrom<Object> for Script {
 #[derive(Deserialize, TS)]
 #[ts(export, export_to = "../src/bindings/")]
 pub struct ScriptForCreate {
+    label: String,
     body: String,
 }
 
 impl From<ScriptForCreate> for Value {
     fn from(val: ScriptForCreate) -> Self {
         let data = map![
+            "label".into() => val.label.into(),
             "body".into() => val.body.into(),
             "active".into() => true.into(),
             "run_on_session_start".into() => false.into(),
@@ -74,6 +78,7 @@ impl Creatable for ScriptForCreate {}
 #[derive(Deserialize, TS)]
 #[ts(export, export_to = "../src/bindings/")]
 pub struct ScriptForUpdate {
+    label: Option<String>,
     body: Option<String>,
     active: Option<bool>,
     run_on_session_start: Option<bool>,
@@ -88,6 +93,9 @@ impl From<ScriptForUpdate> for Value {
     fn from(val: ScriptForUpdate) -> Self {
         let mut data = BTreeMap::new();
 
+        if let Some(label) = val.label {
+            data.insert("label".into(), label.into());
+        }
         if let Some(body) = val.body {
             data.insert("body".into(), body.into());
         }
@@ -106,11 +114,11 @@ impl From<ScriptForUpdate> for Value {
         if let Some(run_on_break_start) = val.run_on_break_start {
             data.insert("run_on_break_start".into(), run_on_break_start.into());
         }
-        if let Some(run_on_session_pause) = val.run_on_session_pause {
-            data.insert("run_on_session_pause".into(), run_on_session_pause.into());
+        if let Some(run_on_break_pause) = val.run_on_break_pause {
+            data.insert("run_on_break_pause".into(), run_on_break_pause.into());
         }
-        if let Some(run_on_session_end) = val.run_on_session_end {
-            data.insert("run_on_session_end".into(), run_on_session_end.into());
+        if let Some(run_on_break_end) = val.run_on_break_end {
+            data.insert("run_on_break_end".into(), run_on_break_end.into());
         }
 
         Value::Object(data.into())

@@ -2,6 +2,7 @@
 
 export interface Script {
   id: string;
+  label: string;
   body: string;
   active: boolean;
   run_on_session_start: boolean;
