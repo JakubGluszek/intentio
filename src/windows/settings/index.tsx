@@ -20,7 +20,7 @@ import TimerView from "./TimerView";
 import AlertsView from "./AlertsView";
 import AppearanceView from "./appearanceView";
 import BehaviorView from "./BehaviorView";
-import ScriptsView from "./ScriptsView";
+import ScriptsView from "./scriptsView";
 
 type Tab = "timer" | "alerts" | "appearance" | "behavior" | "scripts" | "about";
 
