@@ -2,7 +2,10 @@ import React from "react";
 import { MdPauseCircle, MdPlayCircle, MdSkipNext } from "react-icons/md";
 import { VscDebugRestart } from "react-icons/vsc";
 import Color from "color";
+import { toast } from "react-hot-toast";
 
+import { useEvent } from "@/hooks";
+import useStore from "@/store";
 import utils from "@/utils";
 import { ColorFormat } from "@/types";
 import services from "@/services";
@@ -12,7 +15,6 @@ import { Intent } from "@/bindings/Intent";
 import { Theme } from "@/bindings/Theme";
 import useTimer from "./useTimer";
 import { CountdownCircleTimer } from "./CountdownCircleTimer";
-import { toast } from "react-hot-toast";
 
 interface Props {
   activeIntent?: Intent;
@@ -22,6 +24,17 @@ interface Props {
 
 const Timer: React.FC<Props> = (props) => {
   const timer = useTimer(props.settings);
+  const store = useStore();
+
+  useEvent("script_created", (event) => store.addScript(event.payload));
+  useEvent("script_updated", (event) =>
+    store.patchScript(event.payload.id, event.payload)
+  );
+  useEvent("script_deleted", (event) => store.removeScript(event.payload.id));
+
+  React.useEffect(() => {
+    services.getScripts().then((data) => store.setScripts(data));
+  }, []);
 
   const strokeColor = (
     timer.isRunning ? props.theme.primary_hex : props.theme.base_hex
