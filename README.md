@@ -64,7 +64,7 @@ npm run tauri dev
 - [x] Ability to define & finish tasks
 - [ ] Option to export data into multiple formats
 - [ ] More customizable user preferences, like windows behavior etc
-- [ ] Ability to run bash scripts on certain events like: play, pause, break start/end etc...
+- [x] Ability to run bash scripts on session events (start, pause, end) for both "focus" and "break"
 - [ ] External server for synchronizing data between desktops
 
 ## Acknowledgments
