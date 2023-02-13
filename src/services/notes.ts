@@ -24,4 +24,3 @@ export const deleteNote = async (id: string) => {
 export const deleteNotes = async (ids: string[]) => {
   return await invoke<ModelDeleteResultData[]>("delete_notes", { ids });
 };
-
