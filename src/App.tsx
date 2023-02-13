@@ -7,10 +7,12 @@ import { useEvent } from "@/hooks";
 import services from "@/services";
 import useStore from "@/store";
 
-document.addEventListener(
-  "contextmenu",
-  (event) => import.meta.env.PROD || (!event.ctrlKey && event.preventDefault())
-);
+document.addEventListener("contextmenu", (event) => {
+  if (import.meta.env.PROD) event.preventDefault();
+  else {
+    !event.ctrlKey && event.preventDefault();
+  }
+});
 
 const MainWindow = React.lazy(() => import("./windows/main"));
 const SettingsWindow = React.lazy(() => import("./windows/settings"));

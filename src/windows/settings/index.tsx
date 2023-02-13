@@ -179,7 +179,7 @@ const SettingsWindow: React.FC = () => {
                 <BehaviorView settings={settings} update={update} />
               ) : null}
               {tab === "scripts" ? (
-                <ScriptsView settings={settings} update={update} />
+                <ScriptsView />
               ) : null}
             </div>
           </div>
