@@ -82,6 +82,11 @@ async fn main() -> Result<()> {
             create_queue,
             update_queue,
             delete_queue,
+            // Script
+            get_scripts,
+            create_script,
+            update_script,
+            delete_script
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
