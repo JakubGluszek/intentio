@@ -12,18 +12,16 @@ import { WebviewWindow } from "@tauri-apps/api/window";
 import useStore from "@/store";
 import config from "@/config";
 import Button from "@/components/Button";
-import QueueIcon from "@/components/QueueIcon";
 import IntentsView from "./IntentsView";
 import TasksView from "./TasksView";
 import NotesView from "./NotesView";
-import QueueView from "./QueueView";
 
 interface Props {
   isVisible: boolean;
   collapse: () => void;
 }
 
-type Tab = "intents" | "queue" | "notes" | "tasks";
+type Tab = "intents" | "notes" | "tasks";
 
 const Sidebar: React.FC<Props> = (props) => {
   const [tab, setTab] = React.useState<Tab>("intents");
@@ -43,7 +41,6 @@ const Sidebar: React.FC<Props> = (props) => {
           {tab === "intents" ? <IntentsView /> : null}
           {tab === "tasks" ? <TasksView /> : null}
           {tab === "notes" ? <NotesView /> : null}
-          {tab === "queue" ? <QueueView /> : null}
         </div>
         <Tabs value={tab} onChange={(value) => setTab(value)} />
       </div>
@@ -131,18 +128,6 @@ const Tabs: React.FC<TabsProps> = (props) => {
           {props.value === "notes" ? <span>Notes</span> : undefined}
         </Button>
       ) : null}
-      <Button
-        rounded={false}
-        style={{
-          width: props.value === "queue" ? "100%" : "fit-content",
-          paddingInline: 4,
-        }}
-        color={props.value === "queue" ? "primary" : "base"}
-        onClick={() => props.onChange("queue")}
-      >
-        <QueueIcon size={24} />
-        {props.value === "queue" ? <span>Queue</span> : undefined}
-      </Button>
     </div>
   );
 };
