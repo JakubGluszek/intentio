@@ -8,12 +8,10 @@ interface Props {
 
 const SessionsView: React.FC<Props> = (props) => {
   return (
-    <div className="flex flex-col gap-1">
-      {props.sessions
-        ? props.sessions.map((session) => (
-          <SessionView key={session.id} data={session} />
-        ))
-        : null}
+    <div className="flex flex-col gap-1 p-1">
+      {props.sessions!.map((session) => (
+        <SessionView key={session.id} data={session} />
+      ))}
     </div>
   );
 };
@@ -34,9 +32,9 @@ const SessionView: React.FC<SessionViewProps> = (props) => {
     .split(",")[1];
 
   return (
-    <div className="flex flex-row items-center justify-between p-0.5 px-2 bg-window rounded shadow text-sm">
-      <div>{data.duration} min</div>
-      <div>
+    <div className="flex flex-row items-center justify-between p-1.5 px-2 bg-window rounded shadow text-sm">
+      <div className="text-text/80">{data.duration} min</div>
+      <div className="text-text/50">
         {startedAt} - {finishedAt}
       </div>
     </div>

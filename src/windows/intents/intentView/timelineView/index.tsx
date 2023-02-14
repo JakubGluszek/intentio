@@ -1,11 +1,6 @@
 import React from "react";
-import { clsx } from "@mantine/core";
 import { BsArrowsCollapse, BsArrowsExpand } from "react-icons/bs";
-import {
-  MdClose,
-  MdKeyboardArrowDown,
-  MdKeyboardArrowUp,
-} from "react-icons/md";
+import { MdClose } from "react-icons/md";
 
 import { DayDetail } from "@/types";
 import Button from "@/components/Button";
@@ -20,9 +15,6 @@ interface Props {
 }
 
 const TimelineView: React.FC<Props> = (props) => {
-  const [skip, setSkip] = React.useState(0);
-  const [limit, setLimit] = React.useState(25);
-
   const [collapseAll, setCollapseAll] = React.useState(false);
 
   const handleFilter = (s: DayDetail): DayDetail | undefined => {
@@ -108,17 +100,15 @@ const TimelineView: React.FC<Props> = (props) => {
       </div>
       {/* Body */}
       <div className="grow flex flex-col overflow-y-auto">
-        <div className="grow flex flex-col overflow-y-auto">
-          <div className="w-full max-h-0 flex flex-col gap-1 overflow-y">
-            {days.slice(skip, limit).map((day) => (
-              <DayView
-                key={day.date}
-                intentId={props.intentId}
-                data={day}
-                collapse={collapseAll}
-              />
-            ))}
-          </div>
+        <div className="w-full max-h-0 flex flex-col gap-1.5 overflow-y">
+          {days.map((day) => (
+            <DayView
+              key={day.date}
+              intentId={props.intentId}
+              data={day}
+              collapse={collapseAll}
+            />
+          ))}
         </div>
       </div>
     </div>

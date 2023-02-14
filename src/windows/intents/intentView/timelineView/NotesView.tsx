@@ -12,8 +12,10 @@ interface Props {
 const NotesView: React.FC<Props> = (props) => {
   const notes = useStore().getNotesByDate(props.date, props.intentId);
 
+  if (notes.length === 0) return null;
+
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col gap-1 p-1">
       {notes.map((note) => (
         <NoteView key={note.id} data={note} />
       ))}
@@ -40,7 +42,7 @@ const NoteView: React.FC<NoteViewProps> = (props) => {
           <MdCircle size={8} />
         </div>
         <div
-          className="mt-0.5 whitespace-pre-line"
+          className="mt-0.5 whitespace-pre-line text-text/80"
           style={{ wordBreak: "break-word" }}
         >
           {data.body.length <= 128

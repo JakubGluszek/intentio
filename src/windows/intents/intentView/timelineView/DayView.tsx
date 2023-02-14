@@ -74,7 +74,7 @@ const DayView: React.FC<Props> = (props) => {
               Notes
             </Button>
           </div>
-          <div className="flex flex-col p-1 bg-darker/20">
+          <div className="flex flex-col bg-darker/20">
             {tab === "sessions" ? (
               <SessionsView sessions={props.data.sessions} />
             ) : null}
