@@ -212,6 +212,7 @@ const CreateTaskView: React.FC<CreateTaskViewProps> = (props) => {
             }}
             autoFocus
             minLength={1}
+            autoComplete="off"
             maxLength={96}
           />
         </form>
@@ -369,6 +370,7 @@ const TaskView: React.FC<TaskViewProps> = (props) => {
               }}
               defaultValue={data.body}
               autoFocus
+              autoComplete="off"
               maxLength={96}
               minLength={1}
             />
@@ -463,9 +465,7 @@ const TaskModal: React.FC<TaskModalProps> = (props) => {
         ) : (
           <Button
             onClick={() =>
-              ipc
-                .deleteTask(props.data.id)
-                .then(() => toast("Task deleted"))
+              ipc.deleteTask(props.data.id).then(() => toast("Task deleted"))
             }
             rounded={false}
             color="danger"

@@ -79,6 +79,7 @@ const CreateIntentView: React.FC = () => {
               setValue("label", "");
             }}
             autoFocus
+            autoComplete="off"
             minLength={1}
             maxLength={24}
           />

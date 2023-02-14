@@ -34,6 +34,7 @@ const CreateScriptView: React.FC<CreateScriptViewProps> = (props) => {
       <input
         className="border-transparent"
         placeholder="Script label"
+        autoComplete="off"
         maxLength={24}
         {...register("label", { required: true, minLength: 1, maxLength: 24 })}
       />

@@ -347,6 +347,7 @@ const FilterNotesView: React.FC<FilterNotesViewProps> = (props) => {
           tabIndex={-2}
           className="input"
           autoFocus
+          autoComplete="off"
           value={props.query}
           onChange={(e) => props.setQuery(e.currentTarget.value)}
           onKeyDown={(e) => {
@@ -501,9 +502,7 @@ const NoteModal: React.FC<NoteModalProps> = (props) => {
         ) : (
           <Button
             onClick={() =>
-              ipc
-                .deleteNote(props.data.id)
-                .then(() => toast("Note deleted"))
+              ipc.deleteNote(props.data.id).then(() => toast("Note deleted"))
             }
             rounded={false}
             color="danger"
@@ -527,6 +526,7 @@ interface NoteInputProps {
 const NoteInput: React.FC<NoteInputProps> = (props) => {
   return (
     <Textarea
+      autoComplete="off"
       classNames={{
         input:
           "bg-window border-2 text-[15px] border-primary/80 focus:border-primary/80 text-text p-1 pt-1.5 placeholder:text-text/50 placeholder:font-mono placeholder:text-sm",
