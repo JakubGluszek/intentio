@@ -28,6 +28,7 @@ const Editor: React.FC<Props> = (props) => {
       }
       ref={ref}
       value={props.value}
+      autoComplete="off"
       language="shell"
       placeholder="Enter your bash code here"
       onChange={(evn) => props.onChange(evn.target.value)}

@@ -151,6 +151,7 @@ const LabelView: React.FC<LabelViewProps> = (props) => {
   return viewEdit ? (
     <form className="w-full" onSubmit={onSubmit} ref={ref}>
       <input
+        autoComplete="off"
         autoFocus
         tabIndex={-3}
         maxLength={24}

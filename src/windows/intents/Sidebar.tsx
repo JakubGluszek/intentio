@@ -116,6 +116,7 @@ const CreateIntentView: React.FC<CreateIntentViewProps> = (props) => {
       <form onSubmit={onSubmit} className="flex flex-col gap-2">
         <div className="flex flex-col gap-1 focus-within:text-primary/60">
           <input
+            autoComplete="off"
             autoFocus
             maxLength={24}
             placeholder="Intent label"

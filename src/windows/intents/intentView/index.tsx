@@ -179,6 +179,7 @@ const IntentLabelView: React.FC<IntentLabelViewProps> = (props) => {
       ref={ref}
     >
       <input
+        autoComplete="off"
         tabIndex={-3}
         autoFocus
         maxLength={24}

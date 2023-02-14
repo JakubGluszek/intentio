@@ -6,5 +6,4 @@ export interface Session {
   intent_id: string | null;
   started_at: string;
   finished_at: string;
-  timestamps: Array<string>;
 }
