@@ -10,14 +10,14 @@ import { Session } from "@/bindings/Session";
 import { Intent } from "@/bindings/Intent";
 import DetailsModal from "./DetailsModal";
 import ActivityView from "./ActivityView";
-import SessionsView from "./SessionsView";
+import TimelineView from "./timelineView";
 
 interface Props {
   data: Intent;
   sessions: Session[];
 }
 
-type Tab = "activity" | "sessions" | "tasks" | "notes";
+type Tab = "activity" | "timeline";
 
 const IntentView: React.FC<Props> = (props) => {
   const { data } = props;
@@ -48,9 +48,7 @@ const IntentView: React.FC<Props> = (props) => {
         <div className="min-w-fit flex flex-row items-center gap-1">
           <PinButton
             isPinned={data.pinned}
-            onClick={() =>
-              ipc.updateIntent(data.id, { pinned: !data.pinned })
-            }
+            onClick={() => ipc.updateIntent(data.id, { pinned: !data.pinned })}
           />
           <Button transparent onClick={() => setViewDetails(!viewDetails)}>
             <MdInfo size={28} />
@@ -66,20 +64,18 @@ const IntentView: React.FC<Props> = (props) => {
             <ActivityView
               sessions={props.sessions}
               viewDayDetails={(date: string) => {
-                switchTab("sessions");
+                switchTab("timeline");
                 setFilter(date);
               }}
             />
           ) : null}
-          {tab === "sessions" ? (
-            <SessionsView
+          {tab === "timeline" ? (
+            <TimelineView
               sessions={props.sessions}
               filter={filter}
               setFilter={(label: string) => setFilter(label)}
             />
           ) : null}
-          {tab === "tasks" ? <TasksView /> : null}
-          {tab === "notes" ? <NotesView /> : null}
         </div>
       </div>
       {/* Tab navigation */}
@@ -96,33 +92,13 @@ const IntentView: React.FC<Props> = (props) => {
         </Button>
         <Button
           style={{
-            width: tab === "tasks" ? "100%" : "fit-content",
+            width: tab === "timeline" ? "100%" : "fit-content",
           }}
-          color={tab === "tasks" ? "primary" : "base"}
+          color={tab === "timeline" ? "primary" : "base"}
           rounded={false}
-          onClick={() => switchTab("tasks")}
+          onClick={() => switchTab("timeline")}
         >
-          Tasks
-        </Button>
-        <Button
-          style={{
-            width: tab === "notes" ? "100%" : "fit-content",
-          }}
-          color={tab === "notes" ? "primary" : "base"}
-          rounded={false}
-          onClick={() => switchTab("notes")}
-        >
-          Notes
-        </Button>
-        <Button
-          style={{
-            width: tab === "sessions" ? "100%" : "fit-content",
-          }}
-          color={tab === "sessions" ? "primary" : "base"}
-          rounded={false}
-          onClick={() => switchTab("sessions")}
-        >
-          Sessions
+          Timeline
         </Button>
       </div>
     </div>

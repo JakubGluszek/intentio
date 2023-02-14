@@ -10,6 +10,7 @@ import {
 import { DayDetail } from "@/types";
 import Button from "@/components/Button";
 import { Session } from "@/bindings/Session";
+import DayView from "./DayView";
 
 interface Props {
   sessions: Session[];
@@ -17,7 +18,7 @@ interface Props {
   setFilter: (label: string) => void;
 }
 
-const SessionsView: React.FC<Props> = (props) => {
+const TimelineView: React.FC<Props> = (props) => {
   const [skip, setSkip] = React.useState(0);
   const [limit, setLimit] = React.useState(25);
 
@@ -118,49 +119,4 @@ const SessionsView: React.FC<Props> = (props) => {
   );
 };
 
-interface DayViewProps {
-  data: DayDetail;
-  collapse: boolean;
-}
-
-const DayView: React.FC<DayViewProps> = (props) => {
-  const { data } = props;
-
-  const [viewMore, setViewMore] = React.useState(false);
-
-  React.useEffect(() => {
-    setViewMore(props.collapse);
-  }, [props.collapse]);
-
-  return (
-    <div
-      data-tauri-disable-drag
-      className={clsx(
-        "flex flex-col p-1 rounded shadow",
-        viewMore ? "bg-base" : "bg-base/40"
-      )}
-    >
-      <div className="h-8 w-full flex flex-row items-center justify-between">
-        <span className="text-lg text-text/80">{data.date}</span>
-        <Button
-          tabIndex={-1}
-          transparent
-          onClick={() => setViewMore((v) => !v)}
-        >
-          {viewMore ? (
-            <MdKeyboardArrowUp size={28} />
-          ) : (
-            <MdKeyboardArrowDown size={28} />
-          )}
-        </Button>
-      </div>
-      {viewMore ? (
-        <div className="flex flex-col p-2 bg-window/80 rounded">
-          <h1>More</h1>
-        </div>
-      ) : null}
-    </div>
-  );
-};
-
-export default SessionsView;
+export default TimelineView;
