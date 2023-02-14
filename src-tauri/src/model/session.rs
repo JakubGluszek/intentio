@@ -22,7 +22,6 @@ pub struct Session {
     intent_id: Option<String>,
     started_at: String,
     finished_at: String,
-    timestamps: Vec<String>, // [paused_at, resumed_at, paused_at, ...] epoch in milliseconds
 }
 
 impl TryFrom<Object> for Session {
@@ -35,11 +34,6 @@ impl TryFrom<Object> for Session {
             intent_id: val.x_take("intent_id")?,
             started_at: val.x_take_val("started_at")?,
             finished_at: val.x_take_val("finished_at")?,
-            timestamps: val
-                .x_take_val::<Array>("timestamps")?
-                .into_iter()
-                .map(|v| W(v).try_into())
-                .collect::<Result<Vec<_>>>()?,
         };
 
         Ok(session)
@@ -53,21 +47,13 @@ pub struct SessionForCreate {
     duration: Minutes,
     intent_id: Option<String>,
     started_at: String,
-    timestamps: Vec<String>,
 }
 
 impl From<SessionForCreate> for Value {
     fn from(val: SessionForCreate) -> Value {
-        let timestamps = val
-            .timestamps
-            .into_iter()
-            .map(Value::from)
-            .collect::<Vec<Value>>();
-
         let mut data = map![
             "duration".into() => val.duration.into(),
             "started_at".into() => val.started_at.into(),
-            "timestamps".into() => timestamps.into(),
         ];
 
         if let Some(intent_id) = val.intent_id {
@@ -137,7 +123,6 @@ mod tests {
             started_at: Datetime::default().timestamp().to_string(),
             duration: 25,
             intent_id: None,
-            timestamps: vec![],
         };
 
         let session = SessionBmc::create(ctx, data).await?;

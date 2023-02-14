@@ -4,5 +4,4 @@ export interface SessionForCreate {
   duration: number;
   intent_id: string | null;
   started_at: string;
-  timestamps: Array<string>;
 }
