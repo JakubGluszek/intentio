@@ -1,6 +1,5 @@
 import React from "react";
 import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
-import { clsx } from "@mantine/styles";
 
 import { DayDetail } from "@/types";
 import { Button } from "@/components";
@@ -75,7 +74,9 @@ const DayView: React.FC<Props> = (props) => {
             </Button>
           </div>
           <div className="flex flex-col p-2 bg-darker/20">
-            {tab === "sessions" ? <SessionsView /> : null}
+            {tab === "sessions" ? (
+              <SessionsView sessions={props.data.sessions} />
+            ) : null}
             {tab === "tasks" ? <TasksView /> : null}
             {tab === "notes" ? <NotesView /> : null}
           </div>
