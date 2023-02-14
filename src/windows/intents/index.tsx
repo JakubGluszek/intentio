@@ -43,6 +43,14 @@ const IntentsWindow: React.FC = () => {
   useEvent("tasks_deleted", (event) =>
     event.payload.map((task) => store.removeTask(task.id))
   );
+  useEvent("note_created", (event) => store.addNote(event.payload));
+  useEvent("note_updated", (event) =>
+    store.patchNote(event.payload.id, event.payload)
+  );
+  useEvent("note_deleted", (event) => store.removeNote(event.payload.id));
+  useEvent("notes_deleted", (event) =>
+    event.payload.map((task) => store.removeNote(task.id))
+  );
 
   React.useEffect(() => {
     ipc
@@ -50,8 +58,8 @@ const IntentsWindow: React.FC = () => {
       .then((data) => store.setIntents(data))
       .catch((err) => console.log("getIntents", err));
     ipc.getSessions().then((data) => store.setSessions(data));
-
     ipc.getTasks().then((data) => store.setTasks(data));
+    ipc.getNotes().then((data) => store.setNotes(data));
   }, []);
 
   const intent = store.getIntentById(selectedId);

@@ -81,7 +81,9 @@ const DayView: React.FC<Props> = (props) => {
             {tab === "tasks" ? (
               <TasksView intentId={props.intentId} date={props.data.date} />
             ) : null}
-            {tab === "notes" ? <NotesView /> : null}
+            {tab === "notes" ? (
+              <NotesView intentId={props.intentId} date={props.data.date} />
+            ) : null}
           </div>
         </div>
       ) : null}
