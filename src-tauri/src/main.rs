@@ -76,12 +76,6 @@ async fn main() -> Result<()> {
             // Session
             get_sessions,
             create_session,
-            // Queue
-            get_queue,
-            get_queues,
-            create_queue,
-            update_queue,
-            delete_queue,
             // Script
             get_scripts,
             create_script,

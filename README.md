@@ -16,10 +16,12 @@ The technique has been widely adopted by individuals and organizations alike, an
 
 ## Features
 
-- **projects** - categorize what you spend your time on.
-- **queues** - define & queue up multiple sessions.
+- **intents** - categorize what you spend your time on.
+- **tasks** - define & finish tasks, separate for each intent.
+- **notes** - summarize your progress, separate for each intent.
+- **scripts** - write custom bash scripts to be executed on session events (Windows systems currently unsupported).
 - **analytics** - view stats & monitor your progress.
-- **settings** - configure timer, alerts & themes.
+- **settings** - configure timer, alerts, themes and more.
 
 ## Install
 

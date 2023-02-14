@@ -10,6 +10,7 @@ import { RiToolsFill } from "react-icons/ri";
 import { AiFillCode } from "react-icons/ai";
 import { IoIosBug, IoIosGlobe, IoLogoGithub } from "react-icons/io";
 import { Tooltip } from "@mantine/core";
+import { OsType, type } from "@tauri-apps/api/os";
 
 import useStore from "@/store";
 import config from "@/config";
@@ -27,6 +28,7 @@ type Tab = "timer" | "alerts" | "appearance" | "behavior" | "scripts" | "about";
 export type ColorType = "window" | "base" | "primary" | "text";
 
 const SettingsWindow: React.FC = () => {
+  const [osType, setOsType] = React.useState<OsType>();
   const [tab, setTab] = React.useState<Tab>("timer");
 
   const settings = useStore((state) => state.settings);
@@ -37,6 +39,10 @@ const SettingsWindow: React.FC = () => {
     setSettings(result);
     return result;
   };
+
+  React.useEffect(() => {
+    type().then((type) => setOsType(type));
+  }, []);
 
   if (!settings) return null;
 
@@ -95,19 +101,20 @@ const SettingsWindow: React.FC = () => {
                 Behavior
               </div>
             </Button>
-            <Button
-              className="shadow transition-transform hover:-translate-y-0.5 hover:shadow-2xl"
-              color={tab === "scripts" ? "primary" : "base"}
-              onClick={() => setTab("scripts")}
-            >
-              <div className="w-full flex flex-row gap-1">
-                <div className="w-6">
-                  <AiFillCode size={24} />
+            {osType !== "Windows_NT" ? (
+              <Button
+                className="shadow transition-transform hover:-translate-y-0.5 hover:shadow-2xl"
+                color={tab === "scripts" ? "primary" : "base"}
+                onClick={() => setTab("scripts")}
+              >
+                <div className="w-full flex flex-row gap-1">
+                  <div className="w-6">
+                    <AiFillCode size={24} />
+                  </div>
+                  Scripts
                 </div>
-                Scripts
-              </div>
-            </Button>
-
+              </Button>
+            ) : null}
             <Button
               className="shadow transition-transform hover:-translate-y-0.5 hover:shadow-2xl"
               color={tab === "about" ? "primary" : "base"}
@@ -178,9 +185,7 @@ const SettingsWindow: React.FC = () => {
               {tab === "behavior" ? (
                 <BehaviorView settings={settings} update={update} />
               ) : null}
-              {tab === "scripts" ? (
-                <ScriptsView />
-              ) : null}
+              {tab === "scripts" ? <ScriptsView /> : null}
             </div>
           </div>
         </div>

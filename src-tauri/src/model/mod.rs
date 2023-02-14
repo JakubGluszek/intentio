@@ -5,7 +5,6 @@ use ts_rs::TS;
 
 mod intent;
 mod note;
-mod queue;
 mod script;
 mod session;
 mod settings;
@@ -15,7 +14,6 @@ mod theme;
 // Re-Exports
 pub use intent::*;
 pub use note::*;
-pub use queue::*;
 pub use script::*;
 pub use session::*;
 pub use settings::*;
