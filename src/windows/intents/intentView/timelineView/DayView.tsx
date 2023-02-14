@@ -8,6 +8,7 @@ import TasksView from "./TasksView";
 import NotesView from "./NotesView";
 
 interface Props {
+  intentId: string;
   data: DayDetail;
   collapse: boolean;
 }
@@ -73,11 +74,13 @@ const DayView: React.FC<Props> = (props) => {
               Notes
             </Button>
           </div>
-          <div className="flex flex-col p-2 bg-darker/20">
+          <div className="flex flex-col p-1 bg-darker/20">
             {tab === "sessions" ? (
               <SessionsView sessions={props.data.sessions} />
             ) : null}
-            {tab === "tasks" ? <TasksView /> : null}
+            {tab === "tasks" ? (
+              <TasksView intentId={props.intentId} date={props.data.date} />
+            ) : null}
             {tab === "notes" ? <NotesView /> : null}
           </div>
         </div>

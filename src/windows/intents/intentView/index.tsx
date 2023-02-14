@@ -71,6 +71,7 @@ const IntentView: React.FC<Props> = (props) => {
           ) : null}
           {tab === "timeline" ? (
             <TimelineView
+              intentId={props.data.id}
               sessions={props.sessions}
               filter={filter}
               setFilter={(label: string) => setFilter(label)}
@@ -193,14 +194,6 @@ const IntentLabelView: React.FC<IntentLabelViewProps> = (props) => {
       {props.label}
     </h1>
   );
-};
-
-const TasksView: React.FC = () => {
-  return <div className="grow flex flex-col gap-2">Tasks</div>;
-};
-
-const NotesView: React.FC = () => {
-  return <div className="grow flex flex-col gap-2">Notes</div>;
 };
 
 export default IntentView;

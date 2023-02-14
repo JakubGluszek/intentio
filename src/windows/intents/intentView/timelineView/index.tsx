@@ -13,6 +13,7 @@ import { Session } from "@/bindings/Session";
 import DayView from "./DayView";
 
 interface Props {
+  intentId: string;
   sessions: Session[];
   filter: string;
   setFilter: (label: string) => void;
@@ -110,7 +111,12 @@ const TimelineView: React.FC<Props> = (props) => {
         <div className="grow flex flex-col overflow-y-auto">
           <div className="w-full max-h-0 flex flex-col gap-1 overflow-y">
             {days.slice(skip, limit).map((day) => (
-              <DayView key={day.date} data={day} collapse={collapseAll} />
+              <DayView
+                key={day.date}
+                intentId={props.intentId}
+                data={day}
+                collapse={collapseAll}
+              />
             ))}
           </div>
         </div>
