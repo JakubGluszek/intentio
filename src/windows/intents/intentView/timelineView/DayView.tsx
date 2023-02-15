@@ -30,8 +30,8 @@ const DayView: React.FC<Props> = (props) => {
       data-tauri-disable-drag
       className="flex flex-col p-1.5 gap-1 rounded shadow bg-window/80 hover:bg-window"
     >
-      <div className="h-8 w-full flex flex-row items-center justify-between">
-        <span className="text-lg text-text/80">{data.date}</span>
+      <div className="h-6 w-full flex flex-row items-center justify-between">
+        <span className="text-text/80">{data.date}</span>
         <Button transparent onClick={() => setViewMore((v) => !v)}>
           {viewMore ? (
             <MdKeyboardArrowUp size={28} />

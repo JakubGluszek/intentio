@@ -41,32 +41,32 @@ const DetailsModal: React.FC<Props> = (props) => {
     <ModalContainer>
       <div
         ref={ref}
-        className="m-auto w-80 p-2 flex flex-col gap-2 bg-base rounded"
+        className="m-auto w-80 p-2 flex flex-col gap-2 bg-window rounded"
       >
         {/* Intent timestamps and stats */}
-        <div className="flex flex-col gap-2 bg-window rounded p-3 text-sm shadow-inner">
+        <div className="flex flex-col gap-2 bg-base rounded p-3 text-sm shadow-inner">
           <p className="flex flex-row items-center justify-between">
-            <span>Created at:</span>
+            <span className="text-text/80">Created at:</span>
             <span>{new Date(parseInt(data.created_at)).toLocaleString()}</span>
           </p>
           {data.archived_at ? (
             <p className="flex flex-row items-center justify-between">
-              <span>Archived at:</span>
+              <span className="text-text/80">Archived at:</span>
               <span>
                 {new Date(parseInt(data.archived_at)).toLocaleString()}
               </span>
             </p>
           ) : null}
           <p className="flex flex-row items-center justify-between">
-            <span>Total sessions:</span>
+            <span className="text-text/80">Total sessions:</span>
             <span>{sessions.length}</span>
           </p>
           <p className="flex flex-row items-center justify-between">
-            <span>Total focus duration:</span>
+            <span className="text-text/80">Total focus duration:</span>
             <span>{utils.formatTime(totalSessionsDuration)}</span>
           </p>
           <p className="flex flex-row items-center justify-between">
-            <span>Average session duration:</span>
+            <span className="text-text/80">Average session duration:</span>
             <span>
               {sessions.length > 0
                 ? (totalSessionsDuration / sessions.length).toFixed(1)
@@ -76,13 +76,13 @@ const DetailsModal: React.FC<Props> = (props) => {
           </p>
         </div>
         {/* Intent Operations */}
-        <div className="flex flex-row items-center justify-between h-7 gap-2">
+        <div className="flex flex-row items-center justify-between h-7 gap-2 text-sm">
           {data.archived_at ? (
             <Button
               style={{ width: "fit-content" }}
               onClick={() => ipc.unarchiveIntent(data.id)}
             >
-              <BiArchiveOut size={24} />
+              <BiArchiveOut size={20} />
               <span>Unarchive</span>
             </Button>
           ) : (
@@ -90,7 +90,7 @@ const DetailsModal: React.FC<Props> = (props) => {
               style={{ width: "fit-content" }}
               onClick={() => ipc.archiveIntent(data.id)}
             >
-              <BiArchiveIn size={24} />
+              <BiArchiveIn size={20} />
               <span>Archive</span>
             </Button>
           )}

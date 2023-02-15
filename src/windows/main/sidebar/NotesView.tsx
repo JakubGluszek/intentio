@@ -356,20 +356,23 @@ const FilterNotesView: React.FC<FilterNotesViewProps> = (props) => {
             props.setViewFilter(false);
           }}
         />
-        <Button
-          style={{
-            position: "absolute",
-            right: 4,
-            top: 8,
-          }}
-          transparent
-          onClick={() => {
-            props.setQuery("");
-            props.setViewFilter(false);
-          }}
-        >
-          <MdClose size={20} />
-        </Button>
+        {props.query.length > 1 ? (
+          <Button
+            style={{
+              position: "absolute",
+              right: 4,
+              top: 6,
+            }}
+            transparent
+            highlight={false}
+            onClick={() => {
+              props.setQuery("");
+              props.setViewFilter(false);
+            }}
+          >
+            <MdClose size={24} />
+          </Button>
+        ) : null}
       </div>
     </div>
   );

@@ -115,8 +115,8 @@ const IntentView: React.FC<IntentViewProps> = (props) => {
       ref={container}
       data-tauri-disable-drag
       className={clsx(
-        "w-full h-fit flex flex-col border-2 p-1 rounded shadow transition-transform hover:-translate-y-[1px] bg-base/80 hover:bg-base text-text",
-        props.selected ? "border-primary/80" : "border-transparent"
+        "w-full h-fit flex flex-col border-2 p-1 rounded shadow transition-transform hover:-translate-y-[1px] bg-base/80 hover:bg-base",
+        props.selected ? "border-primary/80 text-text" : "border-transparent text-text/80 hover:text-text/80"
       )}
       onClick={(e) => props.onSelected(e, data)}
     >
@@ -128,7 +128,7 @@ const IntentView: React.FC<IntentViewProps> = (props) => {
         <div
           className={clsx(
             "flex flex-row items-center gap-1",
-            !props.selected && "text-text/70"
+            !props.selected ? "text-text/60": "text-text/80"
           )}
         >
           {data.pinned ? <TiPin size={24} className="min-w-[24px]" /> : null}
