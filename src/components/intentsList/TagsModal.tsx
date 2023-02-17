@@ -45,6 +45,7 @@ export const TagsModal: React.FC<Props> = (props) => {
         <input
           className="border-base"
           value={newTag}
+          maxLength={24}
           onChange={(e) => setNewTag(e.currentTarget.value)}
           onKeyDown={(e) =>
             e.key === "Enter" && newTag.length > 0 && addTag(newTag)
