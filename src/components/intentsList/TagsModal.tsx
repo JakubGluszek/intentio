@@ -22,6 +22,11 @@ export const TagsModal: React.FC<Props> = (props) => {
 
   const allTags = useStore((state) => state.getAllTags)();
 
+  // tags from all intents without current intent's tags set
+  const allOtherTags = allTags.filter((tag) =>
+    props.data.tags.includes(tag) ? undefined : tag
+  );
+
   return (
     <ModalContainer>
       <div
@@ -78,13 +83,11 @@ export const TagsModal: React.FC<Props> = (props) => {
           </div>
         ) : null}
 
-        {allTags.filter((tag) =>
-          props.data.tags.includes(tag) ? undefined : tag
-        ).length > 0 ? (
+        {allOtherTags.length > 0 ? (
           <div className="flex flex-col gap-1">
             <div className="text-text/60">Select from existing tags</div>
             <div className="flex flex-row flex-wrap gap-1">
-              {allTags.map((tag) => (
+              {allOtherTags.map((tag) => (
                 <TagButton
                   onClick={() => {
                     ipc
