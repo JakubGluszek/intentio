@@ -1,16 +1,16 @@
 import React from "react";
 import { TiPin } from "react-icons/ti";
 import { BiArchive } from "react-icons/bi";
+import { toast } from "react-hot-toast";
 import { clsx } from "@mantine/core";
 
-import { Intent } from "@/bindings/Intent";
+import ipc from "@/ipc";
 import { useContextMenu } from "@/hooks";
+import { Intent } from "@/bindings/Intent";
 import ContextMenu from "../ContextMenu";
 import Button from "../Button";
-import ipc from "@/ipc";
-import ModalContainer from "../ModalContainer";
-import { useClickOutside } from "@mantine/hooks";
-import { toast } from "react-hot-toast";
+import TagButton from "../TagButton";
+import { TagsModal } from "./TagsModal";
 
 interface Props {
   data: Intent;
@@ -71,102 +71,59 @@ const IntentListItem: React.FC<Props> = (props) => {
 
         {/* Tags */}
         {data.tags.length > 0 ? (
-          <div
-            className={clsx(
-              "flex flex-row gap-2 p-1 rounded",
-              props.selected && "bg-window"
-            )}
-          >
-            {data.tags.map((tag, i) => (
-              <button
-                key={i}
-                tabIndex={-1}
-                className={clsx(
-                  "rounded text-sm font-semibold px-2 py-0.5",
-                  props.selectedTags.includes(tag)
-                    ? "bg-primary/80 hover:bg-primary text-window/80"
-                    : "bg-text/60 hover:bg-text/80 text-window"
-                )}
-                onClick={() => props.onTagSelect(tag)}
-              >
-                {tag}
-              </button>
-            ))}
+          <div className="p-1 rounded bg-window shadow-inner">
+            <div className="flex flex-row gap-2 overflow-x-auto rounded-sm">
+              {data.tags.map((tag, i) => (
+                <TagButton
+                  key={i}
+                  isSelected={props.selectedTags.includes(tag)}
+                  onClick={() => props.onTagSelect(tag)}
+                >
+                  {tag}
+                </TagButton>
+              ))}
+            </div>
           </div>
         ) : null}
       </div>
 
       {viewMenu ? (
-        <IntentContextMenu
-          data={props.data}
+        <ContextMenu
           leftPosition={viewMenu.leftPosition}
           topPosition={viewMenu.topPosition}
           hide={() => setViewMenu(undefined)}
-          setViewTagsModal={setViewTagsModal}
-        />
+        >
+          <div className="w-24 flex flex-col gap-0.5">
+            <Button
+              onClick={() =>
+                ipc
+                  .updateIntent(props.data.id, { pinned: !props.data.pinned })
+                  .then((data) => {
+                    setViewMenu(undefined);
+                    toast(data.pinned ? "Pinned to top" : "Unpinned");
+                  })
+              }
+              rounded={false}
+            >
+              {props.data.pinned ? "Unpin" : "Pin"}
+            </Button>
+            <Button
+              onClick={() => {
+                setViewTagsModal(true);
+                setViewMenu(undefined);
+              }}
+              rounded={false}
+            >
+              Tags
+            </Button>
+          </div>
+        </ContextMenu>
       ) : null}
 
       {viewTagsModal ? (
-        <TagsModalView hide={() => setViewTagsModal(false)} />
+        <TagsModal data={props.data} hide={() => setViewTagsModal(false)} />
       ) : null}
     </React.Fragment>
-  );
-};
-
-interface IntentContextMenuProps {
-  data: Intent;
-  leftPosition: number;
-  topPosition: number;
-  hide: () => void;
-  setViewTagsModal: (bool: boolean) => void;
-}
-
-const IntentContextMenu: React.FC<IntentContextMenuProps> = (props) => {
-  return (
-    <ContextMenu
-      leftPosition={props.leftPosition}
-      topPosition={props.topPosition}
-      hide={props.hide}
-    >
-      <div className="w-24 flex flex-col gap-0.5">
-        <Button
-          onClick={() =>
-            ipc
-              .updateIntent(props.data.id, { pinned: !props.data.pinned })
-              .then((data) => {
-                props.hide();
-                toast(data.pinned ? "Pinned to top" : "Unpinned");
-              })
-          }
-          rounded={false}
-        >
-          {props.data.pinned ? "Unpin" : "Pin"}
-        </Button>
-        <Button
-          onClick={() => {
-            props.setViewTagsModal(true);
-            props.hide();
-          }}
-          rounded={false}
-        >
-          Tags
-        </Button>
-      </div>
-    </ContextMenu>
-  );
-};
-
-interface TagsModalViewProps {
-  hide: () => void;
-}
-
-const TagsModalView: React.FC<TagsModalViewProps> = (props) => {
-  const ref = useClickOutside(() => props.hide());
-
-  return (
-    <ModalContainer>
-      <div ref={ref}>Tags CRUD</div>
-    </ModalContainer>
   );
 };
 
