@@ -8,7 +8,7 @@ export interface IntentsSlice {
   addIntent: (data: Intent) => void;
   patchIntent: (id: string, data: Intent) => void;
   removeIntent: (id: string) => void;
-  getIntentById: (id?: string) => Intent | undefined;
+  getIntentById: (id?: string | null) => Intent | undefined;
   getAllTags: () => string[];
 }
 
