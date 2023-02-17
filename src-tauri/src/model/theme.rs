@@ -123,13 +123,13 @@ impl ThemeBmc {
                     primary_hex: '#00ADB5',
                     text_hex: '#EEEEEE',
                 };
-                CREATE theme:winter CONTENT {
-                    name: 'winter',
+                CREATE theme:forest CONTENT {
+                    name: 'forest',
                     default: true,
-                    window_hex: '#F9F7F7',
-                    base_hex: '#DBE2EF',
-                    primary_hex: '#3F72AF',
-                    text_hex: '#112D4E',
+                    window_hex: '#002a37',
+                    base_hex: '#09494e',
+                    primary_hex: '#0feda2',
+                    text_hex: '#bbbbbb',
                 };
                 CREATE theme:dracula CONTENT {
                     name: 'dracula',
@@ -139,13 +139,13 @@ impl ThemeBmc {
                     primary_hex: '#bd93f9',
                     text_hex: '#f8f8f2',
                 };
-                CREATE theme:cyan CONTENT {
-                    name: 'cyan',
+                CREATE theme:space CONTENT {
+                    name: 'space',
                     default: true,
-                    window_hex: '#111123',
-                    base_hex: '#032536',
-                    primary_hex: '#44ffcc',
-                    text_hex: '#EEEEEE',
+                    window_hex: '#161853',
+                    base_hex: '#292C6D',
+                    primary_hex: '#EC255A',
+                    text_hex: '#FAEDF0',
                 };
             ";
 
