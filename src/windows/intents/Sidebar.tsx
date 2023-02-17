@@ -14,8 +14,8 @@ import useStore from "@/store";
 import ipc from "@/ipc";
 import Button from "@/components/Button";
 import { IntentForCreate } from "@/bindings/IntentForCreate";
-import IntentsList from "./IntentsList";
-import { Sort } from ".";
+import { IntentsSort } from "@/types";
+import IntentsList from "@/components/intentsList";
 
 interface Props {
   selectedId?: string;
@@ -25,7 +25,7 @@ interface Props {
 }
 
 const Sidebar: React.FC<Props> = (props) => {
-  const [sort, setSort] = React.useState<Sort>("asc");
+  const [sort, setSort] = React.useState<IntentsSort>("asc");
 
   const [viewCreate, setViewCreate] = React.useState(false);
   const [viewArchived, setViewArchived] = React.useState(false);

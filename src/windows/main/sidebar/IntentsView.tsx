@@ -3,12 +3,12 @@ import React from "react";
 import useStore from "@/store";
 import ipc from "@/ipc";
 import { Intent } from "@/bindings/Intent";
-import IntentsList from "@/windows/intents/IntentsList";
 import { Button } from "@/components";
 import { MdAddCircle } from "react-icons/md";
 import { useClickOutside } from "@mantine/hooks";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
+import IntentsList from "@/components/intentsList";
 
 const IntentsView: React.FC = () => {
   const [selectedIntentTags, setSelectedIntentTags] = React.useState<string[]>(
