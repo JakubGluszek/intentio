@@ -1,13 +1,10 @@
 import React from "react";
-import {
-  MdClose,
-  MdKeyboardArrowDown,
-  MdKeyboardArrowUp,
-} from "react-icons/md";
+import { MdClose } from "react-icons/md";
 import { BsArrowsCollapse, BsArrowsExpand } from "react-icons/bs";
 
 import { DayDetail } from "@/types";
 import Button from "@/components/Button";
+import DayView from "@/components/timeline/DayView";
 import { Session } from "@/bindings/Session";
 import { Intent } from "@/bindings/Intent";
 
@@ -19,9 +16,6 @@ interface Props {
 }
 
 const TimelineView: React.FC<Props> = (props) => {
-  const [skip, setSkip] = React.useState(0);
-  const [limit, setLimit] = React.useState(25);
-
   const [collapseAll, setCollapseAll] = React.useState(false);
 
   const handleFilter = (s: DayDetail): DayDetail | undefined => {
@@ -110,8 +104,13 @@ const TimelineView: React.FC<Props> = (props) => {
         <div className="grow flex flex-col overflow-y-auto">
           {days.length > 0 ? (
             <div className="w-full max-h-0 flex flex-col gap-1 overflow-y">
-              {days.slice(skip, limit).map((day) => (
-                <DayView key={day.date} data={day} collapse={collapseAll} />
+              {days.map((day) => (
+                <DayView
+                  key={day.date}
+                  data={day}
+                  displaySessionLabel
+                  collapse={collapseAll}
+                />
               ))}
             </div>
           ) : (
@@ -121,45 +120,6 @@ const TimelineView: React.FC<Props> = (props) => {
           )}
         </div>
       </div>
-    </div>
-  );
-};
-
-interface DayViewProps {
-  data: DayDetail;
-  collapse: boolean;
-}
-
-const DayView: React.FC<DayViewProps> = (props) => {
-  const { data } = props;
-
-  const [viewMore, setViewMore] = React.useState(false);
-
-  React.useEffect(() => {
-    setViewMore(props.collapse);
-  }, [props.collapse]);
-
-  return (
-    <div className="flex flex-col p-1 rounded shadow bg-window">
-      <div className="h-8 w-full flex flex-row items-center justify-between">
-        <span className="text-lg text-text/80">{data.date}</span>
-        <Button
-          tabIndex={-1}
-          transparent
-          onClick={() => setViewMore((v) => !v)}
-        >
-          {viewMore ? (
-            <MdKeyboardArrowUp size={28} />
-          ) : (
-            <MdKeyboardArrowDown size={28} />
-          )}
-        </Button>
-      </div>
-      {viewMore ? (
-        <div className="flex flex-col p-2 bg-window/80 rounded">
-          <h1>More</h1>
-        </div>
-      ) : null}
     </div>
   );
 };

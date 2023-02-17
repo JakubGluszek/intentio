@@ -10,7 +10,7 @@ import { Session } from "@/bindings/Session";
 import { Intent } from "@/bindings/Intent";
 import DetailsModal from "./DetailsModal";
 import ActivityView from "./ActivityView";
-import TimelineView from "./timelineView";
+import TimelineView from "./TimelineView";
 
 interface Props {
   data: Intent;

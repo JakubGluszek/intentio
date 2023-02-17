@@ -4,7 +4,7 @@ import useStore from "@/store";
 import { MdCheckBox, MdCheckBoxOutlineBlank } from "react-icons/md";
 
 interface Props {
-  intentId: string;
+  intentId?: string;
   date: string; // example: 2023-02-14
 }
 

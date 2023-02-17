@@ -5,7 +5,7 @@ import { MdClose } from "react-icons/md";
 import { DayDetail } from "@/types";
 import Button from "@/components/Button";
 import { Session } from "@/bindings/Session";
-import DayView from "./DayView";
+import DayView from "@/components/timeline/DayView";
 
 interface Props {
   intentId: string;

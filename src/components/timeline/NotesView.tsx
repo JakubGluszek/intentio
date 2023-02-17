@@ -5,7 +5,7 @@ import { Note } from "@/bindings/Note";
 import useStore from "@/store";
 
 interface Props {
-  intentId: string;
+  intentId?: string;
   date: string; // example: 2023-02-14
 }
 
