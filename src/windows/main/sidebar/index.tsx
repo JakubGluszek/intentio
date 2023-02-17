@@ -26,6 +26,12 @@ type Tab = "intents" | "notes" | "tasks";
 const Sidebar: React.FC<Props> = (props) => {
   const [tab, setTab] = React.useState<Tab>("intents");
 
+  const activeIntentId = useStore((state) => state.activeIntentId);
+
+  React.useEffect(() => {
+    if (!activeIntentId) setTab("intents");
+  }, [activeIntentId]);
+
   return (
     <div
       className="z-[9999] left-0 top-0 fixed w-[286px] h-full flex flex-col bg-window transition-opacity"
@@ -42,7 +48,9 @@ const Sidebar: React.FC<Props> = (props) => {
           {tab === "tasks" ? <TasksView /> : null}
           {tab === "notes" ? <NotesView /> : null}
         </div>
-        <Tabs value={tab} onChange={(value) => setTab(value)} />
+        {activeIntentId ? (
+          <Tabs value={tab} onChange={(value) => setTab(value)} />
+        ) : null}
       </div>
     </div>
   );

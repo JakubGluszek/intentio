@@ -24,11 +24,20 @@ const MainWindow: React.FC = () => {
   useEvent("intent_updated", (event) =>
     store.patchIntent(event.payload.id, event.payload)
   );
-  useEvent("intent_deleted", (event) => store.removeIntent(event.payload.id));
+  useEvent("intent_deleted", (event) => {
+    if (store.activeIntentId === event.payload.id) {
+      ipc.setActiveIntentId(undefined).then(() => {
+        store.setActiveIntentId(undefined);
+        toast("Active intent has been deleted");
+      });
+    }
+
+    store.removeIntent(event.payload.id);
+  });
   useEvent("intent_archived", (event) => {
     if (store.activeIntentId === event.payload.id) {
-      ipc.setActiveIntentId(undefined).then((data) => {
-        store.setActiveIntentId(data);
+      ipc.setActiveIntentId(undefined).then(() => {
+        store.setActiveIntentId(undefined);
         toast("Active intent has been archived");
       });
     }
