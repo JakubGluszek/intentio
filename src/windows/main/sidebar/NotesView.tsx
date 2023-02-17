@@ -1,5 +1,4 @@
 import React from "react";
-import { createPortal } from "react-dom";
 import {
   MdAddCircle,
   MdCircle,
@@ -18,7 +17,6 @@ import ipc from "@/ipc";
 import { useContextMenu, useEvent } from "@/hooks";
 import { Button, ContextMenu } from "@/components";
 import { Note } from "@/bindings/Note";
-import config from "@/config";
 
 const NotesView: React.FC = () => {
   const [viewCreate, setViewCreate] = React.useState(false);
@@ -314,6 +312,7 @@ const FilterNotesView: React.FC<FilterNotesViewProps> = (props) => {
           tabIndex={-2}
           className="input"
           autoFocus
+          placeholder='Press "ESCAPE" to exit'
           autoComplete="off"
           value={props.query}
           onChange={(e) => props.setQuery(e.currentTarget.value)}
@@ -471,7 +470,7 @@ const NoteInput: React.FC<NoteInputProps> = (props) => {
       autoComplete="off"
       classNames={{
         input:
-          "bg-window border-2 text-[15px] border-primary/80 focus:border-primary/80 text-text p-1 pt-1.5 placeholder:text-text/50 placeholder:font-mono placeholder:text-sm",
+          "bg-darker/20 border-2 text-[15px] border-primary/80 focus:border-primary/80 text-text p-1 pt-1.5 placeholder:text-text/50 placeholder:font-mono placeholder:text-sm",
       }}
       value={props.value}
       onChange={(e) => {

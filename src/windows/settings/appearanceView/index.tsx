@@ -6,11 +6,11 @@ import { Checkbox } from "@mantine/core";
 import useStore from "@/store";
 import ipc from "@/ipc";
 import { Button } from "@/components";
+import { useEvent } from "@/hooks";
 import { Settings } from "@/bindings/Settings";
 import { SettingsForUpdate } from "@/bindings/SettingsForUpdate";
 import CreateThemeModal from "./CreateThemeModal";
 import ThemeView from "./ThemeView";
-import { useEvent } from "@/hooks";
 
 interface Props {
   settings: Settings;
@@ -44,7 +44,7 @@ const AppearanceView: React.FC<Props> = (props) => {
           />,
           document.getElementById("root")!
         )}
-      <div className="flex flex-col gap-4 pb-2">
+      <div className="flex flex-col gap-3 pb-2">
         {/* Display live countdown checkbox */}
         <div>Display</div>
         <div className="flex flex-row items-center justify-between rounded p-1.5 bg-window shadow">
