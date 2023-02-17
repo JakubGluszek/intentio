@@ -4,3 +4,4 @@ export { default as ModalContainer } from "./ModalContainer";
 export { default as Layout } from "./Layout";
 export { default as DeleteButton } from "./DeleteButton";
 export { default as Editor } from "./Editor";
+export { default as ContextMenu } from "./ContextMenu";
