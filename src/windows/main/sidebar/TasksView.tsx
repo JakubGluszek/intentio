@@ -13,8 +13,8 @@ import { clsx } from "@mantine/core";
 
 import useStore from "@/store";
 import ipc from "@/ipc";
-import { useEvent } from "@/hooks";
-import { Button } from "@/components";
+import { useContextMenu, useEvent } from "@/hooks";
+import { Button, ContextMenu } from "@/components";
 import { Task } from "@/bindings/Task";
 import config from "@/config";
 
@@ -231,17 +231,15 @@ const TaskView: React.FC<TaskViewProps> = (props) => {
   const { data } = props;
 
   const [viewEdit, setViewEdit] = React.useState(false);
-  const [viewModal, setViewModal] = React.useState<{ x: number; y: number }>();
   const [viewConfirmDelete, setViewConfirmDelete] = React.useState(false);
 
+  const { viewMenu, setViewMenu, onContextMenuHandler } = useContextMenu();
+
   const { register, handleSubmit, setValue } = useForm<{ body: string }>();
+
   const containerRef = useClickOutside<HTMLDivElement>(() => {
     viewEdit && setViewEdit(false);
   });
-  const store = useStore();
-
-  const modalWidth = 120;
-  const modalHeight = 32;
 
   const isSelected = props.selectedTasksIds.includes(props.data.id);
 
@@ -277,16 +275,6 @@ const TaskView: React.FC<TaskViewProps> = (props) => {
     return () => hideConfirm && clearTimeout(hideConfirm);
   }, [viewConfirmDelete]);
 
-  // fixes clicking outside where there is no `data-tauri-disable-drag property`
-  // otherwise context would not close because the window would start being dragged
-  React.useEffect(() => {
-    if (viewModal) {
-      store.setTauriDragEnabled(false);
-    } else {
-      store.setTauriDragEnabled(true);
-    }
-  }, [viewModal]);
-
   return (
     <>
       <div
@@ -318,24 +306,10 @@ const TaskView: React.FC<TaskViewProps> = (props) => {
         }}
         onContextMenu={(e) => {
           if (viewEdit) return;
-          var x = e.pageX;
-          var y = e.pageY;
 
-          const root = config.webviews.main;
-          const padding = 8;
-
-          // fix possible x overflow
-          if (x + modalWidth > root.width) {
-            x = x - (x + modalWidth - root.width) - padding;
-          }
-
-          // fix possible y overflow
-          if (y + modalHeight > root.height) {
-            y = y - (y + modalHeight - root.height) - padding;
-          }
+          onContextMenuHandler(e);
 
           props.setSelectedTasksIds && props.setSelectedTasksIds([]);
-          setViewModal({ x, y });
         }}
         onDoubleClick={() => setViewEdit(true)}
         data-tauri-disable-drag
@@ -377,45 +351,29 @@ const TaskView: React.FC<TaskViewProps> = (props) => {
           </form>
         )}
       </div>
-      {viewModal
-        ? createPortal(
-          <TaskModal
-            data={data}
-            x={viewModal.x}
-            y={viewModal.y}
-            width={modalWidth}
-            height={modalHeight}
-            hide={() => setViewModal(undefined)}
-            setViewEdit={() => setViewEdit(true)}
-          />,
-          document.getElementById("root")!
-        )
-        : null}
+      {viewMenu ? (
+        <TaskContextMenu
+          data={data}
+          leftPosition={viewMenu.leftPosition}
+          topPosition={viewMenu.topPosition}
+          hide={() => setViewMenu(undefined)}
+          setViewEdit={() => setViewEdit(true)}
+        />
+      ) : null}
     </>
   );
 };
 
-interface TaskModalProps {
+interface TaskContextMenuProps {
   data: Task;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
+  leftPosition: number;
+  topPosition: number;
   hide: () => void;
   setViewEdit: () => void;
 }
 
-const TaskModal: React.FC<TaskModalProps> = (props) => {
-  const [preventHide, setPreventHide] = React.useState(true);
+const TaskContextMenu: React.FC<TaskContextMenuProps> = (props) => {
   const [viewConfirmDelete, setViewConfirmDelete] = React.useState(false);
-
-  const deleteRef = React.useRef<HTMLButtonElement>(null);
-
-  const ref = useClickOutside<HTMLDivElement>(
-    () => !preventHide && props.hide(),
-    ["click", "contextmenu"],
-    [deleteRef.current]
-  );
 
   React.useEffect(() => {
     let hideConfirm: NodeJS.Timeout | undefined;
@@ -430,31 +388,15 @@ const TaskModal: React.FC<TaskModalProps> = (props) => {
     return () => hideConfirm && clearTimeout(hideConfirm);
   }, [viewConfirmDelete]);
 
-  React.useEffect(() => {
-    const timeout = setTimeout(() => {
-      setPreventHide(false);
-    }, 20);
-
-    return () => clearTimeout(timeout);
-  }, []);
-
   return (
-    <div
-      ref={ref}
-      style={{
-        zIndex: 9999,
-        position: "fixed",
-        left: props.x,
-        top: props.y,
-        width: props.width,
-        height: props.height,
-      }}
-      className="bg-base rounded shadow-lg text-sm p-0.5"
+    <ContextMenu
+      hide={() => props.hide()}
+      leftPosition={props.leftPosition}
+      topPosition={props.topPosition}
     >
-      <div className="flex flex-col gap-0.5 overflow-clip rounded">
+      <React.Fragment>
         {!viewConfirmDelete ? (
           <Button
-            innerRef={deleteRef}
             onClick={() => setViewConfirmDelete(true)}
             rounded={false}
             color="danger"
@@ -473,8 +415,8 @@ const TaskModal: React.FC<TaskModalProps> = (props) => {
             Confirm
           </Button>
         )}
-      </div>
-    </div>
+      </React.Fragment>
+    </ContextMenu>
   );
 };
 

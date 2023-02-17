@@ -15,8 +15,8 @@ import { writeText } from "@tauri-apps/api/clipboard";
 
 import useStore from "@/store";
 import ipc from "@/ipc";
-import { useEvent } from "@/hooks";
-import { Button } from "@/components";
+import { useContextMenu, useEvent } from "@/hooks";
+import { Button, ContextMenu } from "@/components";
 import { Note } from "@/bindings/Note";
 import config from "@/config";
 
@@ -193,12 +193,8 @@ const NoteView: React.FC<NoteViewProps> = (props) => {
   const [body, setBody] = React.useState(data.body);
   const [viewEdit, setViewEdit] = React.useState(false);
   const [viewExpand, setViewExpand] = React.useState(false);
-  const [viewModal, setViewModal] = React.useState<{ x: number; y: number }>();
 
-  const store = useStore();
-
-  const modalWidth = 120;
-  const modalHeight = 62;
+  const { viewMenu, setViewMenu, onContextMenuHandler } = useContextMenu();
 
   const ref = useClickOutside<HTMLDivElement>(() => {
     setViewEdit(false);
@@ -215,16 +211,6 @@ const NoteView: React.FC<NoteViewProps> = (props) => {
 
   const isSelected = props.selectedNotesIds.includes(props.data.id);
 
-  // fixes clicking outside where there is no `data-tauri-disable-drag property`
-  // otherwise context would not close because the window would start being dragged
-  React.useEffect(() => {
-    if (viewModal) {
-      store.setTauriDragEnabled(false);
-    } else {
-      store.setTauriDragEnabled(true);
-    }
-  }, [viewModal]);
-
   return (
     <>
       <div
@@ -237,24 +223,10 @@ const NoteView: React.FC<NoteViewProps> = (props) => {
         )}
         onContextMenu={(e) => {
           if (viewEdit) return;
-          var x = e.pageX;
-          var y = e.pageY;
 
-          const root = config.webviews.main;
-          const padding = 8;
-
-          // fix possible x overflow
-          if (x + modalWidth > root.width) {
-            x = x - (x + modalWidth - root.width) - padding;
-          }
-
-          // fix possible y overflow
-          if (y + modalHeight > root.height) {
-            y = y - (y + modalHeight - root.height) - padding;
-          }
+          onContextMenuHandler(e);
 
           props.setSelectedNotesIds && props.setSelectedNotesIds([]);
-          setViewModal({ x, y });
         }}
         onMouseDown={(e) => {
           // @ts-ignore
@@ -310,20 +282,15 @@ const NoteView: React.FC<NoteViewProps> = (props) => {
         )}
       </div>
 
-      {viewModal
-        ? createPortal(
-          <NoteModal
-            data={data}
-            x={viewModal.x}
-            y={viewModal.y}
-            width={modalWidth}
-            height={modalHeight}
-            hide={() => setViewModal(undefined)}
-            setViewEdit={() => setViewEdit(true)}
-          />,
-          document.getElementById("root")!
-        )
-        : null}
+      {viewMenu ? (
+        <NoteContextMenu
+          data={data}
+          leftPosition={viewMenu.leftPosition}
+          topPosition={viewMenu.topPosition}
+          hide={() => setViewMenu(undefined)}
+          setViewEdit={() => setViewEdit(true)}
+        />
+      ) : null}
     </>
   );
 };
@@ -356,20 +323,22 @@ const FilterNotesView: React.FC<FilterNotesViewProps> = (props) => {
             props.setViewFilter(false);
           }}
         />
-        <Button
-          style={{
-            position: "absolute",
-            right: 4,
-            top: 8,
-          }}
-          transparent
-          onClick={() => {
-            props.setQuery("");
-            props.setViewFilter(false);
-          }}
-        >
-          <MdClose size={20} />
-        </Button>
+        {props.query.length > 1 ? (
+          <Button
+            style={{
+              position: "absolute",
+              right: 4,
+              top: 6,
+            }}
+            transparent
+            onClick={() => {
+              props.setQuery("");
+              props.setViewFilter(false);
+            }}
+          >
+            <MdClose size={24} />
+          </Button>
+        ) : null}
       </div>
     </div>
   );
@@ -421,21 +390,16 @@ const CreateNoteView: React.FC<CreateNoteViewProps> = (props) => {
   );
 };
 
-interface NoteModalProps {
+interface NoteContextMenuProps {
   data: Note;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
+  leftPosition: number;
+  topPosition: number;
   hide: () => void;
   setViewEdit: () => void;
 }
 
-const NoteModal: React.FC<NoteModalProps> = (props) => {
-  const [preventHide, setPreventHide] = React.useState(true);
+const NoteContextMenu: React.FC<NoteContextMenuProps> = (props) => {
   const [viewConfirmDelete, setViewConfirmDelete] = React.useState(false);
-
-  const deleteRef = React.useRef<HTMLButtonElement>(null);
 
   React.useEffect(() => {
     let hideConfirm: NodeJS.Timeout | undefined;
@@ -450,34 +414,13 @@ const NoteModal: React.FC<NoteModalProps> = (props) => {
     return () => hideConfirm && clearTimeout(hideConfirm);
   }, [viewConfirmDelete]);
 
-  const ref = useClickOutside<HTMLDivElement>(
-    () => !preventHide && props.hide(),
-    ["click", "contextmenu"],
-    [deleteRef.current]
-  );
-
-  React.useEffect(() => {
-    const timeout = setTimeout(() => {
-      setPreventHide(false);
-    }, 20);
-
-    return () => clearTimeout(timeout);
-  }, []);
-
   return (
-    <div
-      ref={ref}
-      style={{
-        zIndex: 9999,
-        position: "fixed",
-        left: props.x,
-        top: props.y,
-        width: props.width,
-        height: props.height,
-      }}
-      className="bg-base rounded shadow-lg text-sm p-0.5"
+    <ContextMenu
+      leftPosition={props.leftPosition}
+      topPosition={props.topPosition}
+      hide={props.hide}
     >
-      <div className="flex flex-col gap-0.5 overflow-clip rounded">
+      <React.Fragment>
         <Button
           onClick={async () => {
             await writeText(props.data.body);
@@ -491,7 +434,6 @@ const NoteModal: React.FC<NoteModalProps> = (props) => {
         </Button>
         {!viewConfirmDelete ? (
           <Button
-            innerRef={deleteRef}
             onClick={() => setViewConfirmDelete(true)}
             rounded={false}
             color="danger"
@@ -510,8 +452,8 @@ const NoteModal: React.FC<NoteModalProps> = (props) => {
             Confirm
           </Button>
         )}
-      </div>
-    </div>
+      </React.Fragment>
+    </ContextMenu>
   );
 };
 

@@ -10,8 +10,6 @@ import Dashboard from "./dashboard";
 import IntentView from "./intentView";
 import useStore from "@/store";
 
-export type Sort = "asc" | "desc";
-
 const IntentsWindow: React.FC = () => {
   const [selectedId, setSelectedId] = React.useState<string>();
   const [selectedTags, setSelectedTags] = React.useState<string[]>([]);

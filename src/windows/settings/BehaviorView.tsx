@@ -26,7 +26,7 @@ const BehaviorView: React.FC<Props> = (props) => {
             })
           }
           styles={{
-            icon: { color: "var(--primary-color) !important" },
+            icon: { color: "rgb(var(--primary-color)) !important" },
             root: { height: "20px" },
           }}
           classNames={{

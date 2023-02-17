@@ -14,8 +14,8 @@ import useStore from "@/store";
 import ipc from "@/ipc";
 import Button from "@/components/Button";
 import { IntentForCreate } from "@/bindings/IntentForCreate";
-import IntentsList from "./IntentsList";
-import { Sort } from ".";
+import { IntentsSort } from "@/types";
+import IntentsList from "@/components/intentsList";
 
 interface Props {
   selectedId?: string;
@@ -25,7 +25,7 @@ interface Props {
 }
 
 const Sidebar: React.FC<Props> = (props) => {
-  const [sort, setSort] = React.useState<Sort>("asc");
+  const [sort, setSort] = React.useState<IntentsSort>("asc");
 
   const [viewCreate, setViewCreate] = React.useState(false);
   const [viewArchived, setViewArchived] = React.useState(false);
@@ -113,7 +113,7 @@ const CreateIntentView: React.FC<CreateIntentViewProps> = (props) => {
 
   return (
     <div className="flex flex-col p-2 bg-darker/20 shadow-inner rounded">
-      <form onSubmit={onSubmit} className="flex flex-col gap-2">
+      <form onSubmit={onSubmit} className="flex flex-col gap-2 text-sm">
         <div className="flex flex-col gap-1 focus-within:text-primary/60">
           <input
             autoComplete="off"

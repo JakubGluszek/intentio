@@ -96,7 +96,6 @@ const Button: React.FC<Props> = (props) => {
         ...style,
       }}
       whileTap={{ scale: transparent ? 0.8 : undefined }}
-      whileFocus={{ opacity: 1.0 }}
       onMouseEnter={handleOnMouseEnter}
       onMouseLeave={handleOnMouseLeave}
       disabled={disabled}
