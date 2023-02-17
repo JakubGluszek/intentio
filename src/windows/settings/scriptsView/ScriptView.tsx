@@ -1,5 +1,4 @@
 import React from "react";
-import { createPortal } from "react-dom";
 import { useForm } from "react-hook-form";
 import { MdCircle } from "react-icons/md";
 import { clsx, Tooltip } from "@mantine/core";
@@ -7,8 +6,8 @@ import { useClickOutside } from "@mantine/hooks";
 
 import ipc from "@/ipc";
 import useStore from "@/store";
-import config from "@/config";
 import utils from "@/utils";
+import { useContextMenu } from "@/hooks";
 import { Script } from "@/bindings/Script";
 import { ScriptForUpdate } from "@/bindings/ScriptForUpdate";
 import ScriptContextMenu from "./ScriptContextMenu";
@@ -60,36 +59,12 @@ interface DefaultViewProps {
 }
 
 const DefaultView: React.FC<DefaultViewProps> = (props) => {
-  const [viewContextMenu, setViewContextMenu] = React.useState<{
-    x: number;
-    y: number;
-  }>();
-
-  const contextMenuWidth = 120;
-  const contextMenuHeight = 122;
+  const { viewMenu, setViewMenu, onContextMenuHandler } = useContextMenu();
 
   return (
     <div
       className="flex flex-col gap-1 bg-window/80 hover:bg-window p-1.5 rounded shadow"
-      onContextMenu={(e) => {
-        var x = e.pageX;
-        var y = e.pageY;
-
-        const root = config.webviews.settings;
-        const padding = 8;
-
-        // fix possible x overflow
-        if (x + contextMenuWidth > root.width) {
-          x = x - (x + contextMenuWidth - root.width) - padding;
-        }
-
-        // fix possible y overflow
-        if (y + contextMenuHeight > root.height) {
-          y = y - (y + contextMenuHeight - root.height) - padding;
-        }
-
-        setViewContextMenu({ x, y });
-      }}
+      onContextMenu={onContextMenuHandler}
     >
       <div className="w-full flex flex-row items-center gap-2">
         <Tooltip label={props.data.active ? "Active" : "Disabled"}>
@@ -107,22 +82,17 @@ const DefaultView: React.FC<DefaultViewProps> = (props) => {
         <LabelView label={props.data.label} onUpdate={props.onUpdate} />
       </div>
 
-      {viewContextMenu
-        ? createPortal(
-          <ScriptContextMenu
-            data={props.data}
-            x={viewContextMenu.x}
-            y={viewContextMenu.y}
-            width={contextMenuWidth}
-            height={contextMenuHeight}
-            hide={() => setViewContextMenu(undefined)}
-            viewCode={() => props.viewCode()}
-            viewEvents={() => props.viewEvents()}
-            runScript={() => utils.executeScript(props.data.body)}
-          />,
-          document.getElementById("root")!
-        )
-        : null}
+      {viewMenu ? (
+        <ScriptContextMenu
+          data={props.data}
+          leftPosition={viewMenu.leftPosition}
+          topPosition={viewMenu.topPosition}
+          hide={() => setViewMenu(undefined)}
+          viewCode={() => props.viewCode()}
+          viewEvents={() => props.viewEvents()}
+          runScript={() => utils.executeScript(props.data.body)}
+        />
+      ) : null}
     </div>
   );
 };
