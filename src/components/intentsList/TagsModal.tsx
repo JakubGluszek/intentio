@@ -20,21 +20,7 @@ export const TagsModal: React.FC<Props> = (props) => {
 
   const ref = useClickOutside(() => props.hide());
 
-  var allTags = useStore((state) => state.getAllTags)();
-
-  allTags = allTags.filter((tag) =>
-    props.data.tags.includes(tag) ? undefined : tag
-  );
-
-  const addTag = (tag: string) =>
-    ipc
-      .updateIntent(props.data.id, {
-        tags: [tag, ...props.data.tags],
-      })
-      .then(() => {
-        toast("Tag added");
-        setNewTag("");
-      });
+  const allTags = useStore((state) => state.getAllTags)();
 
   return (
     <ModalContainer>
@@ -47,9 +33,22 @@ export const TagsModal: React.FC<Props> = (props) => {
           value={newTag}
           maxLength={24}
           onChange={(e) => setNewTag(e.currentTarget.value)}
-          onKeyDown={(e) =>
-            e.key === "Enter" && newTag.length > 0 && addTag(newTag)
-          }
+          onKeyDown={(e) => {
+            if (e.key !== "Enter" || newTag.length === 0) return;
+
+            if (allTags.includes(newTag.toLowerCase())) {
+              toast("Tag already exists");
+              return;
+            }
+            ipc
+              .updateIntent(props.data.id, {
+                tags: [newTag, ...props.data.tags],
+              })
+              .then(() => {
+                toast("Tag created");
+                setNewTag("");
+              });
+          }}
           autoFocus
           placeholder="Add a tag"
         />
@@ -79,12 +78,26 @@ export const TagsModal: React.FC<Props> = (props) => {
           </div>
         ) : null}
 
-        {allTags.length > 0 ? (
+        {allTags.filter((tag) =>
+          props.data.tags.includes(tag) ? undefined : tag
+        ).length > 0 ? (
           <div className="flex flex-col gap-1">
             <div className="text-text/60">Select from existing tags</div>
             <div className="flex flex-row flex-wrap gap-1">
               {allTags.map((tag) => (
-                <TagButton onClick={() => addTag(tag)}>{tag}</TagButton>
+                <TagButton
+                  onClick={() => {
+                    ipc
+                      .updateIntent(props.data.id, {
+                        tags: [tag, ...props.data.tags],
+                      })
+                      .then(() => {
+                        toast("Tag added");
+                      });
+                  }}
+                >
+                  {tag}
+                </TagButton>
               ))}
             </div>
           </div>
