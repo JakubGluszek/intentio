@@ -72,7 +72,7 @@ const IntentListItem: React.FC<Props> = (props) => {
         {/* Tags */}
         {data.tags.length > 0 ? (
           <div className="p-1 rounded bg-window shadow-inner">
-            <div className="flex flex-row gap-2 overflow-x-auto rounded-sm">
+            <div className="flex flex-row gap-1 overflow-x-auto rounded-sm">
               {data.tags.map((tag, i) => (
                 <TagButton
                   key={i}

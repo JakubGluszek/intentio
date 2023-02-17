@@ -1,18 +1,15 @@
 import React from "react";
-import { useClickOutside } from "@mantine/hooks";
 import { toast } from "react-hot-toast";
 
-import { Script } from "@/bindings/Script";
-import { Button } from "@/components";
 import ipc from "@/ipc";
 import useStore from "@/store";
+import { Button, ContextMenu } from "@/components";
+import { Script } from "@/bindings/Script";
 
 interface ScriptContextMenuProps {
   data: Script;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
+  leftPosition: number;
+  topPosition: number;
   hide: () => void;
   runScript: () => void;
   viewCode: () => void;
@@ -20,19 +17,9 @@ interface ScriptContextMenuProps {
 }
 
 const ScriptContextMenu: React.FC<ScriptContextMenuProps> = (props) => {
-  const [preventHide, setPreventHide] = React.useState(true);
   const [viewConfirmDelete, setViewConfirmDelete] = React.useState(false);
-  const [deleteBtn, setDeleteBtn] = React.useState<HTMLButtonElement | null>(
-    null
-  );
 
   const store = useStore();
-
-  const ref = useClickOutside<HTMLDivElement>(
-    () => !preventHide && props.hide(),
-    ["click", "contextmenu"],
-    [deleteBtn]
-  );
 
   React.useEffect(() => {
     let hideConfirm: NodeJS.Timeout | undefined;
@@ -47,33 +34,9 @@ const ScriptContextMenu: React.FC<ScriptContextMenuProps> = (props) => {
     return () => hideConfirm && clearTimeout(hideConfirm);
   }, [viewConfirmDelete]);
 
-  React.useEffect(() => {
-    const timeout = setTimeout(() => {
-      setPreventHide(false);
-    }, 20);
-
-    return () => clearTimeout(timeout);
-  }, []);
-
-  React.useEffect(() => {
-    store.setTauriDragEnabled(false);
-    return () => store.setTauriDragEnabled(true);
-  }, []);
-
   return (
-    <div
-      ref={ref}
-      style={{
-        zIndex: 9999,
-        position: "fixed",
-        left: props.x,
-        top: props.y,
-        width: props.width,
-        height: props.height,
-      }}
-      className="bg-base rounded shadow-lg text-sm p-0.5"
-    >
-      <div className="flex flex-col gap-0.5 overflow-clip rounded">
+    <ContextMenu {...props}>
+      <div className="w-24 flex flex-col gap-0.5">
         <Button onClick={() => props.runScript()} rounded={false}>
           Run
         </Button>
@@ -85,8 +48,6 @@ const ScriptContextMenu: React.FC<ScriptContextMenuProps> = (props) => {
         </Button>
         {!viewConfirmDelete ? (
           <Button
-            // @ts-ignore
-            innerRef={setDeleteBtn}
             onClick={() => setViewConfirmDelete(true)}
             rounded={false}
             color="danger"
@@ -108,7 +69,7 @@ const ScriptContextMenu: React.FC<ScriptContextMenuProps> = (props) => {
           </Button>
         )}
       </div>
-    </div>
+    </ContextMenu>
   );
 };
 
