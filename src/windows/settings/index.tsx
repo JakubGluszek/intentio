@@ -23,6 +23,7 @@ import AlertsView from "./AlertsView";
 import AppearanceView from "./appearanceView";
 import BehaviorView from "./BehaviorView";
 import ScriptsView from "./scriptsView";
+import AboutView from "./AboutView";
 
 type Tab = "timer" | "alerts" | "appearance" | "behavior" | "scripts" | "about";
 
@@ -199,6 +200,7 @@ const SettingsWindow: React.FC = () => {
                 <BehaviorView settings={settings} update={update} />
               ) : null}
               {tab === "scripts" ? <ScriptsView /> : null}
+              {tab === "about" ? <AboutView /> : null}
             </div>
           </div>
         </div>

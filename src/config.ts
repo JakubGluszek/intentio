@@ -10,10 +10,12 @@ const WebviewConfig = {
 
 const config = {
   about: {
-    version: "1.1.0",
+    version: "2.0.0",
     sourceCode: "https://github.com/JakubGluszek/intentio",
     homePage: "https://intentio.app",
-    discordServer: "https://discord.gg/xyjGRmCuuS"
+    discordServer: "https://discord.gg/xyjGRmCuuS",
+    author: "Jakub Głuszek",
+    authorHomepage: "https://jacobgluszek.dev",
   },
   webviews: {
     main: {
