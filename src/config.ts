@@ -13,6 +13,7 @@ const config = {
     version: "1.1.0",
     sourceCode: "https://github.com/JakubGluszek/intentio",
     homePage: "https://intentio.app",
+    discordServer: "https://discord.gg/xyjGRmCuuS"
   },
   webviews: {
     main: {
