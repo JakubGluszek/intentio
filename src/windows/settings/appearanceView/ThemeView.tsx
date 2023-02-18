@@ -17,6 +17,8 @@ const ThemeView: React.FC<Props> = ({ theme }) => {
 
   const store = useStore();
 
+  const isSelected = theme.id === store.currentTheme?.id;
+
   return viewEdit ? (
     createPortal(
       <EditThemeModal theme={theme} hide={() => setViewEdit(false)} />,
@@ -25,7 +27,7 @@ const ThemeView: React.FC<Props> = ({ theme }) => {
   ) : (
     <div
       style={{ color: theme.text_hex }}
-      className="group flex flex-col rounded overflow-clip"
+      className="group flex flex-col rounded overflow-clip border-2 border-base"
       onClick={(e) =>
         // @ts-ignore
         !e.target.closest("button") && ipc.setCurrentTheme(theme.id)
@@ -36,7 +38,7 @@ const ThemeView: React.FC<Props> = ({ theme }) => {
         style={{
           border: theme.base_hex,
         }}
-        className="relative h-9 flex flex-row items-center rounded border-2"
+        className="relative h-9 flex flex-row items-center"
       >
         <div
           style={{ backgroundColor: theme.primary_hex }}
@@ -67,12 +69,12 @@ const ThemeView: React.FC<Props> = ({ theme }) => {
         </div>
 
         {/* Current theme indicator */}
-        {theme.id === store.currentTheme?.id && (
+        {isSelected ? (
           <div
             style={{ backgroundColor: theme.primary_hex }}
-            className="w-full h-1 absolute bottom-0"
+            className="w-full h-[3px] absolute bottom-0"
           ></div>
-        )}
+        ) : null}
       </div>
     </div>
   );

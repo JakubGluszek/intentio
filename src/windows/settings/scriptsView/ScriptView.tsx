@@ -63,7 +63,7 @@ const DefaultView: React.FC<DefaultViewProps> = (props) => {
 
   return (
     <div
-      className="flex flex-col gap-1 bg-window/80 hover:bg-window p-1.5 rounded shadow"
+      className="flex flex-col gap-1 card"
       onContextMenu={onContextMenuHandler}
     >
       <div className="w-full flex flex-row items-center gap-2">

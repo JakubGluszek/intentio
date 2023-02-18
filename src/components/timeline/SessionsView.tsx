@@ -43,7 +43,7 @@ const SessionView: React.FC<SessionViewProps> = (props) => {
 
   return (
     <Tooltip openDelay={400} label={`${startedAt} - ${finishedAt}`}>
-      <div className="flex flex-row items-center justify-between p-1.5 px-2 bg-window rounded shadow text-sm">
+      <div className="flex flex-row items-center justify-between px-2 text-sm card rounded-sm">
         <div className="text-text/80">{data.duration} min</div>
         {props.displayLabel ? (
           <div>

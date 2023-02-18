@@ -214,10 +214,11 @@ const NoteView: React.FC<NoteViewProps> = (props) => {
       <div
         ref={ref}
         className={clsx(
-          "min-h-fit flex flex-col gap-1.5 p-1 rounded shadow text-sm",
+          "min-h-fit flex flex-col gap-1.5 card text-sm p-0",
           isSelected
             ? "bg-base/80 hover:bg-base"
-            : "bg-window/80 hover:bg-window"
+            : "bg-window/80 hover:bg-window",
+          viewEdit && "border-0"
         )}
         onContextMenu={(e) => {
           if (viewEdit) return;
@@ -228,7 +229,7 @@ const NoteView: React.FC<NoteViewProps> = (props) => {
         }}
         onMouseDown={(e) => {
           // @ts-ignore
-          if (e.target.closest("button") || e.button === 2 || viewModal) return;
+          if (e.target.closest("button") || e.button === 2) return;
 
           if (e.ctrlKey) {
             if (isSelected) {
@@ -253,7 +254,7 @@ const NoteView: React.FC<NoteViewProps> = (props) => {
         data-tauri-disable-drag
       >
         {viewEdit === false ? (
-          <div className="flex flex-row items-start gap-1">
+          <div className="flex flex-row items-start gap-1 p-1">
             <div className="py-2 px-0.5 text-primary">
               <MdCircle size={8} />
             </div>
@@ -370,7 +371,11 @@ const CreateNoteView: React.FC<CreateNoteViewProps> = (props) => {
   };
 
   return !props.viewCreate ? (
-    <Button transparent style={{height: "32px"}} onClick={() => props.setViewCreate(true)}>
+    <Button
+      transparent
+      style={{ height: "32px" }}
+      onClick={() => props.setViewCreate(true)}
+    >
       <MdAddCircle size={20} />
       <span>Add note</span>
     </Button>
@@ -428,7 +433,9 @@ const NoteContextMenu: React.FC<NoteContextMenuProps> = (props) => {
           }}
           rounded={false}
         >
-          <IoMdClipboard size={20} />
+          <div className="w-fit">
+            <IoMdClipboard size={20} />
+          </div>
           <div className="w-full">Copy</div>
         </Button>
         {!viewConfirmDelete ? (
@@ -437,7 +444,9 @@ const NoteContextMenu: React.FC<NoteContextMenuProps> = (props) => {
             rounded={false}
             color="danger"
           >
-            <MdDelete size={20} />
+            <div className="w-fit">
+              <MdDelete size={20} />
+            </div>
             <div className="w-full">Delete</div>
           </Button>
         ) : (

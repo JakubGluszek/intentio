@@ -113,13 +113,13 @@ const CreateIntentView: React.FC<CreateIntentViewProps> = (props) => {
 
   return (
     <div className="flex flex-col p-2 bg-darker/20 shadow-inner rounded">
-      <form onSubmit={onSubmit} className="flex flex-col gap-2 text-sm">
+      <form onSubmit={onSubmit} className="flex flex-col gap-2">
         <div className="flex flex-col gap-1 focus-within:text-primary/60">
           <input
             autoComplete="off"
             autoFocus
             maxLength={24}
-            placeholder="Intent label"
+            placeholder="Label your intent"
             {...register("label", {
               required: true,
               minLength: 1,
@@ -127,7 +127,7 @@ const CreateIntentView: React.FC<CreateIntentViewProps> = (props) => {
             })}
           />
         </div>
-        <div className="h-7 flex flex-row items-center justify-between">
+        <div className="h-7 flex flex-row items-center justify-between text-sm">
           <Button transparent type="button" onClick={() => props.hide()}>
             Cancel
           </Button>

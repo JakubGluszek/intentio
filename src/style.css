@@ -95,7 +95,7 @@
   }
 
   input {
-    @apply w-full bg-darker/20 border-2 border-window focus:border-primary/40 outline-none py-1 px-2 rounded shadow-inner text-text;
+    @apply w-full bg-darker/20 border-2 border-window focus:border-primary/40 outline-none py-1 px-2 rounded shadow-inner text-text transition-colors;
   }
 
   input::placeholder {
@@ -104,5 +104,11 @@
 
   input > * {
     user-select: all;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-window/80 hover:bg-window p-1.5 rounded border-2 border-base/80 hover:border-base shadow shadow-black/30;
   }
 }

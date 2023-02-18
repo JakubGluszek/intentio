@@ -13,8 +13,10 @@ const BehaviorView: React.FC<Props> = (props) => {
   return (
     <div className="flex flex-col gap-2 pb-2">
       {/* Display live countdown checkbox */}
-      <div className="flex flex-row items-center justify-between rounded p-1.5 bg-window shadow">
-        <label htmlFor="hide-to-tray">Hide main window to tray</label>
+      <div className="flex flex-row items-center card">
+        <label className="w-full" htmlFor="hide-to-tray">
+          Hide main window to tray
+        </label>
         <Checkbox
           tabIndex={-2}
           id="hide-to-tray"

@@ -208,6 +208,7 @@ const CreateTaskView: React.FC<CreateTaskViewProps> = (props) => {
               props.setViewCreate(false);
               setValue("body", "");
             }}
+            placeholder="Describe your task"
             autoFocus
             minLength={1}
             autoComplete="off"
@@ -278,14 +279,15 @@ const TaskView: React.FC<TaskViewProps> = (props) => {
       <div
         ref={containerRef}
         className={clsx(
-          "min-h-fit flex flex-col gap-1.5 p-1 rounded shadow text-sm",
+          "min-h-fit flex flex-col gap-1.5 card text-sm p-0",
           isSelected
             ? "bg-base/80 hover:bg-base"
-            : "bg-window/80 hover:bg-window"
+            : "bg-window/80 hover:bg-window",
+          viewEdit && "border-0"
         )}
         onMouseDown={(e) => {
           // @ts-ignore
-          if (e.target.closest("button") || e.button === 2 || viewModal) return;
+          if (e.target.closest("button") || e.button === 2) return;
 
           if (e.ctrlKey) {
             if (isSelected) {
@@ -313,7 +315,7 @@ const TaskView: React.FC<TaskViewProps> = (props) => {
         data-tauri-disable-drag
       >
         {!viewEdit ? (
-          <div className="flex flex-row items-start gap-1">
+          <div className="flex flex-row items-start gap-1 p-1">
             {!data.done ? (
               <Button onMouseDown={() => handleCheck()} transparent>
                 <MdCheckBoxOutlineBlank size={24} />

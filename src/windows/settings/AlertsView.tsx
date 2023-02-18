@@ -104,8 +104,8 @@ const AlertsView: React.FC<Props> = (props) => {
 
   return (
     <div className="flex flex-col gap-3 pb-2">
-      <div className="flex flex-row items-center justify-between p-1.5 shadow bg-window rounded">
-        <label htmlFor="system-notifications">System notifications</label>
+      <div className="flex flex-row items-center card">
+        <label className="w-full" htmlFor="system-notifications">System notifications</label>
         <Checkbox
           tabIndex={-2}
           size="sm"
@@ -126,10 +126,10 @@ const AlertsView: React.FC<Props> = (props) => {
           }}
         />
       </div>
-      <div className="flex flex-col gap-3 p-1.5 bg-window rounded shadow">
+      <div className="flex flex-col gap-3 card">
         <div className="flex flex-row items-center gap-4">
           <span>Audio</span>
-          <div className="w-10 grow flex flex-row items-center justify-between px-2 py-0.5 bg-base rounded">
+          <div className="w-10 grow flex flex-row items-center justify-between px-2 py-0.5 bg-base rounded shadow">
             <Button transparent onClick={() => previousTrack()}>
               <MdKeyboardArrowLeft size={24} />
             </Button>
@@ -190,9 +190,10 @@ const AlertsView: React.FC<Props> = (props) => {
             )}
           </Button>
         </div>
+        {/* Repeat alert iterations */}
         <div className="flex flex-row items-center gap-4">
           <span>Repeat</span>
-          <div className="flex flex-row items-center px-2 py-0.5 gap-2 bg-base rounded">
+          <div className="flex flex-row items-center px-2 py-0.5 gap-2 bg-base rounded shadow">
             <Button
               transparent
               onClick={() =>

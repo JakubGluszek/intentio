@@ -78,6 +78,7 @@ const CreateIntentView: React.FC = () => {
               setViewCreate(false);
               setValue("label", "");
             }}
+            placeholder="Label your intent"
             autoFocus
             autoComplete="off"
             minLength={1}

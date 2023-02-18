@@ -46,7 +46,7 @@ const Dashboard: React.FC<Props> = (props) => {
 
   return (
     <div className="grow flex flex-col p-2 gap-2">
-      <div className="grow flex flex-col gap-2 p-2 bg-darker/40 rounded shadow-inner">
+      <div className="grow flex flex-col gap-2 p-2 bg-darker/40 rounded shadow-inner shadow-black/60">
         {tab === "activity" ? (
           <ActivityView
             sessions={reducedSessions}

@@ -46,9 +46,9 @@ const ContextMenu: React.FC<Props> = (props) => {
         left: position.left,
         top: position.top,
       }}
-      className="bg-base rounded shadow-lg text-sm p-0.5"
+      className="bg-window rounded shadow-lg shadow-black/60 text-sm p-0.5"
     >
-      <div className="flex flex-col gap-0.5 overflow-clip rounded">
+      <div className="w-28 flex flex-col gap-0.5 overflow-clip rounded">
         {props.children}
       </div>
     </div>
