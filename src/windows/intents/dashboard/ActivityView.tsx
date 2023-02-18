@@ -26,12 +26,14 @@ const ActivityView: React.FC<Props> = (props) => {
         tags={props.tags}
         intents={props.intents}
       />
-      <CalendarView
-        sessions={props.sessions}
-        tags={props.tags}
-        intents={props.intents}
-        viewDayDetails={props.viewDayDetails}
-      />
+      <div data-tauri-disable-drag>
+        <CalendarView
+          sessions={props.sessions}
+          tags={props.tags}
+          intents={props.intents}
+          viewDayDetails={props.viewDayDetails}
+        />
+      </div>
     </div>
   );
 };
