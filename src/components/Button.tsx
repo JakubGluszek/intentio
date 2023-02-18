@@ -3,10 +3,11 @@ import { HTMLMotionProps, motion, MotionStyle } from "framer-motion";
 
 interface Props extends HTMLMotionProps<"button"> {
   children: React.ReactNode;
-  color?: "primary" | "danger" | "base";
+  color?: "primary" | "danger";
   transparent?: boolean;
   opacity?: number;
   rounded?: boolean;
+  isSelected?: boolean;
   innerRef?: React.MutableRefObject<HTMLButtonElement | null>;
 }
 
@@ -18,6 +19,7 @@ const Button: React.FC<Props> = (props) => {
     color = "primary",
     rounded = true,
     disabled = false,
+    isSelected = false,
     opacity = 0.8,
     style,
     innerRef,
@@ -49,23 +51,24 @@ const Button: React.FC<Props> = (props) => {
         backgroundColor: "transparent",
         color:
           color === "primary"
-            ? "rgb(var(--primary-color) / 0.8)"
-            : "rgb(var(--danger-color) / 0.8)",
+            ? "rgb(var(--primary-color))"
+            : "rgb(var(--danger-color))",
       };
     } else if (color === "primary") {
       return {
-        backgroundColor: "rgb(var(--primary-color) / 0.8)",
-        color: "rgb(var(--window-color))",
+        backgroundColor:
+          isSelected || isHover
+            ? "rgb(var(--primary-color))"
+            : "rgb(var(--base-color))",
+        color:
+          isSelected || isHover
+            ? "rgb(var(--window-color))"
+            : "rgb(var(--primary-color))",
       };
     } else if (color === "danger") {
       return {
-        backgroundColor: "rgb(var(--danger-color) / 0.8)",
+        backgroundColor: "rgb(var(--danger-color))",
         color: "rgb(var(--window-color))",
-      };
-    } else if (color === "base") {
-      return {
-        backgroundColor: "rgb(var(--base-color) / 0.8)",
-        color: "rgb(var(--primary-color))",
       };
     }
 
@@ -95,7 +98,7 @@ const Button: React.FC<Props> = (props) => {
         ...colors(),
         ...style,
       }}
-      whileTap={{ scale: transparent ? 0.8 : undefined }}
+      whileTap={{ scale: transparent ? 0.9 : undefined }}
       onMouseEnter={handleOnMouseEnter}
       onMouseLeave={handleOnMouseLeave}
       disabled={disabled}

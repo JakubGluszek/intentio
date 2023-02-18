@@ -55,8 +55,7 @@ const SettingsWindow: React.FC = () => {
           {/* Navigation */}
           <div className="flex flex-col gap-1.5 rounded">
             <Button
-              className="transition-transform hover:-translate-y-0.5 hover:shadow"
-              color={tab === "timer" ? "primary" : "base"}
+              isSelected={tab === "timer"}
               onClick={() => setTab("timer")}
             >
               <div className="w-full flex flex-row gap-1">
@@ -67,8 +66,7 @@ const SettingsWindow: React.FC = () => {
               </div>
             </Button>
             <Button
-              className="transition-transform hover:-translate-y-0.5 hover:shadow"
-              color={tab === "alerts" ? "primary" : "base"}
+              isSelected={tab === "alerts"}
               onClick={() => setTab("alerts")}
             >
               <div className="w-full flex flex-row gap-1">
@@ -79,8 +77,7 @@ const SettingsWindow: React.FC = () => {
               </div>
             </Button>
             <Button
-              className="transition-transform hover:-translate-y-0.5 hover:shadow"
-              color={tab === "appearance" ? "primary" : "base"}
+              isSelected={tab === "appearance"}
               onClick={() => setTab("appearance")}
             >
               <div className="w-full flex flex-row gap-1">
@@ -91,8 +88,7 @@ const SettingsWindow: React.FC = () => {
               </div>
             </Button>
             <Button
-              className="shadow transition-transform hover:-translate-y-0.5 hover:shadow-2xl"
-              color={tab === "behavior" ? "primary" : "base"}
+              isSelected={tab === "behavior"}
               onClick={() => setTab("behavior")}
             >
               <div className="w-full flex flex-row gap-1">
@@ -104,8 +100,7 @@ const SettingsWindow: React.FC = () => {
             </Button>
             {osType !== "Windows_NT" ? (
               <Button
-                className="shadow transition-transform hover:-translate-y-0.5 hover:shadow-2xl"
-                color={tab === "scripts" ? "primary" : "base"}
+                isSelected={tab === "scripts"}
                 onClick={() => setTab("scripts")}
               >
                 <div className="w-full flex flex-row gap-1">
@@ -117,8 +112,7 @@ const SettingsWindow: React.FC = () => {
               </Button>
             ) : null}
             <Button
-              className="shadow transition-transform hover:-translate-y-0.5 hover:shadow-2xl"
-              color={tab === "about" ? "primary" : "base"}
+              isSelected={tab === "about"}
               onClick={() => setTab("about")}
             >
               <div className="w-full flex flex-row gap-1">

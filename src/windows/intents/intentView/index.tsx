@@ -85,7 +85,7 @@ const IntentView: React.FC<Props> = (props) => {
           style={{
             width: tab === "activity" ? "100%" : "fit-content",
           }}
-          color={tab === "activity" ? "primary" : "base"}
+          isSelected={tab === "activity"}
           rounded={false}
           onClick={() => switchTab("activity")}
         >
@@ -95,7 +95,7 @@ const IntentView: React.FC<Props> = (props) => {
           style={{
             width: tab === "timeline" ? "100%" : "fit-content",
           }}
-          color={tab === "timeline" ? "primary" : "base"}
+          isSelected={tab === "timeline"}
           rounded={false}
           onClick={() => switchTab("timeline")}
         >

@@ -48,7 +48,7 @@ const DayView: React.FC<Props> = (props) => {
               style={{
                 width: tab === "sessions" ? "100%" : "fit-content",
               }}
-              color={tab === "sessions" ? "primary" : "base"}
+              isSelected={tab === "sessions"}
               rounded={false}
               onClick={() => setTab("sessions")}
             >
@@ -58,7 +58,7 @@ const DayView: React.FC<Props> = (props) => {
               style={{
                 width: tab === "tasks" ? "100%" : "fit-content",
               }}
-              color={tab === "tasks" ? "primary" : "base"}
+              isSelected={tab === "tasks"}
               rounded={false}
               onClick={() => setTab("tasks")}
             >
@@ -68,7 +68,7 @@ const DayView: React.FC<Props> = (props) => {
               style={{
                 width: tab === "notes" ? "100%" : "fit-content",
               }}
-              color={tab === "notes" ? "primary" : "base"}
+              isSelected={tab === "notes"}
               rounded={false}
               onClick={() => setTab("notes")}
             >

@@ -45,7 +45,7 @@ const IntentListItem: React.FC<Props> = (props) => {
         className={clsx(
           "w-full h-fit flex flex-col p-1 rounded transition-transform",
           props.selected
-            ? "bg-primary/50 hover:bg-primary/60 text-window -translate-y-[2px] shadow-xl"
+            ? "bg-primary/60 hover:bg-primary/80 text-window -translate-y-[2px] shadow-xl"
             : "border-transparent bg-base/80 hover:bg-base text-text/80 hover:text-text shadow"
         )}
         onClick={(e) => props.onSelected(e, data)}
