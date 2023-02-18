@@ -11,7 +11,7 @@ interface Props {
 
 const SessionsView: React.FC<Props> = (props) => {
   return (
-    <div className="flex flex-col gap-1 p-1">
+    <div className="flex flex-col gap-1 p-1.5">
       {props.sessions!.map((session) => (
         <SessionView
           key={session.id}

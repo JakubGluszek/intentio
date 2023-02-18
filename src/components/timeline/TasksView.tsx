@@ -14,7 +14,7 @@ const TasksView: React.FC<Props> = (props) => {
   if (tasks.length === 0) return null;
 
   return (
-    <div className="flex flex-col gap-1 p-1">
+    <div className="flex flex-col gap-1 p-1.5">
       {tasks.map((task) => (
         <div className="min-h-fit flex flex-col gap-1.5 p-1 rounded shadow text-sm bg-window/80 hover:bg-window">
           <div className="flex flex-row items-start gap-1">

@@ -41,7 +41,7 @@ const Sidebar: React.FC<Props> = (props) => {
         opacity: props.isVisible ? 1.0 : 0.0,
       }}
     >
-      <div className="grow flex flex-col p-2 bg-darker/20">
+      <div className="grow flex flex-col p-2 bg-darker/40">
         <Header onCollapse={() => props.collapse()} />
         <div className="grow flex flex-col py-1">
           {tab === "intents" ? <IntentsView /> : null}

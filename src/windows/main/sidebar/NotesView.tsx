@@ -75,7 +75,7 @@ const NotesView: React.FC = () => {
 
   return (
     <div className="grow flex flex-col overflow-y-auto pt-2 gap-1">
-      <div className="w-full flex flex-row justify-between">
+      <div className="w-full min-h-[2rem] flex flex-row justify-between">
         {!viewFilter ? (
           <CreateNoteView
             viewCreate={viewCreate}
@@ -131,7 +131,7 @@ const NotesView: React.FC = () => {
       {notes.length > 0 ? (
         <div
           id="notes-container"
-          className="grow flex flex-col overflow-y-auto gap-1"
+          className="grow flex flex-col overflow-y-auto gap-1 py-1"
         >
           <div
             ref={containerRef}
@@ -370,7 +370,7 @@ const CreateNoteView: React.FC<CreateNoteViewProps> = (props) => {
   };
 
   return !props.viewCreate ? (
-    <Button transparent onClick={() => props.setViewCreate(true)}>
+    <Button transparent style={{height: "32px"}} onClick={() => props.setViewCreate(true)}>
       <MdAddCircle size={20} />
       <span>Add note</span>
     </Button>

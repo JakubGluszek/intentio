@@ -190,7 +190,7 @@ const SettingsWindow: React.FC = () => {
         </div>
         {/* Main */}
         <div className="relative grow flex flex-col p-2 pl-0">
-          <div className="grow bg-darker/20 shadow-inner rounded p-2.5 overflow-y-auto">
+          <div className="grow bg-darker/40 shadow-inner rounded p-2.5 overflow-y-auto">
             <div className="max-h-0 overflow-y">
               {tab === "timer" ? (
                 <TimerView settings={settings} update={update} />

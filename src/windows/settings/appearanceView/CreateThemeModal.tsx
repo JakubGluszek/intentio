@@ -66,10 +66,10 @@ const CreateThemeModal: React.FC<Props> = ({ theme, hide }) => {
   }, []);
 
   return (
-    <ModalContainer>
+    <ModalContainer hide={!viewColorPicker ? hide : () => setViewColorPicker(undefined)}>
       <div
         ref={ref}
-        className="m-auto flex flex-col gap-4 text-sm bg-base/50 bg-gradient-to-r backdrop-blur-lg rounded font-semibold"
+        className="m-auto flex flex-col gap-4 text-sm bg-base/50 bg-gradient-to-r border-2 border-base backdrop-blur-lg rounded font-semibold"
       >
         {viewColorPicker ? (
           <div data-tauri-disable-drag>
@@ -90,7 +90,7 @@ const CreateThemeModal: React.FC<Props> = ({ theme, hide }) => {
                   {...register("name", { required: true, maxLength: 16 })}
                   id="color-scheme-name"
                   autoComplete="off"
-                  className="input"
+                  className="input border-base/60"
                   type="text"
                   tabIndex={-2}
                 />
@@ -106,20 +106,19 @@ const CreateThemeModal: React.FC<Props> = ({ theme, hide }) => {
                   })}
                   autoComplete="off"
                   id="window-hex"
-                  className="input"
+                  className="input border-base/60"
                   type="text"
                   tabIndex={-2}
                 />
-                <button
-                  tabIndex={-2}
-                  type="button"
+                <div
+                  data-tauri-disable-drag
                   onClick={() => {
                     setColorPickerHex(watch("window_hex"));
                     setViewColorPicker("window");
                   }}
                   style={{ backgroundColor: watch("window_hex") }}
-                  className="min-w-[40px] h-8 shadow-lg rounded"
-                ></button>
+                  className="min-w-[40px] h-8 shadow-lg rounded cursor-pointer"
+                ></div>
               </div>
               <div className="flex flex-row items-center gap-4">
                 <label className="min-w-[64px]" htmlFor="base-hex">
@@ -132,20 +131,19 @@ const CreateThemeModal: React.FC<Props> = ({ theme, hide }) => {
                   })}
                   autoComplete="off"
                   id="base-hex"
-                  className="input"
+                  className="input border-base/60"
                   type="text"
                   tabIndex={-2}
                 />
-                <button
-                  tabIndex={-2}
-                  type="button"
+                <div
+                  data-tauri-disable-drag
                   onClick={() => {
                     setColorPickerHex(watch("base_hex"));
                     setViewColorPicker("base");
                   }}
                   style={{ backgroundColor: watch("base_hex") }}
-                  className="min-w-[40px] h-8 shadow-lg rounded"
-                ></button>
+                  className="min-w-[40px] h-8 shadow-lg rounded cursor-pointer"
+                ></div>
               </div>
               <div className="flex flex-row items-center gap-4">
                 <label className="min-w-[64px]" htmlFor="primary-hex">
@@ -158,20 +156,19 @@ const CreateThemeModal: React.FC<Props> = ({ theme, hide }) => {
                   })}
                   autoComplete="off"
                   id="primary-hex"
-                  className="input"
+                  className="input border-base/60"
                   type="text"
                   tabIndex={-2}
                 />
-                <button
-                  tabIndex={-2}
-                  type="button"
+                <div
+                  data-tauri-disable-drag
                   onClick={() => {
                     setColorPickerHex(watch("primary_hex"));
                     setViewColorPicker("primary");
                   }}
                   style={{ backgroundColor: watch("primary_hex") }}
-                  className="min-w-[40px] h-8 shadow-lg rounded"
-                ></button>
+                  className="min-w-[40px] h-8 shadow-lg rounded cursor-pointer"
+                ></div>
               </div>
               <div className="flex flex-row items-center gap-4">
                 <label className="min-w-[64px]" htmlFor="text-hex">
@@ -184,20 +181,19 @@ const CreateThemeModal: React.FC<Props> = ({ theme, hide }) => {
                   })}
                   autoComplete="off"
                   id="text-hex"
-                  className="input"
+                  className="input border-base/60"
                   tabIndex={-2}
                   type="text"
                 />
-                <button
-                  tabIndex={-2}
-                  type="button"
+                <div
+                  data-tauri-disable-drag
                   onClick={() => {
                     setColorPickerHex(watch("text_hex"));
                     setViewColorPicker("text");
                   }}
                   style={{ backgroundColor: watch("text_hex") }}
-                  className="min-w-[40px] h-8 shadow-lg rounded"
-                ></button>
+                  className="min-w-[40px] h-8 shadow-lg rounded cursor-pointer"
+                ></div>
               </div>
             </div>
             <div className="flex flex-row items-center justify-between">

@@ -103,8 +103,8 @@ const AlertsView: React.FC<Props> = (props) => {
   };
 
   return (
-    <div className="flex flex-col gap-4 pb-2">
-      <div className="flex flex-row items-center justify-between">
+    <div className="flex flex-col gap-3 pb-2">
+      <div className="flex flex-row items-center justify-between p-1.5 shadow bg-window rounded">
         <label htmlFor="system-notifications">System notifications</label>
         <Checkbox
           tabIndex={-2}
@@ -126,92 +126,96 @@ const AlertsView: React.FC<Props> = (props) => {
           }}
         />
       </div>
-      <div className="flex flex-row items-center gap-4">
-        <span className="text-sm">Audio</span>
-        <div className="w-10 grow flex flex-row items-center justify-between px-2 py-0.5 bg-base rounded">
-          <Button transparent onClick={() => previousTrack()}>
-            <MdKeyboardArrowLeft size={24} />
+      <div className="flex flex-col gap-3 p-1.5 bg-window rounded shadow">
+        <div className="flex flex-row items-center gap-4">
+          <span>Audio</span>
+          <div className="w-10 grow flex flex-row items-center justify-between px-2 py-0.5 bg-base rounded">
+            <Button transparent onClick={() => previousTrack()}>
+              <MdKeyboardArrowLeft size={24} />
+            </Button>
+            <span className="text-sm text-center w-full whitespace-nowrap overflow-ellipsis overflow-hidden">
+              {currentTrack?.name ?? "-"}
+            </span>
+            <Button transparent onClick={() => nextTrack()}>
+              <MdKeyboardArrowRight size={24} />
+            </Button>
+          </div>
+          <OpenFileExplorerButton />
+        </div>
+        <div className="flex flex-row items-center gap-4">
+          <Button
+            transparent
+            onClick={() => {
+              props
+                .update({
+                  alert_volume: props.settings.alert_volume === 0 ? 0.5 : 0,
+                })
+                .then(() => {
+                  setVolumeKey((key) => (key === undefined ? null : undefined));
+                });
+            }}
+          >
+            {props.settings.alert_volume > 0 ? (
+              props.settings.alert_volume < 0.5 ? (
+                <MdVolumeDown size={28} />
+              ) : (
+                <MdVolumeUp size={28} />
+              )
+            ) : (
+              <MdVolumeOff size={28} />
+            )}
           </Button>
-          <span className="text-sm text-center w-full whitespace-nowrap overflow-ellipsis overflow-hidden">
-            {currentTrack?.name ?? "-"}
-          </span>
-          <Button transparent onClick={() => nextTrack()}>
-            <MdKeyboardArrowRight size={24} />
+          <Slider
+            key={volumeKey}
+            min={0}
+            max={100}
+            defaultValue={parseInt(
+              (props.settings.alert_volume * 100).toFixed()
+            )}
+            onChangeEnd={(volume) =>
+              props
+                .update({
+                  alert_volume: volume / 100,
+                })
+                .then(() => {
+                  setVolumeKey(undefined);
+                })
+            }
+          />
+          <Button transparent onClick={() => playAudio()}>
+            {playingAudio ? (
+              <MdPauseCircle size={28} />
+            ) : (
+              <MdPlayCircle size={28} />
+            )}
           </Button>
         </div>
-        <OpenFileExplorerButton />
-      </div>
-      <div className="flex flex-row items-center gap-4">
-        <Button
-          transparent
-          onClick={() => {
-            props
-              .update({
-                alert_volume: props.settings.alert_volume === 0 ? 0.5 : 0,
-              })
-              .then(() => {
-                setVolumeKey((key) => (key === undefined ? null : undefined));
-              });
-          }}
-        >
-          {props.settings.alert_volume > 0 ? (
-            props.settings.alert_volume < 0.5 ? (
-              <MdVolumeDown size={28} />
-            ) : (
-              <MdVolumeUp size={28} />
-            )
-          ) : (
-            <MdVolumeOff size={28} />
-          )}
-        </Button>
-        <Slider
-          key={volumeKey}
-          min={0}
-          max={100}
-          defaultValue={parseInt((props.settings.alert_volume * 100).toFixed())}
-          onChangeEnd={(volume) =>
-            props
-              .update({
-                alert_volume: volume / 100,
-              })
-              .then(() => {
-                setVolumeKey(undefined);
-              })
-          }
-        />
-        <Button transparent onClick={() => playAudio()}>
-          {playingAudio ? (
-            <MdPauseCircle size={28} />
-          ) : (
-            <MdPlayCircle size={28} />
-          )}
-        </Button>
-      </div>
-      <div className="flex flex-row items-center gap-4">
-        <span>Repeat</span>
-        <div className="flex flex-row items-center px-2 py-0.5 gap-2 bg-base rounded">
-          <Button
-            transparent
-            onClick={() =>
-              props.settings.alert_repeat > 1 &&
-              props.update({
-                alert_repeat: props.settings.alert_repeat - 1,
-              })
-            }
-          >
-            <MdRemove size={24} />
-          </Button>
-          <div className="w-8 text-center">{props.settings.alert_repeat}</div>
-          <Button
-            transparent
-            onClick={() =>
-              props.update({
-                alert_repeat: props.settings.alert_repeat + 1,
-              })
-            }
-          >
-            <MdAdd size={24} />
-          </Button>
+        <div className="flex flex-row items-center gap-4">
+          <span>Repeat</span>
+          <div className="flex flex-row items-center px-2 py-0.5 gap-2 bg-base rounded">
+            <Button
+              transparent
+              onClick={() =>
+                props.settings.alert_repeat > 1 &&
+                props.update({
+                  alert_repeat: props.settings.alert_repeat - 1,
+                })
+              }
+            >
+              <MdRemove size={24} />
+            </Button>
+            <div className="w-8 text-center">{props.settings.alert_repeat}</div>
+            <Button
+              transparent
+              onClick={() =>
+                props.update({
+                  alert_repeat: props.settings.alert_repeat + 1,
+                })
+              }
+            >
+              <MdAdd size={24} />
+            </Button>
+          </div>
         </div>
       </div>
     </div>

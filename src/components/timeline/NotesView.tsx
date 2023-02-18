@@ -15,7 +15,7 @@ const NotesView: React.FC<Props> = (props) => {
   if (notes.length === 0) return null;
 
   return (
-    <div className="flex flex-col gap-1 p-1">
+    <div className="flex flex-col gap-1 p-1.5">
       {notes.map((note) => (
         <NoteView key={note.id} data={note} />
       ))}

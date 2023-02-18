@@ -43,17 +43,17 @@ const IntentListItem: React.FC<Props> = (props) => {
         ref={container}
         data-tauri-disable-drag
         className={clsx(
-          "w-full h-fit flex flex-col border-2 p-1 rounded shadow transition-transform hover:-translate-y-[1px] bg-base/80 hover:bg-base",
+          "w-full h-fit flex flex-col p-1 rounded transition-transform",
           props.selected
-            ? "border-primary/80 text-text"
-            : "border-transparent text-text/80 hover:text-text/80"
+            ? "bg-primary/50 hover:bg-primary/60 text-window -translate-y-[2px] shadow-xl"
+            : "border-transparent bg-base/80 hover:bg-base text-text/80 hover:text-text shadow"
         )}
         onClick={(e) => props.onSelected(e, data)}
         onContextMenu={onContextMenuHandler}
       >
         {/* Label */}
         <div className="h-6 w-full flex flex-row items-center gap-1">
-          <div className="w-full text-left whitespace-nowrap overflow-ellipsis overflow-hidden">
+          <div className="w-full text-left whitespace-nowrap overflow-ellipsis overflow-hidden font-black">
             {data.label}
           </div>
           <div

@@ -8,7 +8,6 @@ import {
 import { useClickOutside } from "@mantine/hooks";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
-import { createPortal } from "react-dom";
 import { clsx } from "@mantine/core";
 
 import useStore from "@/store";
@@ -16,7 +15,6 @@ import ipc from "@/ipc";
 import { useContextMenu, useEvent } from "@/hooks";
 import { Button, ContextMenu } from "@/components";
 import { Task } from "@/bindings/Task";
-import config from "@/config";
 
 const TasksView: React.FC = () => {
   const [viewCreate, setViewCreate] = React.useState(false);
@@ -193,14 +191,14 @@ const CreateTaskView: React.FC<CreateTaskViewProps> = (props) => {
   });
 
   return (
-    <div className="h-8 w-full">
+    <div className="h-8 w-full flex flex-row items-center">
       {!props.viewCreate ? (
         <Button transparent onClick={() => props.setViewCreate(true)}>
           <MdAddCircle size={20} />
           <span>Add task</span>
         </Button>
       ) : (
-        <form ref={ref} onSubmit={onSubmit}>
+        <form ref={ref} onSubmit={onSubmit} className="w-full">
           <input
             tabIndex={-3}
             {...register("body")}
