@@ -13,53 +13,59 @@ interface Props {
 
 const TimerView: React.FC<Props> = (props) => {
   return (
-    <div className="flex flex-col gap-4 pb-2">
-      <div className="flex flex-row items-center justify-between rounded">
-        <label htmlFor="auto-start-pomodoros">Auto Start Pomodoros</label>
-        <Checkbox
-          tabIndex={-2}
-          id="auto-start-pomodoros"
-          size="sm"
-          defaultChecked={props.settings.auto_start_pomodoros}
-          onChange={(value) =>
-            props.update({
-              auto_start_pomodoros: value.currentTarget.checked,
-            })
-          }
-          styles={{
-            icon: { color: "rgb(var(--primary-color)) !important" },
-            root: { height: "20px" },
-          }}
-          classNames={{
-            input:
-              "border-primary checked:border-primary bg-transparent checked:bg-transparent border-2",
-          }}
-        />
+    <div className="flex flex-col gap-3 pb-2">
+      <div className="flex flex-col gap-1.5">
+        <div className="flex flex-row items-center card">
+          <label className="w-full" htmlFor="auto-start-pomodoros">
+            Auto Start Pomodoros
+          </label>
+          <Checkbox
+            tabIndex={-2}
+            id="auto-start-pomodoros"
+            size="sm"
+            defaultChecked={props.settings.auto_start_pomodoros}
+            onChange={(value) =>
+              props.update({
+                auto_start_pomodoros: value.currentTarget.checked,
+              })
+            }
+            styles={{
+              icon: { color: "rgb(var(--primary-color)) !important" },
+              root: { height: "20px" },
+            }}
+            classNames={{
+              input:
+                "border-primary checked:border-primary bg-transparent checked:bg-transparent border-2",
+            }}
+          />
+        </div>
+        <div className="flex flex-row items-center card">
+          <label className="w-full" htmlFor="auto-start-breaks">
+            Auto Start Breaks
+          </label>
+          <Checkbox
+            tabIndex={-2}
+            size="sm"
+            id="auto-start-breaks"
+            defaultChecked={props.settings.auto_start_breaks}
+            onChange={(value) =>
+              props.update({
+                auto_start_breaks: value.currentTarget.checked,
+              })
+            }
+            styles={{
+              icon: { color: "rgb(var(--primary-color)) !important" },
+              root: { height: "20px" },
+            }}
+            classNames={{
+              input:
+                "border-primary checked:border-primary bg-transparent checked:bg-transparent border-2",
+            }}
+          />
+        </div>
       </div>
-      <div className="flex flex-row items-center justify-between rounded">
-        <label htmlFor="auto-start-breaks">Auto Start Breaks</label>
-        <Checkbox
-          tabIndex={-2}
-          size="sm"
-          id="auto-start-breaks"
-          defaultChecked={props.settings.auto_start_breaks}
-          onChange={(value) =>
-            props.update({
-              auto_start_breaks: value.currentTarget.checked,
-            })
-          }
-          styles={{
-            icon: { color: "rgb(var(--primary-color)) !important" },
-            root: { height: "20px" },
-          }}
-          classNames={{
-            input:
-              "border-primary checked:border-primary bg-transparent checked:bg-transparent border-2",
-          }}
-        />
-      </div>
-      <div className="flex flex-col gap-2">
-        <div className="flex flex-col gap-2 p-2 bg-window rounded shadow">
+      <div className="flex flex-col gap-1.5">
+        <div className="flex flex-col gap-2 card">
           <div className="flex flex-row items-center justify-between">
             <span className="font-medium">Focus</span>
             <div className="bg-base rounded px-2 py-1">
@@ -79,7 +85,7 @@ const TimerView: React.FC<Props> = (props) => {
             }
           />
         </div>
-        <div className="flex flex-col gap-2 p-2 bg-window rounded shadow">
+        <div className="flex flex-col gap-2 card">
           <div className="flex flex-row items-center justify-between">
             <span className="text-sm font-medium">Break</span>
             <div className="bg-base rounded px-2 py-1">
@@ -99,7 +105,7 @@ const TimerView: React.FC<Props> = (props) => {
             }
           />
         </div>
-        <div className="flex flex-col gap-2 p-2 bg-window rounded shadow">
+        <div className="flex flex-col gap-2 card">
           <div className="flex flex-row items-center justify-between">
             <span className="text-sm font-medium">Long Break</span>
             <div className="bg-base rounded px-2 py-1">
@@ -119,7 +125,7 @@ const TimerView: React.FC<Props> = (props) => {
             }
           />
         </div>
-        <div className="flex flex-col gap-2 p-2 bg-window rounded shadow">
+        <div className="flex flex-col gap-2 card">
           <div className="flex flex-row items-center justify-between">
             <span className="text-sm font-medium">Long Break Interval</span>
             <div className="bg-base rounded px-2 py-1 w-[50px]">

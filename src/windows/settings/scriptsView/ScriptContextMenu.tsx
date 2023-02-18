@@ -5,6 +5,13 @@ import ipc from "@/ipc";
 import useStore from "@/store";
 import { Button, ContextMenu } from "@/components";
 import { Script } from "@/bindings/Script";
+import {
+  VscCode,
+  VscDebugStart,
+  VscEdit,
+  VscSymbolEvent,
+} from "react-icons/vsc";
+import { MdCheckCircle, MdDelete } from "react-icons/md";
 
 interface ScriptContextMenuProps {
   data: Script;
@@ -36,15 +43,24 @@ const ScriptContextMenu: React.FC<ScriptContextMenuProps> = (props) => {
 
   return (
     <ContextMenu {...props}>
-      <div className="w-24 flex flex-col gap-0.5">
+      <React.Fragment>
         <Button onClick={() => props.runScript()} rounded={false}>
-          Run
+          <div className="w-fit">
+            <VscDebugStart size={20} />
+          </div>
+          <div className="w-full">Run</div>
         </Button>
         <Button onClick={() => props.viewCode()} rounded={false}>
-          Code
+          <div className="w-fit">
+            <VscEdit size={20} />
+          </div>
+          <div className="w-full">Edit</div>
         </Button>
         <Button onClick={() => props.viewEvents()} rounded={false}>
-          Events
+          <div className="w-fit">
+            <VscSymbolEvent size={20} />
+          </div>
+          <div className="w-full">Events</div>
         </Button>
         {!viewConfirmDelete ? (
           <Button
@@ -52,6 +68,9 @@ const ScriptContextMenu: React.FC<ScriptContextMenuProps> = (props) => {
             rounded={false}
             color="danger"
           >
+            <div className="w-fit">
+              <MdDelete size={20} />
+            </div>
             <div className="w-full">Delete</div>
           </Button>
         ) : (
@@ -65,10 +84,10 @@ const ScriptContextMenu: React.FC<ScriptContextMenuProps> = (props) => {
             rounded={false}
             color="danger"
           >
-            Confirm
+            <div className="w-full">Confirm</div>
           </Button>
         )}
-      </div>
+      </React.Fragment>
     </ContextMenu>
   );
 };

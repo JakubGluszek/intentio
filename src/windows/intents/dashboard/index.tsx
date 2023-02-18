@@ -46,7 +46,7 @@ const Dashboard: React.FC<Props> = (props) => {
 
   return (
     <div className="grow flex flex-col p-2 gap-2">
-      <div className="grow flex flex-col gap-2 p-2 bg-darker/20 rounded shadow-inner">
+      <div className="grow flex flex-col gap-2 p-2 bg-darker/40 rounded shadow-inner shadow-black/60">
         {tab === "activity" ? (
           <ActivityView
             sessions={reducedSessions}
@@ -79,7 +79,7 @@ const Tabs: React.FC<TabsProps> = (props) => {
   return (
     <div className="w-full h-full flex flex-row gap-0.5 rounded overflow-clip">
       <Button
-        color={props.value === "activity" ? "primary" : "base"}
+        isSelected={props.value === "activity"}
         rounded={false}
         onClick={() => {
           props.setValue("activity");
@@ -88,7 +88,7 @@ const Tabs: React.FC<TabsProps> = (props) => {
         Activity
       </Button>
       <Button
-        color={props.value === "timeline" ? "primary" : "base"}
+        isSelected={props.value === "timeline"}
         rounded={false}
         onClick={() => props.setValue("timeline")}
       >

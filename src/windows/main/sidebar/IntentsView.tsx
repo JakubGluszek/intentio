@@ -1,13 +1,13 @@
 import React from "react";
+import { MdAddCircle } from "react-icons/md";
+import { useClickOutside } from "@mantine/hooks";
+import { useForm } from "react-hook-form";
+import { toast } from "react-hot-toast";
 
 import useStore from "@/store";
 import ipc from "@/ipc";
 import { Intent } from "@/bindings/Intent";
 import { Button } from "@/components";
-import { MdAddCircle } from "react-icons/md";
-import { useClickOutside } from "@mantine/hooks";
-import { useForm } from "react-hook-form";
-import { toast } from "react-hot-toast";
 import IntentsList from "@/components/intentsList";
 
 const IntentsView: React.FC = () => {
@@ -61,14 +61,14 @@ const CreateIntentView: React.FC = () => {
   });
 
   return (
-    <div className="h-fit w-full">
+    <div className="h-8 w-full flex flex-row items-center">
       {!viewCreate ? (
         <Button transparent onClick={() => setViewCreate(true)}>
           <MdAddCircle size={20} />
           <span>Add Intent</span>
         </Button>
       ) : (
-        <form ref={ref} onSubmit={onSubmit}>
+        <form ref={ref} onSubmit={onSubmit} className="w-full">
           <input
             tabIndex={-3}
             {...register("label")}
@@ -78,6 +78,7 @@ const CreateIntentView: React.FC = () => {
               setViewCreate(false);
               setValue("label", "");
             }}
+            placeholder="Label your intent"
             autoFocus
             autoComplete="off"
             minLength={1}

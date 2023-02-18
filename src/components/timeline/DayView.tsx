@@ -29,7 +29,7 @@ const DayView: React.FC<Props> = (props) => {
   return (
     <div
       data-tauri-disable-drag
-      className="flex flex-col p-1.5 gap-1 rounded shadow bg-window/80 hover:bg-window"
+      className="flex flex-col gap-1 card"
     >
       <div className="h-6 w-full flex flex-row items-center justify-between">
         <span className="text-text/80">{data.date}</span>
@@ -48,7 +48,7 @@ const DayView: React.FC<Props> = (props) => {
               style={{
                 width: tab === "sessions" ? "100%" : "fit-content",
               }}
-              color={tab === "sessions" ? "primary" : "base"}
+              isSelected={tab === "sessions"}
               rounded={false}
               onClick={() => setTab("sessions")}
             >
@@ -58,7 +58,7 @@ const DayView: React.FC<Props> = (props) => {
               style={{
                 width: tab === "tasks" ? "100%" : "fit-content",
               }}
-              color={tab === "tasks" ? "primary" : "base"}
+              isSelected={tab === "tasks"}
               rounded={false}
               onClick={() => setTab("tasks")}
             >
@@ -68,14 +68,14 @@ const DayView: React.FC<Props> = (props) => {
               style={{
                 width: tab === "notes" ? "100%" : "fit-content",
               }}
-              color={tab === "notes" ? "primary" : "base"}
+              isSelected={tab === "notes"}
               rounded={false}
               onClick={() => setTab("notes")}
             >
               Notes
             </Button>
           </div>
-          <div className="flex flex-col bg-darker/20">
+          <div className="flex flex-col bg-darker/30 shadow-inner shadow-black/60">
             {tab === "sessions" ? (
               <SessionsView sessions={props.data.sessions} displayLabel={props.displaySessionLabel} />
             ) : null}

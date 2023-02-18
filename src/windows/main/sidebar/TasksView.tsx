@@ -8,7 +8,6 @@ import {
 import { useClickOutside } from "@mantine/hooks";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
-import { createPortal } from "react-dom";
 import { clsx } from "@mantine/core";
 
 import useStore from "@/store";
@@ -16,7 +15,6 @@ import ipc from "@/ipc";
 import { useContextMenu, useEvent } from "@/hooks";
 import { Button, ContextMenu } from "@/components";
 import { Task } from "@/bindings/Task";
-import config from "@/config";
 
 const TasksView: React.FC = () => {
   const [viewCreate, setViewCreate] = React.useState(false);
@@ -193,14 +191,14 @@ const CreateTaskView: React.FC<CreateTaskViewProps> = (props) => {
   });
 
   return (
-    <div className="h-8 w-full">
+    <div className="h-8 w-full flex flex-row items-center">
       {!props.viewCreate ? (
         <Button transparent onClick={() => props.setViewCreate(true)}>
           <MdAddCircle size={20} />
           <span>Add task</span>
         </Button>
       ) : (
-        <form ref={ref} onSubmit={onSubmit}>
+        <form ref={ref} onSubmit={onSubmit} className="w-full">
           <input
             tabIndex={-3}
             {...register("body")}
@@ -210,6 +208,7 @@ const CreateTaskView: React.FC<CreateTaskViewProps> = (props) => {
               props.setViewCreate(false);
               setValue("body", "");
             }}
+            placeholder="Describe your task"
             autoFocus
             minLength={1}
             autoComplete="off"
@@ -280,14 +279,15 @@ const TaskView: React.FC<TaskViewProps> = (props) => {
       <div
         ref={containerRef}
         className={clsx(
-          "min-h-fit flex flex-col gap-1.5 p-1 rounded shadow text-sm",
+          "min-h-fit flex flex-col gap-1.5 card text-sm p-0",
           isSelected
             ? "bg-base/80 hover:bg-base"
-            : "bg-window/80 hover:bg-window"
+            : "bg-window/80 hover:bg-window",
+          viewEdit && "border-0"
         )}
         onMouseDown={(e) => {
           // @ts-ignore
-          if (e.target.closest("button") || e.button === 2 || viewModal) return;
+          if (e.target.closest("button") || e.button === 2) return;
 
           if (e.ctrlKey) {
             if (isSelected) {
@@ -315,7 +315,7 @@ const TaskView: React.FC<TaskViewProps> = (props) => {
         data-tauri-disable-drag
       >
         {!viewEdit ? (
-          <div className="flex flex-row items-start gap-1">
+          <div className="flex flex-row items-start gap-1 p-1">
             {!data.done ? (
               <Button onMouseDown={() => handleCheck()} transparent>
                 <MdCheckBoxOutlineBlank size={24} />

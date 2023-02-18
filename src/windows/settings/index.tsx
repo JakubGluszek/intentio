@@ -9,6 +9,7 @@ import {
 import { RiToolsFill } from "react-icons/ri";
 import { AiFillCode } from "react-icons/ai";
 import { IoIosBug, IoIosGlobe, IoLogoGithub } from "react-icons/io";
+import { SiDiscord } from "react-icons/si";
 import { Tooltip } from "@mantine/core";
 import { OsType, type } from "@tauri-apps/api/os";
 
@@ -22,6 +23,7 @@ import AlertsView from "./AlertsView";
 import AppearanceView from "./appearanceView";
 import BehaviorView from "./BehaviorView";
 import ScriptsView from "./scriptsView";
+import AboutView from "./AboutView";
 
 type Tab = "timer" | "alerts" | "appearance" | "behavior" | "scripts" | "about";
 
@@ -54,8 +56,7 @@ const SettingsWindow: React.FC = () => {
           {/* Navigation */}
           <div className="flex flex-col gap-1.5 rounded">
             <Button
-              className="transition-transform hover:-translate-y-0.5 hover:shadow"
-              color={tab === "timer" ? "primary" : "base"}
+              isSelected={tab === "timer"}
               onClick={() => setTab("timer")}
             >
               <div className="w-full flex flex-row gap-1">
@@ -66,8 +67,7 @@ const SettingsWindow: React.FC = () => {
               </div>
             </Button>
             <Button
-              className="transition-transform hover:-translate-y-0.5 hover:shadow"
-              color={tab === "alerts" ? "primary" : "base"}
+              isSelected={tab === "alerts"}
               onClick={() => setTab("alerts")}
             >
               <div className="w-full flex flex-row gap-1">
@@ -78,8 +78,7 @@ const SettingsWindow: React.FC = () => {
               </div>
             </Button>
             <Button
-              className="transition-transform hover:-translate-y-0.5 hover:shadow"
-              color={tab === "appearance" ? "primary" : "base"}
+              isSelected={tab === "appearance"}
               onClick={() => setTab("appearance")}
             >
               <div className="w-full flex flex-row gap-1">
@@ -90,8 +89,7 @@ const SettingsWindow: React.FC = () => {
               </div>
             </Button>
             <Button
-              className="shadow transition-transform hover:-translate-y-0.5 hover:shadow-2xl"
-              color={tab === "behavior" ? "primary" : "base"}
+              isSelected={tab === "behavior"}
               onClick={() => setTab("behavior")}
             >
               <div className="w-full flex flex-row gap-1">
@@ -103,8 +101,7 @@ const SettingsWindow: React.FC = () => {
             </Button>
             {osType !== "Windows_NT" ? (
               <Button
-                className="shadow transition-transform hover:-translate-y-0.5 hover:shadow-2xl"
-                color={tab === "scripts" ? "primary" : "base"}
+                isSelected={tab === "scripts"}
                 onClick={() => setTab("scripts")}
               >
                 <div className="w-full flex flex-row gap-1">
@@ -116,8 +113,7 @@ const SettingsWindow: React.FC = () => {
               </Button>
             ) : null}
             <Button
-              className="shadow transition-transform hover:-translate-y-0.5 hover:shadow-2xl"
-              color={tab === "about" ? "primary" : "base"}
+              isSelected={tab === "about"}
               onClick={() => setTab("about")}
             >
               <div className="w-full flex flex-row gap-1">
@@ -129,49 +125,67 @@ const SettingsWindow: React.FC = () => {
             </Button>
           </div>
           {/* About */}
-          <div className="flex flex-row items-center justify-end gap-1">
-            <Tooltip withArrow label="Home page">
-              <a
-                className="mr-auto"
-                tabIndex={-2}
-                href={config.about.homePage}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <Button transparent>
-                  <IoIosGlobe size={24} />
-                </Button>
-              </a>
-            </Tooltip>
-            <Tooltip withArrow label="Source code">
-              <a
-                tabIndex={-2}
-                href={config.about.sourceCode}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <Button transparent>
-                  <IoLogoGithub size={22} />
-                </Button>
-              </a>
-            </Tooltip>
-            <Tooltip withArrow label="Report a bug">
-              <a
-                tabIndex={-2}
-                href={config.about.sourceCode + "/issues"}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <Button transparent>
-                  <IoIosBug size={24} />
-                </Button>
-              </a>
-            </Tooltip>
+          <div className="flex flex-row items-center justify-between">
+            <div className="flex flex-row gap-1">
+              <Tooltip withArrow label="Home page">
+                <a
+                  className="mr-auto"
+                  tabIndex={-2}
+                  href={config.about.homePage}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <Button transparent>
+                    <IoIosGlobe size={24} />
+                  </Button>
+                </a>
+              </Tooltip>
+              <Tooltip withArrow label="Discord server">
+                <a
+                  className="mr-auto"
+                  tabIndex={-2}
+                  href={config.about.discordServer}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <Button transparent>
+                    <SiDiscord size={24} />
+                  </Button>
+                </a>
+              </Tooltip>
+            </div>
+
+            <div className="flex flex-row gap-1">
+              <Tooltip withArrow label="Source code">
+                <a
+                  tabIndex={-2}
+                  href={config.about.sourceCode}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <Button transparent>
+                    <IoLogoGithub size={22} />
+                  </Button>
+                </a>
+              </Tooltip>
+              <Tooltip withArrow label="Report a bug">
+                <a
+                  tabIndex={-2}
+                  href={config.about.sourceCode + "/issues"}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <Button transparent>
+                    <IoIosBug size={24} />
+                  </Button>
+                </a>
+              </Tooltip>
+            </div>
           </div>
         </div>
         {/* Main */}
         <div className="relative grow flex flex-col p-2 pl-0">
-          <div className="grow bg-darker/20 shadow-inner rounded p-2.5 overflow-y-auto">
+          <div className="grow bg-darker/40 shadow-inner rounded p-2.5 overflow-y-auto">
             <div className="max-h-0 overflow-y">
               {tab === "timer" ? (
                 <TimerView settings={settings} update={update} />
@@ -186,6 +200,7 @@ const SettingsWindow: React.FC = () => {
                 <BehaviorView settings={settings} update={update} />
               ) : null}
               {tab === "scripts" ? <ScriptsView /> : null}
+              {tab === "about" ? <AboutView /> : null}
             </div>
           </div>
         </div>

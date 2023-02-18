@@ -5,6 +5,7 @@ import ipc from "@/ipc";
 import useStore from "@/store";
 import ScriptView from "./ScriptView";
 import CreateScriptView from "./CreateScriptView";
+import { MdAddCircle } from "react-icons/md";
 
 const ScriptsView: React.FC = () => {
   const [viewCreate, setViewCreate] = React.useState(false);
@@ -16,11 +17,12 @@ const ScriptsView: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-3">
       {viewCreate === false ? (
         <div className="">
           <Button transparent onClick={() => setViewCreate(true)}>
-            Add script
+            <MdAddCircle size={20} />
+            <span> Add script</span>
           </Button>
         </div>
       ) : (

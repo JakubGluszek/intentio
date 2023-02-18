@@ -15,7 +15,7 @@ const NotesView: React.FC<Props> = (props) => {
   if (notes.length === 0) return null;
 
   return (
-    <div className="flex flex-col gap-1 p-1">
+    <div className="flex flex-col gap-1 p-1.5">
       {notes.map((note) => (
         <NoteView key={note.id} data={note} />
       ))}
@@ -34,7 +34,7 @@ const NoteView: React.FC<NoteViewProps> = (props) => {
 
   return (
     <div
-      className="min-h-fit flex flex-col gap-1.5 p-1 rounded shadow text-sm bg-window/80 hover:bg-window"
+      className="min-h-fit flex flex-col gap-1.5 p-1 text-sm card"
       onMouseDown={() => setViewExpand((prev) => !prev)}
     >
       <div className="flex flex-row items-start gap-1">

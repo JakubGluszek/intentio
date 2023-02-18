@@ -77,7 +77,7 @@ const TimelineView: React.FC<Props> = (props) => {
             type="text"
           />
           {props.filter.length > 0 && (
-            <div className="absolute bottom-[5px] right-2">
+            <div className="absolute bottom-1.5 right-1 opacity-60">
               <Button
                 transparent
                 onClick={() => {

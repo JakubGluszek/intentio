@@ -46,9 +46,9 @@ const AppearanceView: React.FC<Props> = (props) => {
         )}
       <div className="flex flex-col gap-3 pb-2">
         {/* Display live countdown checkbox */}
-        <div>Display</div>
-        <div className="flex flex-row items-center justify-between rounded p-1.5 bg-window shadow">
-          <label htmlFor="display-live-countdown">Timer countdown</label>
+        <div className="text-text/80">Display</div>
+        <div className="flex flex-row items-center card">
+          <label className="w-full" htmlFor="display-live-countdown">Timer countdown</label>
           <Checkbox
             tabIndex={-2}
             id="display-live-countdown"
@@ -70,14 +70,11 @@ const AppearanceView: React.FC<Props> = (props) => {
           />
         </div>
 
-        <div className="flex flex-row items-center justify-between">
-          <div className="">Themes</div>
-          <Button
-            style={{ height: "28px" }}
-            transparent
-            onClick={() => setViewCreate(true)}
-          >
-            <MdAddCircle size={28} />
+        <div className="text-text/80">Themes</div>
+        <div>
+          <Button transparent onClick={() => setViewCreate(true)}>
+            <MdAddCircle size={20} />
+            <span>Add theme</span>
           </Button>
         </div>
         <div className="flex flex-col gap-1.5">

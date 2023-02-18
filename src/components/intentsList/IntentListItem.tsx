@@ -1,6 +1,7 @@
 import React from "react";
-import { TiPin } from "react-icons/ti";
+import { TiPin, TiPinOutline } from "react-icons/ti";
 import { BiArchive } from "react-icons/bi";
+import { TbTags } from "react-icons/tb";
 import { toast } from "react-hot-toast";
 import { clsx } from "@mantine/core";
 
@@ -43,23 +44,23 @@ const IntentListItem: React.FC<Props> = (props) => {
         ref={container}
         data-tauri-disable-drag
         className={clsx(
-          "w-full h-fit flex flex-col border-2 p-1 rounded shadow transition-transform hover:-translate-y-[1px] bg-base/80 hover:bg-base",
+          "w-full h-fit flex flex-col p-1 rounded transition-all",
           props.selected
-            ? "border-primary/80 text-text"
-            : "border-transparent text-text/80 hover:text-text/80"
+            ? "bg-primary/60 hover:bg-primary/80 text-window -translate-y-[2px] shadow-lg shadow-black/30"
+            : "border-transparent bg-base/80 hover:bg-base text-text/80 hover:text-text shadow shadow-black/30"
         )}
         onClick={(e) => props.onSelected(e, data)}
         onContextMenu={onContextMenuHandler}
       >
         {/* Label */}
         <div className="h-6 w-full flex flex-row items-center gap-1">
-          <div className="w-full text-left whitespace-nowrap overflow-ellipsis overflow-hidden">
+          <div className="w-full text-left whitespace-nowrap overflow-ellipsis overflow-hidden font-black">
             {data.label}
           </div>
           <div
             className={clsx(
               "flex flex-row items-center gap-1",
-              !props.selected ? "text-text/60" : "text-text/80"
+              !props.selected ? "text-text/60" : "text-window"
             )}
           >
             {data.pinned ? <TiPin size={24} className="min-w-[24px]" /> : null}
@@ -71,7 +72,7 @@ const IntentListItem: React.FC<Props> = (props) => {
 
         {/* Tags */}
         {data.tags.length > 0 ? (
-          <div className="p-1 rounded bg-window shadow-inner">
+          <div className={clsx("p-1 rounded shadow-inner shadow-black/30", props.selected ? "bg-window": "bg-window/80")}>
             <div className="flex flex-row gap-1 overflow-x-auto rounded-sm">
               {data.tags.map((tag, i) => (
                 <TagButton
@@ -93,7 +94,7 @@ const IntentListItem: React.FC<Props> = (props) => {
           topPosition={viewMenu.topPosition}
           hide={() => setViewMenu(undefined)}
         >
-          <div className="w-24 flex flex-col gap-0.5">
+          <React.Fragment>
             <Button
               onClick={() =>
                 ipc
@@ -105,7 +106,16 @@ const IntentListItem: React.FC<Props> = (props) => {
               }
               rounded={false}
             >
-              {props.data.pinned ? "Unpin" : "Pin"}
+              <div className="w-fit">
+                {props.data.pinned ? (
+                  <TiPin size={20} />
+                ) : (
+                  <TiPinOutline size={20} />
+                )}
+              </div>
+              <div className="w-full">
+                {props.data.pinned ? "Unpin" : "Pin"}
+              </div>
             </Button>
             <Button
               onClick={() => {
@@ -114,9 +124,12 @@ const IntentListItem: React.FC<Props> = (props) => {
               }}
               rounded={false}
             >
-              Tags
+              <div className="w-fit">
+                <TbTags size={20} />
+              </div>
+              <div className="w-full">Tags</div>
             </Button>
-          </div>
+          </React.Fragment>
         </ContextMenu>
       ) : null}
 

@@ -83,7 +83,7 @@ const useDetectNoDrag = (tauriDragEnabled: boolean) => {
     element: HTMLElement,
     iterations: number
   ): boolean => {
-    const noDragSelector = "input, a, button, svg, label, textarea"; // CSS selector
+    const noDragSelector = "input, a, button, label, textarea"; // CSS selector
 
     if (
       iterations > 0 &&

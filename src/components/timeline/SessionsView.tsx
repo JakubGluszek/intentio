@@ -11,7 +11,7 @@ interface Props {
 
 const SessionsView: React.FC<Props> = (props) => {
   return (
-    <div className="flex flex-col gap-1 p-1">
+    <div className="flex flex-col gap-1 p-1.5">
       {props.sessions!.map((session) => (
         <SessionView
           key={session.id}
@@ -43,7 +43,7 @@ const SessionView: React.FC<SessionViewProps> = (props) => {
 
   return (
     <Tooltip openDelay={400} label={`${startedAt} - ${finishedAt}`}>
-      <div className="flex flex-row items-center justify-between p-1.5 px-2 bg-window rounded shadow text-sm">
+      <div className="flex flex-row items-center justify-between px-2 text-sm card rounded-sm">
         <div className="text-text/80">{data.duration} min</div>
         {props.displayLabel ? (
           <div>

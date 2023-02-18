@@ -57,7 +57,7 @@ const IntentView: React.FC<Props> = (props) => {
       </div>
 
       {/* Main */}
-      <div className="relative grow flex flex-col bg-darker/20 rounded shadow-inner overflow-clip">
+      <div className="relative grow flex flex-col bg-darker/40 rounded shadow-inner overflow-clip">
         {/* Tab content */}
         <div className="grow flex flex-col justify-evenly p-2">
           {tab === "activity" ? (
@@ -85,7 +85,7 @@ const IntentView: React.FC<Props> = (props) => {
           style={{
             width: tab === "activity" ? "100%" : "fit-content",
           }}
-          color={tab === "activity" ? "primary" : "base"}
+          isSelected={tab === "activity"}
           rounded={false}
           onClick={() => switchTab("activity")}
         >
@@ -95,7 +95,7 @@ const IntentView: React.FC<Props> = (props) => {
           style={{
             width: tab === "timeline" ? "100%" : "fit-content",
           }}
-          color={tab === "timeline" ? "primary" : "base"}
+          isSelected={tab === "timeline"}
           rounded={false}
           onClick={() => switchTab("timeline")}
         >

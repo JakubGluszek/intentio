@@ -70,11 +70,16 @@
   }
 
   button {
+    outline: none;
     @apply font-bold;
   }
 
   button > * {
     cursor: pointer;
+  }
+
+  button {
+    @apply transition-colors;
   }
 
   /* Hides controls in input of type "number" */
@@ -90,7 +95,7 @@
   }
 
   input {
-    @apply w-full bg-darker/20 border-2 border-window focus:border-primary/40 outline-none py-1 px-2 rounded shadow-inner text-text;
+    @apply w-full bg-darker/20 border-2 border-window focus:border-primary/40 outline-none py-1 px-2 rounded shadow-inner text-text transition-colors;
   }
 
   input::placeholder {
@@ -100,16 +105,10 @@
   input > * {
     user-select: all;
   }
-
-  button {
-    outline: none;
-  }
 }
 
 @layer components {
-  .inner-shadow {
-    -webkit-box-shadow: inset 0px 0px 24px -6px rgba(0, 0, 0, 1);
-    -moz-box-shadow: inset 0px 0px 24px -6px rgba(0, 0, 0, 1);
-    box-shadow: inset 0px 0px 24px -6px rgba(0, 0, 0, 1);
+  .card {
+    @apply bg-window/80 hover:bg-window p-1.5 rounded border-2 border-base/80 hover:border-base shadow shadow-black/30;
   }
 }

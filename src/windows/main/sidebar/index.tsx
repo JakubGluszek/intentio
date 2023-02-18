@@ -41,7 +41,7 @@ const Sidebar: React.FC<Props> = (props) => {
         opacity: props.isVisible ? 1.0 : 0.0,
       }}
     >
-      <div className="grow flex flex-col p-2 bg-darker/20">
+      <div className="grow flex flex-col p-2 bg-darker/40">
         <Header onCollapse={() => props.collapse()} />
         <div className="grow flex flex-col py-1">
           {tab === "intents" ? <IntentsView /> : null}
@@ -102,7 +102,7 @@ const Tabs: React.FC<TabsProps> = (props) => {
           width: props.value === "intents" ? "100%" : "fit-content",
           paddingInline: 4,
         }}
-        color={props.value === "intents" ? "primary" : "base"}
+        isSelected={props.value === "intents"}
         onClick={() => props.onChange("intents")}
       >
         <BiTargetLock size={24} />
@@ -115,7 +115,7 @@ const Tabs: React.FC<TabsProps> = (props) => {
             width: props.value === "tasks" ? "100%" : "fit-content",
             paddingInline: 4,
           }}
-          color={props.value === "tasks" ? "primary" : "base"}
+          isSelected={props.value === "tasks"}
           onClick={() => props.onChange("tasks")}
         >
           <MdCheckBox size={24} />
@@ -129,7 +129,7 @@ const Tabs: React.FC<TabsProps> = (props) => {
             width: props.value === "notes" ? "100%" : "fit-content",
             paddingInline: 4,
           }}
-          color={props.value === "notes" ? "primary" : "base"}
+          isSelected={props.value === "notes"}
           onClick={() => props.onChange("notes")}
         >
           <MdStickyNote2 size={24} />

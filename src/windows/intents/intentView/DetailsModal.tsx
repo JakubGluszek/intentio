@@ -38,13 +38,13 @@ const DetailsModal: React.FC<Props> = (props) => {
   }, [viewConfirmDelete]);
 
   return (
-    <ModalContainer>
+    <ModalContainer hide={props.exit}>
       <div
         ref={ref}
         className="m-auto w-80 p-2 flex flex-col gap-2 bg-window rounded"
       >
         {/* Intent timestamps and stats */}
-        <div className="flex flex-col gap-2 bg-base rounded p-3 text-sm shadow-inner">
+        <div className="flex flex-col gap-2 bg-base rounded p-3 text-sm shadow-lg">
           <p className="flex flex-row items-center justify-between">
             <span className="text-text/80">Created at:</span>
             <span>{new Date(parseInt(data.created_at)).toLocaleString()}</span>
