@@ -147,6 +147,14 @@ impl ThemeBmc {
                     primary_hex: '#EC255A',
                     text_hex: '#FAEDF0',
                 };
+                CREATE theme:blaze CONTENT {
+                    name: 'blaze',
+                    default: true,
+                    window_hex: '#112B3C',
+                    base_hex: '#205375',
+                    primary_hex: '#F66B0E',
+                    text_hex: '#EFEFEF',
+                };
             ";
 
             store.ds.execute(sql, &store.ses, None, false).await?;
@@ -222,7 +230,7 @@ mod tests {
 
         let array: Array = W(first_res.result?).try_into()?;
 
-        assert_eq!(array.len(), 4);
+        assert_eq!(array.len(), 5);
 
         Ok(())
     }
