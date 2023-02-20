@@ -17,7 +17,7 @@ const ModalContainer: React.FC<Props> = ({ children, hide }) => {
   }, [hide]);
 
   return createPortal(
-    <div className="z-[1337420] fixed top-0 left-0 w-screen h-screen flex flex-col bg-darker/60 p-8">
+    <div className="z-[1337420] fixed top-0 left-0 w-screen h-screen flex flex-col bg-darker/60 p-8 animate-in fade-in-0">
       {children}
     </div>,
     document.getElementById("root")!

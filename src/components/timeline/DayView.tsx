@@ -77,7 +77,10 @@ const DayView: React.FC<Props> = (props) => {
           </div>
           <div className="flex flex-col bg-darker/30 shadow-inner shadow-black/60">
             {tab === "sessions" ? (
-              <SessionsView sessions={props.data.sessions} displayLabel={props.displaySessionLabel} />
+              <SessionsView
+                sessions={props.data.sessions}
+                displayLabel={props.displaySessionLabel}
+              />
             ) : null}
             {tab === "tasks" ? (
               <TasksView intentId={props.intentId} date={props.data.date} />

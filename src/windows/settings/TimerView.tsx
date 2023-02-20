@@ -13,7 +13,7 @@ interface Props {
 
 const TimerView: React.FC<Props> = (props) => {
   return (
-    <div className="flex flex-col gap-3 pb-2">
+    <div className="flex flex-col gap-3 pb-2 animate-in fade-in-0 zoom-in-95">
       <div className="flex flex-col gap-1.5">
         <div className="flex flex-row items-center card">
           <label className="w-full" htmlFor="auto-start-pomodoros">

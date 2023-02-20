@@ -82,7 +82,7 @@ const EditThemeModal: React.FC<Props> = ({ theme, hide }) => {
     >
       <div
         ref={ref}
-        className="m-auto flex flex-col gap-4 text-sm bg-base/50 border-2 border-base bg-gradient-to-r backdrop-blur-lg rounded font-semibold"
+        className="m-auto flex flex-col gap-4 text-sm bg-base/50 border-2 border-base bg-gradient-to-r backdrop-blur-lg rounded font-semibold animate-in zoom-in-75"
       >
         {viewColorPicker ? (
           <div data-tauri-disable-drag>

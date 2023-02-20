@@ -124,7 +124,7 @@ const ActivityView: React.FC<Props> = (props) => {
   }, [props.sessions]);
 
   return (
-    <div className="grow flex flex-col">
+    <div className="grow flex flex-col animate-in fade-in-0 zoom-in-95">
       {/* Summary view */}
       <div className="grow flex flex-col justify-evenly rounded gap-4 pt-1">
         <div className="w-full flex flex-row gap-1">

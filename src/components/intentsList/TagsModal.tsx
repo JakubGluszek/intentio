@@ -38,7 +38,7 @@ export const TagsModal: React.FC<Props> = (props) => {
     <ModalContainer hide={props.hide}>
       <div
         ref={ref}
-        className="m-auto w-full max-w-sm flex flex-col gap-2 bg-window p-2 rounded overflow-y-auto shadow-2xl"
+        className="m-auto w-full max-w-sm flex flex-col gap-2 overflow-y-auto card bg-window shadow-2xl animate-in zoom-in-75"
       >
         <input
           className="border-base"

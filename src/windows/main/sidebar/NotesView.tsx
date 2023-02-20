@@ -74,7 +74,7 @@ const NotesView: React.FC = () => {
   }, [viewCreate, viewFilter]);
 
   return (
-    <div className="grow flex flex-col overflow-y-auto pt-2 gap-1">
+    <div className="grow flex flex-col overflow-y-auto pt-2 gap-1 animate-in fade-in-0 zoom-in-95">
       <div className="w-full min-h-[2rem] flex flex-row justify-between">
         {!viewFilter ? (
           <CreateNoteView
@@ -307,7 +307,7 @@ const FilterNotesView: React.FC<FilterNotesViewProps> = (props) => {
       <MdSearch size={24} />
     </Button>
   ) : (
-    <div className="w-full">
+    <div className="w-full animate-in fade-in-0 zoom-in-90">
       <div className="relative">
         <input
           tabIndex={-2}
@@ -380,7 +380,7 @@ const CreateNoteView: React.FC<CreateNoteViewProps> = (props) => {
       <span>Add note</span>
     </Button>
   ) : (
-    <div className="w-full" ref={ref}>
+    <div className="w-full animate-in fade-in-0 zoom-in-90" ref={ref}>
       <NoteInput
         value={body}
         onChange={(value) => setBody(value)}

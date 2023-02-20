@@ -17,7 +17,7 @@ const ScriptsView: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 pb-2 animate-in fade-in-0 zoom-in-95">
       {viewCreate === false ? (
         <div className="">
           <Button transparent onClick={() => setViewCreate(true)}>
