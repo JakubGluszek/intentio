@@ -5,7 +5,7 @@ import IntentioLogo from "@/components/IntentioLogo";
 
 const AboutView: React.FC = () => {
   return (
-    <div className="grow flex flex-col gap-3 pb-2 text-text/80">
+    <div className="grow flex flex-col gap-3 pb-2 text-text/80 animate-in fade-in-0 zoom-in-95">
       <div className="flex-1 text-primary">
         <IntentioLogo />
         <div className="text-center text-sm -translate-y-3 text-text/80">

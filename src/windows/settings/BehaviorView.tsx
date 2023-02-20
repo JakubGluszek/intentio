@@ -11,7 +11,7 @@ interface Props {
 
 const BehaviorView: React.FC<Props> = (props) => {
   return (
-    <div className="flex flex-col gap-2 pb-2">
+    <div className="flex flex-col gap-3 pb-2 animate-in fade-in-0 zoom-in-95">
       {/* Display live countdown checkbox */}
       <div className="flex flex-row items-center card">
         <label className="w-full" htmlFor="hide-to-tray">

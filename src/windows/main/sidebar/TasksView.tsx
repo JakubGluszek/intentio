@@ -8,7 +8,7 @@ import {
 import { useClickOutside } from "@mantine/hooks";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
-import { clsx } from "@mantine/core";
+import { clsx, Tooltip } from "@mantine/core";
 
 import useStore from "@/store";
 import ipc from "@/ipc";
@@ -23,14 +23,14 @@ const TasksView: React.FC = () => {
   const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
 
   const store = useStore();
-  const containerRef = React.useRef<HTMLDivElement>(null);
+  const tasksContainer = React.useRef<HTMLDivElement>(null);
 
   var tasks = useStore((state) => state.tasks);
   tasks = tasks.filter((task) => task.intent_id === store.activeIntentId);
 
   useEvent("task_created", (event) => {
     store.addTask(event.payload);
-    containerRef.current?.scrollIntoView({ block: "start" });
+    tasksContainer.current?.scrollIntoView({ block: "start" });
   });
   useEvent("task_updated", (event) =>
     store.patchTask(event.payload.id, event.payload)
@@ -58,9 +58,10 @@ const TasksView: React.FC = () => {
   }, [viewConfirmDelete]);
 
   return (
-    <div className="grow flex flex-col overflow-y-auto pt-2 gap-1">
-      <div className="flex flex-row items-center justify-between">
+    <div className="grow flex flex-col overflow-y-auto pt-2 gap-1 animate-in fade-in-0 zoom-in-95">
+      <div className="flex flex-row items-center justify-between gap-2">
         <CreateTaskView viewCreate={viewCreate} setViewCreate={setViewCreate} />
+
         {!viewCreate && selectedIds.length > 0 ? (
           <>
             {!viewConfirmDelete ? (
@@ -90,81 +91,69 @@ const TasksView: React.FC = () => {
             )}
           </>
         ) : null}
+
+        {/* Toggle finished tasks */}
+        {!viewCreate ? (
+          <Tooltip label={!viewFinished ? "View incomplete" : "View completed"}>
+            <div>
+              <Button
+                onClick={() => setViewFinished(!viewFinished)}
+                transparent
+              >
+                {!viewFinished ? (
+                  <MdCheckBoxOutlineBlank size={24} />
+                ) : (
+                  <MdCheckBox size={24} />
+                )}
+              </Button>
+            </div>
+          </Tooltip>
+        ) : null}
       </div>
 
-      {tasks.length > 0 ? (
-        <div className="grow flex flex-col overflow-y-auto gap-1">
-          <div
-            ref={containerRef}
-            className="w-full max-h-0 flex flex-col gap-1 pb-0.5"
-          >
-            {/* Tasks yet unfinished */}
-            {tasks.map((task) =>
-              !task.done ? (
-                <TaskView
-                  selectedTasksIds={selectedIds}
-                  setSelectedTasksIds={setSelectedIds}
-                  key={task.id}
-                  data={task}
-                />
-              ) : null
-            )}
-
-            {/* View finished tasks button */}
-            {tasks.filter((task) => task.done).length > 0 ? (
-              <button
-                onMouseDown={() => setViewFinished((prev) => !prev)}
-                className="font-mono w-fit mx-auto text-sm text-text/60 hover:text-primary my-1"
-              >
-                {viewFinished ? "Hide" : "View"} finished tasks (
-                {tasks.filter((task) => task.done).length})
-              </button>
-            ) : null}
-
-            {/* Finished tasks list */}
-            {viewFinished
-              ? tasks.map((task) =>
-                task.done ? (
-                  <TaskView
-                    selectedTasksIds={selectedIds}
-                    setSelectedTasksIds={setSelectedIds}
-                    key={task.id}
-                    data={task}
-                  />
-                ) : null
-              )
-              : null}
-          </div>
+      <div className="grow flex flex-col overflow-y-auto gap-1">
+        <div
+          ref={tasksContainer}
+          className="w-full max-h-0 flex flex-col gap-1 pb-0.5"
+        >
+          {tasks.map((task) =>
+            !task.done === viewFinished ? (
+              <TaskView
+                selectedTasksIds={selectedIds}
+                setSelectedTasksIds={setSelectedIds}
+                key={task.id}
+                data={task}
+              />
+            ) : null
+          )}
         </div>
-      ) : null}
+      </div>
 
       {/* Some text to fill out the empty space */}
-      {tasks.length === 0 ? (
-        <div className="flex flex-col gap-2 text-center m-auto text-text/50 text-sm">
-          {
-            [
-              <>
-                <p>No tasks?</p>
-                <p>That's like going on a road trip without a map.</p>
-                <p>Add one now!</p>
-              </>,
-              <>
-                <p>Your task list is empty, it's like a ghost town.</p>
-                <p>Let's liven it up!</p>
-              </>,
-              <>
-                <p>Don't let your tasks disappear into thin air.</p>
-                <p>Add some now!</p>
-              </>,
-              <>
-                <p>Break it down.</p>
-                <p>Complete.</p>
-                <p>Repeat.</p>
-              </>,
-            ][Math.floor(Math.random() * 4)]
-          }
-        </div>
-      ) : null}
+      {/* <div className="flex flex-col gap-2 text-center m-auto text-text/50 text-sm"> */}
+      {/*   { */}
+      {/*     [ */}
+      {/*       <> */}
+      {/*         <p>No tasks?</p> */}
+      {/*         <p>That's like going on a road trip without a map.</p> */}
+      {/*         <p>Add one now!</p> */}
+      {/*       </>, */}
+      {/*       <> */}
+      {/*         <p>Your task list is empty, it's like a ghost town.</p> */}
+      {/*         <p>Let's liven it up!</p> */}
+      {/*       </>, */}
+      {/*       <> */}
+      {/*         <p>Don't let your tasks disappear into thin air.</p> */}
+      {/*         <p>Add some now!</p> */}
+      {/*       </>, */}
+      {/*       <> */}
+      {/*         <p>Break it down.</p> */}
+      {/*         <p>Complete.</p> */}
+      {/*         <p>Repeat.</p> */}
+      {/*       </>, */}
+      {/*     ][Math.floor(Math.random() * 4)] */}
+      {/*   } */}
+      {/* </div> */}
     </div>
   );
 };
@@ -198,7 +187,11 @@ const CreateTaskView: React.FC<CreateTaskViewProps> = (props) => {
           <span>Add task</span>
         </Button>
       ) : (
-        <form ref={ref} onSubmit={onSubmit} className="w-full">
+        <form
+          ref={ref}
+          onSubmit={onSubmit}
+          className="w-full animate-in fade-in-0 zoom-in-90"
+        >
           <input
             tabIndex={-3}
             {...register("body")}

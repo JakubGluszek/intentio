@@ -95,8 +95,9 @@ const Tabs: React.FC<TabsProps> = (props) => {
   const store = useStore();
 
   return (
-    <div className="h-7 flex flex-row gap-0.5 rounded-sm overflow-clip">
+    <div className="h-7 flex flex-row gap-0.5 rounded-sm overflow-clip animate-in slide-in-from-bottom-8 zoom-in-75">
       <Button
+        className="transition-none"
         rounded={false}
         style={{
           width: props.value === "intents" ? "100%" : "fit-content",
@@ -110,6 +111,7 @@ const Tabs: React.FC<TabsProps> = (props) => {
       </Button>
       {store.activeIntentId ? (
         <Button
+          className="transition-none"
           rounded={false}
           style={{
             width: props.value === "tasks" ? "100%" : "fit-content",
@@ -124,6 +126,7 @@ const Tabs: React.FC<TabsProps> = (props) => {
       ) : null}
       {store.activeIntentId ? (
         <Button
+          className="transition-none"
           rounded={false}
           style={{
             width: props.value === "notes" ? "100%" : "fit-content",

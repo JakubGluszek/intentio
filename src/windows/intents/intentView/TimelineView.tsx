@@ -62,7 +62,7 @@ const TimelineView: React.FC<Props> = (props) => {
   }, [props.sessions, props.filter]);
 
   return (
-    <div className="grow flex flex-col gap-2">
+    <div className="grow flex flex-col gap-2 animate-in fade-in-0 zoom-in-95">
       {/* Header */}
       <div className="h-8 flex flex-row items-center gap-1">
         <div className="relative w-full flex flex-row items-center gap-1">

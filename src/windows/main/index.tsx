@@ -53,6 +53,16 @@ const MainWindow: React.FC = () => {
     ipc.getActiveIntentId().then((data) => store.setActiveIntentId(data));
   }, []);
 
+  // handles toggling sidebar via pressing 'Tab' key
+  React.useEffect(() => {
+    const handleOnKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Tab") setViewSidebar((view) => !view);
+    };
+
+    document.addEventListener("keydown", handleOnKeyDown);
+    return () => document.removeEventListener("keydown", handleOnKeyDown);
+  }, []);
+
   return (
     <React.Fragment>
       <Layout

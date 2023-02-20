@@ -1,5 +1,6 @@
 import React from "react";
 import { MdCircle } from "react-icons/md";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 import { Note } from "@/bindings/Note";
 import useStore from "@/store";
@@ -11,11 +12,12 @@ interface Props {
 
 const NotesView: React.FC<Props> = (props) => {
   const notes = useStore().getNotesByDate(props.date, props.intentId);
+  const [ref] = useAutoAnimate<HTMLDivElement>();
 
   if (notes.length === 0) return null;
 
   return (
-    <div className="flex flex-col gap-1 p-1.5">
+    <div ref={ref} className="flex flex-col gap-1 p-1.5">
       {notes.map((note) => (
         <NoteView key={note.id} data={note} />
       ))}

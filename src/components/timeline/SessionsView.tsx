@@ -1,8 +1,9 @@
 import React from "react";
-
-import { Session } from "@/bindings/Session";
-import useStore from "@/store";
 import { Tooltip } from "@mantine/core";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
+
+import useStore from "@/store";
+import { Session } from "@/bindings/Session";
 
 interface Props {
   sessions?: Session[];
@@ -10,8 +11,10 @@ interface Props {
 }
 
 const SessionsView: React.FC<Props> = (props) => {
+  const [ref] = useAutoAnimate<HTMLDivElement>();
+
   return (
-    <div className="flex flex-col gap-1 p-1.5">
+    <div ref={ref} className="flex flex-col gap-1 p-1.5">
       {props.sessions!.map((session) => (
         <SessionView
           key={session.id}

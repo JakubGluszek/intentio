@@ -62,38 +62,49 @@ const DefaultView: React.FC<DefaultViewProps> = (props) => {
   const { viewMenu, setViewMenu, onContextMenuHandler } = useContextMenu();
 
   return (
-    <div
-      className="flex flex-col gap-1 card"
-      onContextMenu={onContextMenuHandler}
+    <Tooltip
+      openDelay={600}
+      position="top-end"
+      hidden={viewMenu ? true : false}
+      label={
+        <div className="flex flex-col gap-0.5">
+          <div>Right click to open menu</div>
+        </div>
+      }
     >
-      <div className="w-full flex flex-row items-center gap-2">
-        <Tooltip label={props.data.active ? "Active" : "Disabled"}>
-          <button
-            className={clsx(
-              "pt-0.5",
-              props.data.active ? "text-green-500" : "text-red-500"
-            )}
-            onClick={() => props.onUpdate({ active: !props.data.active })}
-          >
-            <MdCircle size={16} />
-          </button>
-        </Tooltip>
+      <div
+        className="flex flex-col gap-1 card"
+        onContextMenu={onContextMenuHandler}
+      >
+        <div className="w-full flex flex-row items-center gap-2">
+          <Tooltip label={props.data.active ? "Active" : "Disabled"}>
+            <button
+              className={clsx(
+                "pt-0.5",
+                props.data.active ? "text-green-500" : "text-red-500"
+              )}
+              onClick={() => props.onUpdate({ active: !props.data.active })}
+            >
+              <MdCircle size={16} />
+            </button>
+          </Tooltip>
 
-        <LabelView label={props.data.label} onUpdate={props.onUpdate} />
+          <LabelView label={props.data.label} onUpdate={props.onUpdate} />
+        </div>
+
+        {viewMenu ? (
+          <ScriptContextMenu
+            data={props.data}
+            leftPosition={viewMenu.leftPosition}
+            topPosition={viewMenu.topPosition}
+            hide={() => setViewMenu(undefined)}
+            viewCode={() => props.viewCode()}
+            viewEvents={() => props.viewEvents()}
+            runScript={() => utils.executeScript(props.data.body)}
+          />
+        ) : null}
       </div>
-
-      {viewMenu ? (
-        <ScriptContextMenu
-          data={props.data}
-          leftPosition={viewMenu.leftPosition}
-          topPosition={viewMenu.topPosition}
-          hide={() => setViewMenu(undefined)}
-          viewCode={() => props.viewCode()}
-          viewEvents={() => props.viewEvents()}
-          runScript={() => utils.executeScript(props.data.body)}
-        />
-      ) : null}
-    </div>
+    </Tooltip>
   );
 };
 

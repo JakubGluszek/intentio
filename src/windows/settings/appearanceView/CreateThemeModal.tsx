@@ -69,7 +69,7 @@ const CreateThemeModal: React.FC<Props> = ({ theme, hide }) => {
     <ModalContainer hide={!viewColorPicker ? hide : () => setViewColorPicker(undefined)}>
       <div
         ref={ref}
-        className="m-auto flex flex-col gap-4 text-sm bg-base/50 bg-gradient-to-r border-2 border-base backdrop-blur-lg rounded font-semibold"
+        className="m-auto flex flex-col gap-4 text-sm bg-base/50 bg-gradient-to-r border-2 border-base backdrop-blur-lg rounded font-semibold animate-in zoom-in-75"
       >
         {viewColorPicker ? (
           <div data-tauri-disable-drag>

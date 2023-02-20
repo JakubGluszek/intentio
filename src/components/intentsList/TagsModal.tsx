@@ -30,11 +30,15 @@ export const TagsModal: React.FC<Props> = (props) => {
   // remove duplicates
   allOtherTags = [...new Set(allOtherTags)];
 
+  allOtherTags = allOtherTags.sort((a, b) =>
+    a.toLowerCase().localeCompare(b.toLowerCase())
+  );
+
   return (
     <ModalContainer hide={props.hide}>
       <div
         ref={ref}
-        className="m-auto w-full max-w-sm flex flex-col gap-2 bg-window p-2 rounded overflow-y-auto shadow-2xl"
+        className="m-auto w-full max-w-sm flex flex-col gap-2 overflow-y-auto card bg-window shadow-2xl animate-in zoom-in-75"
       >
         <input
           className="border-base"
@@ -63,26 +67,28 @@ export const TagsModal: React.FC<Props> = (props) => {
 
         {props.data.tags.length > 0 ? (
           <div className="flex flex-row flex-wrap gap-1">
-            {props.data.tags.map((tag) => (
-              <TagButton disabled={true}>
-                <div className="flex flex-row items-center gap-1">
-                  <div>{tag}</div>
-                  <Button
-                    onClick={() =>
-                      ipc
-                        .updateIntent(props.data.id, {
-                          tags: props.data.tags.filter((t) => t !== tag),
-                        })
-                        .then(() => toast("Tag removed"))
-                    }
-                    transparent
-                    color="danger"
-                  >
-                    <MdClose size={16} />
-                  </Button>
-                </div>
-              </TagButton>
-            ))}
+            {props.data.tags
+              .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
+              .map((tag) => (
+                <TagButton disabled={true}>
+                  <div className="flex flex-row items-center gap-1">
+                    <div>{tag}</div>
+                    <Button
+                      onClick={() =>
+                        ipc
+                          .updateIntent(props.data.id, {
+                            tags: props.data.tags.filter((t) => t !== tag),
+                          })
+                          .then(() => toast("Tag removed"))
+                      }
+                      transparent
+                      color="danger"
+                    >
+                      <MdClose size={16} />
+                    </Button>
+                  </div>
+                </TagButton>
+              ))}
           </div>
         ) : null}
 

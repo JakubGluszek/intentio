@@ -6,9 +6,16 @@ interface Props {
   max?: number;
   defaultValue?: number;
   onChangeEnd?: (minutes: number) => void;
+  disabled?: boolean;
 }
 
-const Slider: React.FC<Props> = ({ min, max, defaultValue, onChangeEnd }) => {
+const Slider: React.FC<Props> = ({
+  min,
+  max,
+  defaultValue,
+  onChangeEnd,
+  disabled,
+}) => {
   React.useEffect(() => {
     const thumbs = document.querySelectorAll(".mantine-6xjpl8");
     // @ts-ignore
@@ -18,6 +25,7 @@ const Slider: React.FC<Props> = ({ min, max, defaultValue, onChangeEnd }) => {
   return (
     <SliderMantine
       data-tauri-disable-drag
+      disabled={disabled}
       classNames={{
         root: "w-full",
         bar: "bg-primary",

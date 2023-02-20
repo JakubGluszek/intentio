@@ -1,17 +1,12 @@
 import React from "react";
 import { toast } from "react-hot-toast";
+import { VscDebugStart, VscEdit, VscSymbolEvent } from "react-icons/vsc";
+import { MdDelete } from "react-icons/md";
 
 import ipc from "@/ipc";
 import useStore from "@/store";
 import { Button, ContextMenu } from "@/components";
 import { Script } from "@/bindings/Script";
-import {
-  VscCode,
-  VscDebugStart,
-  VscEdit,
-  VscSymbolEvent,
-} from "react-icons/vsc";
-import { MdCheckCircle, MdDelete } from "react-icons/md";
 
 interface ScriptContextMenuProps {
   data: Script;
@@ -44,7 +39,13 @@ const ScriptContextMenu: React.FC<ScriptContextMenuProps> = (props) => {
   return (
     <ContextMenu {...props}>
       <React.Fragment>
-        <Button onClick={() => props.runScript()} rounded={false}>
+        <Button
+          onClick={() => {
+            props.runScript();
+            props.hide();
+          }}
+          rounded={false}
+        >
           <div className="w-fit">
             <VscDebugStart size={20} />
           </div>

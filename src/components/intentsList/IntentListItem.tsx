@@ -38,6 +38,11 @@ const IntentListItem: React.FC<Props> = (props) => {
       container.current.scrollIntoView({ block: "center" });
   }, []);
 
+  // sorts tags alphabeticaly
+  let sortedTags = props.data.tags.sort((a, b) =>
+    a.toLowerCase().localeCompare(b.toLowerCase())
+  );
+
   return (
     <React.Fragment>
       <div
@@ -71,10 +76,15 @@ const IntentListItem: React.FC<Props> = (props) => {
         </div>
 
         {/* Tags */}
-        {data.tags.length > 0 ? (
-          <div className={clsx("p-1 rounded shadow-inner shadow-black/30", props.selected ? "bg-window": "bg-window/80")}>
+        {sortedTags.length > 0 ? (
+          <div
+            className={clsx(
+              "p-1 rounded shadow-inner shadow-black/30",
+              props.selected ? "bg-window" : "bg-window/80"
+            )}
+          >
             <div className="flex flex-row gap-1 overflow-x-auto rounded-sm">
-              {data.tags.map((tag, i) => (
+              {sortedTags.map((tag, i) => (
                 <TagButton
                   key={i}
                   isSelected={props.selectedTags.includes(tag)}

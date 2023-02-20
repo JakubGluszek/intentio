@@ -41,7 +41,7 @@ const DetailsModal: React.FC<Props> = (props) => {
     <ModalContainer hide={props.exit}>
       <div
         ref={ref}
-        className="m-auto w-80 p-2 flex flex-col gap-2 bg-window rounded"
+        className="m-auto w-80 p-2 flex flex-col gap-2 bg-window rounded animate-in zoom-in-75"
       >
         {/* Intent timestamps and stats */}
         <div className="flex flex-col gap-2 bg-base rounded p-3 text-sm shadow-lg">

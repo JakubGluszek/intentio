@@ -24,7 +24,7 @@ const IntentsView: React.FC = () => {
   };
 
   return (
-    <div className="grow flex flex-col pt-2">
+    <div className="grow flex flex-col pt-2 gap-0.5 animate-in fade-in-0 zoom-in-95">
       <CreateIntentView />
       <IntentsList
         data={store.intents.filter(
@@ -68,7 +68,7 @@ const CreateIntentView: React.FC = () => {
           <span>Add Intent</span>
         </Button>
       ) : (
-        <form ref={ref} onSubmit={onSubmit} className="w-full">
+        <form ref={ref} onSubmit={onSubmit} className="w-full animate-in fade-in-0 zoom-in-90">
           <input
             tabIndex={-3}
             {...register("label")}

@@ -124,7 +124,7 @@ const ActivityView: React.FC<Props> = (props) => {
   }, [props.sessions]);
 
   return (
-    <div className="grow flex flex-col">
+    <div className="grow flex flex-col animate-in fade-in-0 zoom-in-95">
       {/* Summary view */}
       <div className="grow flex flex-col justify-evenly rounded gap-4 pt-1">
         <div className="w-full flex flex-row gap-1">
@@ -162,56 +162,58 @@ const ActivityView: React.FC<Props> = (props) => {
           </div>
         </div>
 
-        <ActivityCalendar
-          hideMonthLabels
-          eventHandlers={{
-            onClick: () => {
-              return (data) => props.viewDayDetails(data.date);
-            },
-          }}
-          style={{
-            marginLeft: "auto",
-            marginRight: "auto",
-            marginTop: 16,
-            marginBottom: 16,
-          }}
-          theme={{
-            level0: Color(currentTheme?.primary_hex).alpha(0.1).string(),
-            level1: Color(currentTheme?.primary_hex).alpha(0.4).string(),
-            level2: Color(currentTheme?.primary_hex).alpha(0.6).string(),
-            level3: Color(currentTheme?.primary_hex).alpha(0.8).string(),
-            level4: currentTheme?.primary_hex!,
-          }}
-          color={currentTheme?.primary_hex}
-          data={days.sort(
-            (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-          )}
-          labels={{
-            legend: {
-              less: "Less",
-              more: "More",
-            },
-            months: [
-              "Jan",
-              "Feb",
-              "Mar",
-              "Apr",
-              "May",
-              "Jun",
-              "Jul",
-              "Aug",
-              "Sep",
-              "Oct",
-              "Nov",
-              "Dec",
-            ],
-            tooltip: "<strong>Focused for {{count}}h</strong> on {{date}}",
-            weekdays: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-          }}
-          hideTotalCount
-        >
-          <ReactTooltip html />
-        </ActivityCalendar>
+        <div data-tauri-disable-drag>
+          <ActivityCalendar
+            hideMonthLabels
+            eventHandlers={{
+              onClick: () => {
+                return (data) => props.viewDayDetails(data.date);
+              },
+            }}
+            style={{
+              marginLeft: "auto",
+              marginRight: "auto",
+              marginTop: 16,
+              marginBottom: 16,
+            }}
+            theme={{
+              level0: Color(currentTheme?.primary_hex).alpha(0.1).string(),
+              level1: Color(currentTheme?.primary_hex).alpha(0.4).string(),
+              level2: Color(currentTheme?.primary_hex).alpha(0.6).string(),
+              level3: Color(currentTheme?.primary_hex).alpha(0.8).string(),
+              level4: currentTheme?.primary_hex!,
+            }}
+            color={currentTheme?.primary_hex}
+            data={days.sort(
+              (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+            )}
+            labels={{
+              legend: {
+                less: "Less",
+                more: "More",
+              },
+              months: [
+                "Jan",
+                "Feb",
+                "Mar",
+                "Apr",
+                "May",
+                "Jun",
+                "Jul",
+                "Aug",
+                "Sep",
+                "Oct",
+                "Nov",
+                "Dec",
+              ],
+              tooltip: "<strong>Focused for {{count}}h</strong> on {{date}}",
+              weekdays: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+            }}
+            hideTotalCount
+          >
+            <ReactTooltip html />
+          </ActivityCalendar>
+        </div>
       </div>
     </div>
   );
