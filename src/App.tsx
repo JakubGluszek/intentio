@@ -25,7 +25,6 @@ const App: React.FC = () => {
 
   useEvent("current_theme_changed", () =>
     ipc.getCurrentTheme().then((data) => {
-      console.log(data);
       utils.applyTheme(data);
       store.setCurrentTheme(data);
     })

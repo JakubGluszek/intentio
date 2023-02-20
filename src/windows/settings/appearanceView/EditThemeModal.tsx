@@ -31,7 +31,7 @@ const EditThemeModal: React.FC<Props> = ({ theme, hide }) => {
   const onSubmit = handleSubmit((data) => {
     ipc.updateTheme(theme.id, data).then((data) => {
       if (theme.id === store.currentTheme?.id) {
-        emit("current_theme_updated", theme);
+        emit("current_theme_updated", data);
       }
       store.patchTheme(data.id, data);
       hide();
