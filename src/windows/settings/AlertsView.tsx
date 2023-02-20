@@ -145,6 +145,7 @@ const AlertsView: React.FC<Props> = (props) => {
         <div className="flex flex-row items-center gap-4">
           <Button
             transparent
+            disabled={playingAudio}
             onClick={() => {
               props
                 .update({
@@ -167,6 +168,7 @@ const AlertsView: React.FC<Props> = (props) => {
           </Button>
           <Slider
             key={volumeKey}
+            disabled={playingAudio}
             min={0}
             max={100}
             defaultValue={parseInt(
