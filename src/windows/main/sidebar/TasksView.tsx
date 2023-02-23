@@ -101,9 +101,9 @@ const TasksView: React.FC = () => {
                 transparent
               >
                 {!viewFinished ? (
-                  <MdCheckBoxOutlineBlank size={24} />
-                ) : (
                   <MdCheckBox size={24} />
+                ) : (
+                  <MdCheckBoxOutlineBlank size={24} />
                 )}
               </Button>
             </div>
