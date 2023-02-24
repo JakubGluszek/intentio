@@ -94,13 +94,13 @@ const TasksView: React.FC = () => {
 
         {/* Toggle finished tasks */}
         {!viewCreate ? (
-          <Tooltip label={!viewFinished ? "View incomplete" : "View completed"}>
+          <Tooltip label={viewFinished ? "View incomplete" : "View completed"}>
             <div>
               <Button
                 onClick={() => setViewFinished(!viewFinished)}
                 transparent
               >
-                {!viewFinished ? (
+                {viewFinished ? (
                   <MdCheckBox size={24} />
                 ) : (
                   <MdCheckBoxOutlineBlank size={24} />
@@ -117,7 +117,7 @@ const TasksView: React.FC = () => {
           className="w-full max-h-0 flex flex-col gap-1 pb-0.5"
         >
           {tasks.map((task) =>
-            !task.done === viewFinished ? (
+            task.done === viewFinished ? (
               <TaskView
                 selectedTasksIds={selectedIds}
                 setSelectedTasksIds={setSelectedIds}
