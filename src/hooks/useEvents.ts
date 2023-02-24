@@ -38,19 +38,27 @@ type Events = {
 
 type Callback<T extends keyof Events> = (data: Events[T]) => void;
 
+/**
+Hook that registers event listeners and invokes the corresponding callbacks when events are triggered.
+@param callbacks An object that maps event types to their corresponding callbacks.
+
+Events can be emitted by both backend and client side.
+*/
 export default function useEvents<T extends keyof Events>(callbacks: {
   [K in T]?: Callback<K>;
 }) {
   React.useEffect(() => {
+    // Create an array of listener promises by mapping over the callbacks and registering a listener for each event type
     const listeners = Object.entries(callbacks).map(([eventType, callback]) => {
       return listen(eventType, (event) =>
+        // Cast the callback to the appropriate type and invoke it with the event payload
         (callback as Callback<keyof Events>)(event.payload)
       );
     });
+    // Return a cleanup function that removes all the registered listeners
     return () => {
       listeners.forEach((unlisten) => unlisten.then((f) => f()));
     };
   }, [callbacks]);
-
   return;
 }
