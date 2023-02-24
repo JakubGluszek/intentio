@@ -7,7 +7,7 @@ import { useAutoAnimate } from "@formkit/auto-animate/react";
 import useStore from "@/store";
 import ipc from "@/ipc";
 import { Button } from "@/components";
-import { useEvent } from "@/hooks";
+import { useEvents } from "@/hooks";
 import { Settings } from "@/bindings/Settings";
 import { SettingsForUpdate } from "@/bindings/SettingsForUpdate";
 import CreateThemeModal from "./CreateThemeModal";
@@ -31,7 +31,7 @@ const AppearanceView: React.FC<Props> = (props) => {
     ipc.getThemes().then((data) => setThemes(data));
   }, []);
 
-  useEvent("settings_updated", (event) => store.setSettings(event.payload));
+  useEvents({ settings_updated: (data) => store.setSettings(data) });
 
   const [themesContainer] = useAutoAnimate<HTMLDivElement>();
 

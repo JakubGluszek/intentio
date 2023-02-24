@@ -4,7 +4,7 @@ import { TbLayoutSidebarRightCollapse } from "react-icons/tb";
 import { WebviewWindow } from "@tauri-apps/api/window";
 import { toast } from "react-hot-toast";
 
-import { useEvent } from "@/hooks";
+import { useEvents } from "@/hooks";
 import ipc from "@/ipc";
 import useStore from "@/store";
 import config from "@/config";
@@ -17,36 +17,34 @@ const MainWindow: React.FC = () => {
 
   const store = useStore();
 
-  useEvent("active_intent_id_updated", (event) => {
-    store.setActiveIntentId(event.payload.active_intent_id);
-  });
-  useEvent("intent_created", (event) => store.addIntent(event.payload));
-  useEvent("intent_updated", (event) =>
-    store.patchIntent(event.payload.id, event.payload)
-  );
-  useEvent("intent_deleted", (event) => {
-    if (store.activeIntentId === event.payload.id) {
-      ipc.setActiveIntentId(undefined).then(() => {
-        store.setActiveIntentId(undefined);
-        toast("Active intent has been deleted");
-      });
-    }
+  useEvents({
+    active_intent_id_updated: (data) => {
+      store.setActiveIntentId(data.active_intent_id);
+    },
+    intent_created: (data) => store.addIntent(data),
+    intent_updated: (data) => store.patchIntent(data.id, data),
+    intent_deleted: (data) => {
+      if (store.activeIntentId === data.id) {
+        ipc.setActiveIntentId(undefined).then(() => {
+          store.setActiveIntentId(undefined);
+          toast("Active intent has been deleted");
+        });
+      }
 
-    store.removeIntent(event.payload.id);
-  });
-  useEvent("intent_archived", (event) => {
-    if (store.activeIntentId === event.payload.id) {
-      ipc.setActiveIntentId(undefined).then(() => {
-        store.setActiveIntentId(undefined);
-        toast("Active intent has been archived");
-      });
-    }
+      store.removeIntent(data.id);
+    },
+    intent_archived: (data) => {
+      if (store.activeIntentId === data.id) {
+        ipc.setActiveIntentId(undefined).then(() => {
+          store.setActiveIntentId(undefined);
+          toast("Active intent has been archived");
+        });
+      }
 
-    store.patchIntent(event.payload.id, event.payload);
+      store.patchIntent(data.id, data);
+    },
+    intent_unarchived: (data) => store.patchIntent(data.id, data),
   });
-  useEvent("intent_unarchived", (event) =>
-    store.patchIntent(event.payload.id, event.payload)
-  );
 
   React.useEffect(() => {
     ipc.getIntents().then((data) => store.setIntents(data));
