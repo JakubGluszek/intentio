@@ -19,16 +19,15 @@ const Layout: React.FC<Props> = ({ children, icon, label, header }) => {
   const currentTheme = useStore((state) => state.currentTheme);
   const store = useStore();
 
-  useDetectNoDrag(store.tauriDragEnabled);
-
-  React.useEffect(() => {
-    ipc.getCurrentTheme().then((data) => {
-      utils.applyTheme(data);
-      store.setCurrentTheme(data);
-    });
-  }, []);
+  useDragWindow(store.tauriDragEnabled);
 
   useEvents({
+    settings_updated: (data) => store.setSettings(data),
+    current_theme_changed: () =>
+      ipc.getCurrentTheme().then((data) => {
+        utils.applyTheme(data);
+        store.setCurrentTheme(data);
+      }),
     preview_theme: (data) => {
       utils.applyTheme(data);
     },
@@ -37,6 +36,28 @@ const Layout: React.FC<Props> = ({ children, icon, label, header }) => {
       store.setCurrentTheme(data);
     },
   });
+
+  React.useEffect(() => {
+    ipc.getSettings().then((data) => store.setSettings(data));
+    ipc.getCurrentTheme().then((data) => {
+      utils.applyTheme(data);
+      store.setCurrentTheme(data);
+    });
+  }, []);
+
+  // prevents default context menu on production build
+  // hold CTRL and right click to access context menu on a dev build
+  React.useEffect(() => {
+    const contextMenuHandler = (event: MouseEvent) => {
+      if (import.meta.env.PROD) event.preventDefault();
+      else {
+        !event.ctrlKey && event.preventDefault();
+      }
+    };
+    document.addEventListener("contextmenu", contextMenuHandler);
+    return () =>
+      document.removeEventListener("contextmenu", contextMenuHandler);
+  }, []);
 
   if (!currentTheme) return null;
 
@@ -61,7 +82,11 @@ const Layout: React.FC<Props> = ({ children, icon, label, header }) => {
   );
 };
 
-const useDetectNoDrag = (tauriDragEnabled: boolean) => {
+/** Starts dragging the window on 'mousedown' event.
+ * Dragging will not occur if:
+ * - the target element (or it's child element of a fixed depth) was of a certain type (button, input etc.)
+ * - the tauriDragEnabled state property was exclusively disabled */
+const useDragWindow = (tauriDragEnabled: boolean) => {
   React.useEffect(() => {
     const handleMouseDown = async (e: MouseEvent) => {
       if (
@@ -85,7 +110,7 @@ const useDetectNoDrag = (tauriDragEnabled: boolean) => {
     element: HTMLElement,
     iterations: number
   ): boolean => {
-    const noDragSelector = "input, a, button, label, textarea"; // CSS selector
+    const noDragSelector = "input, a, button, label, textarea"; // CSS selectors
 
     if (
       iterations > 0 &&
