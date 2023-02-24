@@ -5,7 +5,7 @@ import { MdClose } from "react-icons/md";
 import useStore from "@/store";
 import utils from "@/utils";
 import ipc from "@/ipc";
-import { useEvent } from "@/hooks";
+import { useEvents } from "@/hooks";
 import Button from "./Button";
 
 interface Props {
@@ -28,12 +28,14 @@ const Layout: React.FC<Props> = ({ children, icon, label, header }) => {
     });
   }, []);
 
-  useEvent("preview_theme", (e) => {
-    utils.applyTheme(e.payload);
-  });
-  useEvent("current_theme_updated", (e) => {
-    utils.applyTheme(e.payload);
-    store.setCurrentTheme(e.payload);
+  useEvents({
+    preview_theme: (data) => {
+      utils.applyTheme(data);
+    },
+    current_theme_updated: (data) => {
+      utils.applyTheme(data);
+      store.setCurrentTheme(data);
+    },
   });
 
   if (!currentTheme) return null;

@@ -4,7 +4,7 @@ import { VscDebugRestart } from "react-icons/vsc";
 import Color from "color";
 import { toast } from "react-hot-toast";
 
-import { useEvent } from "@/hooks";
+import { useEvents } from "@/hooks";
 import useStore from "@/store";
 import utils from "@/utils";
 import { ColorFormat } from "@/types";
@@ -26,11 +26,11 @@ const Timer: React.FC<Props> = (props) => {
   const timer = useTimer(props.settings);
   const store = useStore();
 
-  useEvent("script_created", (event) => store.addScript(event.payload));
-  useEvent("script_updated", (event) =>
-    store.patchScript(event.payload.id, event.payload)
-  );
-  useEvent("script_deleted", (event) => store.removeScript(event.payload.id));
+  useEvents({
+    script_created: (data) => store.addScript(data),
+    script_updated: (data) => store.patchScript(data.id, data),
+    script_deleted: (data) => store.removeScript(data.id),
+  });
 
   React.useEffect(() => {
     ipc.getScripts().then((data) => store.setScripts(data));

@@ -2,7 +2,7 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 
-import { useEvent } from "@/hooks";
+import { useEvents } from "@/hooks";
 import ipc from "@/ipc";
 import useStore from "@/store";
 import utils from "./utils";
@@ -21,14 +21,14 @@ const IntentsWindow = React.lazy(() => import("./windows/intents"));
 const App: React.FC = () => {
   const store = useStore();
 
-  useEvent("settings_updated", (event) => store.setSettings(event.payload));
-
-  useEvent("current_theme_changed", () =>
-    ipc.getCurrentTheme().then((data) => {
-      utils.applyTheme(data);
-      store.setCurrentTheme(data);
-    })
-  );
+  useEvents({
+    settings_updated: (data) => store.setSettings(data),
+    current_theme_changed: () =>
+      ipc.getCurrentTheme().then((data) => {
+        utils.applyTheme(data);
+        store.setCurrentTheme(data);
+      }),
+  });
 
   React.useEffect(() => {
     ipc.getSettings().then((data) => store.setSettings(data));

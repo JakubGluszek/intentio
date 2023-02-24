@@ -12,7 +12,7 @@ import { clsx, Tooltip } from "@mantine/core";
 
 import useStore from "@/store";
 import ipc from "@/ipc";
-import { useContextMenu, useEvent } from "@/hooks";
+import { useContextMenu, useEvents } from "@/hooks";
 import { Button, ContextMenu } from "@/components";
 import { Task } from "@/bindings/Task";
 
@@ -28,17 +28,15 @@ const TasksView: React.FC = () => {
   var tasks = useStore((state) => state.tasks);
   tasks = tasks.filter((task) => task.intent_id === store.activeIntentId);
 
-  useEvent("task_created", (event) => {
-    store.addTask(event.payload);
-    tasksContainer.current?.scrollIntoView({ block: "start" });
+  useEvents({
+    task_created: (data) => {
+      store.addTask(data);
+      tasksContainer.current?.scrollIntoView({ block: "start" });
+    },
+    task_updated: (data) => store.patchTask(data.id, data),
+    task_deleted: (data) => store.removeTask(data.id),
+    tasks_deleted: (data) => data.forEach((d) => store.removeTask(d.id)),
   });
-  useEvent("task_updated", (event) =>
-    store.patchTask(event.payload.id, event.payload)
-  );
-  useEvent("task_deleted", (event) => store.removeTask(event.payload.id));
-  useEvent("tasks_deleted", (event) =>
-    event.payload.forEach((data) => store.removeTask(data.id))
-  );
 
   React.useEffect(() => {
     ipc.getTasks().then((data) => store.setTasks(data));

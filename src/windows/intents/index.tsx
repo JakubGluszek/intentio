@@ -2,7 +2,7 @@ import React from "react";
 import { BiTargetLock } from "react-icons/bi";
 import { toast } from "react-hot-toast";
 
-import { useEvent } from "@/hooks";
+import { useEvents } from "@/hooks";
 import ipc from "@/ipc";
 import Layout from "@/components/Layout";
 import Sidebar from "./Sidebar";
@@ -16,39 +16,31 @@ const IntentsWindow: React.FC = () => {
 
   const store = useStore();
 
-  useEvent("intent_created", (event) => store.addIntent(event.payload));
-  useEvent("intent_updated", (event) =>
-    store.patchIntent(event.payload.id, event.payload)
-  );
-  useEvent("intent_deleted", (event) => {
-    store.removeIntent(event.payload.id);
-    toast("Intent deleted");
+  useEvents({
+    intent_created: (data) => store.addIntent(data),
+    intent_updated: (data) => store.patchIntent(data.id, data),
+    intent_deleted: (data) => {
+      store.removeIntent(data.id);
+      toast("Intent deleted");
+    },
+    intent_archived: (data) => {
+      store.patchIntent(data.id, data);
+      toast("Intent has been archived");
+    },
+    intent_unarchived: (data) => {
+      store.patchIntent(data.id, data);
+      toast("Intent removed from archive");
+    },
+    session_saved: (data) => store.addSession(data),
+    task_created: (data) => store.addTask(data),
+    task_updated: (data) => store.patchTask(data.id, data),
+    task_deleted: (data) => store.removeTask(data.id),
+    tasks_deleted: (data) => data.map((task) => store.removeTask(task.id)),
+    note_created: (data) => store.addNote(data),
+    note_updated: (data) => store.patchNote(data.id, data),
+    note_deleted: (data) => store.removeNote(data.id),
+    notes_deleted: (data) => data.map((task) => store.removeNote(task.id)),
   });
-  useEvent("intent_archived", (event) => {
-    store.patchIntent(event.payload.id, event.payload);
-    toast("Intent has been archived");
-  });
-  useEvent("intent_unarchived", (event) => {
-    store.patchIntent(event.payload.id, event.payload);
-    toast("Intent removed from archive");
-  });
-  useEvent("session_saved", (event) => store.addSession(event.payload));
-  useEvent("task_created", (event) => store.addTask(event.payload));
-  useEvent("task_updated", (event) =>
-    store.patchTask(event.payload.id, event.payload)
-  );
-  useEvent("task_deleted", (event) => store.removeTask(event.payload.id));
-  useEvent("tasks_deleted", (event) =>
-    event.payload.map((task) => store.removeTask(task.id))
-  );
-  useEvent("note_created", (event) => store.addNote(event.payload));
-  useEvent("note_updated", (event) =>
-    store.patchNote(event.payload.id, event.payload)
-  );
-  useEvent("note_deleted", (event) => store.removeNote(event.payload.id));
-  useEvent("notes_deleted", (event) =>
-    event.payload.map((task) => store.removeNote(task.id))
-  );
 
   React.useEffect(() => {
     ipc

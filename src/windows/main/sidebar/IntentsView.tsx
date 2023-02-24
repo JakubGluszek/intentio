@@ -68,7 +68,11 @@ const CreateIntentView: React.FC = () => {
           <span>Add Intent</span>
         </Button>
       ) : (
-        <form ref={ref} onSubmit={onSubmit} className="w-full animate-in fade-in-0 zoom-in-90">
+        <form
+          ref={ref}
+          onSubmit={onSubmit}
+          className="w-full animate-in fade-in-0 zoom-in-90"
+        >
           <input
             tabIndex={-3}
             {...register("label")}

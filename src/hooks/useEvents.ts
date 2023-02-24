@@ -1,5 +1,5 @@
 import React from "react";
-import { Event, listen } from "@tauri-apps/api/event";
+import { listen } from "@tauri-apps/api/event";
 
 import { Settings } from "@/bindings/Settings";
 import { Intent } from "@/bindings/Intent";
@@ -11,6 +11,7 @@ import { Note } from "@/bindings/Note";
 import { Script } from "@/bindings/Script";
 
 type Events = {
+  [key: string]: any;
   settings_updated: Settings;
   active_intent_id_updated: { active_intent_id: string | undefined };
   current_theme_updated: Theme;
@@ -35,18 +36,21 @@ type Events = {
   script_deleted: ModelDeleteResultData;
 };
 
-type Callback<T> = (data: Event<T>) => void;
+type Callback<T extends keyof Events> = (data: Events[T]) => void;
 
-export function useEvent<K extends keyof Events>(
-  eventType: K,
-  callback: Callback<Events[K]>
-) {
+export default function useEvents<T extends keyof Events>(callbacks: {
+  [K in T]?: Callback<K>;
+}) {
   React.useEffect(() => {
-    const unlisten = listen<Events[typeof eventType]>(eventType, (event) =>
-      callback(event)
-    );
-    return () => unlisten.then((f) => f()) as never;
-  }, [callback]);
+    const listeners = Object.entries(callbacks).map(([eventType, callback]) => {
+      return listen(eventType, (event) =>
+        (callback as Callback<keyof Events>)(event.payload)
+      );
+    });
+    return () => {
+      listeners.forEach((unlisten) => unlisten.then((f) => f()));
+    };
+  }, [callbacks]);
 
   return;
 }

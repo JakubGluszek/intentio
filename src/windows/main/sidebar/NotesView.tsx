@@ -14,7 +14,7 @@ import { writeText } from "@tauri-apps/api/clipboard";
 
 import useStore from "@/store";
 import ipc from "@/ipc";
-import { useContextMenu, useEvent } from "@/hooks";
+import { useContextMenu, useEvents } from "@/hooks";
 import { Button, ContextMenu } from "@/components";
 import { Note } from "@/bindings/Note";
 
@@ -40,17 +40,15 @@ const NotesView: React.FC = () => {
     parseInt(a.created_at) > parseInt(b.created_at) ? -1 : 1
   );
 
-  useEvent("note_created", (event) => {
-    store.addNote(event.payload);
-    containerRef.current?.scrollIntoView({ block: "start" });
+  useEvents({
+    note_created: (data) => {
+      store.addNote(data);
+      containerRef.current?.scrollIntoView({ block: "start" });
+    },
+    note_updated: (data) => store.patchNote(data.id, data),
+    note_deleted: (data) => store.removeNote(data.id),
+    notes_deleted: (data) => data.forEach((data) => store.removeNote(data.id)),
   });
-  useEvent("note_updated", (event) =>
-    store.patchNote(event.payload.id, event.payload)
-  );
-  useEvent("note_deleted", (event) => store.removeNote(event.payload.id));
-  useEvent("notes_deleted", (event) =>
-    event.payload.forEach((data) => store.removeNote(data.id))
-  );
 
   React.useEffect(() => {
     ipc.getNotes().then((data) => store.setNotes(data));
