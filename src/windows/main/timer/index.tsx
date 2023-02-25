@@ -7,12 +7,12 @@ import { toast } from "react-hot-toast";
 import { useEvents } from "@/hooks";
 import useStore from "@/store";
 import utils from "@/utils";
-import { ColorFormat } from "@/types";
 import ipc from "@/ipc";
 import { Button } from "@/components";
 import { Settings } from "@/bindings/Settings";
 import { Intent } from "@/bindings/Intent";
 import { Theme } from "@/bindings/Theme";
+import { ColorFormat } from "./types";
 import useTimer from "./useTimer";
 import { CountdownCircleTimer } from "./CountdownCircleTimer";
 
