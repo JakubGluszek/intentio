@@ -25,6 +25,7 @@ const IntentsWindow: React.FC = () => {
     },
     intent_archived: (data) => {
       store.patchIntent(data.id, data);
+      if (data.id === selectedId) setSelectedId(undefined);
       toast("Intent has been archived");
     },
     intent_unarchived: (data) => {

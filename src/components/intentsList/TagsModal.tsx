@@ -12,6 +12,7 @@ import Button from "../Button";
 
 interface Props {
   data: Intent;
+  display: boolean;
   hide: () => void;
 }
 
@@ -35,10 +36,10 @@ export const TagsModal: React.FC<Props> = (props) => {
   );
 
   return (
-    <ModalContainer hide={props.hide}>
+    <ModalContainer display={props.display} hide={props.hide}>
       <div
         ref={ref}
-        className="m-auto w-full max-w-sm flex flex-col gap-2 overflow-y-auto card bg-window shadow-2xl animate-in zoom-in-75"
+        className="max-w-sm flex flex-col gap-2 overflow-y-auto"
       >
         <input
           className="border-base"

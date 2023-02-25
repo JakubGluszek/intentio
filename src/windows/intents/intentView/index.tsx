@@ -34,9 +34,11 @@ const IntentView: React.FC<Props> = (props) => {
 
   return (
     <div className="grow flex flex-col gap-2 p-2">
-      {viewDetails ? (
-        <DetailsModal data={data} exit={() => setViewDetails(false)} />
-      ) : null}
+      <DetailsModal
+        display={viewDetails}
+        data={data}
+        exit={() => setViewDetails(false)}
+      />
       {/* Heading */}
       <div className="w-full h-7 flex flex-row items-center justify-between gap-2">
         <div className="w-full overflow-hidden">

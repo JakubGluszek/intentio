@@ -9,17 +9,18 @@ import { useClickOutside } from "@mantine/hooks";
 
 import useStore from "@/store";
 import ipc from "@/ipc";
+import { Button, ModalContainer, DeleteButton } from "@/components";
 import { Theme } from "@/bindings/Theme";
 import { ThemeForCreate } from "@/bindings/ThemeForCreate";
-import { Button, ModalContainer, DeleteButton } from "@/components";
 import { ColorType } from "..";
 
 interface Props {
+  display: boolean;
   hide: () => void;
   theme: Theme;
 }
 
-const EditThemeModal: React.FC<Props> = ({ theme, hide }) => {
+const EditThemeModal: React.FC<Props> = (props) => {
   const [viewThemePreview, setViewThemePreview] = React.useState(false);
   const [viewColorPicker, setViewColorPicker] = React.useState<ColorType>();
   const [colorPickerHex, setColorPickerHex] = React.useState("#000000");
@@ -29,19 +30,19 @@ const EditThemeModal: React.FC<Props> = ({ theme, hide }) => {
 
   // update theme
   const onSubmit = handleSubmit((data) => {
-    ipc.updateTheme(theme.id, data).then((data) => {
-      if (theme.id === store.currentTheme?.id) {
+    ipc.updateTheme(props.theme.id, data).then((data) => {
+      if (props.theme.id === store.currentTheme?.id) {
         emit("current_theme_updated", data);
       }
       store.patchTheme(data.id, data);
-      hide();
+      props.hide();
       toast("Theme updated");
     });
   });
 
   const store = useStore();
   const ref = useClickOutside(() => {
-    if (!viewColorPicker) hide();
+    if (!viewColorPicker) props.hide();
 
     switch (viewColorPicker) {
       case "window":
@@ -62,28 +63,26 @@ const EditThemeModal: React.FC<Props> = ({ theme, hide }) => {
   });
 
   const disabled =
-    watch("name") === theme.name &&
-    watch("window_hex") === theme.window_hex &&
-    watch("base_hex") === theme.base_hex &&
-    watch("primary_hex") === theme.primary_hex &&
-    watch("text_hex") === theme.text_hex;
+    watch("name") === props.theme.name &&
+    watch("window_hex") === props.theme.window_hex &&
+    watch("base_hex") === props.theme.base_hex &&
+    watch("primary_hex") === props.theme.primary_hex &&
+    watch("text_hex") === props.theme.text_hex;
 
   React.useEffect(() => {
-    setValue("name", theme.name);
-    setValue("window_hex", theme.window_hex);
-    setValue("base_hex", theme.base_hex);
-    setValue("primary_hex", theme.primary_hex);
-    setValue("text_hex", theme.text_hex);
+    setValue("name", props.theme.name);
+    setValue("window_hex", props.theme.window_hex);
+    setValue("base_hex", props.theme.base_hex);
+    setValue("primary_hex", props.theme.primary_hex);
+    setValue("text_hex", props.theme.text_hex);
   }, []);
 
   return (
     <ModalContainer
-      hide={!viewColorPicker ? hide : () => setViewColorPicker(undefined)}
+      display={props.display}
+      hide={!viewColorPicker ? props.hide : () => setViewColorPicker(undefined)}
     >
-      <div
-        ref={ref}
-        className="m-auto flex flex-col gap-4 text-sm bg-base/50 border-2 border-base bg-gradient-to-r backdrop-blur-lg rounded font-semibold animate-in zoom-in-75"
-      >
+      <div ref={ref} className="flex flex-col gap-4 text-sm font-semibold">
         {viewColorPicker ? (
           <div data-tauri-disable-drag>
             <ChromePicker
@@ -213,9 +212,9 @@ const EditThemeModal: React.FC<Props> = ({ theme, hide }) => {
             <div className="h-7 flex flex-row items-center justify-between">
               <DeleteButton
                 onClick={() =>
-                  ipc.deleteTheme(theme.id).then((data) => {
+                  ipc.deleteTheme(props.theme.id).then((data) => {
                     store.removeTheme(data.id);
-                    hide();
+                    props.hide();
                     toast("Theme deleted");
                   })
                 }
@@ -229,7 +228,7 @@ const EditThemeModal: React.FC<Props> = ({ theme, hide }) => {
                       setViewThemePreview(true);
                     }}
                     onMouseLeave={() => {
-                      emit("preview_theme", theme);
+                      emit("preview_theme", props.theme);
                       setViewThemePreview(false);
                     }}
                   >
