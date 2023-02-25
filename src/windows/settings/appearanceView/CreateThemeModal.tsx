@@ -81,10 +81,13 @@ const CreateThemeModal: React.FC<Props> = (props) => {
             />
           </div>
         ) : (
-          <form onSubmit={onSubmit} className="flex flex-col gap-4 p-4">
+          <form onSubmit={onSubmit} className="flex flex-col gap-4">
             <div className="flex flex-col gap-2">
               <div className="flex flex-row items-center gap-4">
-                <label className="min-w-[64px]" htmlFor="color-scheme-name">
+                <label
+                  className="min-w-[64px] text-text/80"
+                  htmlFor="color-scheme-name"
+                >
                   Name
                 </label>
                 <input
@@ -97,7 +100,10 @@ const CreateThemeModal: React.FC<Props> = (props) => {
                 />
               </div>
               <div className="flex flex-row items-center gap-4">
-                <label className="min-w-[64px]" htmlFor="window-hex">
+                <label
+                  className="min-w-[64px] text-text/80"
+                  htmlFor="window-hex"
+                >
                   Window
                 </label>
                 <input
@@ -122,7 +128,7 @@ const CreateThemeModal: React.FC<Props> = (props) => {
                 ></div>
               </div>
               <div className="flex flex-row items-center gap-4">
-                <label className="min-w-[64px]" htmlFor="base-hex">
+                <label className="min-w-[64px] text-text/80" htmlFor="base-hex">
                   Base
                 </label>
                 <input
@@ -147,7 +153,10 @@ const CreateThemeModal: React.FC<Props> = (props) => {
                 ></div>
               </div>
               <div className="flex flex-row items-center gap-4">
-                <label className="min-w-[64px]" htmlFor="primary-hex">
+                <label
+                  className="min-w-[64px] text-text/80"
+                  htmlFor="primary-hex"
+                >
                   Primary
                 </label>
                 <input
@@ -172,7 +181,7 @@ const CreateThemeModal: React.FC<Props> = (props) => {
                 ></div>
               </div>
               <div className="flex flex-row items-center gap-4">
-                <label className="min-w-[64px]" htmlFor="text-hex">
+                <label className="min-w-[64px] text-text/80" htmlFor="text-hex">
                   Text
                 </label>
                 <input

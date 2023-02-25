@@ -35,7 +35,7 @@ const ModalContainer: React.FC<Props> = (props) => {
             }}
           ></motion.div>
           <motion.div
-            className="m-auto card bg-window shadow-2xl"
+            className="m-auto card bg-window p-2.5 shadow-2xl"
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{
               scale: 1.0,
