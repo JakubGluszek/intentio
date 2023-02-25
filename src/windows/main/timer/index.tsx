@@ -41,7 +41,7 @@ const Timer: React.FC<Props> = (props) => {
   ) as ColorFormat;
 
   return (
-    <>
+    <React.Fragment>
       <div className="grow flex flex-col items-center justify-evenly">
         <div className="relative group">
           <CountdownCircleTimer
@@ -54,7 +54,7 @@ const Timer: React.FC<Props> = (props) => {
               timer.next();
             }}
             strokeWidth={8}
-            size={186}
+            size={196}
             colors={strokeColor}
             trailColor={
               Color(props.theme.window_hex).darken(0.2).hex() as ColorFormat
@@ -169,7 +169,7 @@ const Timer: React.FC<Props> = (props) => {
           <MdSkipNext size={28} />
         </Button>
       </div>
-    </>
+    </React.Fragment>
   );
 };
 

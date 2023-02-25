@@ -53,7 +53,7 @@
   }
 
   body {
-    @apply bg-window;
+    @apply bg-window transition-colors duration-300;
   }
 
   span,
@@ -71,15 +71,11 @@
 
   button {
     outline: none;
-    @apply font-bold;
+    @apply font-bold transition-colors transition-opacity duration-300;
   }
 
   button > * {
     cursor: pointer;
-  }
-
-  button {
-    @apply transition-colors;
   }
 
   /* Hides controls in input of type "number" */

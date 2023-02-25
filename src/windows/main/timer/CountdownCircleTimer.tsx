@@ -29,6 +29,7 @@ const CountdownCircleTimer: React.FC<TimerProps> = (props) => {
           strokeWidth={trailStrokeWidth ?? strokeWidth}
         />
         <path
+          className="transition-colors duration-300"
           d={path}
           fill="none"
           stroke={stroke}
