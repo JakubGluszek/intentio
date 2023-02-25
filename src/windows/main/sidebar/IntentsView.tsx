@@ -7,8 +7,7 @@ import { toast } from "react-hot-toast";
 import useStore from "@/store";
 import ipc from "@/ipc";
 import { Intent } from "@/bindings/Intent";
-import { Button } from "@/components";
-import IntentsList from "@/components/intentsList";
+import { Button, IntentsList } from "@/components";
 
 const IntentsView: React.FC = () => {
   const [selectedIntentTags, setSelectedIntentTags] = React.useState<string[]>(

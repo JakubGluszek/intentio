@@ -186,7 +186,7 @@ const AlertsView: React.FC<Props> = (props) => {
                 })
             }
           />
-          <Button transparent onClick={() => playAudio()}>
+          <Button disabled={playingAudio} transparent onClick={() => playAudio()}>
             {playingAudio ? (
               <MdPauseCircle size={28} />
             ) : (

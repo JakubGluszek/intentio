@@ -16,7 +16,7 @@ import { OsType, type } from "@tauri-apps/api/os";
 import useStore from "@/store";
 import config from "@/config";
 import ipc from "@/ipc";
-import { Layout, Button } from "@/components";
+import { Layout, Titlebar, Button } from "@/components";
 import { SettingsForUpdate } from "@/bindings/SettingsForUpdate";
 import TimerView from "./TimerView";
 import AlertsView from "./AlertsView";
@@ -46,10 +46,10 @@ const SettingsWindow: React.FC = () => {
     type().then((type) => setOsType(type));
   }, []);
 
-  if (!settings) return null;
-
   return (
-    <Layout label="Settings" icon={<MdSettings size={28} />}>
+    <Layout>
+      <Titlebar icon={<MdSettings size={28} />} title="Settings" />
+
       <div className="grow flex flex-row">
         {/* Sidebar */}
         <div className="w-[176px] flex flex-col justify-between p-2">
@@ -124,84 +124,28 @@ const SettingsWindow: React.FC = () => {
               </div>
             </Button>
           </div>
-          {/* About */}
-          <div className="flex flex-row items-center justify-between">
-            <div className="flex flex-row gap-1">
-              <Tooltip withArrow label="Home page">
-                <a
-                  className="mr-auto"
-                  tabIndex={-2}
-                  href={config.about.homePage}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <Button transparent>
-                    <IoIosGlobe size={24} />
-                  </Button>
-                </a>
-              </Tooltip>
-              <Tooltip withArrow label="Discord server">
-                <a
-                  className="mr-auto"
-                  tabIndex={-2}
-                  href={config.about.discordServer}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <Button transparent>
-                    <SiDiscord size={24} />
-                  </Button>
-                </a>
-              </Tooltip>
-            </div>
-
-            <div className="flex flex-row gap-1">
-              <Tooltip withArrow label="Source code">
-                <a
-                  tabIndex={-2}
-                  href={config.about.sourceCode}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <Button transparent>
-                    <IoLogoGithub size={22} />
-                  </Button>
-                </a>
-              </Tooltip>
-              <Tooltip withArrow label="Report a bug">
-                <a
-                  tabIndex={-2}
-                  href={config.about.sourceCode + "/issues"}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <Button transparent>
-                    <IoIosBug size={24} />
-                  </Button>
-                </a>
-              </Tooltip>
-            </div>
-          </div>
         </div>
         {/* Main */}
         <div className="relative grow flex flex-col p-2 pl-0">
           <div className="grow bg-darker/40 shadow-inner rounded p-2.5 overflow-y-auto">
-            <div className="max-h-0 overflow-y">
-              {tab === "timer" ? (
-                <TimerView settings={settings} update={update} />
-              ) : null}
-              {tab === "alerts" ? (
-                <AlertsView settings={settings} update={update} />
-              ) : null}
-              {tab === "appearance" ? (
-                <AppearanceView settings={settings} update={update} />
-              ) : null}
-              {tab === "behavior" ? (
-                <BehaviorView settings={settings} update={update} />
-              ) : null}
-              {tab === "scripts" ? <ScriptsView /> : null}
-              {tab === "about" ? <AboutView /> : null}
-            </div>
+            {settings && (
+              <div className="max-h-0 overflow-y">
+                {tab === "timer" ? (
+                  <TimerView settings={settings} update={update} />
+                ) : null}
+                {tab === "alerts" ? (
+                  <AlertsView settings={settings} update={update} />
+                ) : null}
+                {tab === "appearance" ? (
+                  <AppearanceView settings={settings} update={update} />
+                ) : null}
+                {tab === "behavior" ? (
+                  <BehaviorView settings={settings} update={update} />
+                ) : null}
+                {tab === "scripts" ? <ScriptsView /> : null}
+                {tab === "about" ? <AboutView /> : null}
+              </div>
+            )}
           </div>
         </div>
       </div>

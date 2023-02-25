@@ -8,18 +8,19 @@ import { useClickOutside } from "@mantine/hooks";
 import { RiEyeCloseFill, RiEyeFill } from "react-icons/ri";
 
 import ipc from "@/ipc";
+import useStore from "@/store";
+import { Button, ModalContainer } from "@/components";
 import { Theme } from "@/bindings/Theme";
 import { ThemeForCreate } from "@/bindings/ThemeForCreate";
-import { Button, ModalContainer } from "@/components";
 import { ColorType } from "..";
-import useStore from "@/store";
 
 interface Props {
   hide: () => void;
+  display: boolean;
   theme: Theme;
 }
 
-const CreateThemeModal: React.FC<Props> = ({ theme, hide }) => {
+const CreateThemeModal: React.FC<Props> = (props) => {
   const [viewThemePreview, setViewThemePreview] = React.useState(false);
   const [viewColorPicker, setViewColorPicker] = React.useState<ColorType>();
   const [colorPickerHex, setColorPickerHex] = React.useState("#000000");
@@ -29,7 +30,7 @@ const CreateThemeModal: React.FC<Props> = ({ theme, hide }) => {
 
   const store = useStore();
   const ref = useClickOutside(() => {
-    if (!viewColorPicker) hide();
+    if (!viewColorPicker) props.hide();
 
     switch (viewColorPicker) {
       case "window":
@@ -52,25 +53,25 @@ const CreateThemeModal: React.FC<Props> = ({ theme, hide }) => {
   const onSubmit = handleSubmit(async (data) => {
     await ipc.createTheme(data).then((data) => {
       store.addTheme(data);
-      hide();
+      props.hide();
       toast("Theme created");
     });
   });
 
   React.useEffect(() => {
-    setValue("name", theme.name);
-    setValue("window_hex", theme.window_hex);
-    setValue("base_hex", theme.base_hex);
-    setValue("primary_hex", theme.primary_hex);
-    setValue("text_hex", theme.text_hex);
+    setValue("name", props.theme.name);
+    setValue("window_hex", props.theme.window_hex);
+    setValue("base_hex", props.theme.base_hex);
+    setValue("primary_hex", props.theme.primary_hex);
+    setValue("text_hex", props.theme.text_hex);
   }, []);
 
   return (
-    <ModalContainer hide={!viewColorPicker ? hide : () => setViewColorPicker(undefined)}>
-      <div
-        ref={ref}
-        className="m-auto flex flex-col gap-4 text-sm bg-base/50 bg-gradient-to-r border-2 border-base backdrop-blur-lg rounded font-semibold animate-in zoom-in-75"
-      >
+    <ModalContainer
+      display={props.display}
+      hide={!viewColorPicker ? props.hide : () => setViewColorPicker(undefined)}
+    >
+      <div ref={ref} className="flex flex-col gap-4 text-sm font-semibold">
         {viewColorPicker ? (
           <div data-tauri-disable-drag>
             <ChromePicker
@@ -80,10 +81,13 @@ const CreateThemeModal: React.FC<Props> = ({ theme, hide }) => {
             />
           </div>
         ) : (
-          <form onSubmit={onSubmit} className="flex flex-col gap-4 p-4">
+          <form onSubmit={onSubmit} className="flex flex-col gap-4">
             <div className="flex flex-col gap-2">
               <div className="flex flex-row items-center gap-4">
-                <label className="min-w-[64px]" htmlFor="color-scheme-name">
+                <label
+                  className="min-w-[64px] text-text/80"
+                  htmlFor="color-scheme-name"
+                >
                   Name
                 </label>
                 <input
@@ -96,7 +100,10 @@ const CreateThemeModal: React.FC<Props> = ({ theme, hide }) => {
                 />
               </div>
               <div className="flex flex-row items-center gap-4">
-                <label className="min-w-[64px]" htmlFor="window-hex">
+                <label
+                  className="min-w-[64px] text-text/80"
+                  htmlFor="window-hex"
+                >
                   Window
                 </label>
                 <input
@@ -121,7 +128,7 @@ const CreateThemeModal: React.FC<Props> = ({ theme, hide }) => {
                 ></div>
               </div>
               <div className="flex flex-row items-center gap-4">
-                <label className="min-w-[64px]" htmlFor="base-hex">
+                <label className="min-w-[64px] text-text/80" htmlFor="base-hex">
                   Base
                 </label>
                 <input
@@ -146,7 +153,10 @@ const CreateThemeModal: React.FC<Props> = ({ theme, hide }) => {
                 ></div>
               </div>
               <div className="flex flex-row items-center gap-4">
-                <label className="min-w-[64px]" htmlFor="primary-hex">
+                <label
+                  className="min-w-[64px] text-text/80"
+                  htmlFor="primary-hex"
+                >
                   Primary
                 </label>
                 <input
@@ -171,7 +181,7 @@ const CreateThemeModal: React.FC<Props> = ({ theme, hide }) => {
                 ></div>
               </div>
               <div className="flex flex-row items-center gap-4">
-                <label className="min-w-[64px]" htmlFor="text-hex">
+                <label className="min-w-[64px] text-text/80" htmlFor="text-hex">
                   Text
                 </label>
                 <input
@@ -208,7 +218,7 @@ const CreateThemeModal: React.FC<Props> = ({ theme, hide }) => {
                       setViewThemePreview(true);
                     }}
                     onMouseLeave={() => {
-                      emit("preview_theme", theme);
+                      emit("preview_theme", props.theme);
                       setViewThemePreview(false);
                     }}
                   >

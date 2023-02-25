@@ -1,6 +1,6 @@
 import React from "react";
 
-import Button from "@/components/Button";
+import { Button } from "@/components";
 import { Session } from "@/bindings/Session";
 import { Intent } from "@/bindings/Intent";
 import ActivityView from "./ActivityView";

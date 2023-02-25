@@ -1,9 +1,9 @@
 // Credits - https://github.com/vydimitrov/react-countdown-circle-timer
 
 import React from "react";
-import { TimerProps } from "@/types";
 
-import { getWrapperStyle, timeStyle } from "@/utils";
+import { TimerProps } from "./types";
+import { getWrapperStyle, timeStyle } from "./utils";
 import { useCountdown } from "./useCountdown";
 
 const CountdownCircleTimer: React.FC<TimerProps> = (props) => {
@@ -29,6 +29,7 @@ const CountdownCircleTimer: React.FC<TimerProps> = (props) => {
           strokeWidth={trailStrokeWidth ?? strokeWidth}
         />
         <path
+          className="transition-colors duration-300"
           d={path}
           fill="none"
           stroke={stroke}

@@ -2,13 +2,13 @@ import React from "react";
 import { BiTargetLock } from "react-icons/bi";
 import { toast } from "react-hot-toast";
 
-import { useEvents } from "@/hooks";
+import useStore from "@/store";
 import ipc from "@/ipc";
-import Layout from "@/components/Layout";
+import { useEvents } from "@/hooks";
+import { Layout, Titlebar } from "@/components";
 import Sidebar from "./Sidebar";
 import Dashboard from "./dashboard";
 import IntentView from "./intentView";
-import useStore from "@/store";
 
 const IntentsWindow: React.FC = () => {
   const [selectedId, setSelectedId] = React.useState<string>();
@@ -25,6 +25,7 @@ const IntentsWindow: React.FC = () => {
     },
     intent_archived: (data) => {
       store.patchIntent(data.id, data);
+      if (data.id === selectedId) setSelectedId(undefined);
       toast("Intent has been archived");
     },
     intent_unarchived: (data) => {
@@ -55,7 +56,8 @@ const IntentsWindow: React.FC = () => {
   const intent = store.getIntentById(selectedId);
 
   return (
-    <Layout icon={<BiTargetLock size={28} />} label="Intents">
+    <Layout>
+      <Titlebar icon={<BiTargetLock size={28} />} title="Intents" />
       <div className="grow flex flex-row">
         <Sidebar
           selectedId={selectedId}

@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { useElapsedTime } from "./use-elapsed-time";
-import { getPathProps, getStartAt } from "@/utils";
-import type { TimerProps, ColorFormat } from "@/types";
+import { getPathProps, getStartAt } from "./utils";
+import type { TimerProps, ColorFormat } from "./types";
 
 const linearEase = (
   time: number,

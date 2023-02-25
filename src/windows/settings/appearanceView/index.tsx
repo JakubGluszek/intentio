@@ -1,5 +1,4 @@
 import React from "react";
-import { createPortal } from "react-dom";
 import { MdAddCircle } from "react-icons/md";
 import { Checkbox } from "@mantine/core";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
@@ -81,15 +80,13 @@ const AppearanceView: React.FC<Props> = (props) => {
       </div>
 
       {/* Create theme modal popup */}
-      {viewCreate &&
-        currentTheme &&
-        createPortal(
-          <CreateThemeModal
-            theme={currentTheme}
-            hide={() => setViewCreate(false)}
-          />,
-          document.getElementById("root")!
-        )}
+      {currentTheme && (
+        <CreateThemeModal
+          display={viewCreate}
+          theme={currentTheme}
+          hide={() => setViewCreate(false)}
+        />
+      )}
     </div>
   );
 };

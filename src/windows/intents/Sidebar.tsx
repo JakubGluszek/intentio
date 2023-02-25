@@ -12,10 +12,9 @@ import { Tooltip } from "@mantine/core";
 
 import useStore from "@/store";
 import ipc from "@/ipc";
-import Button from "@/components/Button";
-import { IntentForCreate } from "@/bindings/IntentForCreate";
+import { Button, IntentsList } from "@/components";
 import { IntentsSort } from "@/types";
-import IntentsList from "@/components/intentsList";
+import { IntentForCreate } from "@/bindings/IntentForCreate";
 
 interface Props {
   selectedId?: string;

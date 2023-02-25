@@ -5,12 +5,12 @@ import { useClickOutside } from "@mantine/hooks";
 import useStore from "@/store";
 import utils from "@/utils";
 import ipc from "@/ipc";
-import { ModalContainer, Button } from "@/components";
+import { ModalContainer, Button, DeleteButton } from "@/components";
 import { Intent } from "@/bindings/Intent";
-import DeleteButton from "@/components/DeleteButton";
 
 interface Props {
   data: Intent;
+  display: boolean;
   exit: () => void;
 }
 
@@ -38,11 +38,8 @@ const DetailsModal: React.FC<Props> = (props) => {
   }, [viewConfirmDelete]);
 
   return (
-    <ModalContainer hide={props.exit}>
-      <div
-        ref={ref}
-        className="m-auto w-80 p-2 flex flex-col gap-2 bg-window rounded animate-in zoom-in-75"
-      >
+    <ModalContainer display={props.display} hide={props.exit}>
+      <div ref={ref} className="w-80 flex flex-col gap-2">
         {/* Intent timestamps and stats */}
         <div className="flex flex-col gap-2 bg-base rounded p-3 text-sm shadow-lg">
           <p className="flex flex-row items-center justify-between">

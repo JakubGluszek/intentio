@@ -7,12 +7,12 @@ import { toast } from "react-hot-toast";
 import { useEvents } from "@/hooks";
 import useStore from "@/store";
 import utils from "@/utils";
-import { ColorFormat } from "@/types";
 import ipc from "@/ipc";
-import Button from "@/components/Button";
+import { Button } from "@/components";
 import { Settings } from "@/bindings/Settings";
 import { Intent } from "@/bindings/Intent";
 import { Theme } from "@/bindings/Theme";
+import { ColorFormat } from "./types";
 import useTimer from "./useTimer";
 import { CountdownCircleTimer } from "./CountdownCircleTimer";
 
@@ -41,7 +41,7 @@ const Timer: React.FC<Props> = (props) => {
   ) as ColorFormat;
 
   return (
-    <>
+    <React.Fragment>
       <div className="grow flex flex-col items-center justify-evenly">
         <div className="relative group">
           <CountdownCircleTimer
@@ -54,7 +54,7 @@ const Timer: React.FC<Props> = (props) => {
               timer.next();
             }}
             strokeWidth={8}
-            size={186}
+            size={196}
             colors={strokeColor}
             trailColor={
               Color(props.theme.window_hex).darken(0.2).hex() as ColorFormat
@@ -169,7 +169,7 @@ const Timer: React.FC<Props> = (props) => {
           <MdSkipNext size={28} />
         </Button>
       </div>
-    </>
+    </React.Fragment>
   );
 };
 

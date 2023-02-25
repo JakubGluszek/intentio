@@ -2,11 +2,11 @@ import React from "react";
 import { sendNotification } from "@tauri-apps/api/notification";
 import toast from "react-hot-toast";
 
-import { TimerType } from "@/types";
 import ipc from "@/ipc";
-import { Settings } from "@/bindings/Settings";
+import { TimerType } from "@/types";
 import useStore from "@/store";
 import utils from "@/utils";
+import { Settings } from "@/bindings/Settings";
 
 const useTimer = (settings: Settings) => {
   // custom key is needed to reset timer components inner state

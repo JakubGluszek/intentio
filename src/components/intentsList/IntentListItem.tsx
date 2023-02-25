@@ -143,9 +143,11 @@ const IntentListItem: React.FC<Props> = (props) => {
         </ContextMenu>
       ) : null}
 
-      {viewTagsModal ? (
-        <TagsModal data={props.data} hide={() => setViewTagsModal(false)} />
-      ) : null}
+      <TagsModal
+        display={viewTagsModal}
+        data={props.data}
+        hide={() => setViewTagsModal(false)}
+      />
     </React.Fragment>
   );
 };

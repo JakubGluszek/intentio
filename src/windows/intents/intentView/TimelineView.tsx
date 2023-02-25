@@ -3,9 +3,8 @@ import { BsArrowsCollapse, BsArrowsExpand } from "react-icons/bs";
 import { MdClose } from "react-icons/md";
 
 import { DayDetail } from "@/types";
-import Button from "@/components/Button";
+import { Button, DayView } from "@/components";
 import { Session } from "@/bindings/Session";
-import DayView from "@/components/timeline/DayView";
 
 interface Props {
   intentId: string;

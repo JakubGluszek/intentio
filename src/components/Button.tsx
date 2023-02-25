@@ -46,6 +46,15 @@ const Button: React.FC<Props> = (props) => {
   };
 
   const colors = (): MotionStyle => {
+    let shadow = {
+      "--tw-shadow":
+        "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
+      "--tw-shadow-colored":
+        "0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color)",
+      "box-shadow":
+        "var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)",
+    };
+
     if (transparent) {
       return {
         backgroundColor: "transparent",
@@ -64,11 +73,13 @@ const Button: React.FC<Props> = (props) => {
           isSelected || isHover
             ? "rgb(var(--window-color))"
             : "rgb(var(--primary-color))",
+        ...shadow,
       };
     } else if (color === "danger") {
       return {
         backgroundColor: "rgb(var(--danger-color))",
         color: "rgb(var(--window-color))",
+        ...shadow,
       };
     }
 
@@ -94,6 +105,7 @@ const Button: React.FC<Props> = (props) => {
         width: !transparent ? "100%" : undefined,
         height: !transparent ? "100%" : undefined,
         opacity: isHover ? 1.0 : opacity,
+        cursor: disabled ? "not-allowed" : "pointer",
 
         ...colors(),
         ...style,

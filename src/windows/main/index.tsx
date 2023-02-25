@@ -62,82 +62,50 @@ const MainWindow: React.FC = () => {
   }, []);
 
   return (
-    <React.Fragment>
-      <Layout
-        header={
-          <Header
-            sidebarVisibility={viewSidebar}
-            expandSidebar={() => setViewSidebar(true)}
-          />
-        }
-      >
-        <div
-          className="grow flex flex-col p-2 transition-opacity duration-300"
-          style={{
-            opacity: viewSidebar ? 0.0 : 1.0,
-          }}
-        >
-          {store.settings && store.currentTheme ? (
-            <Timer
-              settings={store.settings}
-              theme={store.currentTheme}
-              activeIntent={store.getActiveIntent()}
-            />
-          ) : null}
+    <Layout>
+      {/* Window Titlebar */}
+      <div className="flex flex-row items-center justify-between p-2">
+        <div className="flex flex-row items-center gap-2">
+          <Button transparent onClick={() => setViewSidebar(true)}>
+            <TbLayoutSidebarRightCollapse size={28} />
+          </Button>
+          <div>
+            <Button
+              transparent
+              onClick={() =>
+                new WebviewWindow("settings", config.webviews.settings)
+              }
+            >
+              <MdSettings size={28} />
+            </Button>
+          </div>
         </div>
-      </Layout>
+        <h1 className="text-text/80 font-bold">Intentio</h1>
+        <div className="flex flex-row items-center gap-2">
+          <div>
+            <Button transparent onClick={() => ipc.hideMainWindow()}>
+              <MdRemove size={28} />
+            </Button>
+          </div>
+          <Button transparent onClick={() => ipc.exitMainWindow()}>
+            <MdClose size={28} />
+          </Button>
+        </div>
+      </div>
+
+      {/* Window Content */}
+      <div className="grow flex flex-col p-2">
+        {store.settings && store.currentTheme && (
+          <Timer
+            settings={store.settings}
+            theme={store.currentTheme}
+            activeIntent={store.getActiveIntent()}
+          />
+        )}
+      </div>
 
       <Sidebar isVisible={viewSidebar} collapse={() => setViewSidebar(false)} />
-    </React.Fragment>
-  );
-};
-
-interface HeaderProps {
-  sidebarVisibility: boolean;
-  expandSidebar: () => void;
-}
-
-const Header: React.FC<HeaderProps> = (props) => {
-  return (
-    <div className="flex flex-row items-center justify-between p-2">
-      <div className="flex flex-row items-center gap-2">
-        <Button transparent onClick={props.expandSidebar}>
-          <TbLayoutSidebarRightCollapse size={28} />
-        </Button>
-        <div
-          className="transition-opacity duration-400"
-          style={{ opacity: props.sidebarVisibility ? 0.0 : 1.0 }}
-        >
-          <Button
-            transparent
-            onClick={() =>
-              new WebviewWindow("settings", config.webviews.settings)
-            }
-          >
-            <MdSettings size={28} />
-          </Button>
-        </div>
-      </div>
-      <h1
-        className="text-text/80 font-bold transition-opacity duration-300"
-        style={{ opacity: props.sidebarVisibility ? 0.0 : 1.0 }}
-      >
-        Intentio
-      </h1>
-      <div className="flex flex-row items-center gap-2">
-        <div
-          className="transition-opacity duration-300"
-          style={{ opacity: props.sidebarVisibility ? 0.0 : 1.0 }}
-        >
-          <Button transparent onClick={() => ipc.hideMainWindow()}>
-            <MdRemove size={28} />
-          </Button>
-        </div>
-        <Button transparent onClick={() => ipc.exitMainWindow()}>
-          <MdClose size={28} />
-        </Button>
-      </div>
-    </div>
+    </Layout>
   );
 };
 

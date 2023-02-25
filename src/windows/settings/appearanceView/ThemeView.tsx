@@ -1,5 +1,4 @@
 import React from "react";
-import { createPortal } from "react-dom";
 import { MdSettings } from "react-icons/md";
 
 import useStore from "@/store";
@@ -21,12 +20,11 @@ const ThemeView: React.FC<Props> = ({ theme }) => {
 
   return (
     <React.Fragment>
-      {viewEdit
-        ? createPortal(
-          <EditThemeModal theme={theme} hide={() => setViewEdit(false)} />,
-          document.getElementById("root")!
-        )
-        : null}
+      <EditThemeModal
+        display={viewEdit}
+        theme={theme}
+        hide={() => setViewEdit(false)}
+      />
 
       <div
         style={{ color: theme.text_hex }}
