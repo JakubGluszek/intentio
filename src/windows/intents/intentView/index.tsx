@@ -5,7 +5,7 @@ import { useClickOutside } from "@mantine/hooks";
 import { useForm } from "react-hook-form";
 
 import ipc from "@/ipc";
-import Button from "@/components/Button";
+import { Button } from "@/components";
 import { Session } from "@/bindings/Session";
 import { Intent } from "@/bindings/Intent";
 import DetailsModal from "./DetailsModal";

@@ -9,7 +9,7 @@ import useStore from "@/store";
 import utils from "@/utils";
 import { ColorFormat } from "@/types";
 import ipc from "@/ipc";
-import Button from "@/components/Button";
+import { Button } from "@/components";
 import { Settings } from "@/bindings/Settings";
 import { Intent } from "@/bindings/Intent";
 import { Theme } from "@/bindings/Theme";

@@ -16,7 +16,7 @@ import { OsType, type } from "@tauri-apps/api/os";
 import useStore from "@/store";
 import config from "@/config";
 import ipc from "@/ipc";
-import { Layout, Button } from "@/components";
+import { Layout, Titlebar, Button } from "@/components";
 import { SettingsForUpdate } from "@/bindings/SettingsForUpdate";
 import TimerView from "./TimerView";
 import AlertsView from "./AlertsView";
@@ -47,7 +47,9 @@ const SettingsWindow: React.FC = () => {
   }, []);
 
   return (
-    <Layout label="Settings" icon={<MdSettings size={28} />}>
+    <Layout>
+      <Titlebar icon={<MdSettings size={28} />} title="Settings" />
+
       <div className="grow flex flex-row">
         {/* Sidebar */}
         <div className="w-[176px] flex flex-col justify-between p-2">

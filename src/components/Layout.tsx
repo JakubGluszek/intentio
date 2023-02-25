@@ -10,13 +10,9 @@ import Button from "./Button";
 
 interface Props {
   children: React.ReactNode;
-  icon?: React.ReactNode;
-  label?: string;
-  header?: React.ReactNode;
 }
 
-const Layout: React.FC<Props> = ({ children, icon, label, header }) => {
-  const currentTheme = useStore((state) => state.currentTheme);
+const Layout: React.FC<Props> = (props) => {
   const store = useStore();
 
   useDragWindow(store.tauriDragEnabled);
@@ -59,25 +55,11 @@ const Layout: React.FC<Props> = ({ children, icon, label, header }) => {
       document.removeEventListener("contextmenu", contextMenuHandler);
   }, []);
 
-  if (!currentTheme) return null;
+  if (!store.currentTheme) return null;
 
   return (
-    <div className="w-screen h-screen max-h-screen flex flex-col gap-2 overflow-hidden">
-      {header ?? (
-        <div className="h-8 flex flex-col gap-2 p-2">
-          <div className="flex flex-row items-center justify-between">
-            <div className="flex flex-row items-center gap-2">
-              {icon ?? null}
-              <span className="text-xl">{label}</span>
-            </div>
-            <Button transparent onClick={() => appWindow.close()}>
-              <MdClose size={28} />
-            </Button>
-          </div>
-        </div>
-      )}
-
-      {children}
+    <div className="relative w-screen h-screen max-h-screen flex flex-col overflow-hidden">
+      {props.children}
     </div>
   );
 };

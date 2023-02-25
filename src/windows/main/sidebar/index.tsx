@@ -12,7 +12,7 @@ import { AnimatePresence, motion } from "framer-motion";
 
 import useStore from "@/store";
 import config from "@/config";
-import Button from "@/components/Button";
+import { Button } from "@/components";
 import IntentsView from "./IntentsView";
 import TasksView from "./TasksView";
 import NotesView from "./NotesView";

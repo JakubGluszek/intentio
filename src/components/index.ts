@@ -5,3 +5,8 @@ export { default as Layout } from "./Layout";
 export { default as DeleteButton } from "./DeleteButton";
 export { default as Editor } from "./Editor";
 export { default as ContextMenu } from "./ContextMenu";
+export { default as Titlebar } from "./Titlebar";
+export { default as TagButton } from "./TagButton";
+export { default as IntentioLogo } from "./IntentioLogo";
+export { default as IntentsList } from "./intentsList";
+export * from "./timeline";

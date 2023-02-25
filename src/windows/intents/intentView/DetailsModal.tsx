@@ -5,9 +5,8 @@ import { useClickOutside } from "@mantine/hooks";
 import useStore from "@/store";
 import utils from "@/utils";
 import ipc from "@/ipc";
-import { ModalContainer, Button } from "@/components";
+import { ModalContainer, Button, DeleteButton } from "@/components";
 import { Intent } from "@/bindings/Intent";
-import DeleteButton from "@/components/DeleteButton";
 
 interface Props {
   data: Intent;

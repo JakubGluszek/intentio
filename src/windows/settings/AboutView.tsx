@@ -1,7 +1,7 @@
 import React from "react";
 
 import config from "@/config";
-import IntentioLogo from "@/components/IntentioLogo";
+import { IntentioLogo } from "@/components";
 
 const AboutView: React.FC = () => {
   return (
