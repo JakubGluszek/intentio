@@ -16,10 +16,13 @@ import { Button } from "@/components";
 import IntentsView from "./IntentsView";
 import TasksView from "./TasksView";
 import NotesView from "./NotesView";
+import { useEvents } from "@/hooks";
+import ipc from "@/ipc";
+import { toast } from "react-hot-toast";
 
 interface Props {
   isVisible: boolean;
-  collapse: () => void;
+  toggle: () => void;
 }
 
 type Tab = "intents" | "notes" | "tasks";
@@ -28,6 +31,50 @@ const Sidebar: React.FC<Props> = (props) => {
   const [tab, setTab] = React.useState<Tab>("intents");
 
   const store = useStore();
+
+  useEvents({
+    active_intent_id_updated: (data) => {
+      store.setActiveIntentId(data.active_intent_id);
+    },
+    intent_created: (data) => store.addIntent(data),
+    intent_updated: (data) => store.patchIntent(data.id, data),
+    intent_deleted: (data) => {
+      if (store.activeIntentId === data.id) {
+        ipc.setActiveIntentId(undefined).then(() => {
+          store.setActiveIntentId(undefined);
+          toast("Active intent has been deleted");
+        });
+      }
+
+      store.removeIntent(data.id);
+    },
+    intent_archived: (data) => {
+      if (store.activeIntentId === data.id) {
+        ipc.setActiveIntentId(undefined).then(() => {
+          store.setActiveIntentId(undefined);
+          toast("Active intent has been archived");
+        });
+      }
+
+      store.patchIntent(data.id, data);
+    },
+    intent_unarchived: (data) => store.patchIntent(data.id, data),
+  });
+
+  React.useEffect(() => {
+    ipc.getIntents().then((data) => store.setIntents(data));
+    ipc.getActiveIntentId().then((data) => store.setActiveIntentId(data));
+  }, []);
+
+  // handles toggling sidebar via pressing 'Tab' key
+  React.useEffect(() => {
+    const handleOnKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Tab") props.toggle();
+    };
+
+    document.addEventListener("keydown", handleOnKeyDown);
+    return () => document.removeEventListener("keydown", handleOnKeyDown);
+  }, []);
 
   React.useEffect(() => {
     if (!store.activeIntentId) setTab("intents");
@@ -70,7 +117,7 @@ const Sidebar: React.FC<Props> = (props) => {
               {/* Header */}
               <div className="w-full flex flex-row items-center justify-between">
                 <div className="flex flex-row items-center gap-2">
-                  <Button transparent onClick={() => props.collapse()}>
+                  <Button transparent onClick={() => props.toggle()}>
                     <TbLayoutSidebarLeftCollapse size={28} />
                   </Button>
                   <Button

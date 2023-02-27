@@ -2,9 +2,7 @@ import React from "react";
 import { MdSettings, MdRemove, MdClose } from "react-icons/md";
 import { TbLayoutSidebarRightCollapse } from "react-icons/tb";
 import { WebviewWindow } from "@tauri-apps/api/window";
-import { toast } from "react-hot-toast";
 
-import { useEvents } from "@/hooks";
 import ipc from "@/ipc";
 import useStore from "@/store";
 import config from "@/config";
@@ -16,50 +14,6 @@ const MainWindow: React.FC = () => {
   const [viewSidebar, setViewSidebar] = React.useState(false);
 
   const store = useStore();
-
-  useEvents({
-    active_intent_id_updated: (data) => {
-      store.setActiveIntentId(data.active_intent_id);
-    },
-    intent_created: (data) => store.addIntent(data),
-    intent_updated: (data) => store.patchIntent(data.id, data),
-    intent_deleted: (data) => {
-      if (store.activeIntentId === data.id) {
-        ipc.setActiveIntentId(undefined).then(() => {
-          store.setActiveIntentId(undefined);
-          toast("Active intent has been deleted");
-        });
-      }
-
-      store.removeIntent(data.id);
-    },
-    intent_archived: (data) => {
-      if (store.activeIntentId === data.id) {
-        ipc.setActiveIntentId(undefined).then(() => {
-          store.setActiveIntentId(undefined);
-          toast("Active intent has been archived");
-        });
-      }
-
-      store.patchIntent(data.id, data);
-    },
-    intent_unarchived: (data) => store.patchIntent(data.id, data),
-  });
-
-  React.useEffect(() => {
-    ipc.getIntents().then((data) => store.setIntents(data));
-    ipc.getActiveIntentId().then((data) => store.setActiveIntentId(data));
-  }, []);
-
-  // handles toggling sidebar via pressing 'Tab' key
-  React.useEffect(() => {
-    const handleOnKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Tab") setViewSidebar((view) => !view);
-    };
-
-    document.addEventListener("keydown", handleOnKeyDown);
-    return () => document.removeEventListener("keydown", handleOnKeyDown);
-  }, []);
 
   return (
     <Layout>
@@ -104,7 +58,10 @@ const MainWindow: React.FC = () => {
         )}
       </div>
 
-      <Sidebar isVisible={viewSidebar} collapse={() => setViewSidebar(false)} />
+      <Sidebar
+        isVisible={viewSidebar}
+        toggle={() => setViewSidebar((view) => !view)}
+      />
     </Layout>
   );
 };
