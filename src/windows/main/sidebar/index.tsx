@@ -93,13 +93,13 @@ const Sidebar: React.FC<Props> = (props) => {
           }}
           initial={{ width: 0 }}
           animate={{
-            width: 296,
-            transition: { duration: 0.3 },
+            width: 300,
+            transition: { duration: 0.3, delay: 0.1 },
           }}
           exit={{
             width: 0,
             translateX: -32,
-            transition: { duration: 0.3, delay: 0.05 },
+            transition: { duration: 0.3, delay: 0.1 },
           }}
         >
           <div className="grow flex flex-col p-2 bg-darker/40">

@@ -8,7 +8,21 @@ import useStore from "@/store";
 import utils from "@/utils";
 import { Settings } from "@/bindings/Settings";
 
-const useTimer = (settings: Settings) => {
+export interface Timer {
+  key: string;
+  type: TimerType;
+  duration: number;
+  isRunning: boolean;
+  iterations: number;
+  start: () => void;
+  pause: () => void;
+  next: (manual?: boolean) => void;
+  onUpdate: () => void;
+  restart: () => void;
+  timeRemaining: number;
+}
+
+const useTimer = (settings: Settings): Timer => {
   // custom key is needed to reset timer components inner state
   const [key, setKey] = React.useState("focus");
   const [type, setType] = React.useState<TimerType>("focus");
@@ -239,6 +253,7 @@ const useTimer = (settings: Settings) => {
     next,
     onUpdate,
     restart,
+    timeRemaining: duration * 60 - timeFocused,
   };
 };
 

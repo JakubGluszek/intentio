@@ -21,7 +21,7 @@ const config = {
   webviews: {
     main: {
       width: 340,
-      height: 380,
+      height: 360,
     },
     settings: {
       url: "/settings",

@@ -32,6 +32,9 @@
       "globalShortcut": {
         "all": true
       },
+      "window": {
+        "all": true
+      },
       "shell": {
         "open": true,
         "scope": [
