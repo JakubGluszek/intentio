@@ -105,6 +105,6 @@
 
 @layer components {
   .card {
-    @apply bg-window/80 hover:bg-window p-1.5 rounded border-2 border-base/80 hover:border-base shadow shadow-black/30;
+    @apply bg-window/80 hover:bg-window p-1.5 rounded border-2 border-base/60 hover:border-base/70 shadow shadow-black/30;
   }
 }

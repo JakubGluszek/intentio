@@ -17,7 +17,7 @@ const TagButton: React.FC<Props> = (props) => {
     <button
       tabIndex={-2}
       className={clsx(
-        "rounded text-sm font-semibold px-1 py-[1px] shadow whitespace-nowrap",
+        "rounded text-sm font-semibold px-1 py-[1px] shadow hover:shadow-lg -hover:translate-y-0.5 hover:shadow-black/40 whitespace-nowrap",
         isSelected
           ? "bg-base/100 hover:bg-base text-primary/80 hover:text-primary"
           : "bg-text/50 hover:bg-text/60 text-window"

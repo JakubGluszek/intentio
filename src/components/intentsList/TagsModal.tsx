@@ -37,10 +37,7 @@ export const TagsModal: React.FC<Props> = (props) => {
 
   return (
     <ModalContainer display={props.display} hide={props.hide}>
-      <div
-        ref={ref}
-        className="max-w-sm flex flex-col gap-2 overflow-y-auto"
-      >
+      <div ref={ref} className="max-w-sm flex flex-col gap-2 overflow-y-auto">
         <input
           className="border-base"
           value={newTag}
@@ -70,8 +67,8 @@ export const TagsModal: React.FC<Props> = (props) => {
           <div className="flex flex-row flex-wrap gap-1">
             {props.data.tags
               .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
-              .map((tag) => (
-                <TagButton disabled={true}>
+              .map((tag, idx) => (
+                <TagButton key={idx} disabled={true}>
                   <div className="flex flex-row items-center gap-1">
                     <div>{tag}</div>
                     <Button
@@ -97,8 +94,9 @@ export const TagsModal: React.FC<Props> = (props) => {
           <div className="flex flex-col gap-1">
             <div className="text-text/60">Select from existing tags</div>
             <div className="flex flex-row flex-wrap gap-1">
-              {allOtherTags.map((tag) => (
+              {allOtherTags.map((tag, idx) => (
                 <TagButton
+                  key={`otherTags-${idx}`}
                   onClick={() => {
                     ipc
                       .updateIntent(props.data.id, {
