@@ -96,7 +96,7 @@ async fn main() -> Result<()> {
                 .inner_size(340f64, 360f64)
                 .max_inner_size(340f64, 360f64)
                 .fullscreen(false)
-                .resizable(false)
+                .resizable(true)
                 .decorations(false)
                 .always_on_top(true)
                 .center()

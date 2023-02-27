@@ -253,7 +253,7 @@ const useTimer = (settings: Settings): Timer => {
     next,
     onUpdate,
     restart,
-    timeRemaining: duration * 60 - timeFocused,
+    timeRemaining: duration * 60 - timeFocused + 1,
   };
 };
 

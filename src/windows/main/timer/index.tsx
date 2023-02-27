@@ -41,19 +41,30 @@ const TimerView: React.FC<Props> = (props) => {
 
   return (
     <React.Fragment>
-      <div className="relative grow flex flex-col items-center justify-evenly border-2 border-base border-y-0">
-        <Button
-          className="z-[100] absolute right-2 top-2"
-          transparent
-          onClick={() => props.toggleCompact()}
-        >
-          {props.compact ? <FiMaximize size={20} /> : <FiMinimize size={20} />}
-        </Button>
-
-        <DefaultView display={!props.compact} {...props} timer={timer} />
-        {props.compact && <CompactView timer={timer} />}
+      <div className="relative group grow flex flex-col border-2 border-darker/20">
+        {!props.compact && <div className="grow h-6 w-full bg-window"></div>}
+        <div className="grow flex flex-row">
+          {!props.compact && <div className="grow w-full bg-window"></div>}
+          <div className="z-[100] opacity-60 group-hover:opacity-80 transition-opacity absolute right-2 top-2">
+            <Button
+              style={{ color: "rgb(var(--text-color))" }}
+              transparent
+              onClick={() => props.toggleCompact()}
+            >
+              {props.compact ? (
+                <FiMaximize size={24} />
+              ) : (
+                <FiMinimize size={24} />
+              )}
+            </Button>
+          </div>
+          <DefaultView display={!props.compact} {...props} timer={timer} />
+          {props.compact && <CompactView timer={timer} />}
+          {!props.compact && <div className="grow w-full bg-window"></div>}
+        </div>
+        {!props.compact && <div className="grow h-6 w-full bg-window"></div>}
       </div>
-      <div className="flex flex-row items-center justify-between bg-window p-1.5 py-1 border-2 border-base">
+      <div className="flex flex-row items-center justify-between bg-window p-1.5 py-1 border-2 border-t-0 border-darker/20">
         <span className="text-primary/80 font-bold w-7 text-center">
           #{timer.iterations}
         </span>
@@ -139,20 +150,17 @@ interface DefaultViewProps {
 }
 
 const DefaultView: React.FC<DefaultViewProps> = (props) => {
-  const strokeColor = (
-    props.timer.isRunning ? props.theme.primary_hex : props.theme.base_hex
-  ) as ColorFormat;
-
   return (
     <div
       className="relative group"
       style={{
         zIndex: props.display ? undefined : -1,
         position: props.display ? "relative" : "fixed",
-        opacity: props.display ? 1.0 : 0.0,
+        opacity: props.display ? 1.0 : 0,
       }}
     >
       <CountdownCircleTimer
+        display={props.display}
         key={props.timer.key}
         isPlaying={props.timer.isRunning}
         duration={props.timer.duration * 60}
@@ -163,9 +171,14 @@ const DefaultView: React.FC<DefaultViewProps> = (props) => {
         }}
         strokeWidth={8}
         size={228}
-        colors={strokeColor}
-        trailColor={
-          Color(props.theme.window_hex).darken(0.2).hex() as ColorFormat
+        colors={
+          Color(
+            props.timer.isRunning
+              ? props.theme.primary_hex
+              : props.theme.base_hex
+          )
+            .alpha(0.8)
+            .hex() as ColorFormat
         }
       >
         {() => (
@@ -222,7 +235,7 @@ const DefaultView: React.FC<DefaultViewProps> = (props) => {
           </div>
         )}
       </CountdownCircleTimer>
-      <div className="absolute bottom-4 w-full flex flex-col items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+      <div className="absolute bottom-4 w-full flex flex-col items-center gap-1 opacity-60 group-hover:opacity-100 transition-opacity duration-300">
         <button
           tabIndex={-2}
           className="text-primary/80 hover:text-primary translate-x-8 translate-y-8"

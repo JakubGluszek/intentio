@@ -9,7 +9,6 @@ import config from "@/config";
 import { Layout, Button } from "@/components";
 import Sidebar from "./sidebar";
 import TimerView from "./timer";
-import { FiMaximize, FiMinimize } from "react-icons/fi";
 
 const MainWindow: React.FC = () => {
   const [viewSidebar, setViewSidebar] = React.useState(false);
@@ -17,37 +16,40 @@ const MainWindow: React.FC = () => {
 
   const store = useStore();
 
-  React.useEffect(() => {
-    if (!miniMode || viewSidebar) {
-      appWindow.setResizable(true);
-      let size = new LogicalSize(
-        config.webviews.main.width,
-        config.webviews.main.height
-      );
-      appWindow.setSize(size);
-      appWindow.setMaxSize(size);
-      appWindow.setMinSize(size);
-      appWindow.setResizable(false);
-    } else {
-      let size = new LogicalSize(config.webviews.main.width, 122);
-      appWindow.setResizable(true);
-      appWindow.setSize(size);
-      appWindow.setMinSize(size);
-      appWindow.setMaxSize(size);
-    }
-  }, [miniMode, viewSidebar]);
+  const minimize = () => {
+    appWindow.setResizable(true);
+    let size = new LogicalSize(config.webviews.main.width, 122);
+    appWindow.setSize(size);
+    appWindow.setMaxSize(size);
+    appWindow.setMinSize(size);
+    setViewSidebar(false);
+    setMiniMode(true);
+  };
 
-  React.useEffect(() => {
+  const maximize = () => {
+    let size = new LogicalSize(
+      config.webviews.main.width,
+      config.webviews.main.height
+    );
+    appWindow.setSize(size);
+    appWindow.setMinSize(size);
+    appWindow.setMaxSize(size);
     setMiniMode(false);
-  }, [viewSidebar]);
+  };
 
   return (
     <Layout>
       {/* Window Titlebar */}
       <div className="grow flex flex-col bg-window/80">
-        <div className="flex flex-row items-center justify-between p-1.5 bg-window border-2 border-base">
+        <div className="flex flex-row items-center justify-between p-1.5 bg-window border-2 border-darker/20 border-b-0">
           <div className="flex flex-row items-center gap-1">
-            <Button transparent onClick={() => setViewSidebar(true)}>
+            <Button
+              transparent
+              onClick={() => {
+                miniMode && maximize();
+                setViewSidebar(true);
+              }}
+            >
               <TbLayoutSidebarRightCollapse size={28} />
             </Button>
             <div>
@@ -79,7 +81,7 @@ const MainWindow: React.FC = () => {
           {store.settings && store.currentTheme && (
             <TimerView
               compact={miniMode}
-              toggleCompact={() => setMiniMode((mini) => !mini)}
+              toggleCompact={() => (miniMode ? maximize() : minimize())}
               settings={store.settings}
               theme={store.currentTheme}
               activeIntent={store.getActiveIntent()}
@@ -89,12 +91,15 @@ const MainWindow: React.FC = () => {
       </div>
       <Sidebar
         isVisible={viewSidebar}
-        toggle={() =>
-          setViewSidebar((view) => {
-            setMiniMode(false);
-            return !view;
-          })
-        }
+        toggle={React.useCallback(
+          () =>
+            setViewSidebar((view) => {
+              !view && maximize();
+              if (miniMode) return false;
+              return !view;
+            }),
+          [miniMode]
+        )}
       />
     </Layout>
   );
