@@ -21,6 +21,10 @@ use std::sync::Arc;
 use store::Store;
 use tauri::Manager;
 use tauri::{CustomMenuItem, SystemTray, SystemTrayEvent, SystemTrayMenu, SystemTrayMenuItem};
+use tauri_hotkey::Hotkey;
+use tauri_hotkey::HotkeyManager;
+use tauri_hotkey::Key;
+use tauri_hotkey::Modifier;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -82,6 +86,46 @@ async fn main() -> Result<()> {
             update_script,
             delete_script
         ])
+        .setup(|app| {
+            let mut hm = HotkeyManager::new();
+            let handle = app.app_handle();
+
+            hm.register(
+                Hotkey {
+                    modifiers: vec![Modifier::CTRL],
+                    keys: vec![Key::F1],
+                },
+                move || {
+                    let cmd_window = match handle.clone().get_window("commands") {
+                        Some(window) => window,
+                        None => {
+                            let window = tauri::WindowBuilder::new(
+                                &handle,
+                                "commands",
+                                tauri::WindowUrl::App("/commands".into()),
+                            )
+                            .visible(true)
+                            .center()
+                            .skip_taskbar(true)
+                            .focused(true)
+                            .decorations(false)
+                            .inner_size(480f64, 240f64)
+                            .build()
+                            .unwrap();
+
+                            window
+                        }
+                    };
+
+                    cmd_window.show().unwrap();
+                },
+            )
+            .expect("CTRL + F1 failed to register");
+
+            app.manage(hm);
+
+            Ok(())
+        })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
     Ok(())

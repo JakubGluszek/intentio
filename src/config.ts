@@ -38,6 +38,13 @@ const config = {
       maxHeight: 480,
       ...WebviewConfig,
     },
+    cmdPalette: {
+      url: "/cmd-palette",
+      width: 480,
+      height: 240,
+      maxWidth: 480,
+      ...WebviewConfig,
+    },
   },
 };
 

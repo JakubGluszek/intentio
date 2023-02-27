@@ -29,6 +29,9 @@
           "$CONFIG/**/*"
         ]
       },
+      "globalShortcut": {
+        "all": true
+      },
       "shell": {
         "open": true,
         "scope": [
@@ -109,6 +112,53 @@
         "decorations": false,
         "alwaysOnTop": true,
         "center": true
+      },
+      {
+        "label": "settings",
+        "url": "/settings",
+        "title": "Settings",
+        "width": 480,
+        "height": 360,
+        "maxWidth": 480,
+        "maxHeight": 360,
+        "decorations": false,
+        "skipTaskbar": true,
+        "visible": false,
+        "resizable": false,
+        "fullscreen": false,
+        "alwaysOnTop": true,
+        "focus": true
+      },
+      {
+        "label": "intents",
+        "url": "/intents",
+        "title": "Intents",
+        "width": 640,
+        "height": 480,
+        "maxWidth": 640,
+        "maxHeight": 480,
+        "decorations": false,
+        "skipTaskbar": true,
+        "visible": false,
+        "resizable": false,
+        "fullscreen": false,
+        "alwaysOnTop": true,
+        "focus": true
+      },
+      {
+        "label": "commands",
+        "url": "/commands",
+        "title": "Commands",
+        "width": 480,
+        "height": 200,
+        "maxWidth": 480,
+        "decorations": false,
+        "skipTaskbar": true,
+        "visible": false,
+        "resizable": false,
+        "fullscreen": false,
+        "alwaysOnTop": true,
+        "focus": true
       }
     ],
     "systemTray": {

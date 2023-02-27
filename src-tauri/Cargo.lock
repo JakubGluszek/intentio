@@ -1983,6 +1983,7 @@ dependencies = [
  "surrealdb",
  "tauri",
  "tauri-build",
+ "tauri-hotkey",
  "thiserror",
  "tokio",
  "toml",
@@ -4064,11 +4065,29 @@ checksum = "73473c0e59e6d5812c5dfe2a064a6444949f089e20eec9a2e5506596494e4623"
 
 [[package]]
 name = "strum"
+version = "0.20.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7318c509b5ba57f18533982607f24070a55d353e90d4cae30c467cdb2ad5ac5c"
+
+[[package]]
+name = "strum"
 version = "0.22.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f7ac893c7d471c8a21f31cfe213ec4f6d9afeed25537c772e08ef3f005f8729e"
 dependencies = [
- "strum_macros",
+ "strum_macros 0.22.0",
+]
+
+[[package]]
+name = "strum_macros"
+version = "0.20.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ee8bc6b87a5112aeeab1f4a9f7ab634fe6cbefc4850006df31267f4cfb9e3149"
+dependencies = [
+ "heck 0.3.3",
+ "proc-macro2",
+ "quote",
+ "syn",
 ]
 
 [[package]]
@@ -4471,6 +4490,33 @@ dependencies = [
 ]
 
 [[package]]
+name = "tauri-hotkey"
+version = "0.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0c6cf71018e75b7c88f0c9643329891668c32cb377a1cccdd1f2973f51eff118"
+dependencies = [
+ "log",
+ "once_cell",
+ "serde",
+ "strum 0.20.0",
+ "strum_macros 0.20.1",
+ "tauri-hotkey-sys",
+ "thiserror",
+]
+
+[[package]]
+name = "tauri-hotkey-sys"
+version = "0.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7024154106177cefd2592bcb0bb3df9dd3aea8a7e21f8fefb8d5b02fe115fed7"
+dependencies = [
+ "cc",
+ "thiserror",
+ "winapi",
+ "x11-dl",
+]
+
+[[package]]
 name = "tauri-macros"
 version = "1.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4559,7 +4605,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c58de036c4d2e20717024de2a3c4bf56c301f07b21bc8ef9b57189fce06f1f3b"
 dependencies = [
  "quick-xml",
- "strum",
+ "strum 0.22.0",
  "windows 0.39.0",
 ]
 

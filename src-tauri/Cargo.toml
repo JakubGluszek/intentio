@@ -33,11 +33,12 @@ tokio = { version = "1", features = ["full"] }
 surrealdb = {version = "1.0.0-beta.8", default-features=false, features = ['parallel', 'kv-mem', 'kv-rocksdb'] }
 ts-rs = { version = "6", features = ["format", "chrono-impl"] }
 toml = "0.5.9"
+tauri-hotkey = "0.1.2"
 
 [features]
 # by default Tauri runs in production mode
 # when `tauri dev` runs it is executed with `cargo run --no-default-features` if `devPath` is an URL
-default = [ "custom-protocol" ]
+default = ["custom-protocol"]
 # this feature is used used for production builds where `devPath` points to the filesystem
 # DO NOT remove this
-custom-protocol = [ "tauri/custom-protocol" ]
+custom-protocol = ["tauri/custom-protocol"]
