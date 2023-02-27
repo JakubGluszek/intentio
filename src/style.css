@@ -53,7 +53,7 @@
   }
 
   body {
-    @apply bg-window transition-colors duration-300;
+    @apply bg-transparent transition-colors duration-300;
   }
 
   span,

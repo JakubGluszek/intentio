@@ -84,15 +84,16 @@ const Sidebar: React.FC<Props> = (props) => {
     <AnimatePresence>
       {props.isVisible && (
         <motion.div
-          className="z-[9999] left-0 top-0 fixed h-full flex flex-col bg-window transition-opacity"
+          className="z-[9999] fixed flex flex-col bg-window transition-opacity inset-0.5"
           style={{
             boxShadow: "8px 16px 24px -8px rgba(0, 0, 0, 0.60)",
             zIndex: props.isVisible ? 9999 : -1,
             opacity: props.isVisible ? 1.0 : 0.0,
+            height: config.webviews.main.height - 4,
           }}
           initial={{ width: 0 }}
           animate={{
-            width: 300,
+            width: 296,
             transition: { duration: 0.3 },
           }}
           exit={{

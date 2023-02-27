@@ -42,7 +42,7 @@ const Timer: React.FC<Props> = (props) => {
 
   return (
     <React.Fragment>
-      <div className="grow flex flex-col items-center justify-evenly">
+      <div className="grow flex flex-col items-center justify-evenly border-2 border-base border-y-0">
         <div className="relative group">
           <CountdownCircleTimer
             key={timer.key}
@@ -54,7 +54,7 @@ const Timer: React.FC<Props> = (props) => {
               timer.next();
             }}
             strokeWidth={8}
-            size={196}
+            size={228}
             colors={strokeColor}
             trailColor={
               Color(props.theme.window_hex).darken(0.2).hex() as ColorFormat
@@ -114,10 +114,10 @@ const Timer: React.FC<Props> = (props) => {
               </div>
             )}
           </CountdownCircleTimer>
-          <div className="absolute bottom-4 w-full flex flex-col items-center gap-1">
+          <div className="absolute bottom-4 w-full flex flex-col items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             <button
               tabIndex={-2}
-              className="text-primary/80 hover:text-primary opacity-0 group-hover:opacity-100"
+              className="text-primary/80 hover:text-primary translate-x-8 translate-y-8"
               onClick={() => {
                 timer.restart();
                 toast("Session restarted");
@@ -125,33 +125,33 @@ const Timer: React.FC<Props> = (props) => {
             >
               <VscDebugRestart size={24} />
             </button>
+            <div className="flex flex-row items-center justify-center gap-2 w-full h-10">
+              {timer.isRunning ? (
+                <Button
+                  transparent
+                  opacity={0.6}
+                  onClick={() => {
+                    timer.pause();
+                  }}
+                >
+                  <MdPauseCircle size={40} />
+                </Button>
+              ) : (
+                <Button
+                  transparent
+                  opacity={0.8}
+                  onClick={() => {
+                    timer.start();
+                  }}
+                >
+                  <MdPlayCircle size={40} />
+                </Button>
+              )}
+            </div>
           </div>
         </div>
-        <div className="flex flex-row items-center justify-center gap-2 w-full h-10">
-          {timer.isRunning ? (
-            <Button
-              transparent
-              opacity={0.6}
-              onClick={() => {
-                timer.pause();
-              }}
-            >
-              <MdPauseCircle size={48} />
-            </Button>
-          ) : (
-            <Button
-              transparent
-              opacity={0.8}
-              onClick={() => {
-                timer.start();
-              }}
-            >
-              <MdPlayCircle size={48} />
-            </Button>
-          )}
-        </div>
       </div>
-      <div className="flex flex-row items-center justify-between">
+      <div className="flex flex-row items-center justify-between bg-window p-2 border-2 border-base">
         <span className="text-primary/80 font-bold w-7 text-center">
           #{timer.iterations}
         </span>

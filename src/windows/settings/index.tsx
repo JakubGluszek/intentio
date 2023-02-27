@@ -8,13 +8,9 @@ import {
 } from "react-icons/md";
 import { RiToolsFill } from "react-icons/ri";
 import { AiFillCode } from "react-icons/ai";
-import { IoIosBug, IoIosGlobe, IoLogoGithub } from "react-icons/io";
-import { SiDiscord } from "react-icons/si";
-import { Tooltip } from "@mantine/core";
 import { OsType, type } from "@tauri-apps/api/os";
 
 import useStore from "@/store";
-import config from "@/config";
 import ipc from "@/ipc";
 import { Layout, Titlebar, Button } from "@/components";
 import { SettingsForUpdate } from "@/bindings/SettingsForUpdate";
@@ -48,104 +44,106 @@ const SettingsWindow: React.FC = () => {
 
   return (
     <Layout>
-      <Titlebar icon={<MdSettings size={28} />} title="Settings" />
+      <div className="grow flex flex-col bg-window">
+        <Titlebar icon={<MdSettings size={28} />} title="Settings" />
 
-      <div className="grow flex flex-row">
-        {/* Sidebar */}
-        <div className="w-[176px] flex flex-col justify-between p-2">
-          {/* Navigation */}
-          <div className="flex flex-col gap-1.5 rounded">
-            <Button
-              isSelected={tab === "timer"}
-              onClick={() => setTab("timer")}
-            >
-              <div className="w-full flex flex-row gap-1">
-                <div className="w-6">
-                  <MdTimer size={24} />
-                </div>
-                Timer
-              </div>
-            </Button>
-            <Button
-              isSelected={tab === "alerts"}
-              onClick={() => setTab("alerts")}
-            >
-              <div className="w-full flex flex-row gap-1">
-                <div className="w-6">
-                  <MdNotifications size={24} />
-                </div>
-                Alerts
-              </div>
-            </Button>
-            <Button
-              isSelected={tab === "appearance"}
-              onClick={() => setTab("appearance")}
-            >
-              <div className="w-full flex flex-row gap-1">
-                <div className="w-6">
-                  <MdColorLens size={24} />
-                </div>
-                Appearance
-              </div>
-            </Button>
-            <Button
-              isSelected={tab === "behavior"}
-              onClick={() => setTab("behavior")}
-            >
-              <div className="w-full flex flex-row gap-1">
-                <div className="w-6">
-                  <RiToolsFill size={24} />
-                </div>
-                Behavior
-              </div>
-            </Button>
-            {osType !== "Windows_NT" ? (
+        <div className="grow flex flex-row">
+          {/* Sidebar */}
+          <div className="w-[176px] flex flex-col justify-between p-2">
+            {/* Navigation */}
+            <div className="flex flex-col gap-1.5 rounded">
               <Button
-                isSelected={tab === "scripts"}
-                onClick={() => setTab("scripts")}
+                isSelected={tab === "timer"}
+                onClick={() => setTab("timer")}
               >
                 <div className="w-full flex flex-row gap-1">
                   <div className="w-6">
-                    <AiFillCode size={24} />
+                    <MdTimer size={24} />
                   </div>
-                  Scripts
+                  Timer
                 </div>
               </Button>
-            ) : null}
-            <Button
-              isSelected={tab === "about"}
-              onClick={() => setTab("about")}
-            >
-              <div className="w-full flex flex-row gap-1">
-                <div className="w-6">
-                  <MdInfo size={24} />
+              <Button
+                isSelected={tab === "alerts"}
+                onClick={() => setTab("alerts")}
+              >
+                <div className="w-full flex flex-row gap-1">
+                  <div className="w-6">
+                    <MdNotifications size={24} />
+                  </div>
+                  Alerts
                 </div>
-                About
-              </div>
-            </Button>
+              </Button>
+              <Button
+                isSelected={tab === "appearance"}
+                onClick={() => setTab("appearance")}
+              >
+                <div className="w-full flex flex-row gap-1">
+                  <div className="w-6">
+                    <MdColorLens size={24} />
+                  </div>
+                  Appearance
+                </div>
+              </Button>
+              <Button
+                isSelected={tab === "behavior"}
+                onClick={() => setTab("behavior")}
+              >
+                <div className="w-full flex flex-row gap-1">
+                  <div className="w-6">
+                    <RiToolsFill size={24} />
+                  </div>
+                  Behavior
+                </div>
+              </Button>
+              {osType !== "Windows_NT" ? (
+                <Button
+                  isSelected={tab === "scripts"}
+                  onClick={() => setTab("scripts")}
+                >
+                  <div className="w-full flex flex-row gap-1">
+                    <div className="w-6">
+                      <AiFillCode size={24} />
+                    </div>
+                    Scripts
+                  </div>
+                </Button>
+              ) : null}
+              <Button
+                isSelected={tab === "about"}
+                onClick={() => setTab("about")}
+              >
+                <div className="w-full flex flex-row gap-1">
+                  <div className="w-6">
+                    <MdInfo size={24} />
+                  </div>
+                  About
+                </div>
+              </Button>
+            </div>
           </div>
-        </div>
-        {/* Main */}
-        <div className="relative grow flex flex-col p-2 pl-0">
-          <div className="grow bg-darker/40 shadow-inner rounded p-2.5 overflow-y-auto">
-            {settings && (
-              <div className="max-h-0 overflow-y">
-                {tab === "timer" ? (
-                  <TimerView settings={settings} update={update} />
-                ) : null}
-                {tab === "alerts" ? (
-                  <AlertsView settings={settings} update={update} />
-                ) : null}
-                {tab === "appearance" ? (
-                  <AppearanceView settings={settings} update={update} />
-                ) : null}
-                {tab === "behavior" ? (
-                  <BehaviorView settings={settings} update={update} />
-                ) : null}
-                {tab === "scripts" ? <ScriptsView /> : null}
-                {tab === "about" ? <AboutView /> : null}
-              </div>
-            )}
+          {/* Main */}
+          <div className="relative grow flex flex-col p-2 pl-0">
+            <div className="grow bg-darker/40 shadow-inner rounded p-2.5 overflow-y-auto">
+              {settings && (
+                <div className="max-h-0 overflow-y">
+                  {tab === "timer" ? (
+                    <TimerView settings={settings} update={update} />
+                  ) : null}
+                  {tab === "alerts" ? (
+                    <AlertsView settings={settings} update={update} />
+                  ) : null}
+                  {tab === "appearance" ? (
+                    <AppearanceView settings={settings} update={update} />
+                  ) : null}
+                  {tab === "behavior" ? (
+                    <BehaviorView settings={settings} update={update} />
+                  ) : null}
+                  {tab === "scripts" ? <ScriptsView /> : null}
+                  {tab === "about" ? <AboutView /> : null}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

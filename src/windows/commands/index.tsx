@@ -1,5 +1,5 @@
-import { appWindow } from "@tauri-apps/api/window";
 import React from "react";
+import { appWindow } from "@tauri-apps/api/window";
 
 const CommandsWindow: React.FC = () => {
   React.useEffect(() => {

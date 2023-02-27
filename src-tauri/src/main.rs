@@ -90,13 +90,27 @@ async fn main() -> Result<()> {
             let mut hm = HotkeyManager::new();
             let handle = app.app_handle();
 
+            // build main window
+            tauri::WindowBuilder::new(&handle, "main", tauri::WindowUrl::App("/".into()))
+                .title("Intentio")
+                .inner_size(340f64, 380f64)
+                .max_inner_size(340f64, 380f64)
+                .fullscreen(false)
+                .resizable(false)
+                .decorations(false)
+                .always_on_top(true)
+                .center()
+                .transparent(true)
+                .build()
+                .unwrap();
+
             hm.register(
                 Hotkey {
                     modifiers: vec![Modifier::CTRL],
                     keys: vec![Key::F1],
                 },
                 move || {
-                    let cmd_window = match handle.clone().get_window("commands") {
+                    let cmd_window = match handle.get_window("commands") {
                         Some(window) => window,
                         None => {
                             let window = tauri::WindowBuilder::new(

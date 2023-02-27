@@ -18,46 +18,47 @@ const MainWindow: React.FC = () => {
   return (
     <Layout>
       {/* Window Titlebar */}
-      <div className="flex flex-row items-center justify-between p-2">
-        <div className="flex flex-row items-center gap-2">
-          <Button transparent onClick={() => setViewSidebar(true)}>
-            <TbLayoutSidebarRightCollapse size={28} />
-          </Button>
-          <div>
-            <Button
-              transparent
-              onClick={() =>
-                new WebviewWindow("settings", config.webviews.settings)
-              }
-            >
-              <MdSettings size={28} />
+      <div className="grow flex flex-col bg-window/80">
+        <div className="flex flex-row items-center justify-between p-2 bg-window border-2 border-base">
+          <div className="flex flex-row items-center gap-2">
+            <Button transparent onClick={() => setViewSidebar(true)}>
+              <TbLayoutSidebarRightCollapse size={28} />
+            </Button>
+            <div>
+              <Button
+                transparent
+                onClick={() =>
+                  new WebviewWindow("settings", config.webviews.settings)
+                }
+              >
+                <MdSettings size={28} />
+              </Button>
+            </div>
+          </div>
+          <h1 className="text-text/80 font-bold">Intentio</h1>
+          <div className="flex flex-row items-center gap-2">
+            <div>
+              <Button transparent onClick={() => ipc.hideMainWindow()}>
+                <MdRemove size={28} />
+              </Button>
+            </div>
+            <Button transparent onClick={() => ipc.exitMainWindow()}>
+              <MdClose size={28} />
             </Button>
           </div>
         </div>
-        <h1 className="text-text/80 font-bold">Intentio</h1>
-        <div className="flex flex-row items-center gap-2">
-          <div>
-            <Button transparent onClick={() => ipc.hideMainWindow()}>
-              <MdRemove size={28} />
-            </Button>
-          </div>
-          <Button transparent onClick={() => ipc.exitMainWindow()}>
-            <MdClose size={28} />
-          </Button>
+
+        {/* Window Content */}
+        <div className="grow flex flex-col">
+          {store.settings && store.currentTheme && (
+            <Timer
+              settings={store.settings}
+              theme={store.currentTheme}
+              activeIntent={store.getActiveIntent()}
+            />
+          )}
         </div>
       </div>
-
-      {/* Window Content */}
-      <div className="grow flex flex-col p-2">
-        {store.settings && store.currentTheme && (
-          <Timer
-            settings={store.settings}
-            theme={store.currentTheme}
-            activeIntent={store.getActiveIntent()}
-          />
-        )}
-      </div>
-
       <Sidebar
         isVisible={viewSidebar}
         toggle={() => setViewSidebar((view) => !view)}

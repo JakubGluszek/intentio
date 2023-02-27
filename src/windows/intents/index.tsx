@@ -57,28 +57,30 @@ const IntentsWindow: React.FC = () => {
 
   return (
     <Layout>
-      <Titlebar icon={<BiTargetLock size={28} />} title="Intents" />
-      <div className="grow flex flex-row">
-        <Sidebar
-          selectedId={selectedId}
-          setSelectedId={setSelectedId}
-          selectedTags={selectedTags}
-          setSelectedTags={setSelectedTags}
-        />
-        {intent ? (
-          <IntentView
-            data={intent}
-            sessions={store.sessions.filter(
-              (session) => session.intent_id === selectedId
-            )}
+      <div className="grow flex flex-col bg-window">
+        <Titlebar icon={<BiTargetLock size={28} />} title="Intents" />
+        <div className="grow flex flex-row">
+          <Sidebar
+            selectedId={selectedId}
+            setSelectedId={setSelectedId}
+            selectedTags={selectedTags}
+            setSelectedTags={setSelectedTags}
           />
-        ) : (
-          <Dashboard
-            sessions={store.sessions}
-            intents={store.intents}
-            tags={selectedTags}
-          />
-        )}
+          {intent ? (
+            <IntentView
+              data={intent}
+              sessions={store.sessions.filter(
+                (session) => session.intent_id === selectedId
+              )}
+            />
+          ) : (
+            <Dashboard
+              sessions={store.sessions}
+              intents={store.intents}
+              tags={selectedTags}
+            />
+          )}
+        </div>
       </div>
     </Layout>
   );

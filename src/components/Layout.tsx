@@ -1,12 +1,10 @@
 import React from "react";
 import { appWindow } from "@tauri-apps/api/window";
-import { MdClose } from "react-icons/md";
 
 import useStore from "@/store";
 import utils from "@/utils";
 import ipc from "@/ipc";
 import { useEvents } from "@/hooks";
-import Button from "./Button";
 
 interface Props {
   children: React.ReactNode;

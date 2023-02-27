@@ -5,6 +5,7 @@ const WebviewConfig = {
   resizable: false,
   fullscreen: false,
   alwaysOnTop: true,
+  transparent: true,
   focus: true,
 };
 
@@ -36,13 +37,6 @@ const config = {
       height: 480,
       maxWidth: 640,
       maxHeight: 480,
-      ...WebviewConfig,
-    },
-    cmdPalette: {
-      url: "/cmd-palette",
-      width: 480,
-      height: 240,
-      maxWidth: 480,
       ...WebviewConfig,
     },
   },
