@@ -33,7 +33,20 @@ const CountdownCircleTimer: React.FC<TimerProps & { display: boolean }> = (
           }}
           xmlns="http://www.w3.org/2000/svg"
         >
-          <path d={path} fill="transparent"/>
+          <path
+            d={path}
+            stroke={trailColor ?? "#d9d9d9"}
+            strokeWidth={trailStrokeWidth ?? strokeWidth}
+            fill="transparent"
+          />
+          <path
+            style={{ opacity: 0.2 }}
+            d={path}
+            stroke={"#000"}
+            strokeWidth={trailStrokeWidth ?? strokeWidth}
+            fill="transparent"
+          />
+
           <path
             className="transition-colors duration-300"
             d={path}

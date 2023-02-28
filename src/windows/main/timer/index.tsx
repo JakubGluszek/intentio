@@ -152,7 +152,6 @@ interface DefaultViewProps {
 const DefaultView: React.FC<DefaultViewProps> = (props) => {
   return (
     <div
-      className="relative group"
       style={{
         zIndex: props.display ? undefined : -1,
         position: props.display ? "relative" : "fixed",
@@ -169,7 +168,7 @@ const DefaultView: React.FC<DefaultViewProps> = (props) => {
           ipc.playAudio();
           props.timer.next();
         }}
-        strokeWidth={8}
+        strokeWidth={12}
         size={228}
         colors={
           Color(
@@ -180,6 +179,7 @@ const DefaultView: React.FC<DefaultViewProps> = (props) => {
             .alpha(0.8)
             .hex() as ColorFormat
         }
+        trailColor={Color(props.theme.window_hex).hex() as ColorFormat}
       >
         {() => (
           <div className="flex flex-col items-center gap-1 justify-center">
@@ -235,7 +235,7 @@ const DefaultView: React.FC<DefaultViewProps> = (props) => {
           </div>
         )}
       </CountdownCircleTimer>
-      <div className="absolute bottom-4 w-full flex flex-col items-center gap-1 opacity-60 group-hover:opacity-100 transition-opacity duration-300">
+      <div className="absolute bottom-4 w-full flex flex-col items-center gap-1 transition-opacity duration-300">
         <button
           tabIndex={-2}
           className="text-primary/80 hover:text-primary translate-x-8 translate-y-8"

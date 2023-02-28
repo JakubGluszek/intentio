@@ -70,7 +70,7 @@ export const useCountdown = (props: TimerProps) => {
     initialRemainingTime,
     updateInterval,
     size = 180,
-    strokeWidth = 12,
+    strokeWidth = 14,
     trailStrokeWidth,
     isPlaying = false,
     rotation = "clockwise",
