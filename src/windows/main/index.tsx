@@ -1,7 +1,7 @@
 import React from "react";
-import { MdSettings, MdRemove, MdClose } from "react-icons/md";
+import { MdSettings, MdRemove, MdClose, MdSkipNext } from "react-icons/md";
 import { TbLayoutSidebarRightCollapse } from "react-icons/tb";
-import { appWindow, LogicalSize, WebviewWindow } from "@tauri-apps/api/window";
+import { WebviewWindow } from "@tauri-apps/api/window";
 
 import ipc from "@/ipc";
 import useStore from "@/store";
@@ -10,99 +10,139 @@ import { Button } from "@/components";
 import Sidebar from "./sidebar";
 import TimerView from "./timer";
 import WindowContainer from "@/components/WindowContainer";
+import { TimerState, useTimer } from "@/hooks/useTimer";
+import { Intent } from "@/bindings/Intent";
 
 const MainWindow: React.FC = () => {
   const [viewSidebar, setViewSidebar] = React.useState(false);
-  const [miniMode, setMiniMode] = React.useState(false);
-
-  const store = useStore();
-
-  const minimize = () => {
-    appWindow.setResizable(true);
-    let size = new LogicalSize(config.webviews.main.width, 122);
-    appWindow.setSize(size);
-    appWindow.setMaxSize(size);
-    appWindow.setMinSize(size);
-    setViewSidebar(false);
-    setMiniMode(true);
-  };
-
-  const maximize = () => {
-    let size = new LogicalSize(
-      config.webviews.main.width,
-      config.webviews.main.height
-    );
-    appWindow.setSize(size);
-    appWindow.setMinSize(size);
-    appWindow.setMaxSize(size);
-    setMiniMode(false);
-  };
 
   return (
     <WindowContainer>
-      {/* Window Titlebar */}
-      <div className="grow flex flex-col bg-window/80">
-        <div className="flex flex-row items-center justify-between p-1.5 bg-window border-2 border-darker/20 border-b-0">
-          <div className="flex flex-row items-center gap-1">
-            <Button
-              transparent
-              onClick={() => {
-                miniMode && maximize();
-                setViewSidebar(true);
-              }}
-            >
-              <TbLayoutSidebarRightCollapse size={28} />
-            </Button>
-            <div>
-              <Button
-                transparent
-                onClick={() =>
-                  new WebviewWindow("settings", config.webviews.settings)
-                }
-              >
-                <MdSettings size={28} />
-              </Button>
-            </div>
-          </div>
-          <h1 className="text-text/80 font-bold">Intentio</h1>
-          <div className="flex flex-row items-center gap-1">
-            <div>
-              <Button transparent onClick={() => ipc.hideMainWindow()}>
-                <MdRemove size={28} />
-              </Button>
-            </div>
-            <Button transparent onClick={() => ipc.exitMainWindow()}>
-              <MdClose size={28} />
-            </Button>
-          </div>
-        </div>
-
-        {/* Window Content */}
-        <div className="grow flex flex-col">
-          {store.settings && store.currentTheme && (
-            <TimerView
-              compact={miniMode}
-              toggleCompact={() => (miniMode ? maximize() : minimize())}
-              settings={store.settings}
-              theme={store.currentTheme}
-              activeIntent={store.getActiveIntent()}
-            />
-          )}
-        </div>
-      </div>
+      <Titlebar
+        onSidebarDisplay={() => setViewSidebar(true)}
+        onSettingsOpen={() =>
+          new WebviewWindow("settings", config.webviews.settings)
+        }
+        onWindowHide={() => ipc.hideMainWindow()}
+        onWindowExit={() => ipc.exitMainWindow()}
+      />
+      <Body />
       <Sidebar
-        isVisible={viewSidebar}
-        toggle={React.useCallback(
-          () =>
-            setViewSidebar((view) => {
-              !view && maximize();
-              if (miniMode) return false;
-              return !view;
-            }),
-          [miniMode]
-        )}
+        display={viewSidebar}
+        onSidebarCollapse={() => setViewSidebar(false)}
       />
     </WindowContainer>
+  );
+};
+
+interface TitlebarProps {
+  onSidebarDisplay: () => void;
+  onSettingsOpen: () => void;
+  onWindowHide: () => void;
+  onWindowExit: () => void;
+}
+
+const Titlebar: React.FC<TitlebarProps> = (props) => {
+  return (
+    <div className="flex flex-row items-center justify-between p-1.5 bg-window">
+      <div className="flex flex-row items-center gap-1">
+        <Button transparent onClick={props.onSidebarDisplay}>
+          <TbLayoutSidebarRightCollapse size={28} />
+        </Button>
+        <div>
+          <Button transparent onClick={props.onSettingsOpen}>
+            <MdSettings size={28} />
+          </Button>
+        </div>
+      </div>
+      <h1 className="text-text/80 font-bold">Intentio</h1>
+      <div className="flex flex-row items-center gap-1">
+        <div>
+          <Button transparent onClick={props.onWindowHide}>
+            <MdRemove size={28} />
+          </Button>
+        </div>
+        <Button transparent onClick={props.onWindowExit}>
+          <MdClose size={28} />
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+interface BodyProps { }
+
+const Body: React.FC<BodyProps> = (props) => {
+  const [state, setState] = React.useState<TimerState>({
+    duration: 2 * 60,
+    elapsedTime: 0,
+    isPlaying: false,
+    iterations: 0,
+    type: "focus",
+  });
+
+  const store = useStore();
+
+  const timer = useTimer({
+    state,
+    onStateChange: (state) => setState(state),
+    config: {
+      focusDuration: 2 * 60,
+      breakDuration: 1 * 60,
+      longBreakDuration: 10 * 60,
+      longBreakInterval: 4,
+      autoStartBreak: false,
+      autoStartFocus: false,
+    },
+  });
+
+  const intent = store.getIntentById(timer.state.intentId);
+
+  return (
+    <div className="flex flex-col bg-window p-2">
+      <TimerView
+        variant="circle"
+        theme={store.currentTheme!}
+        displayTime={true}
+        {...timer}
+      />
+      <Bottom
+        intent={intent}
+        iterations={timer.state.iterations}
+        onSkip={timer.skip}
+      />
+    </div>
+  );
+};
+
+interface BottomProps {
+  intent?: Intent;
+  iterations: number;
+  onSkip: () => void;
+}
+
+const Bottom: React.FC<BottomProps> = (props) => {
+  return (
+    <div className="flex flex-row items-center justify-between bg-window p-1.5 py-1">
+      <span className="text-primary/80 font-bold w-7 text-center">
+        #{props.iterations}
+      </span>
+      {props.intent ? (
+        <div className="w-full flex flex-row items-center gap-0.5 text-text/80">
+          <span className="w-full text-center">{props.intent.label}</span>
+        </div>
+      ) : null}
+      <div className="flex flex-row items-center gap-1">
+        <Button
+          transparent
+          onClick={() => {
+            props.onSkip();
+          }}
+        >
+          <MdSkipNext size={28} />
+        </Button>
+      </div>
+    </div>
   );
 };
 

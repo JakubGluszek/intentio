@@ -21,8 +21,8 @@ import ipc from "@/ipc";
 import { toast } from "react-hot-toast";
 
 interface Props {
-  isVisible: boolean;
-  toggle: () => void;
+  display: boolean;
+  onSidebarCollapse: () => void;
 }
 
 type Tab = "intents" | "notes" | "tasks";
@@ -69,7 +69,7 @@ const Sidebar: React.FC<Props> = (props) => {
   // handles toggling sidebar via pressing 'Tab' key
   React.useEffect(() => {
     const handleOnKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Tab") props.toggle();
+      if (e.key === "Tab") props.onSidebarCollapse();
     };
 
     document.addEventListener("keydown", handleOnKeyDown);
@@ -82,13 +82,13 @@ const Sidebar: React.FC<Props> = (props) => {
 
   return (
     <AnimatePresence>
-      {props.isVisible && (
+      {props.display && (
         <motion.div
           className="z-[9999] fixed flex flex-col bg-window transition-opacity inset-0.5"
           style={{
             boxShadow: "8px 16px 24px -8px rgba(0, 0, 0, 0.60)",
-            zIndex: props.isVisible ? 9999 : -1,
-            opacity: props.isVisible ? 1.0 : 0.0,
+            zIndex: props.display ? 9999 : -1,
+            opacity: props.display ? 1.0 : 0.0,
             height: config.webviews.main.height - 4,
           }}
           initial={{ width: 0 }}
@@ -118,7 +118,7 @@ const Sidebar: React.FC<Props> = (props) => {
               {/* Header */}
               <div className="w-full flex flex-row items-center justify-between">
                 <div className="flex flex-row items-center gap-2">
-                  <Button transparent onClick={() => props.toggle()}>
+                  <Button transparent onClick={() => props.onSidebarCollapse()}>
                     <TbLayoutSidebarLeftCollapse size={28} />
                   </Button>
                   <Button

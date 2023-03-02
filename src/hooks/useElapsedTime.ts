@@ -1,23 +1,10 @@
-// Credits - https://github.com/vydimitrov/use-elapsed-time
-
 import React from "react";
 
 type MayBe<T> = T | null;
 
 export interface ReturnValue {
-  /** Current elapsed time in seconds */
-  elapsedTime: number;
-  /** Reset method to reset the elapsed time and start over. startAt value can be changed by passing newStartAt */
   reset: (newStartAt?: number) => void;
-}
-
-export interface OnComplete {
-  /** Indicates if the loop should start over. Default: false */
-  shouldRepeat?: boolean;
-  /** Delay in seconds before looping again. Default: 0 */
-  delay?: number;
-  /** Change the startAt value before looping again. Default: startAt value */
-  newStartAt?: number;
+  elapsedTime: number;
 }
 
 export interface Props {
@@ -30,7 +17,7 @@ export interface Props {
   /** Update interval in seconds. Determines how often the elapsed time value will change. When set to 0 the value will update on each key frame. Default: 0 */
   updateInterval?: number;
   /** On animation complete event handler. It can be used to restart/repeat the animation by returning an object */
-  onComplete?: (totalElapsedTime: number) => OnComplete | void;
+  onComplete?: (totalElapsedTime: number) => void;
   /** On time update event handler. It receives the current elapsedTime time in seconds */
   onUpdate?: (elapsedTime: number) => void;
 }
@@ -141,23 +128,12 @@ export const useElapsedTime = ({
   );
 
   React.useEffect(() => {
-    onUpdate?.(displayTime);
+    onUpdate?.(Math.ceil(displayTime));
 
     if (duration && displayTime >= duration) {
       totalElapsedTimeRef.current += duration * 1000;
 
-      const {
-        shouldRepeat = false,
-        delay = 0,
-        newStartAt,
-      } = onComplete?.(totalElapsedTimeRef.current / 1000) || {};
-
-      if (shouldRepeat) {
-        repeatTimeoutRef.current = setTimeout(
-          () => reset(newStartAt),
-          delay * 1000
-        );
-      }
+      onComplete?.(Math.ceil(totalElapsedTimeRef.current / 1000)) || {};
     }
   }, [displayTime, duration]);
 
