@@ -1,5 +1,6 @@
 import React from "react";
 import { appWindow } from "@tauri-apps/api/window";
+import { Toaster } from "react-hot-toast";
 
 import useStore from "@/store";
 import utils from "@/utils";
@@ -10,10 +11,19 @@ interface Props {
   children: React.ReactNode;
 }
 
+/**
+ * Layout's functionality is as follows:
+ * - auto window dragging on mousedown
+ * - preventing default context menu
+ * - handles 'settings' and 'currrentTheme' updates; receive and store;
+ * - requests settings and current theme;
+ * - renders 'Toaster' container next to 'root' div;
+ * */
 const Layout: React.FC<Props> = (props) => {
   const store = useStore();
 
   useDragWindow(store.tauriDragEnabled);
+  usePreventContextMenu();
 
   useEvents({
     settings_updated: (data) => store.setSettings(data),
@@ -39,8 +49,36 @@ const Layout: React.FC<Props> = (props) => {
     });
   }, []);
 
-  // prevents default context menu on production build
-  // hold CTRL and right click to access context menu on a dev build
+  if (!store.currentTheme) return null;
+
+  return (
+    <React.Fragment>
+      {props.children}
+      <Toaster
+        position="top-center"
+        containerStyle={{ top: 8, zIndex: 9999999 }}
+        toastOptions={{
+          duration: 1400,
+          style: {
+            padding: 1,
+            paddingInline: 2,
+            backgroundColor: "rgb(var(--base-color))",
+            border: 2,
+            borderColor: "rgb(var(--text-color))",
+            borderRadius: 2,
+            fontSize: 14,
+            color: "rgb(var(--text-color))",
+            textAlign: "center",
+          },
+        }}
+      />
+    </React.Fragment>
+  );
+};
+
+// prevents default context menu on production build
+// hold CTRL and right click to access context menu on a dev build
+const usePreventContextMenu = () => {
   React.useEffect(() => {
     const contextMenuHandler = (event: MouseEvent) => {
       if (import.meta.env.PROD) event.preventDefault();
@@ -52,14 +90,6 @@ const Layout: React.FC<Props> = (props) => {
     return () =>
       document.removeEventListener("contextmenu", contextMenuHandler);
   }, []);
-
-  if (!store.currentTheme) return null;
-
-  return (
-    <div className="relative w-screen h-screen max-h-screen flex flex-col overflow-hidden">
-      {props.children}
-    </div>
-  );
 };
 
 /** Starts dragging the window on 'mousedown' event.

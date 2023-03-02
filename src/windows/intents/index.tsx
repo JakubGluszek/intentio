@@ -5,10 +5,11 @@ import { toast } from "react-hot-toast";
 import useStore from "@/store";
 import ipc from "@/ipc";
 import { useEvents } from "@/hooks";
-import { Layout, Titlebar } from "@/components";
+import { Titlebar } from "@/components";
 import Sidebar from "./Sidebar";
 import Dashboard from "./dashboard";
 import IntentView from "./intentView";
+import WindowContainer from "@/components/WindowContainer";
 
 const IntentsWindow: React.FC = () => {
   const [selectedId, setSelectedId] = React.useState<string>();
@@ -56,8 +57,8 @@ const IntentsWindow: React.FC = () => {
   const intent = store.getIntentById(selectedId);
 
   return (
-    <Layout>
-      <div className="grow flex flex-col bg-window">
+    <WindowContainer>
+      <div className="w-screen h-screen grow flex flex-col bg-window">
         <Titlebar icon={<BiTargetLock size={28} />} title="Intents" />
         <div className="grow flex flex-row">
           <Sidebar
@@ -82,7 +83,7 @@ const IntentsWindow: React.FC = () => {
           )}
         </div>
       </div>
-    </Layout>
+    </WindowContainer>
   );
 };
 

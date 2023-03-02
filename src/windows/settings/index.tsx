@@ -12,7 +12,7 @@ import { OsType, type } from "@tauri-apps/api/os";
 
 import useStore from "@/store";
 import ipc from "@/ipc";
-import { Layout, Titlebar, Button } from "@/components";
+import { Titlebar, Button } from "@/components";
 import { SettingsForUpdate } from "@/bindings/SettingsForUpdate";
 import TimerView from "./TimerView";
 import AlertsView from "./AlertsView";
@@ -20,6 +20,7 @@ import AppearanceView from "./appearanceView";
 import BehaviorView from "./BehaviorView";
 import ScriptsView from "./scriptsView";
 import AboutView from "./AboutView";
+import WindowContainer from "@/components/WindowContainer";
 
 type Tab = "timer" | "alerts" | "appearance" | "behavior" | "scripts" | "about";
 
@@ -43,7 +44,7 @@ const SettingsWindow: React.FC = () => {
   }, []);
 
   return (
-    <Layout>
+    <WindowContainer>
       <div className="grow flex flex-col bg-window">
         <Titlebar icon={<MdSettings size={28} />} title="Settings" />
 
@@ -147,7 +148,7 @@ const SettingsWindow: React.FC = () => {
           </div>
         </div>
       </div>
-    </Layout>
+    </WindowContainer>
   );
 };
 

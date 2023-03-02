@@ -6,9 +6,10 @@ import { appWindow, LogicalSize, WebviewWindow } from "@tauri-apps/api/window";
 import ipc from "@/ipc";
 import useStore from "@/store";
 import config from "@/config";
-import { Layout, Button } from "@/components";
+import { Button } from "@/components";
 import Sidebar from "./sidebar";
 import TimerView from "./timer";
+import WindowContainer from "@/components/WindowContainer";
 
 const MainWindow: React.FC = () => {
   const [viewSidebar, setViewSidebar] = React.useState(false);
@@ -38,7 +39,7 @@ const MainWindow: React.FC = () => {
   };
 
   return (
-    <Layout>
+    <WindowContainer>
       {/* Window Titlebar */}
       <div className="grow flex flex-col bg-window/80">
         <div className="flex flex-row items-center justify-between p-1.5 bg-window border-2 border-darker/20 border-b-0">
@@ -101,7 +102,7 @@ const MainWindow: React.FC = () => {
           [miniMode]
         )}
       />
-    </Layout>
+    </WindowContainer>
   );
 };
 

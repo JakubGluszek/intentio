@@ -1,6 +1,8 @@
 import React from "react";
 import { appWindow } from "@tauri-apps/api/window";
 
+import WindowContainer from "@/components/WindowContainer";
+
 const CommandsWindow: React.FC = () => {
   React.useEffect(() => {
     const onKeyDownHandler = (e: KeyboardEvent) => {
@@ -18,7 +20,7 @@ const CommandsWindow: React.FC = () => {
       );
     };
   }, []);
-  return <div>YOIIINK</div>;
+  return <WindowContainer>yoink</WindowContainer>;
 };
 
 export default CommandsWindow;
