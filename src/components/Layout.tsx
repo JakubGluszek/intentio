@@ -52,7 +52,7 @@ const Layout: React.FC<Props> = (props) => {
   if (!store.currentTheme) return null;
 
   return (
-    <React.Fragment>
+    <div className="w-screen h-screen flex flex-col">
       {props.children}
       <Toaster
         position="top-center"
@@ -72,7 +72,7 @@ const Layout: React.FC<Props> = (props) => {
           },
         }}
       />
-    </React.Fragment>
+    </div>
   );
 };
 

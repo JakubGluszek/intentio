@@ -23,8 +23,8 @@ const IntentsView: React.FC = () => {
   };
 
   return (
-    <div className="grow flex flex-col pt-2 gap-0.5 animate-in fade-in-0 zoom-in-95">
-      <CreateIntentView />
+    <div className="grow flex flex-col gap-0.5 animate-in fade-in-0 zoom-in-95">
+      {/* <CreateIntentView /> */}
       <IntentsList
         data={store.intents.filter(
           (intent) =>

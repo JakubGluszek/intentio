@@ -84,16 +84,15 @@ const Sidebar: React.FC<Props> = (props) => {
     <AnimatePresence>
       {props.display && (
         <motion.div
-          className="z-[9999] fixed flex flex-col bg-window transition-opacity inset-0.5"
+          className="flex flex-row gap-0.5"
           style={{
-            boxShadow: "8px 16px 24px -8px rgba(0, 0, 0, 0.60)",
             zIndex: props.display ? 9999 : -1,
             opacity: props.display ? 1.0 : 0.0,
-            height: config.webviews.main.height - 4,
+            height: config.webviews.main.height - 84,
           }}
           initial={{ width: 0 }}
           animate={{
-            width: 300,
+            width: 340,
             transition: { duration: 0.3 },
           }}
           exit={{
@@ -102,101 +101,56 @@ const Sidebar: React.FC<Props> = (props) => {
             transition: { duration: 0.3 },
           }}
         >
-          <div className="grow flex flex-col p-2 bg-darker/40">
-            <motion.div
-              className="grow flex flex-col"
-              initial={{ opacity: 0 }}
-              animate={{
-                transition: { duration: 0.2, delay: 0.2 },
-                opacity: 1,
-              }}
-              exit={{
-                opacity: 0.0,
-                transition: { duration: 0.2 },
-              }}
-            >
-              {/* Header */}
-              <div className="w-full flex flex-row items-center justify-between">
-                <div className="flex flex-row items-center gap-2">
-                  <Button transparent onClick={() => props.onSidebarCollapse()}>
-                    <TbLayoutSidebarLeftCollapse size={28} />
-                  </Button>
-                  <Button
-                    transparent
-                    onClick={() =>
-                      new WebviewWindow("settings", config.webviews.settings)
-                    }
-                  >
-                    <MdSettings size={28} />
-                  </Button>
-                </div>
+          {store.activeIntentId ? (
+            <div className="w-[40px] flex flex-col gap-0.5 bg-window/90 border-2 border-darker/20 rounded">
+              <Button
+                transparent
+                rounded={false}
+                isSelected={tab === "intents"}
+                onClick={() => setTab("intents")}
+              >
+                <BiTargetLock size={24} />
+              </Button>
+              {store.activeIntentId ? (
                 <Button
                   transparent
-                  onClick={() =>
-                    new WebviewWindow("intents", config.webviews.intents)
-                  }
+                  rounded={false}
+                  isSelected={tab === "tasks"}
+                  onClick={() => setTab("tasks")}
                 >
-                  <MdOpenInNew size={28} />
+                  <MdCheckBox size={24} />
                 </Button>
-              </div>
-
-              {/* Content */}
-              <div className="grow flex flex-col py-1">
-                {tab === "intents" ? <IntentsView /> : null}
-                {tab === "tasks" ? <TasksView /> : null}
-                {tab === "notes" ? <NotesView /> : null}
-              </div>
-
-              {/* Tabs */}
-              {store.activeIntentId ? (
-                <div className="h-7 flex flex-row gap-0.5 rounded-sm overflow-clip animate-in slide-in-from-bottom-8 zoom-in-75">
-                  <Button
-                    className="transition-none"
-                    rounded={false}
-                    style={{
-                      width: tab === "intents" ? "100%" : "fit-content",
-                      paddingInline: 4,
-                    }}
-                    isSelected={tab === "intents"}
-                    onClick={() => setTab("intents")}
-                  >
-                    <BiTargetLock size={24} />
-                    {tab === "intents" ? <span>Intents</span> : undefined}
-                  </Button>
-                  {store.activeIntentId ? (
-                    <Button
-                      className="transition-none"
-                      rounded={false}
-                      style={{
-                        width: tab === "tasks" ? "100%" : "fit-content",
-                        paddingInline: 4,
-                      }}
-                      isSelected={tab === "tasks"}
-                      onClick={() => setTab("tasks")}
-                    >
-                      <MdCheckBox size={24} />
-                      {tab === "tasks" ? <span>Tasks</span> : undefined}
-                    </Button>
-                  ) : null}
-                  {store.activeIntentId ? (
-                    <Button
-                      className="transition-none"
-                      rounded={false}
-                      style={{
-                        width: tab === "notes" ? "100%" : "fit-content",
-                        paddingInline: 4,
-                      }}
-                      isSelected={tab === "notes"}
-                      onClick={() => setTab("notes")}
-                    >
-                      <MdStickyNote2 size={24} />
-                      {tab === "notes" ? <span>Notes</span> : undefined}
-                    </Button>
-                  ) : null}
-                </div>
               ) : null}
-            </motion.div>
-          </div>
+              {store.activeIntentId ? (
+                <Button
+                  transparent
+                  rounded={false}
+                  isSelected={tab === "notes"}
+                  onClick={() => setTab("notes")}
+                >
+                  <MdStickyNote2 size={24} />
+                </Button>
+              ) : null}
+            </div>
+          ) : null}
+
+          <motion.div
+            className="grow flex flex-col p-1.5 bg-window/90 rounded border-2 border-darker/20"
+            initial={{ width: 0 }}
+            animate={{
+              transition: { duration: 0.2 },
+              width: 300,
+            }}
+            exit={{
+              transition: { duration: 0.2 },
+            }}
+          >
+            <div className="grow flex flex-col">
+              {tab === "intents" ? <IntentsView /> : null}
+              {tab === "tasks" ? <TasksView /> : null}
+              {tab === "notes" ? <NotesView /> : null}
+            </div>
+          </motion.div>
         </motion.div>
       )}
     </AnimatePresence>

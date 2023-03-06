@@ -49,11 +49,11 @@
   }
 
   html {
-    @apply font-quicksand font-medium tracking-wider text-text cursor-default;
+    @apply w-screen h-screen flex flex-col font-quicksand font-medium tracking-wider text-text cursor-default;
   }
 
   body {
-    @apply bg-transparent transition-colors duration-300;
+    @apply w-screen h-screen flex flex-col bg-transparent transition-colors duration-300;
   }
 
   span,
