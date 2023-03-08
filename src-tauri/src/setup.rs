@@ -3,10 +3,20 @@ use std::{fs, path::Path};
 use tauri::{App, AppHandle, Manager};
 use tauri_hotkey::{Hotkey, HotkeyManager, Key, Modifier};
 
-use crate::utils;
+use crate::{
+    cfg::{AudioCfg, BehaviorCfg, InterfaceCfg, TimerCfg},
+    utils,
+};
 
 pub fn init_setup(app: &mut App) {
     setup_config_dir();
+
+    TimerCfg::setup();
+    AudioCfg::setup();
+    BehaviorCfg::setup();
+    InterfaceCfg::setup();
+
+    // setup state
 
     setup_hotkeys_manager(app);
     build_main_window(&app.app_handle());

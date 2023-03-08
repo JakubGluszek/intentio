@@ -1,4 +1,4 @@
-use std::{fs, sync::Arc};
+use std::{fs, path::Path, sync::Arc};
 
 use crate::{ctx::Ctx, prelude::*, utils};
 use serde::{Deserialize, Serialize};
@@ -39,6 +39,15 @@ pub struct AudioForUpdate {
 pub struct AudioCfg;
 
 impl AudioCfg {
+    pub fn setup() {
+        let path = Self::get_path();
+
+        if !Path::new(&path).is_file() {
+            let audio = Audio::default();
+            Self::save(&audio);
+        }
+    }
+
     pub fn get() -> Audio {
         let path = Self::get_path();
         let contents = fs::read_to_string(path).unwrap();

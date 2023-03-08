@@ -12,6 +12,7 @@ mod models;
 mod prelude;
 mod setup;
 mod utils;
+mod state;
 
 use crate::ipc::*;
 use crate::prelude::*;
@@ -21,20 +22,9 @@ use setup::init_setup;
 use std::sync::Arc;
 use tauri::Manager;
 use tauri::{CustomMenuItem, SystemTray, SystemTrayEvent, SystemTrayMenu, SystemTrayMenuItem};
-use tauri_hotkey::Hotkey;
-use tauri_hotkey::HotkeyManager;
-use tauri_hotkey::Key;
-use tauri_hotkey::Modifier;
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    // setup app directories
-    // setup config files
-    // setup database
-    // setup store
-    // setup hotkeys manager
-    // setup main window
-
     let database = Database::new().await?;
     let database = Arc::new(database);
 

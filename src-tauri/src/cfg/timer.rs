@@ -1,4 +1,4 @@
-use std::{fs, sync::Arc};
+use std::{fs, path::Path, sync::Arc};
 
 use crate::{ctx::Ctx, prelude::*, utils};
 use serde::{Deserialize, Serialize};
@@ -60,6 +60,15 @@ pub struct TimerForUpdate {
 pub struct TimerCfg;
 
 impl TimerCfg {
+    pub fn setup() {
+        let path = Self::get_path();
+
+        if !Path::new(&path).is_file() {
+            let timer = Timer::default();
+            Self::save(&timer);
+        }
+    }
+
     pub fn get() -> Timer {
         let path = Self::get_path();
         let contents = fs::read_to_string(path).unwrap();
