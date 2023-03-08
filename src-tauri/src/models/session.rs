@@ -1,17 +1,15 @@
 use std::sync::Arc;
 
 use serde::{Deserialize, Serialize};
-use surrealdb::sql::{Array, Datetime, Object, Value};
+use surrealdb::sql::{Datetime, Object, Value};
 use ts_rs::TS;
 
 use crate::{
     ctx::Ctx,
-    prelude::{Error, Result, W},
-    store::Creatable,
+    database::Creatable,
+    prelude::{Error, Minutes, Result, W},
     utils::{map, XTake, XTakeVal},
 };
-
-use super::Minutes;
 
 #[derive(Serialize, TS, Debug)]
 #[ts(export, export_to = "../src/bindings/")]
@@ -72,7 +70,7 @@ impl SessionBmc {
     const ENTITY: &'static str = "session";
 
     pub async fn get_multi(ctx: Arc<Ctx>) -> Result<Vec<Session>> {
-        let objects = ctx.get_store().exec_select(Self::ENTITY).await?;
+        let objects = ctx.get_database().exec_select(Self::ENTITY).await?;
 
         objects.into_iter().map(|o| o.try_into()).collect()
     }
@@ -88,9 +86,12 @@ impl SessionBmc {
 			"tb".into() => Self::ENTITY.into(),
 			"data".into() => Value::from(data)];
 
-        let store = ctx.get_store();
+        let database = ctx.get_database();
 
-        let ress = store.ds.execute(sql, &store.ses, Some(vars), false).await?;
+        let ress = database
+            .ds
+            .execute(sql, &database.ses, Some(vars), false)
+            .await?;
         let first_val = ress
             .into_iter()
             .next()
@@ -102,7 +103,7 @@ impl SessionBmc {
 
             val.try_into()
         } else {
-            Err(Error::StoreFailToCreate(format!(
+            Err(Error::DatabaseFailToCreate(format!(
                 "exec_create {{Self::ENTITY}}, nothing returned."
             )))
         }

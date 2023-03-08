@@ -1,4 +1,4 @@
-//! TryFrom implementations for store related types
+//! TryFrom implementations for database related types
 
 use crate::prelude::*;
 use surrealdb::sql::{Array, Object, Value};

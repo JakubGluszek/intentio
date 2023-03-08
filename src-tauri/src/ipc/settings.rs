@@ -1,7 +1,7 @@
-//! Tauri IPC commands to bridge the Todo Backend Model Controller with Client side.
+//! Tauri IPC commands to bridge the Todo Backend models Controller with Client side.
 
 use crate::ctx::Ctx;
-use crate::model::{Settings, SettingsBmc, SettingsForUpdate};
+use crate::models::{Settings, SettingsBmc, SettingsForUpdate};
 use crate::prelude::{Error, Result};
 use tauri::{command, AppHandle, Wry};
 

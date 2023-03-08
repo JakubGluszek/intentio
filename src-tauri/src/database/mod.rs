@@ -1,6 +1,6 @@
-// Store layer to talk to the SurrealDB.
+// database layer to talk to the SurrealDB.
 // This module is to narrow and normalize the lower level API surface
-// to the rest of the application code (.e.g, Backend Model Controllers)
+// to the rest of the application code (.e.g, Backend models Controllers)
 
 use crate::prelude::*;
 use crate::utils::map;
@@ -11,18 +11,18 @@ use surrealdb::{Datastore, Session};
 mod try_froms;
 mod x_takes;
 
-const APP_VERSION: &'static str = "v1.1.0";
+const APP_VERSION: &'static str = "v2.0.0";
 
 pub trait Creatable: Into<Value> {}
 pub trait Patchable: Into<Value> {}
 pub trait Filterable: Into<Value> {}
 
-pub struct Store {
+pub struct Database {
     pub ds: Datastore,
     pub ses: Session,
 }
 
-impl Store {
+impl Database {
     pub async fn new() -> Result<Self> {
         let path = tauri::api::path::data_dir()
             .unwrap()
@@ -35,7 +35,7 @@ impl Store {
         let ds = Datastore::new(&path).await?;
         let ses = Session::for_db("appns", APP_VERSION);
 
-        Ok(Store { ds, ses })
+        Ok(Self { ds, ses })
     }
 
     pub async fn exec_get(&self, tid: &str) -> Result<Object> {
@@ -68,7 +68,7 @@ impl Store {
         if let Value::Object(val) = first_val.first() {
             Ok(val)
         } else {
-            Err(Error::StoreFailToCreate(f!(
+            Err(Error::DatabaseFailToCreate(f!(
                 "exec_create {tb}, nothing returned."
             )))
         }
@@ -90,7 +90,7 @@ impl Store {
         if let Value::Object(val) = result.first() {
             Ok(val)
         } else {
-            Err(Error::StoreFailToCreate(f!(
+            Err(Error::DatabaseFailToCreate(f!(
                 "exec_merge {tid}, nothing returned."
             )))
         }

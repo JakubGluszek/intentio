@@ -7,8 +7,6 @@ use serde::{Deserialize, Serialize};
 use serde_with_macros::skip_serializing_none;
 use ts_rs::TS;
 
-use super::Minutes;
-
 #[derive(Serialize, Deserialize, TS, Debug, PartialEq, Clone)]
 #[ts(export, export_to = "../src/bindings/")]
 pub struct Settings {
@@ -49,7 +47,7 @@ impl Default for Settings {
             long_break_interval: 4,
             auto_start_pomodoros: false,
             auto_start_breaks: false,
-            alert_audio: DEFAULT_AUDIO.into(),
+            alert_audio: DEFAULT_ALERT_FILE.into(),
             alert_volume: 0.25,
             alert_repeat: 2,
             system_notifications: true,

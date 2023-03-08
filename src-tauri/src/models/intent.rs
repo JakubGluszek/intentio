@@ -5,13 +5,13 @@ use serde::{Deserialize, Serialize};
 use surrealdb::sql::{thing, Array, Datetime, Object, Value};
 use ts_rs::TS;
 
+use crate::database::{Database, Patchable};
 use crate::prelude::*;
-use crate::store::{Patchable, Store};
 use crate::utils::XTake;
 use crate::{
     ctx::Ctx,
+    database::Creatable,
     prelude::Error,
-    store::Creatable,
     utils::{map, XTakeVal},
 };
 
@@ -108,11 +108,11 @@ impl IntentBmc {
     const ENTITY: &'static str = "intent";
 
     pub async fn get(ctx: Arc<Ctx>, id: &str) -> Result<Intent> {
-        ctx.get_store().exec_get(id).await?.try_into()
+        ctx.get_database().exec_get(id).await?.try_into()
     }
 
     pub async fn create(ctx: Arc<Ctx>, data: IntentForCreate) -> Result<Intent> {
-        let obj = ctx.get_store().exec_create(Self::ENTITY, data).await?;
+        let obj = ctx.get_database().exec_create(Self::ENTITY, data).await?;
 
         ctx.emit_event("intent_created", obj.clone());
 
@@ -120,7 +120,7 @@ impl IntentBmc {
     }
 
     pub async fn update(ctx: Arc<Ctx>, id: &str, data: IntentForUpdate) -> Result<Intent> {
-        let obj = ctx.get_store().exec_merge(id, data).await?;
+        let obj = ctx.get_database().exec_merge(id, data).await?;
 
         ctx.emit_event("intent_updated", obj.clone());
 
@@ -128,9 +128,9 @@ impl IntentBmc {
     }
 
     pub async fn delete(ctx: Arc<Ctx>, id: &str) -> Result<ModelDeleteResultData> {
-        let store = ctx.get_store();
+        let database = ctx.get_database();
 
-        let id = store.exec_delete(id).await?;
+        let id = database.exec_delete(id).await?;
         let data = ModelDeleteResultData::from(id.clone());
 
         ctx.emit_event("intent_deleted", data.clone());
@@ -138,14 +138,14 @@ impl IntentBmc {
         Ok(data)
     }
 
-    pub async fn list(store: Arc<Store>) -> Result<Vec<Intent>> {
-        let objects = store.exec_select(Self::ENTITY).await?;
+    pub async fn list(database: Arc<Database>) -> Result<Vec<Intent>> {
+        let objects = database.exec_select(Self::ENTITY).await?;
 
         objects.into_iter().map(|o| o.try_into()).collect()
     }
 
     pub async fn archive(ctx: Arc<Ctx>, id: &str) -> Result<Intent> {
-        let store = ctx.get_store();
+        let database = ctx.get_database();
 
         let now = Datetime::default().timestamp_millis().to_string();
 
@@ -155,7 +155,10 @@ impl IntentBmc {
 			"th".into() => thing(id)?.into(),
 			"timestamp".into() => now.into()];
 
-        let ress = store.ds.execute(sql, &store.ses, Some(vars), true).await?;
+        let ress = database
+            .ds
+            .execute(sql, &database.ses, Some(vars), true)
+            .await?;
 
         let first_res = ress.into_iter().next().expect("object not returned");
 
@@ -166,20 +169,23 @@ impl IntentBmc {
 
             val.try_into()
         } else {
-            Err(Error::StoreFailToCreate(f!(
+            Err(Error::DatabaseFailToCreate(f!(
                 "can't update {id}, nothing returned."
             )))
         }
     }
 
     pub async fn unarchive(ctx: Arc<Ctx>, id: &str) -> Result<Intent> {
-        let store = ctx.get_store();
+        let database = ctx.get_database();
 
         let sql = "UPDATE $th SET archived_at = NONE RETURN AFTER";
 
         let vars = map!["th".into() => thing(id)?.into()];
 
-        let ress = store.ds.execute(sql, &store.ses, Some(vars), true).await?;
+        let ress = database
+            .ds
+            .execute(sql, &database.ses, Some(vars), true)
+            .await?;
 
         let first_res = ress.into_iter().next().expect("object not returned");
 
@@ -190,7 +196,7 @@ impl IntentBmc {
 
             val.try_into()
         } else {
-            Err(Error::StoreFailToCreate(f!(
+            Err(Error::DatabaseFailToCreate(f!(
                 "can't update {id}, nothing returned."
             )))
         }

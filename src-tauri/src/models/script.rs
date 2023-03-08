@@ -7,7 +7,7 @@ use ts_rs::TS;
 use crate::{
     ctx::Ctx,
     prelude::{Error, Result},
-    store::{Creatable, Patchable},
+    database::{Creatable, Patchable},
     utils::{map, XTakeVal},
 };
 
@@ -133,7 +133,7 @@ impl ScriptBmc {
     const ENTITY: &'static str = "script";
 
     pub async fn create(ctx: Arc<Ctx>, data: ScriptForCreate) -> Result<Script> {
-        let obj = ctx.get_store().exec_create(Self::ENTITY, data).await?;
+        let obj = ctx.get_database().exec_create(Self::ENTITY, data).await?;
 
         ctx.emit_event("script_created", obj.clone());
 
@@ -141,7 +141,7 @@ impl ScriptBmc {
     }
 
     pub async fn update(ctx: Arc<Ctx>, id: &str, data: ScriptForUpdate) -> Result<Script> {
-        let obj = ctx.get_store().exec_merge(id, data).await?;
+        let obj = ctx.get_database().exec_merge(id, data).await?;
 
         ctx.emit_event("script_updated", obj.clone());
 
@@ -149,9 +149,9 @@ impl ScriptBmc {
     }
 
     pub async fn delete(ctx: Arc<Ctx>, id: &str) -> Result<ModelDeleteResultData> {
-        let store = ctx.get_store();
+        let database = ctx.get_database();
 
-        let id = store.exec_delete(id).await?;
+        let id = database.exec_delete(id).await?;
         let data = ModelDeleteResultData::from(id.clone());
 
         ctx.emit_event("script_deleted", data.clone());
@@ -160,7 +160,7 @@ impl ScriptBmc {
     }
 
     pub async fn get_multi(ctx: Arc<Ctx>) -> Result<Vec<Script>> {
-        let objects = ctx.get_store().exec_select(Self::ENTITY).await?;
+        let objects = ctx.get_database().exec_select(Self::ENTITY).await?;
 
         objects.into_iter().map(|o| o.try_into()).collect()
     }

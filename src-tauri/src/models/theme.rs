@@ -7,8 +7,8 @@ use ts_rs::TS;
 
 use crate::{
     ctx::Ctx,
+    database::{Creatable, Database, Patchable},
     prelude::{Error, Result, DEFAULT_THEME},
-    store::{Creatable, Patchable, Store},
     utils::{map, XTakeVal},
 };
 
@@ -110,8 +110,8 @@ pub struct ThemeBmc {}
 impl ThemeBmc {
     const ENTITY: &'static str = "theme";
 
-    pub async fn init(store: Arc<Store>) -> Result<()> {
-        let objects = store.exec_select(Self::ENTITY).await?;
+    pub async fn init_default_themes(database: Arc<Database>) -> Result<()> {
+        let objects = database.exec_select(Self::ENTITY).await?;
 
         if objects.len() == 0 {
             let sql = "
@@ -157,18 +157,18 @@ impl ThemeBmc {
                 };
             ";
 
-            store.ds.execute(sql, &store.ses, None, false).await?;
+            database.ds.execute(sql, &database.ses, None, false).await?;
         }
 
         Ok(())
     }
 
     pub async fn get(ctx: Arc<Ctx>, id: &str) -> Result<Theme> {
-        ctx.get_store().exec_get(id).await?.try_into()
+        ctx.get_database().exec_get(id).await?.try_into()
     }
 
     pub async fn create(ctx: Arc<Ctx>, data: ThemeForCreate) -> Result<Theme> {
-        let result = ctx.get_store().exec_create(Self::ENTITY, data).await?;
+        let result = ctx.get_database().exec_create(Self::ENTITY, data).await?;
 
         ctx.emit_event("theme_created", result.clone());
 
@@ -176,7 +176,7 @@ impl ThemeBmc {
     }
 
     pub async fn update(ctx: Arc<Ctx>, id: &str, data: ThemeForUpdate) -> Result<Theme> {
-        let result = ctx.get_store().exec_merge(id, data).await?;
+        let result = ctx.get_database().exec_merge(id, data).await?;
 
         ctx.emit_event("theme_updated", result.clone());
 
@@ -184,7 +184,7 @@ impl ThemeBmc {
     }
 
     pub async fn delete(ctx: Arc<Ctx>, id: &str) -> Result<ModelDeleteResultData> {
-        let id = ctx.get_store().exec_delete(id).await?;
+        let id = ctx.get_database().exec_delete(id).await?;
         let result = ModelDeleteResultData::from(id);
 
         ctx.emit_event("theme_deleted", result.clone());
@@ -203,7 +203,7 @@ impl ThemeBmc {
     }
 
     pub async fn list(ctx: Arc<Ctx>) -> Result<Vec<Theme>> {
-        let objects = ctx.get_store().exec_select(Self::ENTITY).await?;
+        let objects = ctx.get_database().exec_select(Self::ENTITY).await?;
 
         objects.into_iter().map(|o| o.try_into()).collect()
     }
@@ -220,12 +220,12 @@ mod tests {
     #[tokio::test]
     async fn default_themes() -> Result<()> {
         let ctx = Ctx::test().await;
-        let store = ctx.get_store();
+        let database = ctx.get_database();
 
-        ThemeBmc::init(store.clone()).await?;
+        ThemeBmc::init_default_themes(&database.clone()).await?;
 
         let sql = "SELECT * FROM theme";
-        let ress = store.ds.execute(sql, &store.ses, None, false).await?;
+        let ress = database.ds.execute(sql, &database.ses, None, false).await?;
         let first_res = ress.into_iter().next().expect("should get a response");
 
         let array: Array = W(first_res.result?).try_into()?;

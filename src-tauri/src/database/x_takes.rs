@@ -1,4 +1,4 @@
-//! XTake implementations for store related types
+//! XTake implementations for database related types
 
 use crate::prelude::*;
 use crate::utils::XTakeImpl;

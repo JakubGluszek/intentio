@@ -2,7 +2,7 @@ use tauri::{command, AppHandle, Wry};
 
 use crate::{
     ctx::Ctx,
-    model::{ModelDeleteResultData, Script, ScriptBmc, ScriptForCreate, ScriptForUpdate},
+    models::{ModelDeleteResultData, Script, ScriptBmc, ScriptForCreate, ScriptForUpdate},
     prelude::{Error, Result},
 };
 

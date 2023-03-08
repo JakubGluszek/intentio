@@ -6,7 +6,7 @@ use tauri::{command, AppHandle, Manager, Wry};
 
 use crate::{
     ctx::Ctx,
-    model::{SettingsBmc, SettingsForUpdate, Theme, ThemeBmc},
+    models::{SettingsBmc, SettingsForUpdate, Theme, ThemeBmc},
     prelude::{Error, Result},
 };
 

@@ -14,7 +14,6 @@ import { TimerState, useTimer } from "@/hooks/useTimer";
 import Sidebar from "./sidebar";
 
 const MainWindow: React.FC = () => {
-  const [initRender, setInitRender] = React.useState(true);
   const [displaySidebar, setDisplaySidebar] = React.useState(false);
   const [state, setState] = React.useState<TimerState>({
     duration: 2 * 60,
@@ -40,11 +39,6 @@ const MainWindow: React.FC = () => {
   });
 
   const intent = store.getActiveIntent();
-
-  React.useEffect(() => {
-    ipc.getActiveIntentId().then((data) => store.setActiveIntentId(data));
-    setInitRender(false);
-  }, []);
 
   const toggleSidebar = () => setDisplaySidebar((display) => !display);
 
@@ -89,7 +83,7 @@ const MainWindow: React.FC = () => {
             {!displaySidebar && (
               <motion.div
                 className="flex flex-col gap-0.5"
-                initial={{ width: initRender ? "100%" : "0%", opacity: 0 }}
+                initial={{ width: "0%", opacity: 0 }}
                 animate={{
                   width: "100%",
                   opacity: 1,

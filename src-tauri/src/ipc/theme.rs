@@ -1,8 +1,8 @@
-//! Tauri IPC commands to bridge the Theme Backend Model Controller with Client side.
+//! Tauri IPC commands to bridge the Theme Backend models Controller with Client side.
 
-use crate::model::{ModelDeleteResultData, ThemeBmc, ThemeForCreate, ThemeForUpdate};
+use crate::models::{ModelDeleteResultData, ThemeBmc, ThemeForCreate, ThemeForUpdate};
 use crate::prelude::{Error, Result};
-use crate::{ctx::Ctx, model::Theme};
+use crate::{ctx::Ctx, models::Theme};
 use tauri::{command, AppHandle, Wry};
 
 #[command]

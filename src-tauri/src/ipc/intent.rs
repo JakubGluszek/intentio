@@ -1,17 +1,17 @@
-//! Tauri IPC commands to bridge the Project Backend Model Controller with Client side.
+//! Tauri IPC commands to bridge the Project Backend models Controller with Client side.
 
 use tauri::{command, AppHandle, Wry};
 
 use crate::{
     ctx::Ctx,
-    model::{Intent, IntentBmc, IntentForCreate, IntentForUpdate, ModelDeleteResultData},
+    models::{Intent, IntentBmc, IntentForCreate, IntentForUpdate, ModelDeleteResultData},
     prelude::{Error, Result},
 };
 
 #[command]
 pub async fn get_intents(app: AppHandle<Wry>) -> Result<Vec<Intent>> {
     match Ctx::from_app(app) {
-        Ok(ctx) => match IntentBmc::list(ctx.get_store()).await {
+        Ok(ctx) => match IntentBmc::list(ctx.get_database()).await {
             Ok(intents) => Ok(intents),
             Err(err) => Err(err).into(),
         },

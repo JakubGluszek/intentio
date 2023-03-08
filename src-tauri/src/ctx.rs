@@ -1,15 +1,15 @@
 //! Ctx is the context object passed through any IPC calls.
 //! It can be queried to get the necessary states/ipc to perform any steps of a request.
 
+use crate::database::Database;
 use crate::prelude::*;
-use crate::store::Store;
 use serde::Serialize;
 use std::sync::Arc;
 use surrealdb::{Datastore, Session};
 use tauri::{AppHandle, Manager, Wry};
 
 pub struct Ctx {
-    store: Arc<Store>,
+    database: Arc<Database>,
     app_handle: Option<AppHandle<Wry>>,
 }
 
@@ -22,7 +22,7 @@ impl Ctx {
 impl Ctx {
     pub fn new(app_handle: AppHandle<Wry>) -> Self {
         Ctx {
-            store: (*app_handle.state::<Arc<Store>>()).clone(),
+            database: (*app_handle.state::<Arc<Database>>()).clone(),
             app_handle: Some(app_handle),
         }
     }
@@ -31,16 +31,16 @@ impl Ctx {
     pub async fn test() -> Arc<Self> {
         let ds = Datastore::new("memory").await.unwrap();
         let ses = Session::for_db("appns", "appdb");
-        let store = Arc::new(Store { ds, ses });
+        let database = Arc::new(Database { ds, ses });
 
         Arc::new(Self {
-            store,
+            database,
             app_handle: None,
         })
     }
 
-    pub fn get_store(&self) -> Arc<Store> {
-        self.store.clone()
+    pub fn get_database(&self) -> Arc<Database> {
+        self.database.clone()
     }
 
     pub fn emit_event<D: Serialize + Clone>(&self, event: &str, data: D) {

@@ -1,4 +1,4 @@
-// Backend model controllers for the application.
+// Backend models controllers for the application.
 
 use serde::Serialize;
 use ts_rs::TS;
@@ -19,8 +19,6 @@ pub use session::*;
 pub use settings::*;
 pub use task::*;
 pub use theme::*;
-
-pub type Minutes = i64;
 
 /// Delete mutation queries will return an {id} struct.
 #[derive(TS, Serialize, Clone)]
