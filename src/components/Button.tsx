@@ -79,8 +79,8 @@ const Button: React.FC<Props> = (props) => {
         backgroundColor:
           highlight && (isHover || isSelected)
             ? color === "primary"
-              ? "rgb(var(--primary-color) / 0.15)"
-              : "rgb(var(--danger-color) / 0.15)"
+              ? "rgb(var(--primary-color) / 0.22)"
+              : "rgb(var(--danger-color) / 0.22)"
             : "transparent",
         color:
           color === "primary"
@@ -122,7 +122,7 @@ const Button: React.FC<Props> = (props) => {
         gap: "0.25rem",
         letterSpacing: "0.05em",
         textTransform: "uppercase",
-        borderRadius: rounded ? "0.25rem" : undefined,
+        borderRadius: rounded ? "2px" : undefined,
         paddingTop: !transparent ? "0.25rem" : "0.25rem",
         paddingBottom: !transparent ? "0.25rem" : "0.25rem",
         paddingInline: !transparent ? "0.75rem" : "0.25rem",

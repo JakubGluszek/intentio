@@ -34,7 +34,7 @@ const CircleTimer: React.FC<Props> = ({ children, ...props }) => {
   );
 
   return (
-    <div className="relative grow flex flex-col items-center justify-center bg-window/80 border-2 border-darker/20 rounded">
+    <div className="relative grow flex flex-col items-center justify-center bg-window/90 border-2 border-base/80 rounded">
       <svg
         width={props.size}
         height={props.size}

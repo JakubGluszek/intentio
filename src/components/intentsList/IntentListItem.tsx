@@ -49,9 +49,9 @@ const IntentListItem: React.FC<Props> = (props) => {
         ref={container}
         data-tauri-disable-drag
         className={clsx(
-          "w-full h-fit flex flex-col p-1 rounded transition-all",
+          "w-full h-fit flex flex-col p-1 rounded-sm transition-all",
           props.selected
-            ? "bg-primary/60 hover:bg-primary/80 text-window -translate-y-[2px] shadow-lg shadow-black/30"
+            ? "bg-primary/50 hover:bg-primary/60 text-window -translate-y-[2px] shadow-lg shadow-black/30"
             : "border-transparent bg-base/80 hover:bg-base text-text/80 hover:text-text shadow shadow-black/30"
         )}
         onClick={(e) => props.onSelected(e, data)}

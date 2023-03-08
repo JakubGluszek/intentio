@@ -11,10 +11,10 @@ rust-version = "1.57"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [profile.release]
-panic = "abort" # Strip expensive panic clean-up logic
+panic = "abort"   # Strip expensive panic clean-up logic
 codegen-units = 1 # Compile crates one after another so the compiler can optimize better
-lto = true # Enables link to optimizations
-opt-level = "s" # Optimize for binary size
+lto = true        # Enables link to optimizations
+opt-level = "s"   # Optimize for binary size
 
 [build-dependencies]
 tauri-build = { version = "1.1", features = [] }
@@ -24,13 +24,16 @@ serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
 serde_with_macros = "2"
 tauri = { version = "1.2.3", features = ["api-all", "system-tray"] }
-window-shadows = "0.2.0"
 chrono = { version = "0.4.22", features = ["serde"] }
 cuid = "1.2.0"
 rodio = "0.16.0"
 thiserror = "1"
 tokio = { version = "1", features = ["full"] }
-surrealdb = {version = "1.0.0-beta.8", default-features=false, features = ['parallel', 'kv-mem', 'kv-rocksdb'] }
+surrealdb = { version = "1.0.0-beta.8", default-features = false, features = [
+  'parallel',
+  'kv-mem',
+  'kv-rocksdb',
+] }
 ts-rs = { version = "6", features = ["format", "chrono-impl"] }
 toml = "0.5.9"
 tauri-hotkey = "0.1.2"

@@ -1,21 +1,21 @@
 import React from "react";
-import { MdSettings, MdRemove, MdClose, MdSkipNext } from "react-icons/md";
+import { MdRemove, MdClose, MdSettings } from "react-icons/md";
 import { TbLayoutSidebarRightCollapse } from "react-icons/tb";
 import { WebviewWindow } from "@tauri-apps/api/window";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 
 import ipc from "@/ipc";
 import useStore from "@/store";
 import config from "@/config";
 import { Button } from "@/components";
-import Sidebar from "./sidebar";
 import TimerView from "./timer";
 import WindowContainer from "@/components/WindowContainer";
 import { TimerState, useTimer } from "@/hooks/useTimer";
-import { Intent } from "@/bindings/Intent";
+import Sidebar from "./sidebar";
 
 const MainWindow: React.FC = () => {
-  const [viewSidebar, setViewSidebar] = React.useState(false);
+  const [initRender, setInitRender] = React.useState(true);
+  const [displaySidebar, setDisplaySidebar] = React.useState(false);
   const [state, setState] = React.useState<TimerState>({
     duration: 2 * 60,
     elapsedTime: 0,
@@ -39,121 +39,82 @@ const MainWindow: React.FC = () => {
     },
   });
 
-  const intent = store.getIntentById(timer.state.intentId);
+  const intent = store.getActiveIntent();
 
   React.useEffect(() => {
     ipc.getActiveIntentId().then((data) => store.setActiveIntentId(data));
+    setInitRender(false);
   }, []);
+
+  const toggleSidebar = () => setDisplaySidebar((display) => !display);
 
   return (
     <WindowContainer>
       <div className="grow flex flex-col gap-0.5 rounded overflow-clip">
-        <Titlebar
-          isSidebar={viewSidebar}
-          toggleSidebar={() => setViewSidebar((view) => !view)}
-          onSettingsOpen={() =>
-            new WebviewWindow("settings", config.webviews.settings)
-          }
-          onWindowHide={() => ipc.hideMainWindow()}
-          onWindowExit={() => ipc.exitMainWindow()}
-        />
-        <div className="grow flex flex-row">
-          {!viewSidebar && (
-            <TimerView
-              variant="circle"
-              theme={store.currentTheme!}
-              displayTime={true}
-              intent={intent}
-              {...timer}
-            />
-          )}
-
-          {viewSidebar && (
-            <Sidebar
-              display={viewSidebar}
-              onSidebarCollapse={() => setViewSidebar(false)}
-            />
-          )}
+        {/* Titlebar */}
+        <div className="flex flex-row">
+          <div className="w-full flex flex-row items-center justify-between bg-window/90 border-2 border-base/80 rounded">
+            <div className="flex flex-row gap-0.5">
+              <Button transparent onClick={toggleSidebar}>
+                <motion.div animate={{ rotateZ: displaySidebar ? 180 : 0 }}>
+                  <TbLayoutSidebarRightCollapse size={28} />
+                </motion.div>
+              </Button>
+              <Button
+                transparent
+                onClick={() =>
+                  new WebviewWindow("settings", config.webviews.settings)
+                }
+              >
+                <MdSettings size={28} />
+              </Button>
+            </div>
+            <h2 className="text-text/80 font-bold">Intentio</h2>
+            <div className="flex flex-row gap-0.5">
+              <div>
+                <Button transparent onClick={() => ipc.hideMainWindow()}>
+                  <MdRemove size={28} />
+                </Button>
+              </div>
+              <Button transparent onClick={() => ipc.exitMainWindow()}>
+                <MdClose size={28} />
+              </Button>
+            </div>
+          </div>
         </div>
-        <Bottom
-          intent={intent}
-          iterations={timer.state.iterations}
-          onSkip={timer.skip}
-        />
+        {/* Content */}
+        <div className="grow flex flex-row">
+          <Sidebar display={displaySidebar} toggleSidebar={toggleSidebar} />
+          <AnimatePresence>
+            {!displaySidebar && (
+              <motion.div
+                className="flex flex-col gap-0.5"
+                initial={{ width: initRender ? "100%" : "0%", opacity: 0 }}
+                animate={{
+                  width: "100%",
+                  opacity: 1,
+                  transition: { duration: 0.3 },
+                }}
+                exit={{
+                  width: "0%",
+                  opacity: 0,
+                  translateX: 128,
+                  transition: { duration: 0.3 },
+                }}
+              >
+                <TimerView
+                  variant="circle"
+                  theme={store.currentTheme!}
+                  displayTime={true}
+                  intent={intent}
+                  {...timer}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
     </WindowContainer>
-  );
-};
-
-interface TitlebarProps {
-  isSidebar: boolean;
-  toggleSidebar: () => void;
-  onSettingsOpen: () => void;
-  onWindowHide: () => void;
-  onWindowExit: () => void;
-}
-
-const Titlebar: React.FC<TitlebarProps> = (props) => {
-  return (
-    <div className="flex flex-row items-center justify-between bg-window/80 border-2 border-darker/20 rounded">
-      <div className="flex flex-row">
-        <motion.div
-          animate={{ rotateZ: props.isSidebar ? 180 : 0 }}
-          transition={{}}
-        >
-          <Button highlight transparent onClick={props.toggleSidebar}>
-            {<TbLayoutSidebarRightCollapse size={28} />}
-          </Button>
-        </motion.div>
-        <div>
-          <Button transparent onClick={props.onSettingsOpen}>
-            <MdSettings size={28} />
-          </Button>
-        </div>
-      </div>
-      <h1 className="text-text/80 font-bold">Intentio</h1>
-      <div className="flex flex-row">
-        <div>
-          <Button transparent onClick={props.onWindowHide}>
-            <MdRemove size={28} />
-          </Button>
-        </div>
-        <Button transparent onClick={props.onWindowExit}>
-          <MdClose size={28} />
-        </Button>
-      </div>
-    </div>
-  );
-};
-
-interface BottomProps {
-  intent?: Intent;
-  iterations: number;
-  onSkip: () => void;
-}
-
-const Bottom: React.FC<BottomProps> = (props) => {
-  return (
-    <div className="flex flex-row items-center justify-between bg-window/80 border-2 border-darker/20 rounded">
-      <span className="text-primary/80 font-bold w-7 text-center">
-        #{props.iterations}
-      </span>
-      {props.intent ? (
-        <div className="w-full flex flex-row items-center gap-0.5 text-text/80">
-          <span className="w-full text-center">{props.intent.label}</span>
-        </div>
-      ) : null}
-      <div className="flex flex-row items-center gap-1">
-        <Button
-          transparent
-          onClick={() => {
-            props.onSkip();
-          }}
-        >
-          <MdSkipNext size={28} />
-        </Button>
-      </div>
-    </div>
   );
 };
 

@@ -93,8 +93,8 @@ async fn main() -> Result<()> {
             // build main window
             tauri::WindowBuilder::new(&handle, "main", tauri::WindowUrl::App("/".into()))
                 .title("Intentio")
-                .inner_size(340f64, 360f64)
-                .max_inner_size(340f64, 360f64)
+                .inner_size(320f64, 340f64)
+                .max_inner_size(320f64, 340f64)
                 .fullscreen(false)
                 .resizable(false)
                 .decorations(false)

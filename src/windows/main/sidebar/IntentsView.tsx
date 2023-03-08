@@ -1,5 +1,5 @@
 import React from "react";
-import { MdAddCircle } from "react-icons/md";
+import { MdAddCircle, MdAnalytics } from "react-icons/md";
 import { useClickOutside } from "@mantine/hooks";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
@@ -8,6 +8,8 @@ import useStore from "@/store";
 import ipc from "@/ipc";
 import { Intent } from "@/bindings/Intent";
 import { Button, IntentsList } from "@/components";
+import { WebviewWindow } from "@tauri-apps/api/window";
+import config from "@/config";
 
 const IntentsView: React.FC = () => {
   const [selectedIntentTags, setSelectedIntentTags] = React.useState<string[]>(
@@ -22,19 +24,38 @@ const IntentsView: React.FC = () => {
     });
   };
 
+  React.useEffect(() => {
+    ipc.getIntents().then((data) => store.setIntents(data));
+    ipc.getActiveIntentId().then((data) => store.setActiveIntentId(data));
+  }, []);
+
   return (
-    <div className="grow flex flex-col gap-0.5 animate-in fade-in-0 zoom-in-95">
-      {/* <CreateIntentView /> */}
-      <IntentsList
-        data={store.intents.filter(
-          (intent) =>
-            intent.archived_at === null || intent.archived_at === undefined
-        )}
-        selectedIntentId={store.activeIntentId}
-        selectedTags={selectedIntentTags}
-        onSelected={onIntentChange}
-        onTagSelected={(data) => setSelectedIntentTags(data)}
-      />
+    <div className="grow flex flex-col gap-0.5">
+      <div className="w-full flex flex-row gap-0.5">
+        <CreateIntentView />
+        <div className="bg-window/90 border-2 border-base/80 rounded">
+          <Button
+            transparent
+            onClick={() =>
+              new WebviewWindow("intents", config.webviews.intents)
+            }
+          >
+            <MdAnalytics size={24} />
+          </Button>
+        </div>
+      </div>
+      <div className="grow flex flex-col p-1.5 bg-window/90 border-2 border-base/80 rounded">
+        <IntentsList
+          data={store.intents.filter(
+            (intent) =>
+              intent.archived_at === null || intent.archived_at === undefined
+          )}
+          selectedIntentId={store.activeIntentId}
+          selectedTags={selectedIntentTags}
+          onSelected={onIntentChange}
+          onTagSelected={(data) => setSelectedIntentTags(data)}
+        />
+      </div>
     </div>
   );
 };
@@ -60,12 +81,18 @@ const CreateIntentView: React.FC = () => {
   });
 
   return (
-    <div className="h-8 w-full flex flex-row items-center">
+    <div className="w-full">
       {!viewCreate ? (
-        <Button transparent onClick={() => setViewCreate(true)}>
-          <MdAddCircle size={20} />
-          <span>Add Intent</span>
-        </Button>
+        <div className="w-full bg-window/90 border-2 border-base/80 rounded">
+          <Button
+            transparent
+            style={{ width: "100%" }}
+            onClick={() => setViewCreate(true)}
+          >
+            <MdAddCircle size={20} />
+            <span>Add Intent</span>
+          </Button>
+        </div>
       ) : (
         <form
           ref={ref}
@@ -75,7 +102,7 @@ const CreateIntentView: React.FC = () => {
           <input
             tabIndex={-3}
             {...register("label")}
-            className="input h-8"
+            className="input bg-darker/80"
             onKeyDown={(e) => {
               if (e.key !== "Escape") return;
               setViewCreate(false);

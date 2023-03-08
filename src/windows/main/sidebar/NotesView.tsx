@@ -71,8 +71,10 @@ const NotesView: React.FC = () => {
     setSelectedIds([]);
   }, [viewCreate, viewFilter]);
 
+  const randomText = React.useMemo(() => Math.floor(Math.random() * 3), []);
+
   return (
-    <div className="grow flex flex-col overflow-y-auto pt-2 gap-1 animate-in fade-in-0 zoom-in-95">
+    <div className="grow flex flex-col overflow-y-auto gap-1 p-1 bg-window/90 border-2 border-base/80 rounded">
       <div className="w-full min-h-[2rem] flex flex-row justify-between">
         {!viewFilter ? (
           <CreateNoteView
@@ -98,7 +100,6 @@ const NotesView: React.FC = () => {
             <>
               {!viewConfirmDelete ? (
                 <Button
-                  // @ts-ignore
                   onClick={() => setViewConfirmDelete(true)}
                   transparent
                   color="danger"
@@ -129,7 +130,7 @@ const NotesView: React.FC = () => {
       {notes.length > 0 ? (
         <div
           id="notes-container"
-          className="grow flex flex-col overflow-y-auto gap-1 py-1"
+          className="grow flex flex-col overflow-y-auto gap-1"
         >
           <div
             ref={containerRef}
@@ -169,7 +170,7 @@ const NotesView: React.FC = () => {
                 <p>Writing summaries helps condense information.</p>
                 <p>Let's get started and create some!</p>
               </>,
-            ][Math.floor(Math.random() * 3)]
+            ][randomText]
           }
         </div>
       ) : null}
@@ -212,10 +213,8 @@ const NoteView: React.FC<NoteViewProps> = (props) => {
       <div
         ref={ref}
         className={clsx(
-          "min-h-fit flex flex-col gap-1.5 card text-sm p-0",
-          isSelected
-            ? "bg-base/80 hover:bg-base"
-            : "bg-window/80 hover:bg-window",
+          "min-h-fit flex flex-col gap-1.5 card text-sm p-0 bg-base/80 hover:bg-base",
+          isSelected && "border-2 border-primary/50 hover:border-primary/60",
           viewEdit && "border-0"
         )}
         onContextMenu={(e) => {

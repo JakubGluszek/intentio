@@ -1,28 +1,20 @@
 import React from "react";
 import { BiTargetLock } from "react-icons/bi";
-import { TbLayoutSidebarLeftCollapse } from "react-icons/tb";
-import {
-  MdCheckBox,
-  MdOpenInNew,
-  MdSettings,
-  MdStickyNote2,
-} from "react-icons/md";
-import { WebviewWindow } from "@tauri-apps/api/window";
+import { MdCheckBox, MdStickyNote2 } from "react-icons/md";
 import { AnimatePresence, motion } from "framer-motion";
+import { toast } from "react-hot-toast";
 
 import useStore from "@/store";
-import config from "@/config";
 import { Button } from "@/components";
+import { useEvents } from "@/hooks";
+import ipc from "@/ipc";
 import IntentsView from "./IntentsView";
 import TasksView from "./TasksView";
 import NotesView from "./NotesView";
-import { useEvents } from "@/hooks";
-import ipc from "@/ipc";
-import { toast } from "react-hot-toast";
 
 interface Props {
   display: boolean;
-  onSidebarCollapse: () => void;
+  toggleSidebar: () => void;
 }
 
 type Tab = "intents" | "notes" | "tasks";
@@ -69,7 +61,7 @@ const Sidebar: React.FC<Props> = (props) => {
   // handles toggling sidebar via pressing 'Tab' key
   React.useEffect(() => {
     const handleOnKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Tab") props.onSidebarCollapse();
+      if (e.key === "Tab") props.toggleSidebar();
     };
 
     document.addEventListener("keydown", handleOnKeyDown);
@@ -84,73 +76,57 @@ const Sidebar: React.FC<Props> = (props) => {
     <AnimatePresence>
       {props.display && (
         <motion.div
-          className="flex flex-row gap-0.5"
-          style={{
-            zIndex: props.display ? 9999 : -1,
-            opacity: props.display ? 1.0 : 0.0,
-            height: config.webviews.main.height - 84,
-          }}
-          initial={{ width: 0 }}
+          className="grow flex flex-row gap-0.5"
+          initial={{ width: "0%", opacity: 0 }}
           animate={{
-            width: 340,
+            width: "100%",
+            opacity: 1,
             transition: { duration: 0.3 },
           }}
           exit={{
-            width: 0,
-            translateX: -32,
+            width: "0%",
+            opacity: 0,
+            translateX: -128,
             transition: { duration: 0.3 },
           }}
         >
-          {store.activeIntentId ? (
-            <div className="w-[40px] flex flex-col gap-0.5 bg-window/90 border-2 border-darker/20 rounded">
-              <Button
-                transparent
-                rounded={false}
-                isSelected={tab === "intents"}
-                onClick={() => setTab("intents")}
-              >
-                <BiTargetLock size={24} />
-              </Button>
-              {store.activeIntentId ? (
+          {store.activeIntentId && (
+            <div className="w-[40px] h-full flex flex-col gap-0.5">
+              <div className="flex-1 bg-window/80 border-2 border-base/80 rounded">
                 <Button
+                  style={{ height: "100%", borderRadius: 2 }}
                   transparent
-                  rounded={false}
+                  isSelected={tab === "intents"}
+                  onClick={() => setTab("intents")}
+                >
+                  <BiTargetLock size={28} />
+                </Button>
+              </div>
+              <div className="flex-1 bg-window/80 border-2 border-base/80 rounded">
+                <Button
+                  style={{ height: "100%", borderRadius: 2 }}
+                  transparent
                   isSelected={tab === "tasks"}
                   onClick={() => setTab("tasks")}
                 >
-                  <MdCheckBox size={24} />
+                  <MdCheckBox size={28} />
                 </Button>
-              ) : null}
-              {store.activeIntentId ? (
+              </div>
+              <div className="flex-1 bg-window/80 border-2 border-base/80 rounded">
                 <Button
+                  style={{ height: "100%", borderRadius: 2 }}
                   transparent
-                  rounded={false}
                   isSelected={tab === "notes"}
                   onClick={() => setTab("notes")}
                 >
-                  <MdStickyNote2 size={24} />
+                  <MdStickyNote2 size={28} />
                 </Button>
-              ) : null}
+              </div>
             </div>
-          ) : null}
-
-          <motion.div
-            className="grow flex flex-col p-1.5 bg-window/90 rounded border-2 border-darker/20"
-            initial={{ width: 0 }}
-            animate={{
-              transition: { duration: 0.2 },
-              width: 300,
-            }}
-            exit={{
-              transition: { duration: 0.2 },
-            }}
-          >
-            <div className="grow flex flex-col">
-              {tab === "intents" ? <IntentsView /> : null}
-              {tab === "tasks" ? <TasksView /> : null}
-              {tab === "notes" ? <NotesView /> : null}
-            </div>
-          </motion.div>
+          )}
+          {tab === "intents" ? <IntentsView /> : null}
+          {tab === "tasks" ? <TasksView /> : null}
+          {tab === "notes" ? <NotesView /> : null}
         </motion.div>
       )}
     </AnimatePresence>

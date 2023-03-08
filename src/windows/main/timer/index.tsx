@@ -34,8 +34,8 @@ const TimerView: React.FC<Props> = (props) => {
         isPlaying={props.state.isPlaying}
         duration={props.state.duration}
         elapsedTime={props.elapsedTimeDetailed}
-        strokeWidth={11}
-        size={240}
+        strokeWidth={6}
+        size={230}
         color={
           Color(
             props.state.isPlaying
@@ -59,7 +59,7 @@ const TimerView: React.FC<Props> = (props) => {
                   })
                 }
                 style={{
-                  fontSize: 44,
+                  fontSize: 40,
                   color: props.state.isPlaying
                     ? props.theme.primary_hex
                     : props.theme.text_hex,
@@ -100,7 +100,7 @@ const TimerView: React.FC<Props> = (props) => {
             </span>
           )}
         </div>
-        <div className="absolute bottom-12 w-full flex flex-col items-center gap-1 transition-opacity duration-300">
+        <div className="absolute bottom-6 w-full flex flex-col items-center gap-1 transition-opacity duration-300">
           <button
             tabIndex={-2}
             className="text-primary/80 hover:text-primary translate-x-8 translate-y-8"
@@ -115,27 +115,49 @@ const TimerView: React.FC<Props> = (props) => {
             {props.state.isPlaying ? (
               <Button
                 transparent
+                highlight={false}
                 opacity={0.6}
                 onClick={() => {
                   props.pause();
                 }}
               >
-                <MdPauseCircle size={40} />
+                <MdPauseCircle size={36} />
               </Button>
             ) : (
               <Button
                 transparent
+                highlight={false}
                 opacity={0.8}
                 onClick={() => {
                   props.resume();
                 }}
               >
-                <MdPlayCircle size={40} />
+                <MdPlayCircle size={36} />
               </Button>
             )}
           </div>
         </div>
       </CircleTimer>
+      <div className="bottom-0 left-0 w-full flex flex-row items-center justify-between gap-0.5 bg-window/90 border-2 border-base/80 rounded">
+        <span className="text-primary/80 font-bold text-center p-1.5">
+          #{props.state.iterations}
+        </span>
+        {props.intent ? (
+          <div className="w-full flex flex-row items-center gap-0.5 text-text/80 p-1.5">
+            <span className="w-full text-center">{props.intent.label}</span>
+          </div>
+        ) : null}
+        <div className="flex flex-row items-center gap-1">
+          <Button
+            transparent
+            onClick={() => {
+              props.skip();
+            }}
+          >
+            <MdSkipNext size={28} />
+          </Button>
+        </div>
+      </div>
     </React.Fragment>
   );
 };

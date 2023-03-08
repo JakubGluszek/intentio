@@ -56,7 +56,7 @@ const TasksView: React.FC = () => {
   }, [viewConfirmDelete]);
 
   return (
-    <div className="grow flex flex-col overflow-y-auto pt-2 gap-1 animate-in fade-in-0 zoom-in-95">
+    <div className="grow flex flex-col overflow-y-auto gap-1 p-1 bg-window/90 border-2 border-base/80 rounded">
       <div className="flex flex-row items-center justify-between gap-2">
         <CreateTaskView viewCreate={viewCreate} setViewCreate={setViewCreate} />
 
@@ -270,10 +270,8 @@ const TaskView: React.FC<TaskViewProps> = (props) => {
       <div
         ref={containerRef}
         className={clsx(
-          "min-h-fit flex flex-col gap-1.5 card text-sm p-0",
-          isSelected
-            ? "bg-base/80 hover:bg-base"
-            : "bg-window/80 hover:bg-window",
+          "min-h-fit flex flex-col gap-1.5 card text-sm p-0 bg-base/80 hover:bg-base rounded-sm",
+          isSelected && "border-2 border-primary/50 hover:border-primary/60",
           viewEdit && "border-0"
         )}
         onMouseDown={(e) => {
@@ -306,7 +304,7 @@ const TaskView: React.FC<TaskViewProps> = (props) => {
         data-tauri-disable-drag
       >
         {!viewEdit ? (
-          <div className="flex flex-row items-start gap-1 p-1">
+          <div className="flex flex-row items-center gap-1">
             {!data.done ? (
               <Button onMouseDown={() => handleCheck()} transparent>
                 <MdCheckBoxOutlineBlank size={24} />

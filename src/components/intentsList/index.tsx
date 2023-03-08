@@ -65,8 +65,8 @@ export const IntentsList: React.FC<Props> = (props) => {
   }
 
   return intents.length > 0 ? (
-    <div className="grow flex overflow-y-auto">
-      <div className="w-full max-h-0 flex flex-col gap-1.5 overflow-y py-2 font-semibold">
+    <div className="grow flex overflow-y-auto rounded-sm">
+      <div className="w-full max-h-0 flex flex-col gap-1.5 overflow-y font-semibold">
         {intents.map((intent) => (
           <IntentListItem
             key={intent.id}
