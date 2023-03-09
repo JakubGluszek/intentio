@@ -2,7 +2,6 @@ import React from "react";
 import { BiTargetLock } from "react-icons/bi";
 import { MdCheckBox, MdStickyNote2 } from "react-icons/md";
 import { AnimatePresence, motion } from "framer-motion";
-import { toast } from "react-hot-toast";
 
 import useStore from "@/store";
 import { Button } from "@/components";
@@ -11,6 +10,7 @@ import ipc from "@/ipc";
 import IntentsView from "./IntentsView";
 import TasksView from "./TasksView";
 import NotesView from "./NotesView";
+import { toast } from "react-hot-toast";
 
 interface Props {
   display: boolean;
@@ -25,27 +25,28 @@ const Sidebar: React.FC<Props> = (props) => {
   const store = useStore();
 
   useEvents({
-    active_intent_id_updated: (data) => {
-      store.setActiveIntentId(data.active_intent_id);
-    },
     intent_created: (data) => store.addIntent(data),
     intent_updated: (data) => store.patchIntent(data.id, data),
     intent_deleted: (data) => {
-      if (store.activeIntentId === data.id) {
-        ipc.setActiveIntentId(undefined).then(() => {
-          store.setActiveIntentId(undefined);
-          toast("Active intent has been deleted");
-        });
+      if (store.timerSession?.intent_id === data.id) {
+        ipc
+          .setTimerSession({ ...store.timerSession, intent_id: null })
+          .then((data) => {
+            store.setTimerSession(data);
+            toast("Active intent has been deleted");
+          });
       }
 
       store.removeIntent(data.id);
     },
     intent_archived: (data) => {
-      if (store.activeIntentId === data.id) {
-        ipc.setActiveIntentId(undefined).then(() => {
-          store.setActiveIntentId(undefined);
-          toast("Active intent has been archived");
-        });
+      if (store.timerSession?.intent_id === data.id) {
+        ipc
+          .setTimerSession({ ...store.timerSession, intent_id: null })
+          .then((data) => {
+            store.setTimerSession(data);
+            toast("Active intent has been archived");
+          });
       }
 
       store.patchIntent(data.id, data);
@@ -55,7 +56,6 @@ const Sidebar: React.FC<Props> = (props) => {
 
   React.useEffect(() => {
     ipc.getIntents().then((data) => store.setIntents(data));
-    ipc.getActiveIntentId().then((data) => store.setActiveIntentId(data));
   }, []);
 
   // handles toggling sidebar via pressing 'Tab' key
@@ -69,8 +69,8 @@ const Sidebar: React.FC<Props> = (props) => {
   }, []);
 
   React.useEffect(() => {
-    if (!store.activeIntentId) setTab("intents");
-  }, [store.activeIntentId]);
+    if (!store.timerSession?.intent_id) setTab("intents");
+  }, [store.timerSession]);
 
   return (
     <AnimatePresence>
@@ -90,7 +90,7 @@ const Sidebar: React.FC<Props> = (props) => {
             transition: { duration: 0.3 },
           }}
         >
-          {store.activeIntentId && (
+          {store.timerSession?.intent_id && (
             <div className="w-[40px] h-full flex flex-col gap-0.5">
               <div className="flex-1 bg-window/80 border-2 border-base/80 rounded">
                 <Button

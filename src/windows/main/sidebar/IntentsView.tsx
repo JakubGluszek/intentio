@@ -19,14 +19,17 @@ const IntentsView: React.FC = () => {
   const store = useStore();
 
   const onIntentChange = async (data: Intent | undefined) => {
-    await ipc.setActiveIntentId(data?.id).then(() => {
-      store.setActiveIntentId(data?.id);
-    });
+    if (!store.timerSession) return;
+    ipc
+      .setTimerSession({
+        ...store.timerSession,
+        intent_id: data ? data.id : null,
+      })
+      .then((data) => store.setTimerSession(data));
   };
 
   React.useEffect(() => {
     ipc.getIntents().then((data) => store.setIntents(data));
-    ipc.getActiveIntentId().then((data) => store.setActiveIntentId(data));
   }, []);
 
   return (
@@ -50,7 +53,7 @@ const IntentsView: React.FC = () => {
             (intent) =>
               intent.archived_at === null || intent.archived_at === undefined
           )}
-          selectedIntentId={store.activeIntentId}
+          selectedIntentId={store.timerSession?.intent_id ?? null}
           selectedTags={selectedIntentTags}
           onSelected={onIntentChange}
           onTagSelected={(data) => setSelectedIntentTags(data)}

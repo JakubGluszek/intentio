@@ -1,39 +1,24 @@
+import { SessionType } from "@/bindings/SessionType";
+import { TimerConfig } from "@/bindings/TimerConfig";
+import { TimerSession } from "@/bindings/TimerSession";
+import ipc from "@/ipc";
 import { useElapsedTime } from "./useElapsedTime";
 
-export type SessionType = "focus" | "break" | "long break";
-
-export interface TimerState {
-  type: SessionType;
-  duration: number; // seconds;
-  elapsedTime: number; // seconds
-  iterations: number;
-  isPlaying: boolean;
-  startedAt?: string; // epoch in ms
-  intentId?: string;
-}
-
 export interface useTimerProps {
-  state: TimerState;
-  onStateChange: (state: TimerState) => void;
-  config: {
-    focusDuration: number;
-    breakDuration: number;
-    longBreakDuration: number;
-    longBreakInterval: number;
-    autoStartFocus: boolean;
-    autoStartBreak: boolean;
-  };
+  session: TimerSession;
+  onSessionUpdate: (session: TimerSession) => void;
+  config: TimerConfig;
   onUpdated?: (timeLeft: number) => void;
   onPaused?: () => void;
   onResumed?: () => void;
   onSessionSwitched?: (type: SessionType) => void;
   onSkipped?: () => void;
   onRestarted?: () => void;
-  onCompleted?: (state: TimerState) => void;
+  onCompleted?: (session: TimerSession) => void;
 }
 
 export interface Timer {
-  state: TimerState;
+  session: TimerSession;
   resume: () => void;
   pause: () => void;
   restart: () => void;
@@ -44,100 +29,118 @@ export interface Timer {
 
 export const useTimer = (props: useTimerProps): Timer => {
   const { reset, elapsedTime } = useElapsedTime({
-    isPlaying: props.state.isPlaying,
-    duration: props.state.duration,
+    isPlaying: props.session.is_playing,
+    duration: props.session.duration,
     updateInterval: 0,
     onUpdate: onUpdate,
     onComplete: complete,
   });
 
   function onUpdate(elapsedTime: number) {
-    props.onStateChange({ ...props.state, elapsedTime });
-    if (elapsedTime === props.state.duration) {
+    props.onSessionUpdate({ ...props.session, elapsed_time: elapsedTime });
+    if (elapsedTime === props.session.duration) {
       skip();
     }
   }
 
   function resume() {
-    let state = {
-      ...props.state,
-      isPlaying: true,
+    let session = {
+      ...props.session,
+      is_playing: true,
     };
 
-    if (props.state.startedAt === undefined) {
-      state = {
-        ...state,
-        startedAt: new Date().getTime().toString(),
+    if (props.session.started_at === null) {
+      session = {
+        ...session,
+        started_at: new Date().getTime().toString(),
       };
     }
 
-    props.onStateChange(state);
+    props.onSessionUpdate(session);
   }
 
   function pause() {
-    props.onStateChange({ ...props.state, isPlaying: false });
+    props.onSessionUpdate({ ...props.session, is_playing: false });
     props.onPaused && props.onPaused();
   }
 
   function restart() {
+    complete();
     reset();
-    props.onStateChange({
-      ...props.state,
-      startedAt: undefined,
-      elapsedTime: 0,
-      isPlaying: false,
+    props.onSessionUpdate({
+      ...props.session,
+      started_at: null,
+      elapsed_time: 0,
+      is_playing: false,
     });
     props.onRestarted && props.onRestarted();
   }
 
   function switchSession(prevType: SessionType) {
-    let state = {
-      ...props.state,
-      isPlaying: false,
-      elapsedTime: 0,
-      startedAt: undefined,
+    let session = {
+      ...props.session,
+      is_playing: false,
+      elapsed_time: 0,
+      started_at: null,
     };
 
-    if (prevType === "focus") {
+    if (prevType === "Focus") {
       const isLongBreak =
-        props.state.iterations >= props.config.longBreakInterval &&
-        props.state.iterations % props.config.longBreakInterval === 0;
+        props.session.iterations >= props.config.long_break_interval &&
+        props.session.iterations % props.config.long_break_interval === 0;
 
-      if (prevType === "focus" && isLongBreak) {
-        state = {
-          ...state,
-          type: "long break",
-          duration: props.config.longBreakDuration,
+      if (prevType === "Focus" && isLongBreak) {
+        session = {
+          ...session,
+          _type: "LongBreak",
+          duration: props.config.long_break_duration * 60,
         };
-      } else if (prevType === "focus") {
-        state = {
-          ...state,
-          type: "break",
-          duration: props.config.breakDuration,
+      } else if (prevType === "Focus") {
+        session = {
+          ...session,
+          _type: "Break",
+          duration: props.config.break_duration * 60,
         };
       }
     } else {
-      state = { ...state, type: "focus", duration: props.config.focusDuration };
+      session = {
+        ...session,
+        _type: "Focus",
+        duration: props.config.focus_duration * 60,
+      };
     }
 
-    props.onStateChange(state);
+    props.onSessionUpdate(session);
 
-    if (state.type === "focus" && props.config.autoStartFocus) resume();
-    else if (props.config.autoStartBreak) resume();
+    if (session._type === "Focus" && props.config.auto_start_focus) resume();
+    else if (props.config.auto_start_breaks) resume();
   }
 
   function skip() {
     complete();
-    switchSession(props.state.type);
     reset();
+    switchSession(props.session._type);
   }
 
   function complete() {
-    props.onCompleted && props.onCompleted(props.state);
+    if (
+      props.session._type !== "Focus" ||
+      props.session.elapsed_time < 60 ||
+      !props.session.started_at
+    )
+      return;
+
+    ipc.createSession({
+      duration: ~~(props.session.elapsed_time / 60),
+      started_at: props.session.started_at,
+      intent_id: props.session.intent_id,
+    });
+
+    props.onCompleted && props.onCompleted(props.session);
   }
 
   return {
-    state: props.state,
+    session: props.session,
     elapsedTimeDetailed: elapsedTime,
     resume,
     pause,

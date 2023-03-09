@@ -1,22 +1,18 @@
 import { StateCreator } from "zustand";
 
-import { Intent } from "@/bindings/Intent";
-import { IntentsSlice } from "./intentsSlice";
+import { TimerSession } from "@/bindings/TimerSession";
 
 export interface StateSlice {
-  activeIntentId?: string;
-  setActiveIntentId: (id: string | undefined) => void;
-  getActiveIntent: () => Intent | undefined;
+  timerSession?: TimerSession;
+
+  setTimerSession: (data: TimerSession) => void;
 }
 
-export const createStateSlice: StateCreator<
-  StateSlice & IntentsSlice,
-  [],
-  [],
-  StateSlice
-> = (set, get) => ({
-  activeIntentId: undefined,
-  setActiveIntentId: (activeIntentId) => set(() => ({ activeIntentId })),
-  getActiveIntent: () =>
-    get().intents.find((intent) => intent.id === get().activeIntentId),
+export const createStateSlice: StateCreator<StateSlice, [], [], StateSlice> = (
+  set
+) => ({
+  timerSession: undefined,
+
+  setTimerSession: (timerSession) =>
+    set((state) => ({ ...state, timerSession })),
 });

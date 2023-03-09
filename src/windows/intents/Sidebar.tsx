@@ -32,10 +32,10 @@ const Sidebar: React.FC<Props> = (props) => {
   const intents = useStore((state) => state.intents);
 
   return (
-    <div className="min-w-[220px] w-[220px] h-full flex flex-col p-2 pr-0">
+    <div className="min-w-[220px] w-[220px] h-full flex flex-col p-2 gap-2 pr-0">
       {/* Performs operations related to intents array */}
       {!viewCreate ? (
-        <div className="h-7 flex flex-row items-center gap-2">
+        <div className="h-fit flex flex-row items-center gap-1">
           {/* Toggle create intent view */}
           <Button
             color="primary"

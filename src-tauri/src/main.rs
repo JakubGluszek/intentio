@@ -11,8 +11,8 @@ mod ipc;
 mod models;
 mod prelude;
 mod setup;
-mod utils;
 mod state;
+mod utils;
 
 use crate::ipc::*;
 use crate::prelude::*;
@@ -35,6 +35,18 @@ async fn main() -> Result<()> {
         .system_tray(SystemTray::new().with_menu(create_tray_menu()))
         .on_system_tray_event(handle_on_system_tray_event)
         .invoke_handler(tauri::generate_handler![
+            // state
+            get_timer_session,
+            set_timer_session,
+            // config
+            get_timer_config,
+            update_timer_config,
+            get_audio_config,
+            update_audio_config,
+            get_behavior_config,
+            update_behavior_config,
+            get_interface_config,
+            update_interface_config,
             // Utils
             open_audio_dir,
             play_audio,
@@ -42,9 +54,6 @@ async fn main() -> Result<()> {
             set_current_theme,
             hide_main_window,
             exit_main_window,
-            // Settings
-            get_settings,
-            update_settings,
             // Theme
             get_theme,
             get_themes,

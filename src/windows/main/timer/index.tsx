@@ -10,7 +10,7 @@ import { Button } from "@/components";
 import { Theme } from "@/bindings/Theme";
 import { Timer } from "@/hooks/useTimer";
 import CircleTimer, { ColorFormat } from "@/components/timers/CircleTimer";
-import { Intent } from "@/bindings/Intent";
+import useStore from "@/store";
 
 type TimerVariant = "circle" | "compact";
 
@@ -24,21 +24,24 @@ interface Props extends Timer {
   styles?: TimerStyles;
   theme: Theme;
   displayTime: boolean;
-  intent?: Intent;
 }
 
 const TimerView: React.FC<Props> = (props) => {
+  const store = useStore();
+
+  const intent = store.getActiveIntent();
+
   return (
     <React.Fragment>
       <CircleTimer
-        isPlaying={props.state.isPlaying}
-        duration={props.state.duration}
+        isPlaying={props.session.is_playing}
+        duration={props.session.duration}
         elapsedTime={props.elapsedTimeDetailed}
         strokeWidth={6}
         size={230}
         color={
           Color(
-            props.state.isPlaying
+            props.session.is_playing
               ? props.theme.primary_hex
               : props.theme.base_hex
           )
@@ -54,25 +57,25 @@ const TimerView: React.FC<Props> = (props) => {
                 data-tauri-disable-drag
                 className="translate-y-4 font-mono opacity-80"
                 onClick={() =>
-                  ipc.updateSettings({
-                    display_live_countdown: false,
+                  ipc.updateInterfaceConfig({
+                    display_timer_countdown: false,
                   })
                 }
                 style={{
                   fontSize: 40,
-                  color: props.state.isPlaying
+                  color: props.session.is_playing
                     ? props.theme.primary_hex
                     : props.theme.text_hex,
                 }}
               >
                 {utils.formatTimeTimer(
-                  props.state.duration - props.state.elapsedTime
+                  props.session.duration - props.session.elapsed_time
                 )}
               </span>
               <span className="text-lg text-text/60 whitespace-nowrap">
-                {props.state.type === "focus"
+                {props.session._type === "Focus"
                   ? "Focus"
-                  : props.state.type === "break"
+                  : props.session._type === "Break"
                     ? "Break"
                     : "Long break"}
               </span>
@@ -82,19 +85,19 @@ const TimerView: React.FC<Props> = (props) => {
               className="opacity-80 text-3xl font-bold whitespace-nowrap text-primary"
               data-tauri-disable-drag
               onClick={() =>
-                ipc.updateSettings({
-                  display_live_countdown: true,
+                ipc.updateInterfaceConfig({
+                  display_timer_countdown: true,
                 })
               }
               style={{
-                color: props.state.isPlaying
+                color: props.session.is_playing
                   ? props.theme.primary_hex
                   : props.theme.text_hex,
               }}
             >
-              {props.state.type === "focus"
+              {props.session._type === "Focus"
                 ? "Focus"
-                : props.state.type === "break"
+                : props.session._type === "Break"
                   ? "Break"
                   : "Long break"}
             </span>
@@ -112,7 +115,7 @@ const TimerView: React.FC<Props> = (props) => {
             <VscDebugRestart size={24} />
           </button>
           <div className="flex flex-row items-center justify-center gap-2 w-full h-10">
-            {props.state.isPlaying ? (
+            {props.session.is_playing ? (
               <Button
                 transparent
                 highlight={false}
@@ -140,11 +143,11 @@ const TimerView: React.FC<Props> = (props) => {
       </CircleTimer>
       <div className="bottom-0 left-0 w-full flex flex-row items-center justify-between gap-0.5 bg-window/90 border-2 border-base/80 rounded">
         <span className="text-primary/80 font-bold text-center p-1.5">
-          #{props.state.iterations}
+          #{props.session.iterations}
         </span>
-        {props.intent ? (
+        {intent ? (
           <div className="w-full flex flex-row items-center gap-0.5 text-text/80 p-1.5">
-            <span className="w-full text-center">{props.intent.label}</span>
+            <span className="w-full text-center">{intent.label}</span>
           </div>
         ) : null}
         <div className="flex flex-row items-center gap-1">

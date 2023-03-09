@@ -1,4 +1,4 @@
-use std::{fs, sync::Arc, path::Path};
+use std::{fs, path::Path, sync::Arc};
 
 use crate::{ctx::Ctx, utils};
 use serde::{Deserialize, Serialize};
@@ -7,11 +7,11 @@ use ts_rs::TS;
 
 #[derive(Serialize, Deserialize, TS, Debug, PartialEq, Clone)]
 #[ts(export, export_to = "../src/bindings/")]
-pub struct Behavior {
+pub struct BehaviorConfig {
     pub main_minimize_to_tray: bool,
 }
 
-impl Default for Behavior {
+impl Default for BehaviorConfig {
     fn default() -> Self {
         Self {
             main_minimize_to_tray: false,
@@ -22,7 +22,7 @@ impl Default for Behavior {
 #[skip_serializing_none]
 #[derive(Deserialize, TS, Debug)]
 #[ts(export, export_to = "../src/bindings/")]
-pub struct BehaviorForUpdate {
+pub struct BehaviorConfigForUpdate {
     pub main_minimize_to_tray: Option<bool>,
 }
 
@@ -33,44 +33,46 @@ impl BehaviorCfg {
         let path = Self::get_path();
 
         if !Path::new(&path).is_file() {
-            let behavior = Behavior::default();
-            Self::save(&behavior);
+            let config = BehaviorConfig::default();
+            Self::save(&config);
         }
     }
 
-    pub fn get() -> Behavior {
+    pub fn get() -> BehaviorConfig {
         let path = Self::get_path();
         let contents = fs::read_to_string(path).unwrap();
 
         match serde_json::from_str(&contents) {
-            Ok(behavior) => behavior,
+            Ok(config) => config,
             Err(_) => {
-                let behavior = Behavior::default();
+                let config = BehaviorConfig::default();
 
-                Self::save(&behavior);
+                Self::save(&config);
 
-                behavior
+                config
             }
         }
     }
 
-    pub fn save(config: &Behavior) {
+    pub fn save(config: &BehaviorConfig) {
         let path = Self::get_path();
         let content = serde_json::to_string_pretty(&config).unwrap();
 
         fs::write(&path, content).unwrap();
     }
 
-    pub fn update(ctx: Arc<Ctx>, data: BehaviorForUpdate) {
-        let mut behavior = Self::get();
+    pub fn update(ctx: Arc<Ctx>, data: BehaviorConfigForUpdate) -> BehaviorConfig {
+        let mut config = Self::get();
 
         if let Some(main_minimize_to_tray) = data.main_minimize_to_tray {
-            behavior.main_minimize_to_tray = main_minimize_to_tray;
+            config.main_minimize_to_tray = main_minimize_to_tray;
         }
 
-        Self::save(&behavior);
+        Self::save(&config);
 
-        // emit update event
+        ctx.emit_event("behavior_cfg_updated", config.clone());
+
+        config
     }
 
     fn get_path() -> String {

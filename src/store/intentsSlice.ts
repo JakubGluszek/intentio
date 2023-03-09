@@ -1,6 +1,7 @@
 import { StateCreator } from "zustand";
 
 import { Intent } from "@/bindings/Intent";
+import { StateSlice } from "./stateSlice";
 
 export interface IntentsSlice {
   intents: Intent[];
@@ -10,10 +11,11 @@ export interface IntentsSlice {
   removeIntent: (id: string) => void;
   getIntentById: (id?: string | null) => Intent | undefined;
   getAllTags: () => string[];
+  getActiveIntent: () => Intent | undefined;
 }
 
 export const createIntentsSlice: StateCreator<
-  IntentsSlice,
+  IntentsSlice & StateSlice,
   [],
   [],
   IntentsSlice
@@ -44,4 +46,7 @@ export const createIntentsSlice: StateCreator<
 
     return allTags;
   },
+
+  getActiveIntent: () =>
+    get().intents.find((intent) => intent.id === get().timerSession?.intent_id),
 });

@@ -34,6 +34,10 @@ type Events = {
   script_created: Script;
   script_updated: Script;
   script_deleted: ModelDeleteResultData;
+  timer_cfg_updated: TimerConfig;
+  behavior_cfg_updated: BehaviorConfig;
+  audio_cfg_updated: AudioConfig;
+  interface_cfg_updated: InterfaceConfig;
 };
 
 type Callback<T extends keyof Events> = (data: Events[T]) => void;

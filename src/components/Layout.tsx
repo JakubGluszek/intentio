@@ -3,9 +3,6 @@ import { appWindow } from "@tauri-apps/api/window";
 import { Toaster } from "react-hot-toast";
 
 import useStore from "@/store";
-import utils from "@/utils";
-import ipc from "@/ipc";
-import { useEvents } from "@/hooks";
 
 interface Props {
   children: React.ReactNode;
@@ -13,41 +10,15 @@ interface Props {
 
 /**
  * Layout's functionality is as follows:
- * - auto window dragging on mousedown
- * - preventing default context menu
- * - handles 'settings' and 'currrentTheme' updates; receive and store;
- * - requests settings and current theme;
- * - renders 'Toaster' container next to 'root' div;
+ * - drags window on mousedown
+ * - prevents default context menu
+ * - renders 'Toaster' notifications container next to 'root' div;
  * */
 const Layout: React.FC<Props> = (props) => {
   const store = useStore();
 
-  useDragWindow(store.tauriDragEnabled);
+  useDragWindow();
   usePreventContextMenu();
-
-  useEvents({
-    settings_updated: (data) => store.setSettings(data),
-    current_theme_changed: () =>
-      ipc.getCurrentTheme().then((data) => {
-        utils.applyTheme(data);
-        store.setCurrentTheme(data);
-      }),
-    preview_theme: (data) => {
-      utils.applyTheme(data);
-    },
-    current_theme_updated: (data) => {
-      utils.applyTheme(data);
-      store.setCurrentTheme(data);
-    },
-  });
-
-  React.useEffect(() => {
-    ipc.getSettings().then((data) => store.setSettings(data));
-    ipc.getCurrentTheme().then((data) => {
-      utils.applyTheme(data);
-      store.setCurrentTheme(data);
-    });
-  }, []);
 
   if (!store.currentTheme) return null;
 
@@ -96,7 +67,7 @@ const usePreventContextMenu = () => {
  * Dragging will not occur if:
  * - the target element (or it's child element of a fixed depth) was of a certain type (button, input etc.)
  * - the tauriDragEnabled state property was exclusively disabled */
-const useDragWindow = (tauriDragEnabled: boolean) => {
+const useDragWindow = () => {
   React.useEffect(() => {
     const handleMouseDown = async (e: MouseEvent) => {
       if (
@@ -104,8 +75,7 @@ const useDragWindow = (tauriDragEnabled: boolean) => {
           "data-tauri-disable-drag",
           e.target as HTMLElement,
           15
-        ) ||
-        !tauriDragEnabled
+        )
       )
         return; // a non-draggable element either in target or its ancestors
       await appWindow.startDragging();
@@ -113,7 +83,7 @@ const useDragWindow = (tauriDragEnabled: boolean) => {
 
     document.addEventListener("mousedown", handleMouseDown);
     return () => document.removeEventListener("mousedown", handleMouseDown);
-  }, [tauriDragEnabled]);
+  }, []);
 
   const checkAllowDragging = (
     attribute: string,

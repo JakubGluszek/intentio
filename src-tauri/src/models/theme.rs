@@ -6,13 +6,14 @@ use surrealdb::sql::{Object, Value};
 use ts_rs::TS;
 
 use crate::{
+    cfg::InterfaceCfg,
     ctx::Ctx,
     database::{Creatable, Database, Patchable},
     prelude::{Error, Result, DEFAULT_THEME},
     utils::{map, XTakeVal},
 };
 
-use super::{ModelDeleteResultData, SettingsBmc};
+use super::ModelDeleteResultData;
 
 #[derive(Serialize, TS, Debug)]
 #[ts(export, export_to = "../src/bindings/")]
@@ -189,12 +190,12 @@ impl ThemeBmc {
 
         ctx.emit_event("theme_deleted", result.clone());
 
-        let mut settings = SettingsBmc::get()?;
+        let mut config = InterfaceCfg::get();
 
-        if settings.current_theme_id == result.id {
-            settings.current_theme_id = DEFAULT_THEME.to_string();
+        if config.theme_id == result.id {
+            config.theme_id = DEFAULT_THEME.to_string();
 
-            SettingsBmc::save(&settings)?;
+            InterfaceCfg::save(&config);
 
             ctx.emit_event("current_theme_changed", "");
         }
@@ -222,7 +223,7 @@ mod tests {
         let ctx = Ctx::test().await;
         let database = ctx.get_database();
 
-        ThemeBmc::init_default_themes(&database.clone()).await?;
+        ThemeBmc::init_default_themes(database.clone()).await?;
 
         let sql = "SELECT * FROM theme";
         let ress = database.ds.execute(sql, &database.ses, None, false).await?;

@@ -7,7 +7,7 @@ use ts_rs::TS;
 
 #[derive(Serialize, Deserialize, TS, Debug, PartialEq, Clone)]
 #[ts(export, export_to = "../src/bindings/")]
-pub struct Audio {
+pub struct AudioConfig {
     pub alert_file: String,
     pub alert_volume: f32,
 
@@ -15,7 +15,7 @@ pub struct Audio {
     pub alert_repeat: i64,
 }
 
-impl Default for Audio {
+impl Default for AudioConfig {
     fn default() -> Self {
         Self {
             alert_file: DEFAULT_ALERT_FILE.into(),
@@ -28,7 +28,7 @@ impl Default for Audio {
 #[skip_serializing_none]
 #[derive(Deserialize, TS, Debug)]
 #[ts(export, export_to = "../src/bindings/")]
-pub struct AudioForUpdate {
+pub struct AudioConfigForUpdate {
     pub alert_audio: Option<String>,
     pub alert_volume: Option<f32>,
 
@@ -43,50 +43,52 @@ impl AudioCfg {
         let path = Self::get_path();
 
         if !Path::new(&path).is_file() {
-            let audio = Audio::default();
-            Self::save(&audio);
+            let config = AudioConfig::default();
+            Self::save(&config);
         }
     }
 
-    pub fn get() -> Audio {
+    pub fn get() -> AudioConfig {
         let path = Self::get_path();
         let contents = fs::read_to_string(path).unwrap();
 
         match serde_json::from_str(&contents) {
-            Ok(audio) => audio,
+            Ok(config) => config,
             Err(_) => {
-                let audio = Audio::default();
+                let config = AudioConfig::default();
 
-                Self::save(&audio);
+                Self::save(&config);
 
-                audio
+                config
             }
         }
     }
 
-    pub fn save(config: &Audio) {
+    pub fn save(config: &AudioConfig) {
         let path = Self::get_path();
         let content = serde_json::to_string_pretty(&config).unwrap();
 
         fs::write(&path, content).unwrap();
     }
 
-    pub fn update(ctx: Arc<Ctx>, data: AudioForUpdate) {
-        let mut audio = Self::get();
+    pub fn update(ctx: Arc<Ctx>, data: AudioConfigForUpdate) -> AudioConfig {
+        let mut config = Self::get();
 
         if let Some(alert_audio) = data.alert_audio {
-            audio.alert_file = alert_audio;
+            config.alert_file = alert_audio;
         }
         if let Some(alert_volume) = data.alert_volume {
-            audio.alert_volume = alert_volume;
+            config.alert_volume = alert_volume;
         }
         if let Some(alert_repeat) = data.alert_repeat {
-            audio.alert_repeat = alert_repeat;
+            config.alert_repeat = alert_repeat;
         }
 
-        Self::save(&audio);
+        Self::save(&config);
 
-        // emit update event
+        ctx.emit_event("audio_cfg_updated", config.clone());
+
+        config
     }
 
     fn get_path() -> String {
