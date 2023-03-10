@@ -6,33 +6,35 @@ import { useAutoAnimate } from "@formkit/auto-animate/react";
 import useStore from "@/store";
 import ipc from "@/ipc";
 import { Button } from "@/components";
-import { useEvents } from "@/hooks";
-import { Settings } from "@/bindings/Settings";
-import { SettingsForUpdate } from "@/bindings/SettingsForUpdate";
 import CreateThemeModal from "./CreateThemeModal";
 import ThemeView from "./ThemeView";
+import { InterfaceConfigForUpdate } from "@/bindings/InterfaceConfigForUpdate";
 
-interface Props {
-  settings: Settings;
-  update: (data: Partial<SettingsForUpdate>) => Promise<Settings>;
-}
-
-const AppearanceView: React.FC<Props> = (props) => {
+const InterfaceView: React.FC = () => {
   const [viewCreate, setViewCreate] = React.useState(false);
 
   const store = useStore();
+
+  const config = store.interfaceConfig;
 
   const themes = useStore((state) => state.themes);
   const setThemes = useStore((state) => state.setThemes);
   const currentTheme = useStore((state) => state.currentTheme);
 
+  const [themesContainer] = useAutoAnimate<HTMLDivElement>();
+
   React.useEffect(() => {
     ipc.getThemes().then((data) => setThemes(data));
+    ipc.getInterfaceConfig().then((data) => store.setInterfaceConfig(data));
   }, []);
 
-  useEvents({ settings_updated: (data) => store.setSettings(data) });
+  const updateConfig = async (data: Partial<InterfaceConfigForUpdate>) => {
+    const result = await ipc.updateInterfaceConfig(data);
+    store.setInterfaceConfig(result);
+    return result;
+  };
 
-  const [themesContainer] = useAutoAnimate<HTMLDivElement>();
+  if (!config) return null;
 
   return (
     <div className="flex flex-col gap-3 pb-2 animate-in fade-in-0 zoom-in-95">
@@ -46,10 +48,10 @@ const AppearanceView: React.FC<Props> = (props) => {
           tabIndex={-2}
           id="display-live-countdown"
           size="sm"
-          checked={props.settings.display_live_countdown}
-          onChange={(value) =>
-            props.update({
-              display_live_countdown: value.currentTarget.checked,
+          checked={config.display_timer_countdown}
+          onChange={async (value) =>
+            updateConfig({
+              display_timer_countdown: value.currentTarget.checked,
             })
           }
           styles={{
@@ -91,4 +93,4 @@ const AppearanceView: React.FC<Props> = (props) => {
   );
 };
 
-export default AppearanceView;
+export default InterfaceView;

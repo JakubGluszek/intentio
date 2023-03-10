@@ -1,30 +1,40 @@
 import React from "react";
 import { Checkbox } from "@mantine/core";
+import useStore from "@/store";
+import ipc from "@/ipc";
+import { BehaviorConfigForUpdate } from "@/bindings/BehaviorConfigForUpdate";
 
-import { Settings } from "@/bindings/Settings";
-import { SettingsForUpdate } from "@/bindings/SettingsForUpdate";
+const BehaviorView: React.FC = () => {
+  const store = useStore();
+  const config = store.behaviorConfig;
 
-interface Props {
-  settings: Settings;
-  update: (data: Partial<SettingsForUpdate>) => Promise<Settings>;
-}
+  const updateConfig = async (data: Partial<BehaviorConfigForUpdate>) => {
+    const result = await ipc.updateBehaviorConfig(data);
+    store.setBehaviorConfig(result);
+    return result;
+  };
 
-const BehaviorView: React.FC<Props> = (props) => {
+  React.useEffect(() => {
+    ipc.getBehaviorConfig().then((data) => store.setBehaviorConfig(data));
+  }, []);
+
+  if (!config) return null;
+
   return (
     <div className="flex flex-col gap-3 pb-2 animate-in fade-in-0 zoom-in-95">
       {/* Display live countdown checkbox */}
       <div className="flex flex-row items-center card">
-        <label className="w-full" htmlFor="hide-to-tray">
-          Hide main window to tray
+        <label className="w-full text-sm text-text/80" htmlFor="hide-to-tray">
+          Minimize main window to tray
         </label>
         <Checkbox
           tabIndex={-2}
           id="hide-to-tray"
           size="sm"
-          defaultChecked={props.settings.main_window_to_tray}
+          defaultChecked={config.main_minimize_to_tray}
           onChange={(value) =>
-            props.update({
-              main_window_to_tray: value.currentTarget.checked,
+            updateConfig({
+              main_minimize_to_tray: value.currentTarget.checked,
             })
           }
           styles={{

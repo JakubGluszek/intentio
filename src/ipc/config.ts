@@ -16,7 +16,7 @@ export const getTimerConfig = async () => {
 export const updateTimerConfig = async (
   data: Partial<TimerConfigForUpdate>
 ) => {
-  return await invoke<TimerConfig>("get_timer_config", { data });
+  return await invoke<TimerConfig>("update_timer_config", { data });
 };
 
 export const getAudioConfig = async () => {

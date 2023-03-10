@@ -14,6 +14,7 @@ import { useTimer } from "@/hooks/useTimer";
 import Sidebar from "./sidebar";
 import { TimerSession } from "@/bindings/TimerSession";
 import { TimerConfig } from "@/bindings/TimerConfig";
+import { useEvents } from "@/hooks";
 
 const MainWindow: React.FC = () => {
   const [displaySidebar, setDisplaySidebar] = React.useState(false);
@@ -26,6 +27,8 @@ const MainWindow: React.FC = () => {
     ipc.getTimerConfig().then((data) => store.setTimerConfig(data));
     ipc.getTimerSession().then((data) => store.setTimerSession(data));
   }, []);
+
+  useEvents({ timer_config_updated: (data) => store.setTimerConfig(data) });
 
   return (
     <WindowContainer>

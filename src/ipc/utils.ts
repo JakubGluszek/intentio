@@ -7,7 +7,7 @@ export const getCurrentTheme = async () => {
 
 export const setCurrentTheme = async (themeId: string) => {
   return await invoke<Theme>("set_current_theme", {
-    data: { current_theme_id: themeId },
+    data: { theme_id: themeId },
   });
 };
 

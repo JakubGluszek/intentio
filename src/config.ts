@@ -27,7 +27,7 @@ const config = {
       url: "/settings",
       title: "Settings",
       width: 480,
-      height: 360,
+      height: 340,
       ...WebviewConfig,
     },
     intents: {

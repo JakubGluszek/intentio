@@ -11,33 +11,39 @@ import {
   MdVolumeUp,
 } from "react-icons/md";
 import { AiFillFolder, AiFillFolderOpen } from "react-icons/ai";
-import { Checkbox } from "@mantine/core";
 import { BaseDirectory, FileEntry, readDir } from "@tauri-apps/api/fs";
 
 import ipc from "@/ipc";
 import { Slider, Button } from "@/components";
-import { Settings } from "@/bindings/Settings";
-import { SettingsForUpdate } from "@/bindings/SettingsForUpdate";
+import useStore from "@/store";
+import { AudioConfigForUpdate } from "@/bindings/AudioConfigForUpdate";
 
 const AUDIO_FORMATS = [".mp3", ".ogg"];
 
-interface Props {
-  settings: Settings;
-  update: (data: Partial<SettingsForUpdate>) => Promise<Settings>;
-}
-
-const AlertsView: React.FC<Props> = (props) => {
-  const [currentTrack, setCurrentTrack] = React.useState<FileEntry>({
-    name: props.settings.alert_audio,
-    path: "",
-  });
+const AudioView: React.FC = () => {
+  const [currentTrack, setCurrentTrack] = React.useState<FileEntry>();
   const [tracks, setTracks] = React.useState<FileEntry[]>([]);
 
   const [volumeKey, setVolumeKey] = React.useState<undefined | null>(undefined);
   const [playingAudio, setPlayingAudio] = React.useState(false);
 
+  const store = useStore();
+
+  const config = store.audioConfig;
+
+  const updateConfig = async (data: Partial<AudioConfigForUpdate>) => {
+    const result = await ipc.updateAudioConfig(data);
+    store.setAudioConfig(result);
+    return result;
+  };
+
+  React.useEffect(() => {
+    config && setCurrentTrack({ name: config.alert_file, path: "" });
+  }, [config]);
+
   React.useEffect(() => {
     readTracks();
+    ipc.getAudioConfig().then((data) => store.setAudioConfig(data));
   }, []);
 
   // Reads files in audio directory matchings the specified file formats
@@ -57,7 +63,7 @@ const AlertsView: React.FC<Props> = (props) => {
   const nextTrack = () => {
     for (let i = 0; i < tracks.length; i++) {
       const track = tracks[i];
-      if (track.name === currentTrack.name) {
+      if (track.name === currentTrack?.name) {
         let nextTrack: FileEntry;
         if (i < tracks.length - 1) {
           nextTrack = tracks[i + 1];
@@ -74,7 +80,7 @@ const AlertsView: React.FC<Props> = (props) => {
   const previousTrack = () => {
     for (let i = 0; i < tracks.length; i++) {
       const track = tracks[i];
-      if (track.name === currentTrack.name) {
+      if (track.name === currentTrack?.name) {
         let nextTrack: FileEntry;
         if (i > 0) {
           nextTrack = tracks[i - 1];
@@ -88,46 +94,48 @@ const AlertsView: React.FC<Props> = (props) => {
     }
   };
 
-  const updateTrack = (track: FileEntry) => {
-    props.update({ alert_audio: track.name });
+  const updateTrack = async (track: FileEntry) => {
+    return await updateConfig({ alert_audio: track.name });
   };
 
   const playAudio = () => {
     currentTrack &&
       !playingAudio &&
       ipc
-        .playAudio(currentTrack.path)
+        .playAudio(currentTrack?.path)
         .then(() => setPlayingAudio(false))
         .catch(() => setPlayingAudio(false));
     !playingAudio && setPlayingAudio(true);
   };
 
+  if (!config) return null;
+
   return (
     <div className="flex flex-col gap-3 pb-2 animate-in fade-in-0 zoom-in-95">
-      <div className="flex flex-row items-center card">
-        <label className="w-full" htmlFor="system-notifications">
-          System notifications
-        </label>
-        <Checkbox
-          tabIndex={-2}
-          size="sm"
-          id="system-notifications"
-          defaultChecked={props.settings.system_notifications}
-          onChange={(value) =>
-            props.update({
-              system_notifications: value.currentTarget.checked,
-            })
-          }
-          styles={{
-            icon: { color: "rgb(var(--primary-color)) !important" },
-            root: { height: "20px" },
-          }}
-          classNames={{
-            input:
-              "border-primary checked:border-primary bg-transparent checked:bg-transparent border-2",
-          }}
-        />
-      </div>
+      {/* <div className="flex flex-row items-center card"> */}
+      {/*   <label className="w-full" htmlFor="system-notifications"> */}
+      {/*     System notifications */}
+      {/*   </label> */}
+      {/*   <Checkbox */}
+      {/*     tabIndex={-2} */}
+      {/*     size="sm" */}
+      {/*     id="system-notifications" */}
+      {/*     defaultChecked={config.} */}
+      {/*     onChange={(value) => */}
+      {/*       props.update({ */}
+      {/*         system_notifications: value.currentTarget.checked, */}
+      {/*       }) */}
+      {/*     } */}
+      {/*     styles={{ */}
+      {/*       icon: { color: "rgb(var(--primary-color)) !important" }, */}
+      {/*       root: { height: "20px" }, */}
+      {/*     }} */}
+      {/*     classNames={{ */}
+      {/*       input: */}
+      {/*         "border-primary checked:border-primary bg-transparent checked:bg-transparent border-2", */}
+      {/*     }} */}
+      {/*   /> */}
+      {/* </div> */}
       <div className="flex flex-col gap-3 card">
         <div className="flex flex-row items-center gap-4">
           <span>Audio</span>
@@ -148,18 +156,16 @@ const AlertsView: React.FC<Props> = (props) => {
           <Button
             transparent
             disabled={playingAudio}
-            onClick={() => {
-              props
-                .update({
-                  alert_volume: props.settings.alert_volume === 0 ? 0.5 : 0,
-                })
-                .then(() => {
-                  setVolumeKey((key) => (key === undefined ? null : undefined));
-                });
+            onClick={async () => {
+              updateConfig({
+                alert_volume: config.alert_volume === 0 ? 0.5 : 0,
+              }).then(() => {
+                setVolumeKey((key) => (key === undefined ? null : undefined));
+              });
             }}
           >
-            {props.settings.alert_volume > 0 ? (
-              props.settings.alert_volume < 0.5 ? (
+            {config.alert_volume > 0 ? (
+              config.alert_volume < 0.5 ? (
                 <MdVolumeDown size={28} />
               ) : (
                 <MdVolumeUp size={28} />
@@ -173,20 +179,20 @@ const AlertsView: React.FC<Props> = (props) => {
             disabled={playingAudio}
             min={0}
             max={100}
-            defaultValue={parseInt(
-              (props.settings.alert_volume * 100).toFixed()
-            )}
-            onChangeEnd={(volume) =>
-              props
-                .update({
-                  alert_volume: volume / 100,
-                })
-                .then(() => {
-                  setVolumeKey(undefined);
-                })
+            defaultValue={parseInt((config.alert_volume * 100).toFixed())}
+            onChangeEnd={async (volume) =>
+              updateConfig({
+                alert_volume: volume / 100,
+              }).then(() => {
+                setVolumeKey(undefined);
+              })
             }
           />
-          <Button disabled={playingAudio} transparent onClick={() => playAudio()}>
+          <Button
+            disabled={playingAudio}
+            transparent
+            onClick={() => playAudio()}
+          >
             {playingAudio ? (
               <MdPauseCircle size={28} />
             ) : (
@@ -200,21 +206,21 @@ const AlertsView: React.FC<Props> = (props) => {
           <div className="flex flex-row items-center px-2 py-0.5 gap-2 bg-base rounded shadow">
             <Button
               transparent
-              onClick={() =>
-                props.settings.alert_repeat > 1 &&
-                props.update({
-                  alert_repeat: props.settings.alert_repeat - 1,
+              onClick={async () =>
+                config.alert_repeat > 1 &&
+                updateConfig({
+                  alert_repeat: config.alert_repeat - 1,
                 })
               }
             >
               <MdRemove size={24} />
             </Button>
-            <div className="w-8 text-center">{props.settings.alert_repeat}</div>
+            <div className="w-8 text-center">{config.alert_repeat}</div>
             <Button
               transparent
-              onClick={() =>
-                props.update({
-                  alert_repeat: props.settings.alert_repeat + 1,
+              onClick={async () =>
+                updateConfig({
+                  alert_repeat: config.alert_repeat + 1,
                 })
               }
             >
@@ -248,4 +254,4 @@ const OpenFileExplorerButton: React.FC = () => {
   );
 };
 
-export default AlertsView;
+export default AudioView;

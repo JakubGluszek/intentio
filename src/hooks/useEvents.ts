@@ -9,6 +9,10 @@ import { Theme } from "@/bindings/Theme";
 import { Task } from "@/bindings/Task";
 import { Note } from "@/bindings/Note";
 import { Script } from "@/bindings/Script";
+import { TimerConfig } from "@/bindings/TimerConfig";
+import { BehaviorConfig } from "@/bindings/BehaviorConfig";
+import { AudioConfig } from "@/bindings/AudioConfig";
+import { InterfaceConfig } from "@/bindings/InterfaceConfig";
 
 type Events = {
   [key: string]: any;
@@ -34,10 +38,10 @@ type Events = {
   script_created: Script;
   script_updated: Script;
   script_deleted: ModelDeleteResultData;
-  timer_cfg_updated: TimerConfig;
-  behavior_cfg_updated: BehaviorConfig;
-  audio_cfg_updated: AudioConfig;
-  interface_cfg_updated: InterfaceConfig;
+  timer_config_updated: TimerConfig;
+  behavior_config_updated: BehaviorConfig;
+  audio_config_updated: AudioConfig;
+  interface_config_updated: InterfaceConfig;
 };
 
 type Callback<T extends keyof Events> = (data: Events[T]) => void;

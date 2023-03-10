@@ -70,7 +70,7 @@ impl BehaviorCfg {
 
         Self::save(&config);
 
-        ctx.emit_event("behavior_cfg_updated", config.clone());
+        ctx.emit_event("behavior_config_updated", config.clone());
 
         config
     }

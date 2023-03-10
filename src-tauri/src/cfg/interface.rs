@@ -76,7 +76,7 @@ impl InterfaceCfg {
 
         Self::save(&config);
 
-        ctx.emit_event("interface_cfg_updated", config.clone());
+        ctx.emit_event("interface_config_updated", config.clone());
 
         config
     }

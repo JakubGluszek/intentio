@@ -86,7 +86,7 @@ impl AudioCfg {
 
         Self::save(&config);
 
-        ctx.emit_event("audio_cfg_updated", config.clone());
+        ctx.emit_event("audio_config_updated", config.clone());
 
         config
     }

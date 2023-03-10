@@ -116,7 +116,7 @@ impl TimerCfg {
 
         Self::save(&config);
 
-        ctx.emit_event("timer_cfg_updated", config.clone());
+        ctx.emit_event("timer_config_updated", config.clone());
 
         config
     }
