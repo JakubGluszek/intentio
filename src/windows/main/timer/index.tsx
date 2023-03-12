@@ -2,7 +2,6 @@ import React from "react";
 import { MdPauseCircle, MdPlayCircle, MdSkipNext } from "react-icons/md";
 import { VscDebugRestart } from "react-icons/vsc";
 import Color from "color";
-import { toast } from "react-hot-toast";
 
 import utils from "@/utils";
 import ipc from "@/ipc";
@@ -29,21 +28,17 @@ interface Props extends Timer {
 const TimerView: React.FC<Props> = (props) => {
   const store = useStore();
 
-  const intent = store.getActiveIntent();
-
   return (
     <React.Fragment>
       <CircleTimer
-        isPlaying={props.session.is_playing}
-        duration={props.session.duration}
+        isPlaying={props.isPlaying}
+        duration={props.duration}
         elapsedTime={props.elapsedTimeDetailed}
         strokeWidth={6}
         size={230}
         color={
           Color(
-            props.session.is_playing
-              ? props.theme.primary_hex
-              : props.theme.base_hex
+            props.isPlaying ? props.theme.primary_hex : props.theme.base_hex
           )
             .alpha(0.8)
             .hex() as ColorFormat
@@ -63,19 +58,17 @@ const TimerView: React.FC<Props> = (props) => {
                 }
                 style={{
                   fontSize: 40,
-                  color: props.session.is_playing
+                  color: props.isPlaying
                     ? props.theme.primary_hex
                     : props.theme.text_hex,
                 }}
               >
-                {utils.formatTimeTimer(
-                  props.session.duration - props.session.elapsed_time
-                )}
+                {utils.formatTimeTimer(props.duration - props.elapsedTime)}
               </span>
               <span className="text-lg text-text/60 whitespace-nowrap">
-                {props.session._type === "Focus"
+                {props.type === "Focus"
                   ? "Focus"
-                  : props.session._type === "Break"
+                  : props.type === "Break"
                     ? "Break"
                     : "Long break"}
               </span>
@@ -90,14 +83,14 @@ const TimerView: React.FC<Props> = (props) => {
                 })
               }
               style={{
-                color: props.session.is_playing
+                color: props.isPlaying
                   ? props.theme.primary_hex
                   : props.theme.text_hex,
               }}
             >
-              {props.session._type === "Focus"
+              {props.type === "Focus"
                 ? "Focus"
-                : props.session._type === "Break"
+                : props.type === "Break"
                   ? "Break"
                   : "Long break"}
             </span>
@@ -109,13 +102,12 @@ const TimerView: React.FC<Props> = (props) => {
             className="text-primary/80 hover:text-primary translate-x-8 translate-y-8"
             onClick={() => {
               props.restart();
-              toast("Session restarted");
             }}
           >
             <VscDebugRestart size={24} />
           </button>
           <div className="flex flex-row items-center justify-center gap-2 w-full h-10">
-            {props.session.is_playing ? (
+            {props.isPlaying ? (
               <Button
                 transparent
                 highlight={false}
@@ -143,18 +135,20 @@ const TimerView: React.FC<Props> = (props) => {
       </CircleTimer>
       <div className="bottom-0 left-0 w-full flex flex-row items-center justify-between gap-0.5 bg-window/90 border-2 border-base/80 rounded">
         <span className="text-primary/80 font-bold text-center p-1.5">
-          #{props.session.iterations}
+          #{props.iterations}
         </span>
-        {intent ? (
+        {store.currentIntent ? (
           <div className="w-full flex flex-row items-center gap-0.5 text-text/80 p-1.5">
-            <span className="w-full text-center">{intent.label}</span>
+            <span className="w-full text-center">
+              {store.currentIntent.label}
+            </span>
           </div>
         ) : null}
         <div className="flex flex-row items-center gap-1">
           <Button
             transparent
             onClick={() => {
-              props.skip();
+              props.skip(true);
             }}
           >
             <MdSkipNext size={28} />

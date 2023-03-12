@@ -3,15 +3,13 @@ import create from "zustand";
 import { createIntentsSlice, IntentsSlice } from "./intentsSlice";
 import { createNotesSlice, NotesSlice } from "./notesSlice";
 import { createSessionsSlice, SessionsSlice } from "./sessionsSlice";
-import { createStateSlice, StateSlice } from "./stateSlice";
 import { createTasksSlice, TasksSlice } from "./tasksSlice";
 import { createThemesSlice, ThemesSlice } from "./themesSlice";
 import { createUtilsSlice, UtilsSlice } from "./utilsSlice";
 import { createScriptsSlice, ScriptsSlice } from "./scriptsSlice";
 import { ConfigSlice, createConfigSlice } from "./configSlice";
 
-type Store = StateSlice &
-  IntentsSlice &
+type Store = IntentsSlice &
   SessionsSlice &
   ThemesSlice &
   TasksSlice &
@@ -21,7 +19,6 @@ type Store = StateSlice &
   ConfigSlice;
 
 const useStore = create<Store>()((...a) => ({
-  ...createStateSlice(...a),
   ...createIntentsSlice(...a),
   ...createSessionsSlice(...a),
   ...createThemesSlice(...a),

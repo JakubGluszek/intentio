@@ -11,7 +11,6 @@ mod ipc;
 mod models;
 mod prelude;
 mod setup;
-mod state;
 mod utils;
 
 use crate::ipc::*;
@@ -35,9 +34,6 @@ async fn main() -> Result<()> {
         .system_tray(SystemTray::new().with_menu(create_tray_menu()))
         .on_system_tray_event(handle_on_system_tray_event)
         .invoke_handler(tauri::generate_handler![
-            // state
-            get_timer_session,
-            set_timer_session,
             // config
             get_timer_config,
             update_timer_config,

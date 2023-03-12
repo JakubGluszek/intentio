@@ -6,6 +6,5 @@ export * from "./themes";
 export * from "./utils";
 export * from "./scripts";
 export * from "./config";
-export * from "./state";
 
 export * as default from "./index";

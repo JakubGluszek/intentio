@@ -19,13 +19,7 @@ const IntentsView: React.FC = () => {
   const store = useStore();
 
   const onIntentChange = async (data: Intent | undefined) => {
-    if (!store.timerSession) return;
-    ipc
-      .setTimerSession({
-        ...store.timerSession,
-        intent_id: data ? data.id : null,
-      })
-      .then((data) => store.setTimerSession(data));
+    store.setCurrentIntent(data);
   };
 
   React.useEffect(() => {
@@ -53,7 +47,7 @@ const IntentsView: React.FC = () => {
             (intent) =>
               intent.archived_at === null || intent.archived_at === undefined
           )}
-          selectedIntentId={store.timerSession?.intent_id ?? null}
+          selectedIntentId={store.currentIntent?.id}
           selectedTags={selectedIntentTags}
           onSelected={onIntentChange}
           onTagSelected={(data) => setSelectedIntentTags(data)}

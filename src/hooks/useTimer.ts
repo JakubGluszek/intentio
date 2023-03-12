@@ -1,150 +1,131 @@
+import React from "react";
+
+import { TimerSession } from "@/types";
 import { SessionType } from "@/bindings/SessionType";
 import { TimerConfig } from "@/bindings/TimerConfig";
-import { TimerSession } from "@/bindings/TimerSession";
-import ipc from "@/ipc";
 import { useElapsedTime } from "./useElapsedTime";
 
-export interface useTimerProps {
-  session: TimerSession;
-  onSessionUpdate: (session: TimerSession) => void;
-  config: TimerConfig;
-  onUpdated?: (timeLeft: number) => void;
+export interface TimerCallbacks {
+  onUpdated?: () => void;
   onPaused?: () => void;
   onResumed?: () => void;
-  onSessionSwitched?: (type: SessionType) => void;
   onSkipped?: () => void;
   onRestarted?: () => void;
-  onCompleted?: (session: TimerSession) => void;
+  onCompleted?: (session: Partial<TimerSession>) => void;
 }
 
-export interface Timer {
-  session: TimerSession;
+export interface Timer extends TimerSession {
   resume: () => void;
   pause: () => void;
   restart: () => void;
-  skip: () => void;
+  skip: (manual?: boolean) => void;
   /** Floating point number for smooth stroke render */
   elapsedTimeDetailed: number;
 }
 
-export const useTimer = (props: useTimerProps): Timer => {
-  const { reset, elapsedTime } = useElapsedTime({
-    isPlaying: props.session.is_playing,
-    duration: props.session.duration,
-    updateInterval: 0,
-    onUpdate: onUpdate,
-    onComplete: complete,
-  });
+export const useTimer = (
+  config: TimerConfig,
+  callbacks: TimerCallbacks
+): Timer => {
+  const [sessionType, setSessionType] = React.useState<SessionType>("Focus");
+  const [isPlaying, setIsPlaying] = React.useState(false);
+  const [duration, setDuration] = React.useState(config.focus_duration * 60);
+  const [startedAt, setStartedAt] = React.useState<string>(); // epoch in ms
+  const [iterations, setIterations] = React.useState(0);
 
-  function onUpdate(elapsedTime: number) {
-    props.onSessionUpdate({ ...props.session, elapsed_time: elapsedTime });
-    if (elapsedTime === props.session.duration) {
-      skip();
-    }
-  }
+  const resume = () => {
+    if (!startedAt) setStartedAt(new Date().getTime().toString());
+    setIsPlaying(true);
+  };
 
-  function resume() {
-    let session = {
-      ...props.session,
-      is_playing: true,
-    };
+  const pause = () => {
+    setIsPlaying(false);
+  };
 
-    if (props.session.started_at === null) {
-      session = {
-        ...session,
-        started_at: new Date().getTime().toString(),
-      };
-    }
-
-    props.onSessionUpdate(session);
-  }
-
-  function pause() {
-    props.onSessionUpdate({ ...props.session, is_playing: false });
-    props.onPaused && props.onPaused();
-  }
-
-  function restart() {
-    complete();
+  const restart = () => {
+    pause();
     reset();
-    props.onSessionUpdate({
-      ...props.session,
-      started_at: null,
-      elapsed_time: 0,
-      is_playing: false,
-    });
-    props.onRestarted && props.onRestarted();
-  }
+    setStartedAt(undefined);
+  };
 
-  function switchSession(prevType: SessionType) {
-    let session = {
-      ...props.session,
-      is_playing: false,
-      elapsed_time: 0,
-      started_at: null,
-    };
+  const skip = (manual?: boolean) => {
+    switchSession(manual ?? false);
+    restart();
+  };
 
-    if (prevType === "Focus") {
+  const switchSession = (manual: boolean) => {
+    let newSessionType = sessionType;
+    let newDuration = duration;
+
+    if (sessionType === "Focus") {
+      !manual && setIterations((iterations) => iterations + 1);
+
       const isLongBreak =
-        props.session.iterations >= props.config.long_break_interval &&
-        props.session.iterations % props.config.long_break_interval === 0;
+        iterations >= config.long_break_interval &&
+        iterations % config.long_break_interval === 0;
 
-      if (prevType === "Focus" && isLongBreak) {
-        session = {
-          ...session,
-          _type: "LongBreak",
-          duration: props.config.long_break_duration * 60,
-        };
-      } else if (prevType === "Focus") {
-        session = {
-          ...session,
-          _type: "Break",
-          duration: props.config.break_duration * 60,
-        };
+      if (isLongBreak) {
+        newSessionType = "LongBreak";
+        newDuration = config.long_break_duration * 60;
+      } else {
+        newSessionType = "Break";
+        newDuration = config.break_duration * 60;
       }
     } else {
-      session = {
-        ...session,
-        _type: "Focus",
-        duration: props.config.focus_duration * 60,
-      };
+      newSessionType = "Focus";
+      newDuration = config.focus_duration * 60;
     }
 
-    props.onSessionUpdate(session);
+    setSessionType(newSessionType);
+    setDuration(newDuration);
+  };
 
-    if (session._type === "Focus" && props.config.auto_start_focus) resume();
-    else if (props.config.auto_start_breaks) resume();
-  }
+  const onComplete = () => {
+    pause();
+    callbacks.onCompleted &&
+      callbacks.onCompleted({
+        elapsedTime: ~~elapsedTime + 1,
+        startedAt,
+        type: sessionType,
+      });
+    skip(false);
+  };
 
-  function skip() {
-    complete();
-    reset();
-    switchSession(props.session._type);
-  }
+  const { reset, elapsedTime } = useElapsedTime({
+    isPlaying,
+    duration,
+    updateInterval: 0,
+    onComplete: onComplete,
+  });
 
-  function complete() {
-    if (
-      props.session._type !== "Focus" ||
-      props.session.elapsed_time < 60 ||
-      !props.session.started_at
-    )
-      return;
+  React.useEffect(() => {
+    let newDuration = duration;
 
-    ipc.createSession({
-      duration: ~~(props.session.elapsed_time / 60),
-      started_at: props.session.started_at,
-      intent_id: props.session.intent_id,
-    });
+    switch (sessionType) {
+      case "Focus":
+        newDuration = config.focus_duration;
+        break;
+      case "Break":
+        newDuration = config.break_duration;
+        break;
+      case "LongBreak":
+        newDuration = config.long_break_duration;
+        break;
+    }
 
-    props.onCompleted && props.onCompleted(props.session);
-  }
+    setDuration(newDuration * 60);
+  }, [config]);
 
   return {
-    session: props.session,
     elapsedTimeDetailed: elapsedTime,
     resume,
     pause,
     restart,
     skip,
+    type: sessionType,
+    duration,
+    elapsedTime: ~~elapsedTime,
+    isPlaying,
+    iterations,
   };
 };

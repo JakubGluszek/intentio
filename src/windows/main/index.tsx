@@ -8,13 +8,13 @@ import ipc from "@/ipc";
 import useStore from "@/store";
 import config from "@/config";
 import { Button } from "@/components";
+import { useEvents } from "@/hooks";
+import { useTimer } from "@/hooks/useTimer";
 import TimerView from "./timer";
 import WindowContainer from "@/components/WindowContainer";
-import { useTimer } from "@/hooks/useTimer";
 import Sidebar from "./sidebar";
-import { TimerSession } from "@/bindings/TimerSession";
 import { TimerConfig } from "@/bindings/TimerConfig";
-import { useEvents } from "@/hooks";
+import { TimerSession } from "@/types";
 
 const MainWindow: React.FC = () => {
   const [displaySidebar, setDisplaySidebar] = React.useState(false);
@@ -25,10 +25,11 @@ const MainWindow: React.FC = () => {
 
   React.useEffect(() => {
     ipc.getTimerConfig().then((data) => store.setTimerConfig(data));
-    ipc.getTimerSession().then((data) => store.setTimerSession(data));
   }, []);
 
-  useEvents({ timer_config_updated: (data) => store.setTimerConfig(data) });
+  useEvents({
+    timer_config_updated: (data) => store.setTimerConfig(data),
+  });
 
   return (
     <WindowContainer>
@@ -37,9 +38,8 @@ const MainWindow: React.FC = () => {
           displaySidebar={displaySidebar}
           toggleSidebar={toggleSidebar}
         />
-        {store.timerSession && store.timerConfig && (
+        {store.timerConfig && (
           <Content
-            timerSession={store.timerSession}
             timerConfig={store.timerConfig}
             displaySidebar={displaySidebar}
             toggleSidebar={toggleSidebar}
@@ -91,7 +91,6 @@ const Titlebar: React.FC<TitlebarProps> = (props) => {
 };
 
 interface ContentProps {
-  timerSession: TimerSession;
   timerConfig: TimerConfig;
   displaySidebar: boolean;
   toggleSidebar: () => void;
@@ -100,14 +99,25 @@ interface ContentProps {
 const Content: React.FC<ContentProps> = (props) => {
   const store = useStore();
 
-  const timer = useTimer({
-    session: props.timerSession,
-    config: props.timerConfig,
-    onSessionUpdate: (session: TimerSession) => {
-      store.setTimerSession(session);
-      ipc.setTimerSession(session);
-    },
-  });
+  const onTimerComplete = (session: Partial<TimerSession>) => {
+    ipc.playAudio();
+
+    if (
+      session.type !== "Focus" ||
+      (session.elapsedTime && session.elapsedTime < 60) ||
+      !session.startedAt
+    )
+      return;
+
+    ipc.createSession({
+      duration: ~~(session.elapsedTime! / 60),
+      started_at: session.startedAt,
+      intent_id: store.currentIntent?.id!,
+    });
+  };
+
+  const timer = useTimer(props.timerConfig, { onCompleted: onTimerComplete });
+  // todo: notifications, execute scripts, toasts
 
   return (
     <div className="grow flex flex-row">

@@ -1,11 +1,10 @@
-use std::{fs, path::Path, sync::Mutex};
+use std::{fs, path::Path};
 
 use tauri::{App, AppHandle, Manager};
 use tauri_hotkey::{Hotkey, HotkeyManager, Key, Modifier};
 
 use crate::{
     cfg::{AudioCfg, BehaviorCfg, InterfaceCfg, TimerCfg},
-    state::{State, TimerSession},
     utils,
 };
 
@@ -17,21 +16,8 @@ pub fn init_setup(app: &mut App) {
     BehaviorCfg::setup();
     InterfaceCfg::setup();
 
-    setup_state(app);
-
     setup_hotkeys_manager(app);
     build_main_window(&app.app_handle());
-}
-
-fn setup_state(app: &mut App) {
-    let timer = TimerCfg::get();
-
-    let session = TimerSession::new(timer.focus_duration * 60);
-
-    let state = State::new(session);
-    let state = Mutex::new(state);
-
-    app.manage(state);
 }
 
 fn setup_config_dir() {

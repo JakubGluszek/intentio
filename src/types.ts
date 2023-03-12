@@ -8,4 +8,13 @@ export interface DayDetail {
   sessions?: Session[];
 }
 
-export type TimerType = "focus" | "break" | "long break";
+export type SessionType = "Focus" | "Break" | "LongBreak";
+
+export interface TimerSession {
+  type: SessionType;
+  duration: number;
+  elapsedTime: number;
+  iterations: number;
+  isPlaying: boolean;
+  startedAt?: string;
+}

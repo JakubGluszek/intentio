@@ -13,6 +13,7 @@ import { TimerConfig } from "@/bindings/TimerConfig";
 import { BehaviorConfig } from "@/bindings/BehaviorConfig";
 import { AudioConfig } from "@/bindings/AudioConfig";
 import { InterfaceConfig } from "@/bindings/InterfaceConfig";
+import { TimerSession } from "@/types";
 
 type Events = {
   [key: string]: any;
@@ -42,6 +43,7 @@ type Events = {
   behavior_config_updated: BehaviorConfig;
   audio_config_updated: AudioConfig;
   interface_config_updated: InterfaceConfig;
+  timer_session_updated: TimerSession;
 };
 
 type Callback<T extends keyof Events> = (data: Events[T]) => void;

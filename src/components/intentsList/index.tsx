@@ -6,7 +6,7 @@ import IntentListItem from "./IntentListItem";
 
 interface Props {
   data: Intent[];
-  selectedIntentId: string | null;
+  selectedIntentId?: string;
   selectedTags: string[];
   sort?: IntentsSort;
   onSelected: (data?: Intent) => void;
