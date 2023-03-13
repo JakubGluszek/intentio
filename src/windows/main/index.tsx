@@ -15,6 +15,8 @@ import WindowContainer from "@/components/WindowContainer";
 import Sidebar from "./sidebar";
 import { TimerConfig } from "@/bindings/TimerConfig";
 import { TimerSession } from "@/types";
+import { toast } from "react-hot-toast";
+import utils from "@/utils";
 
 const MainWindow: React.FC = () => {
   const [displaySidebar, setDisplaySidebar] = React.useState(false);
@@ -25,6 +27,7 @@ const MainWindow: React.FC = () => {
 
   React.useEffect(() => {
     ipc.getTimerConfig().then((data) => store.setTimerConfig(data));
+    ipc.getScripts().then((data) => store.setScripts(data));
   }, []);
 
   useEvents({
@@ -100,24 +103,56 @@ const Content: React.FC<ContentProps> = (props) => {
   const store = useStore();
 
   const onTimerComplete = (session: Partial<TimerSession>) => {
+    if (
+      session.type === "Focus" &&
+      session.elapsedTime &&
+      session.elapsedTime >= 60 &&
+      session.startedAt
+    ) {
+      ipc
+        .createSession({
+          duration: ~~(session.elapsedTime! / 60),
+          started_at: session.startedAt,
+          intent_id: store.currentIntent?.id!,
+        })
+        .then(() => toast("Session saved"));
+    }
+
     ipc.playAudio();
 
-    if (
-      session.type !== "Focus" ||
-      (session.elapsedTime && session.elapsedTime < 60) ||
-      !session.startedAt
-    )
-      return;
-
-    ipc.createSession({
-      duration: ~~(session.elapsedTime! / 60),
-      started_at: session.startedAt,
-      intent_id: store.currentIntent?.id!,
-    });
+    store.scripts.forEach(
+      (script) =>
+        script.active &&
+        (session.type === "Focus"
+          ? script.run_on_session_end
+          : script.run_on_break_end) &&
+        utils.executeScript(script.body)
+    );
   };
 
-  const timer = useTimer(props.timerConfig, { onCompleted: onTimerComplete });
-  // todo: notifications, execute scripts, toasts
+  const timer = useTimer(props.timerConfig, {
+    onCompleted: onTimerComplete,
+    onResumed: (session) => {
+      store.scripts.forEach(
+        (script) =>
+          script.active &&
+          (session.type === "Focus"
+            ? script.run_on_session_start
+            : script.run_on_break_start) &&
+          utils.executeScript(script.body)
+      );
+    },
+    onPaused: (session) => {
+      store.scripts.forEach(
+        (script) =>
+          script.active &&
+          (session.type === "Focus"
+            ? script.run_on_session_pause
+            : script.run_on_break_pause) &&
+          utils.executeScript(script.body)
+      );
+    },
+  });
 
   return (
     <div className="grow flex flex-row">

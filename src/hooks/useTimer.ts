@@ -6,10 +6,10 @@ import { TimerConfig } from "@/bindings/TimerConfig";
 import { useElapsedTime } from "./useElapsedTime";
 
 export interface TimerCallbacks {
-  onUpdated?: () => void;
-  onPaused?: () => void;
-  onResumed?: () => void;
-  onSkipped?: () => void;
+  onUpdated?: (session: { type: SessionType }) => void;
+  onPaused?: (session: { type: SessionType }) => void;
+  onResumed?: (session: { type: SessionType }) => void;
+  onSkipped?: (session: { type: SessionType }) => void;
   onRestarted?: () => void;
   onCompleted?: (session: Partial<TimerSession>) => void;
 }
@@ -36,21 +36,31 @@ export const useTimer = (
   const resume = () => {
     if (!startedAt) setStartedAt(new Date().getTime().toString());
     setIsPlaying(true);
+    callbacks.onResumed && callbacks.onResumed({ type: sessionType });
   };
 
   const pause = () => {
     setIsPlaying(false);
+    callbacks.onPaused && callbacks.onPaused({ type: sessionType });
   };
 
   const restart = () => {
     pause();
     reset();
     setStartedAt(undefined);
+    callbacks.onRestarted && callbacks.onRestarted();
   };
 
   const skip = (manual?: boolean) => {
+    setIsPlaying(false);
+    reset();
+    setStartedAt(undefined);
     switchSession(manual ?? false);
-    restart();
+    if (!manual) {
+      if (sessionType === "Focus" && config.auto_start_focus) resume();
+      else if (config.auto_start_breaks) resume();
+    }
+    callbacks.onSkipped && callbacks.onSkipped({ type: sessionType });
   };
 
   const switchSession = (manual: boolean) => {
@@ -81,13 +91,13 @@ export const useTimer = (
   };
 
   const onComplete = () => {
-    pause();
     callbacks.onCompleted &&
       callbacks.onCompleted({
         elapsedTime: ~~elapsedTime + 1,
         startedAt,
         type: sessionType,
       });
+    pause();
     skip(false);
   };
 
