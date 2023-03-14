@@ -1,6 +1,6 @@
 import React from "react";
 import { TiPin, TiPinOutline } from "react-icons/ti";
-import { BiArchive } from "react-icons/bi";
+import { BiArchive, BiTargetLock } from "react-icons/bi";
 import { TbTags } from "react-icons/tb";
 import { toast } from "react-hot-toast";
 import { clsx } from "@mantine/core";
@@ -51,7 +51,7 @@ const IntentListItem: React.FC<Props> = (props) => {
         className={clsx(
           "w-full h-fit flex flex-col p-1 rounded-sm transition-all",
           props.selected
-            ? "bg-primary/50 hover:bg-primary/60 text-window -translate-y-[2px] shadow-lg shadow-black/30"
+            ? "bg-primary/50 hover:bg-primary/60 text-window -translate-y-[1px] shadow-lg shadow-black/30"
             : "border-transparent bg-base/80 hover:bg-base text-text/80 hover:text-text shadow shadow-black/30"
         )}
         onClick={(e) => props.onSelected(e, data)}
@@ -59,6 +59,7 @@ const IntentListItem: React.FC<Props> = (props) => {
       >
         {/* Label */}
         <div className="h-6 w-full flex flex-row items-center gap-1">
+          <BiTargetLock size={20} className="min-w-[20px]" />
           <div className="w-full text-left whitespace-nowrap overflow-ellipsis overflow-hidden font-black">
             {data.label}
           </div>

@@ -11,6 +11,7 @@ import { toast } from "react-hot-toast";
 import { useClickOutside } from "@mantine/hooks";
 import { clsx, Textarea } from "@mantine/core";
 import { writeText } from "@tauri-apps/api/clipboard";
+import { motion } from "framer-motion";
 
 import useStore from "@/store";
 import ipc from "@/ipc";
@@ -29,7 +30,7 @@ const NotesView: React.FC = () => {
   const containerRef = React.useRef<HTMLDivElement>(null);
 
   var notes = useStore((state) => state.notes);
-  notes = notes.filter((note) => note.intent_id === store.activeIntentId);
+  notes = notes.filter((note) => note.intent_id === store.currentIntent?.id);
 
   if (filterQuery.length > 0) {
     let query = filterQuery.toLowerCase();
@@ -71,11 +72,14 @@ const NotesView: React.FC = () => {
     setSelectedIds([]);
   }, [viewCreate, viewFilter]);
 
-  const randomText = React.useMemo(() => Math.floor(Math.random() * 3), []);
-
   return (
-    <div className="grow flex flex-col overflow-y-auto gap-1 p-1 bg-window/90 border-2 border-base/80 rounded">
-      <div className="w-full min-h-[2rem] flex flex-row justify-between">
+    <div className="grow flex flex-col gap-0.5">
+      <motion.div
+        className="flex flex-row gap-0.5"
+        transition={{ delay: 0.1, duration: 0.3 }}
+        initial={{ opacity: 0, height: 0 }}
+        animate={{ opacity: 1, height: 36 }}
+      >
         {!viewFilter ? (
           <CreateNoteView
             viewCreate={viewCreate}
@@ -84,7 +88,7 @@ const NotesView: React.FC = () => {
         ) : null}
         <div
           className={clsx(
-            "flex flex-row items-center gap-2",
+            "flex flex-row gap-2",
             viewFilter ? "w-full" : "w-fit"
           )}
         >
@@ -125,13 +129,13 @@ const NotesView: React.FC = () => {
             </>
           ) : null}
         </div>
-      </div>
+      </motion.div>
 
-      {notes.length > 0 ? (
-        <div
-          id="notes-container"
-          className="grow flex flex-col overflow-y-auto gap-1"
-        >
+      <div
+        id="notes-container"
+        className="grow flex flex-col p-1 bg-window/90 border-2 border-base/80 rounded"
+      >
+        <div className="grow flex flex-col overflow-y-auto gap-1 pb-2">
           <div
             ref={containerRef}
             className="w-full max-h-0 flex flex-col gap-1 pb-0.5"
@@ -146,34 +150,7 @@ const NotesView: React.FC = () => {
             ))}
           </div>
         </div>
-      ) : null}
-
-      {/* Some text to fill out the empty space */}
-      {notes.length === 0 ? (
-        <div className="flex flex-col gap-2 text-center m-auto text-text/50 text-sm">
-          {
-            [
-              <>
-                <p>
-                  No project notes detected, it's time to get organized and
-                  capture your progress.
-                </p>
-              </>,
-              <>
-                <p>
-                  Study sessions are more productive with notes, let's get
-                  started and take some.
-                </p>
-                <p>Let's liven it up!</p>
-              </>,
-              <>
-                <p>Writing summaries helps condense information.</p>
-                <p>Let's get started and create some!</p>
-              </>,
-            ][randomText]
-          }
-        </div>
-      ) : null}
+      </div>
     </div>
   );
 };
@@ -213,7 +190,7 @@ const NoteView: React.FC<NoteViewProps> = (props) => {
       <div
         ref={ref}
         className={clsx(
-          "min-h-fit flex flex-col gap-1.5 card text-sm p-0 bg-base/80 hover:bg-base",
+          "min-h-fit flex flex-col gap-1.5 card rounded-sm text-sm p-0 bg-base/80 hover:bg-base",
           isSelected && "border-2 border-primary/50 hover:border-primary/60",
           viewEdit && "border-0"
         )}
@@ -251,7 +228,7 @@ const NoteView: React.FC<NoteViewProps> = (props) => {
         data-tauri-disable-drag
       >
         {viewEdit === false ? (
-          <div className="flex flex-row items-start gap-1 p-1">
+          <div className="flex flex-row items-start gap-1">
             <div className="py-2 px-0.5 text-primary">
               <MdCircle size={8} />
             </div>
@@ -300,15 +277,24 @@ interface FilterNotesViewProps {
 
 const FilterNotesView: React.FC<FilterNotesViewProps> = (props) => {
   return !props.viewFilter ? (
-    <Button transparent onClick={() => props.setViewFilter(true)}>
-      <MdSearch size={24} />
-    </Button>
+    <div className="bg-window/90 border-2 border-base/80 rounded">
+      <Button
+        onClick={() => props.setViewFilter(true)}
+        transparent
+        transition={{ delay: 0.2, duration: 0.3 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0, transition: { duration: 0.1 } }}
+      >
+        <MdSearch size={24} />
+      </Button>
+    </div>
   ) : (
     <div className="w-full animate-in fade-in-0 zoom-in-90">
       <div className="relative">
         <input
           tabIndex={-2}
-          className="input"
+          className="input bg-darker/90"
           autoFocus
           placeholder='Press "ESCAPE" to exit'
           autoComplete="off"
@@ -322,16 +308,16 @@ const FilterNotesView: React.FC<FilterNotesViewProps> = (props) => {
         />
         {props.query.length > 1 ? (
           <Button
+            onClick={() => {
+              props.setQuery("");
+              props.setViewFilter(false);
+            }}
             style={{
               position: "absolute",
               right: 4,
               top: 6,
             }}
             transparent
-            onClick={() => {
-              props.setQuery("");
-              props.setViewFilter(false);
-            }}
           >
             <MdClose size={24} />
           </Button>
@@ -356,9 +342,9 @@ const CreateNoteView: React.FC<CreateNoteViewProps> = (props) => {
   });
 
   const onSubmit = () => {
-    if (body.length === 0) return;
+    if (body.length === 0 || !store.currentIntent) return;
     ipc
-      .createNote({ body, intent_id: store.activeIntentId! })
+      .createNote({ body, intent_id: store.currentIntent.id })
       .then(() => {
         toast("Note created");
         setBody("");
@@ -368,14 +354,20 @@ const CreateNoteView: React.FC<CreateNoteViewProps> = (props) => {
   };
 
   return !props.viewCreate ? (
-    <Button
-      transparent
-      style={{ height: "32px" }}
-      onClick={() => props.setViewCreate(true)}
-    >
-      <MdAddCircle size={20} />
-      <span>Add note</span>
-    </Button>
+    <div className="w-full bg-window/90 border-2 border-base/80 rounded">
+      <Button
+        onClick={() => props.setViewCreate(true)}
+        style={{ width: "100%" }}
+        transparent
+        transition={{ delay: 0.2, duration: 0.3 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0, transition: { duration: 0.1 } }}
+      >
+        <MdAddCircle size={20} />
+        <span>Add note</span>
+      </Button>
+    </div>
   ) : (
     <div className="w-full animate-in fade-in-0 zoom-in-90" ref={ref}>
       <NoteInput
@@ -476,7 +468,7 @@ const NoteInput: React.FC<NoteInputProps> = (props) => {
       autoComplete="off"
       classNames={{
         input:
-          "bg-darker/20 border-2 text-[15px] border-primary/80 focus:border-primary/80 text-text p-1 pt-1.5 placeholder:text-text/50 placeholder:font-mono placeholder:text-sm",
+          "bg-darker/90 border-2 text-[15px] border-primary/80 focus:border-primary/80 text-text p-1 pt-1.5 placeholder:text-text/50 placeholder:font-mono placeholder:text-sm",
       }}
       value={props.value}
       onChange={(e) => {

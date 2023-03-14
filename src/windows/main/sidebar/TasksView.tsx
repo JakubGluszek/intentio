@@ -9,6 +9,7 @@ import { useClickOutside } from "@mantine/hooks";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { clsx, Tooltip } from "@mantine/core";
+import { motion } from "framer-motion";
 
 import useStore from "@/store";
 import ipc from "@/ipc";
@@ -18,7 +19,7 @@ import { Task } from "@/bindings/Task";
 
 const TasksView: React.FC = () => {
   const [viewCreate, setViewCreate] = React.useState(false);
-  const [viewFinished, setViewFinished] = React.useState(false);
+  const [viewCompletedTasks, setViewCompletedTasks] = React.useState(false);
   const [viewConfirmDelete, setViewConfirmDelete] = React.useState(false);
   const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
 
@@ -26,7 +27,7 @@ const TasksView: React.FC = () => {
   const tasksContainer = React.useRef<HTMLDivElement>(null);
 
   var tasks = useStore((state) => state.tasks);
-  tasks = tasks.filter((task) => task.intent_id === store.activeIntentId);
+  tasks = tasks.filter((task) => task.intent_id === store.currentIntent?.id);
 
   useEvents({
     task_created: (data) => {
@@ -56,15 +57,19 @@ const TasksView: React.FC = () => {
   }, [viewConfirmDelete]);
 
   return (
-    <div className="grow flex flex-col overflow-y-auto gap-1 p-1 bg-window/90 border-2 border-base/80 rounded">
-      <div className="flex flex-row items-center justify-between gap-2">
+    <div className="grow flex flex-col gap-0.5">
+      <motion.div
+        className="flex flex-row gap-0.5"
+        transition={{ delay: 0.1, duration: 0.3 }}
+        initial={{ opacity: 0, height: 0 }}
+        animate={{ opacity: 1, height: 36 }}
+      >
         <CreateTaskView viewCreate={viewCreate} setViewCreate={setViewCreate} />
 
         {!viewCreate && selectedIds.length > 0 ? (
-          <>
+          <div className="bg-window/90 border-2 border-base/80 rounded">
             {!viewConfirmDelete ? (
               <Button
-                // @ts-ignore
                 onClick={() => setViewConfirmDelete(true)}
                 transparent
                 color="danger"
@@ -84,74 +89,40 @@ const TasksView: React.FC = () => {
                 transparent
                 color="danger"
               >
-                Confirm
+                <span>Confirm</span>
               </Button>
             )}
-          </>
+          </div>
         ) : null}
 
         {/* Toggle finished tasks */}
         {!viewCreate ? (
-          <Tooltip label={viewFinished ? "View incomplete" : "View completed"}>
-            <div>
-              <Button
-                onClick={() => setViewFinished(!viewFinished)}
-                transparent
-              >
-                {viewFinished ? (
-                  <MdCheckBox size={24} />
-                ) : (
-                  <MdCheckBoxOutlineBlank size={24} />
-                )}
-              </Button>
-            </div>
-          </Tooltip>
+          <ToggleTasksView
+            viewCompleted={viewCompletedTasks}
+            toggleTasks={() => setViewCompletedTasks((view) => !view)}
+          />
         ) : null}
-      </div>
+      </motion.div>
 
-      <div className="grow flex flex-col overflow-y-auto gap-1">
-        <div
-          ref={tasksContainer}
-          className="w-full max-h-0 flex flex-col gap-1 pb-0.5"
-        >
-          {tasks.map((task) =>
-            task.done === viewFinished ? (
-              <TaskView
-                selectedTasksIds={selectedIds}
-                setSelectedTasksIds={setSelectedIds}
-                key={task.id}
-                data={task}
-              />
-            ) : null
-          )}
+      <div className="grow flex flex-col bg-window/90 border-2 border-base/80 rounded p-1">
+        <div className="grow flex flex-col overflow-y-auto gap-1 pb-2">
+          <div
+            ref={tasksContainer}
+            className="w-full max-h-0 flex flex-col gap-1"
+          >
+            {tasks.map((task) =>
+              task.done === viewCompletedTasks ? (
+                <TaskView
+                  selectedTasksIds={selectedIds}
+                  setSelectedTasksIds={setSelectedIds}
+                  key={task.id}
+                  data={task}
+                />
+              ) : null
+            )}
+          </div>
         </div>
       </div>
-
-      {/* Some text to fill out the empty space */}
-      {/* <div className="flex flex-col gap-2 text-center m-auto text-text/50 text-sm"> */}
-      {/*   { */}
-      {/*     [ */}
-      {/*       <> */}
-      {/*         <p>No tasks?</p> */}
-      {/*         <p>That's like going on a road trip without a map.</p> */}
-      {/*         <p>Add one now!</p> */}
-      {/*       </>, */}
-      {/*       <> */}
-      {/*         <p>Your task list is empty, it's like a ghost town.</p> */}
-      {/*         <p>Let's liven it up!</p> */}
-      {/*       </>, */}
-      {/*       <> */}
-      {/*         <p>Don't let your tasks disappear into thin air.</p> */}
-      {/*         <p>Add some now!</p> */}
-      {/*       </>, */}
-      {/*       <> */}
-      {/*         <p>Break it down.</p> */}
-      {/*         <p>Complete.</p> */}
-      {/*         <p>Repeat.</p> */}
-      {/*       </>, */}
-      {/*     ][Math.floor(Math.random() * 4)] */}
-      {/*   } */}
-      {/* </div> */}
     </div>
   );
 };
@@ -167,8 +138,9 @@ const CreateTaskView: React.FC<CreateTaskViewProps> = (props) => {
   const ref = useClickOutside(() => props.setViewCreate(false));
 
   const onSubmit = handleSubmit((data) => {
+    if (!store.currentIntent) return;
     ipc
-      .createTask({ ...data, intent_id: store.activeIntentId! })
+      .createTask({ ...data, intent_id: store.currentIntent?.id })
       .then(() => {
         toast("Task created");
         props.setViewCreate(false);
@@ -177,37 +149,46 @@ const CreateTaskView: React.FC<CreateTaskViewProps> = (props) => {
       .catch((err) => console.log("ipc.createTask", err));
   });
 
-  return (
-    <div className="h-8 w-full flex flex-row items-center">
-      {!props.viewCreate ? (
-        <Button transparent onClick={() => props.setViewCreate(true)}>
-          <MdAddCircle size={20} />
-          <span>Add task</span>
-        </Button>
-      ) : (
-        <form
-          ref={ref}
-          onSubmit={onSubmit}
-          className="w-full animate-in fade-in-0 zoom-in-90"
+  if (!props.viewCreate)
+    return (
+      <div className="w-full bg-window/90 border-2 border-base/80 rounded">
+        <Button
+          onClick={() => props.setViewCreate(true)}
+          style={{ width: "100%" }}
+          transparent
+          transition={{ delay: 0.2, duration: 0.3 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0, transition: { duration: 0.1 } }}
         >
-          <input
-            tabIndex={-3}
-            {...register("body")}
-            className="input h-8"
-            onKeyDown={(e) => {
-              if (e.key !== "Escape") return;
-              props.setViewCreate(false);
-              setValue("body", "");
-            }}
-            placeholder="Describe your task"
-            autoFocus
-            minLength={1}
-            autoComplete="off"
-            maxLength={96}
-          />
-        </form>
-      )}
-    </div>
+          <MdAddCircle size={20} />
+          <div>Add task</div>
+        </Button>
+      </div>
+    );
+
+  return (
+    <form
+      ref={ref}
+      onSubmit={onSubmit}
+      className="w-full animate-in fade-in-0 zoom-in-90"
+    >
+      <input
+        tabIndex={-3}
+        {...register("body")}
+        className="input bg-window/90"
+        onKeyDown={(e) => {
+          if (e.key !== "Escape") return;
+          props.setViewCreate(false);
+          setValue("body", "");
+        }}
+        placeholder="Describe your task"
+        autoFocus
+        minLength={1}
+        autoComplete="off"
+        maxLength={96}
+      />
+    </form>
   );
 };
 
@@ -270,7 +251,7 @@ const TaskView: React.FC<TaskViewProps> = (props) => {
       <div
         ref={containerRef}
         className={clsx(
-          "min-h-fit flex flex-col gap-1.5 card text-sm p-0 bg-base/80 hover:bg-base rounded-sm",
+          "min-h-fit flex flex-col gap-1.5 card border-transparent text-sm p-0 bg-base/80 hover:bg-base rounded-sm",
           isSelected && "border-2 border-primary/50 hover:border-primary/60",
           viewEdit && "border-0"
         )}
@@ -305,18 +286,18 @@ const TaskView: React.FC<TaskViewProps> = (props) => {
       >
         {!viewEdit ? (
           <div className="flex flex-row items-center gap-1">
-            {!data.done ? (
-              <Button onMouseDown={() => handleCheck()} transparent>
+            <Button
+              onMouseDown={() => handleCheck()}
+              style={{ padding: 2 }}
+              transparent
+            >
+              {!data.done ? (
                 <MdCheckBoxOutlineBlank size={24} />
-              </Button>
-            ) : (
-              <Button onMouseDown={() => handleCheck()} transparent>
+              ) : (
                 <MdCheckBox size={24} />
-              </Button>
-            )}
-            <div className="mt-0.5" style={{ wordBreak: "break-all" }}>
-              {data.body}
-            </div>
+              )}
+            </Button>
+            <div style={{ wordBreak: "break-all" }}>{data.body}</div>
           </div>
         ) : (
           <form onSubmit={onEditSubmit}>
@@ -406,6 +387,34 @@ const TaskContextMenu: React.FC<TaskContextMenuProps> = (props) => {
         )}
       </React.Fragment>
     </ContextMenu>
+  );
+};
+
+interface ToggleTasksViewProps {
+  viewCompleted: boolean;
+  toggleTasks: () => void;
+}
+
+const ToggleTasksView: React.FC<ToggleTasksViewProps> = (props) => {
+  return (
+    <Tooltip label={props.viewCompleted ? "View incomplete" : "View completed"}>
+      <div className="bg-window/90 border-2 border-base/80 rounded">
+        <Button
+          onClick={() => props.toggleTasks()}
+          transparent
+          transition={{ delay: 0.2, duration: 0.3 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0, transition: { duration: 0.1 } }}
+        >
+          {props.viewCompleted ? (
+            <MdCheckBox size={24} />
+          ) : (
+            <MdCheckBoxOutlineBlank size={24} />
+          )}
+        </Button>
+      </div>
+    </Tooltip>
   );
 };
 

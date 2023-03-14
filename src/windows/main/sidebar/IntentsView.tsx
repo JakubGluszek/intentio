@@ -3,12 +3,13 @@ import { MdAddCircle, MdAnalytics } from "react-icons/md";
 import { useClickOutside } from "@mantine/hooks";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
+import { motion } from "framer-motion";
+import { WebviewWindow } from "@tauri-apps/api/window";
 
 import useStore from "@/store";
 import ipc from "@/ipc";
 import { Intent } from "@/bindings/Intent";
 import { Button, IntentsList } from "@/components";
-import { WebviewWindow } from "@tauri-apps/api/window";
 import config from "@/config";
 
 const IntentsView: React.FC = () => {
@@ -28,20 +29,28 @@ const IntentsView: React.FC = () => {
 
   return (
     <div className="grow flex flex-col gap-0.5">
-      <div className="w-full flex flex-row gap-0.5">
+      <motion.div
+        className="flex flex-row gap-0.5"
+        transition={{ delay: 0.1, duration: 0.3 }}
+        initial={{ opacity: 0, height: 0 }}
+        animate={{ opacity: 1, height: 36 }}
+      >
         <CreateIntentView />
         <div className="bg-window/90 border-2 border-base/80 rounded">
           <Button
-            transparent
             onClick={() =>
               new WebviewWindow("intents", config.webviews.intents)
             }
+            transparent
+            transition={{ delay: 0.2, duration: 0.3 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
           >
             <MdAnalytics size={24} />
           </Button>
         </div>
-      </div>
-      <div className="grow flex flex-col p-1.5 bg-window/90 border-2 border-base/80 rounded">
+      </motion.div>
+      <div className="grow flex flex-col p-1 bg-window/90 border-2 border-base/80 rounded">
         <IntentsList
           data={store.intents.filter(
             (intent) =>
@@ -77,43 +86,46 @@ const CreateIntentView: React.FC = () => {
       .catch((err) => console.log("ipc.createTask", err));
   });
 
-  return (
-    <div className="w-full">
-      {!viewCreate ? (
-        <div className="w-full bg-window/90 border-2 border-base/80 rounded">
-          <Button
-            transparent
-            style={{ width: "100%" }}
-            onClick={() => setViewCreate(true)}
-          >
-            <MdAddCircle size={20} />
-            <span>Add Intent</span>
-          </Button>
-        </div>
-      ) : (
-        <form
-          ref={ref}
-          onSubmit={onSubmit}
-          className="w-full animate-in fade-in-0 zoom-in-90"
+  if (!viewCreate)
+    return (
+      <div className="w-full bg-window/90 border-2 border-base/80 rounded">
+        <Button
+          transparent
+          style={{ width: "100%" }}
+          onClick={() => setViewCreate(true)}
+          transition={{ delay: 0.2, duration: 0.3 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0, transition: { duration: 0.1 } }}
         >
-          <input
-            tabIndex={-3}
-            {...register("label")}
-            className="input bg-darker/80"
-            onKeyDown={(e) => {
-              if (e.key !== "Escape") return;
-              setViewCreate(false);
-              setValue("label", "");
-            }}
-            placeholder="Label your intent"
-            autoFocus
-            autoComplete="off"
-            minLength={1}
-            maxLength={24}
-          />
-        </form>
-      )}
-    </div>
+          <MdAddCircle size={20} />
+          <span>Add Intent</span>
+        </Button>
+      </div>
+    );
+
+  return (
+    <form
+      ref={ref}
+      onSubmit={onSubmit}
+      className="w-full animate-in fade-in-0 zoom-in-90"
+    >
+      <input
+        tabIndex={-3}
+        {...register("label")}
+        className="input bg-darker/80"
+        onKeyDown={(e) => {
+          if (e.key !== "Escape") return;
+          setViewCreate(false);
+          setValue("label", "");
+        }}
+        placeholder="Label your intent"
+        autoFocus
+        autoComplete="off"
+        minLength={1}
+        maxLength={24}
+      />
+    </form>
   );
 };
 

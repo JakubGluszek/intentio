@@ -38,7 +38,7 @@ const SettingsWindow: React.FC = () => {
 
         <div className="grow flex flex-row">
           {/* Sidebar */}
-          <div className="min-w-[164px] flex flex-col justify-between p-2">
+          <div className="min-w-[176px] flex flex-col justify-between p-2">
             {/* Navigation */}
             <div className="flex flex-col gap-1.5 rounded">
               <Button
