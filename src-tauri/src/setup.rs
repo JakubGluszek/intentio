@@ -33,6 +33,7 @@ fn build_main_window(handle: &AppHandle) {
         .title("Intentio")
         .inner_size(320f64, 340f64)
         .max_inner_size(320f64, 340f64)
+        .min_inner_size(320f64, 140f64)
         .fullscreen(false)
         .resizable(false)
         .decorations(false)

@@ -75,44 +75,68 @@ const Sidebar: React.FC<Props> = (props) => {
             translateX: -128,
           }}
         >
-          {store.currentIntent && (
-            <div className="w-[40px] h-full flex flex-col gap-0.5">
-              <div className="flex-1 bg-window/80 border-2 border-base/80 rounded">
-                <Button
-                  style={{ height: "100%", borderRadius: 2 }}
-                  transparent
-                  isSelected={tab === "intents"}
-                  onClick={() => setTab("intents")}
-                >
-                  <BiTargetLock size={28} />
-                </Button>
-              </div>
-              <div className="flex-1 bg-window/80 border-2 border-base/80 rounded">
-                <Button
-                  style={{ height: "100%", borderRadius: 2 }}
-                  transparent
-                  isSelected={tab === "tasks"}
-                  onClick={() => setTab("tasks")}
-                >
-                  <MdCheckBox size={28} />
-                </Button>
-              </div>
-              <div className="flex-1 bg-window/80 border-2 border-base/80 rounded">
-                <Button
-                  style={{ height: "100%", borderRadius: 2 }}
-                  transparent
-                  isSelected={tab === "notes"}
-                  onClick={() => setTab("notes")}
-                >
-                  <MdStickyNote2 size={28} />
-                </Button>
-              </div>
-            </div>
-          )}
+          <TabsView
+            display={store.currentIntent ? true : false}
+            tab={tab}
+            setTab={setTab}
+          />
           {tab === "intents" ? <IntentsView /> : null}
           {tab === "tasks" ? <TasksView /> : null}
           {tab === "notes" ? <NotesView /> : null}
         </motion.aside>
+      )}
+    </AnimatePresence>
+  );
+};
+
+interface TabsViewProps {
+  display: boolean;
+  tab: Tab;
+  setTab: (tab: Tab) => void;
+}
+
+const TabsView: React.FC<TabsViewProps> = (props) => {
+  return (
+    <AnimatePresence>
+      {props.display && (
+        <motion.div
+          className="h-full flex flex-col gap-0.5 overflow-clip"
+          transition={{ duration: 0.3 }}
+          initial={{ width: 0 }}
+          animate={{ width: 40 }}
+          exit={{ width: 0 }}
+        >
+          <div className="flex-1 bg-window/80 border-2 border-base/80 rounded">
+            <Button
+              style={{ height: "100%", borderRadius: 2 }}
+              transparent
+              isSelected={props.tab === "intents"}
+              onClick={() => props.setTab("intents")}
+            >
+              <BiTargetLock size={28} />
+            </Button>
+          </div>
+          <div className="flex-1 bg-window/80 border-2 border-base/80 rounded">
+            <Button
+              style={{ height: "100%", borderRadius: 2 }}
+              transparent
+              isSelected={props.tab === "tasks"}
+              onClick={() => props.setTab("tasks")}
+            >
+              <MdCheckBox size={28} />
+            </Button>
+          </div>
+          <div className="flex-1 bg-window/80 border-2 border-base/80 rounded">
+            <Button
+              style={{ height: "100%", borderRadius: 2 }}
+              transparent
+              isSelected={props.tab === "notes"}
+              onClick={() => props.setTab("notes")}
+            >
+              <MdStickyNote2 size={28} />
+            </Button>
+          </div>
+        </motion.div>
       )}
     </AnimatePresence>
   );

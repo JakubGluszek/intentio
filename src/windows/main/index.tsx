@@ -1,8 +1,8 @@
 import React from "react";
-import { MdRemove, MdClose, MdSettings } from "react-icons/md";
-import { TbLayoutSidebarRightCollapse } from "react-icons/tb";
-import { WebviewWindow } from "@tauri-apps/api/window";
-import { motion } from "framer-motion";
+import { MdRemove, MdClose, MdSettings, MdSkipNext } from "react-icons/md";
+import { TbLayoutSidebarRightCollapse, TbMinimize } from "react-icons/tb";
+import { appWindow, LogicalSize, WebviewWindow } from "@tauri-apps/api/window";
+import { AnimatePresence, motion } from "framer-motion";
 import { toast } from "react-hot-toast";
 
 import ipc from "@/ipc";
@@ -17,6 +17,7 @@ import TimerView from "./TimerView";
 import WindowContainer from "@/components/WindowContainer";
 import Sidebar from "./sidebar";
 import { TimerConfig } from "@/bindings/TimerConfig";
+import { BiTargetLock } from "react-icons/bi";
 
 const MainWindow: React.FC = () => {
   const [displaySidebar, setDisplaySidebar] = React.useState(false);
@@ -45,11 +46,10 @@ const MainWindow: React.FC = () => {
           displaySidebar={displaySidebar}
           toggleSidebar={toggleSidebar}
         />
-        <Content
-          timerConfig={store.timerConfig}
-          displaySidebar={displaySidebar}
-          toggleSidebar={toggleSidebar}
-        />
+        <div className="grow flex flex-row">
+          <Sidebar display={displaySidebar} toggleSidebar={toggleSidebar} />
+          <Content display={!displaySidebar} timerConfig={store.timerConfig} />
+        </div>
       </div>
     </WindowContainer>
   );
@@ -63,7 +63,7 @@ interface TitlebarProps {
 const Titlebar: React.FC<TitlebarProps> = (props) => {
   return (
     <div className="w-full flex flex-row items-center justify-between bg-window/90 border-2 border-base/80 rounded overflow-clip">
-      <div className="flex flex-row gap-0.5">
+      <div className="flex flex-row">
         <Button onClick={props.toggleSidebar} transparent rounded={false}>
           <motion.div animate={{ rotateZ: props.displaySidebar ? 180 : 0 }}>
             <TbLayoutSidebarRightCollapse size={28} />
@@ -80,7 +80,7 @@ const Titlebar: React.FC<TitlebarProps> = (props) => {
         </Button>
       </div>
       <h2 className="text-text/80 font-bold">Intentio</h2>
-      <div className="flex flex-row gap-0.5">
+      <div className="flex flex-row">
         <Button
           transparent
           onClick={() => ipc.hideMainWindow()}
@@ -101,12 +101,13 @@ const Titlebar: React.FC<TitlebarProps> = (props) => {
 };
 
 interface ContentProps {
+  display: boolean;
   timerConfig: TimerConfig;
-  displaySidebar: boolean;
-  toggleSidebar: () => void;
 }
 
 const Content: React.FC<ContentProps> = (props) => {
+  const [compact, setCompact] = React.useState(false);
+
   const store = useStore();
 
   const timer = useTimer(props.timerConfig, {
@@ -159,20 +160,60 @@ const Content: React.FC<ContentProps> = (props) => {
     },
   });
 
+  const toggleCompact = () => {
+    if (compact) {
+      let size = new LogicalSize(
+        config.webviews.main.width,
+        config.webviews.main.height
+      );
+      appWindow.setMinSize(size);
+      appWindow.setMaxSize(size);
+      appWindow.setSize(size);
+    } else {
+      let size = new LogicalSize(config.webviews.main.width, 140);
+      appWindow.setMinSize(size);
+      appWindow.setMaxSize(size);
+      appWindow.setSize(size);
+    }
+    setCompact(!compact);
+  };
+
   return (
-    <div className="grow flex flex-row">
-      <Sidebar
-        display={props.displaySidebar}
-        toggleSidebar={props.toggleSidebar}
-      />
-      <TimerView
-        display={!props.displaySidebar}
-        variant="circle"
-        theme={store.currentTheme!}
-        displayTime={store.interfaceConfig?.display_timer_countdown ?? true}
-        {...timer}
-      />
-    </div>
+    <AnimatePresence initial={false}>
+      {props.display && (
+        <motion.div
+          className="grow flex flex-col gap-0.5"
+          transition={{ duration: 0.3 }}
+          initial={{ width: "0%", opacity: 0 }}
+          animate={{ width: "100%", opacity: 1 }}
+          exit={{ width: "0%", opacity: 0, translateX: 128 }}
+        >
+          <TimerView
+            compact={compact}
+            theme={store.currentTheme!}
+            displayTime={store.interfaceConfig?.display_timer_countdown ?? true}
+            {...timer}
+          />
+
+          <div className="bottom-0 left-0 w-full flex flex-row items-center justify-between gap-0.5 bg-window/90 border-2 border-base/80 rounded overflow-clip">
+            <span className="text-primary/80 font-bold text-center p-1.5">
+              #{timer.iterations}
+            </span>
+            {store.currentIntent ? (
+              <div className="w-full flex flex-row items-center justify-center gap-1 text-text/80 p-1.5">
+                <BiTargetLock size={16} />
+                <span>{store.currentIntent.label}</span>
+              </div>
+            ) : null}
+            <div className="flex flex-row items-center gap-1">
+              <Button transparent onClick={toggleCompact} rounded={false}>
+                <TbMinimize size={28} />
+              </Button>
+            </div>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };
 
