@@ -59,7 +59,7 @@ const CircleTimerView: React.FC<Props> = (props) => {
         duration={props.duration}
         elapsedTime={props.elapsedTimeDetailed}
         strokeWidth={6}
-        size={230}
+        size={210}
         color={
           Color(
             props.isPlaying ? props.theme.primary_hex : props.theme.base_hex

@@ -133,7 +133,7 @@ const NotesView: React.FC = () => {
 
       <div
         id="notes-container"
-        className="grow flex flex-col p-1 bg-window/90 border-2 border-base/80 rounded"
+        className="grow flex flex-col p-1.5 bg-window/90 border-2 border-base/80 rounded"
       >
         <div className="grow flex flex-col overflow-y-auto gap-1 pb-2">
           <div

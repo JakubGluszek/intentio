@@ -20,8 +20,8 @@ const config = {
   },
   webviews: {
     main: {
-      width: 320,
-      height: 340,
+      width: 300,
+      height: 320,
     },
     settings: {
       url: "/settings",

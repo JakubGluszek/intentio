@@ -50,7 +50,7 @@ const IntentsView: React.FC = () => {
           </Button>
         </div>
       </motion.div>
-      <div className="grow flex flex-col p-1 bg-window/90 border-2 border-base/80 rounded">
+      <div className="grow flex flex-col p-1.5 bg-window/90 border-2 border-base/80 rounded">
         <IntentsList
           data={store.intents.filter(
             (intent) =>

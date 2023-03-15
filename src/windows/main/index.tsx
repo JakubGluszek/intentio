@@ -1,6 +1,7 @@
 import React from "react";
-import { MdRemove, MdClose, MdSettings, MdSkipNext } from "react-icons/md";
+import { MdRemove, MdClose, MdSettings } from "react-icons/md";
 import { TbLayoutSidebarRightCollapse, TbMinimize } from "react-icons/tb";
+import { BiTargetLock } from "react-icons/bi";
 import { appWindow, LogicalSize, WebviewWindow } from "@tauri-apps/api/window";
 import { AnimatePresence, motion } from "framer-motion";
 import { toast } from "react-hot-toast";
@@ -13,18 +14,49 @@ import utils from "@/utils";
 import { Button } from "@/components";
 import { useEvents } from "@/hooks";
 import { useTimer } from "@/hooks/useTimer";
-import TimerView from "./TimerView";
 import WindowContainer from "@/components/WindowContainer";
-import Sidebar from "./sidebar";
 import { TimerConfig } from "@/bindings/TimerConfig";
-import { BiTargetLock } from "react-icons/bi";
+import TimerView from "./TimerView";
+import Sidebar from "./sidebar";
 
 const MainWindow: React.FC = () => {
   const [displaySidebar, setDisplaySidebar] = React.useState(false);
+  const [compact, setCompact] = React.useState(false);
 
   const store = useStore();
 
-  const toggleSidebar = () => setDisplaySidebar((display) => !display);
+  const toggleSidebar = () => {
+    if (!displaySidebar) {
+      let size = new LogicalSize(
+        config.webviews.main.width,
+        config.webviews.main.height
+      );
+      appWindow.setMinSize(size);
+      appWindow.setMaxSize(size);
+      appWindow.setSize(size);
+      setCompact(false);
+    }
+    setDisplaySidebar(!displaySidebar);
+  };
+
+  const toggleCompact = () => {
+    if (compact) {
+      let size = new LogicalSize(
+        config.webviews.main.width,
+        config.webviews.main.height
+      );
+      appWindow.setMinSize(size);
+      appWindow.setMaxSize(size);
+      appWindow.setSize(size);
+    } else {
+      // as for now, this doesn't work properly on linux; height is set to 200px for some reason ¯\_(ツ)_/¯
+      let size = new LogicalSize(config.webviews.main.width, 140);
+      appWindow.setMinSize(size);
+      appWindow.setMaxSize(size);
+      appWindow.setSize(size);
+    }
+    setCompact(!compact);
+  };
 
   React.useEffect(() => {
     ipc.getTimerConfig().then((data) => store.setTimerConfig(data));
@@ -48,7 +80,12 @@ const MainWindow: React.FC = () => {
         />
         <div className="grow flex flex-row">
           <Sidebar display={displaySidebar} toggleSidebar={toggleSidebar} />
-          <Content display={!displaySidebar} timerConfig={store.timerConfig} />
+          <Content
+            display={!displaySidebar}
+            compact={compact}
+            toggleCompact={toggleCompact}
+            timerConfig={store.timerConfig}
+          />
         </div>
       </div>
     </WindowContainer>
@@ -102,12 +139,12 @@ const Titlebar: React.FC<TitlebarProps> = (props) => {
 
 interface ContentProps {
   display: boolean;
+  compact: boolean;
+  toggleCompact: () => void;
   timerConfig: TimerConfig;
 }
 
 const Content: React.FC<ContentProps> = (props) => {
-  const [compact, setCompact] = React.useState(false);
-
   const store = useStore();
 
   const timer = useTimer(props.timerConfig, {
@@ -160,24 +197,6 @@ const Content: React.FC<ContentProps> = (props) => {
     },
   });
 
-  const toggleCompact = () => {
-    if (compact) {
-      let size = new LogicalSize(
-        config.webviews.main.width,
-        config.webviews.main.height
-      );
-      appWindow.setMinSize(size);
-      appWindow.setMaxSize(size);
-      appWindow.setSize(size);
-    } else {
-      let size = new LogicalSize(config.webviews.main.width, 140);
-      appWindow.setMinSize(size);
-      appWindow.setMaxSize(size);
-      appWindow.setSize(size);
-    }
-    setCompact(!compact);
-  };
-
   return (
     <AnimatePresence initial={false}>
       {props.display && (
@@ -189,7 +208,7 @@ const Content: React.FC<ContentProps> = (props) => {
           exit={{ width: "0%", opacity: 0, translateX: 128 }}
         >
           <TimerView
-            compact={compact}
+            compact={props.compact}
             theme={store.currentTheme!}
             displayTime={store.interfaceConfig?.display_timer_countdown ?? true}
             {...timer}
@@ -206,7 +225,7 @@ const Content: React.FC<ContentProps> = (props) => {
               </div>
             ) : null}
             <div className="flex flex-row items-center gap-1">
-              <Button transparent onClick={toggleCompact} rounded={false}>
+              <Button transparent onClick={props.toggleCompact} rounded={false}>
                 <TbMinimize size={28} />
               </Button>
             </div>

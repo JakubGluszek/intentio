@@ -31,9 +31,9 @@ fn setup_config_dir() {
 fn build_main_window(handle: &AppHandle) {
     tauri::WindowBuilder::new(handle, "main", tauri::WindowUrl::App("/".into()))
         .title("Intentio")
-        .inner_size(320f64, 340f64)
-        .max_inner_size(320f64, 340f64)
-        .min_inner_size(320f64, 140f64)
+        .inner_size(300f64, 320f64)
+        .max_inner_size(300f64, 320f64)
+        .min_inner_size(300f64, 320f64)
         .fullscreen(false)
         .resizable(false)
         .decorations(false)

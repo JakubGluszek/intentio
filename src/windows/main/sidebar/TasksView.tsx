@@ -104,7 +104,7 @@ const TasksView: React.FC = () => {
         ) : null}
       </motion.div>
 
-      <div className="grow flex flex-col bg-window/90 border-2 border-base/80 rounded p-1">
+      <div className="grow flex flex-col bg-window/90 border-2 border-base/80 rounded p-1.5">
         <div className="grow flex flex-col overflow-y-auto gap-1 pb-2">
           <div
             ref={tasksContainer}
