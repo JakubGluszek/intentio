@@ -113,12 +113,12 @@ const CreateIntentView: React.FC = () => {
     <form
       ref={ref}
       onSubmit={onSubmit}
-      className="w-full animate-in fade-in-0 zoom-in-90"
+      className="w-[220px] animate-in fade-in-0 zoom-in-90"
     >
       <input
         tabIndex={-3}
         {...register("label")}
-        className="input bg-darker/80"
+        className="input bg-window/90"
         onKeyDown={(e) => {
           if (e.key !== "Escape") return;
           setViewCreate(false);

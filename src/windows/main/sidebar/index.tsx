@@ -7,19 +7,17 @@ import useStore from "@/store";
 import { Button } from "@/components";
 import { useEvents } from "@/hooks";
 import ipc from "@/ipc";
+import { MainWindowContext } from "@/contexts";
 import IntentsView from "./IntentsView";
 import TasksView from "./TasksView";
 import NotesView from "./NotesView";
 
-interface Props {
-  display: boolean;
-  toggleSidebar: () => void;
-}
-
 type Tab = "intents" | "notes" | "tasks";
 
-const Sidebar: React.FC<Props> = (props) => {
+const Sidebar: React.FC = () => {
   const [tab, setTab] = React.useState<Tab>("intents");
+
+  const { display, toggleDisplay } = React.useContext(MainWindowContext)!;
 
   const store = useStore();
 
@@ -50,7 +48,7 @@ const Sidebar: React.FC<Props> = (props) => {
   // handles toggling sidebar via pressing 'Tab' key
   React.useEffect(() => {
     const handleOnKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Tab") props.toggleSidebar();
+      if (e.key === "Tab") toggleDisplay();
     };
 
     document.addEventListener("keydown", handleOnKeyDown);
@@ -63,7 +61,7 @@ const Sidebar: React.FC<Props> = (props) => {
 
   return (
     <AnimatePresence>
-      {props.display && (
+      {display === "sidebar" && (
         <motion.aside
           className="grow flex flex-row gap-0.5"
           transition={{ duration: 0.3 }}

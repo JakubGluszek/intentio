@@ -13,18 +13,18 @@ import { motion } from "framer-motion";
 
 import useStore from "@/store";
 import ipc from "@/ipc";
-import { useContextMenu, useEvents } from "@/hooks";
+import { useConfirmDelete, useContextMenu, useEvents } from "@/hooks";
 import { Button, ContextMenu } from "@/components";
 import { Task } from "@/bindings/Task";
 
 const TasksView: React.FC = () => {
   const [viewCreate, setViewCreate] = React.useState(false);
   const [viewCompletedTasks, setViewCompletedTasks] = React.useState(false);
-  const [viewConfirmDelete, setViewConfirmDelete] = React.useState(false);
   const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
 
   const store = useStore();
   const tasksContainer = React.useRef<HTMLDivElement>(null);
+  const { viewConfirmDelete, onDelete } = useConfirmDelete();
 
   var tasks = useStore((state) => state.tasks);
   tasks = tasks.filter((task) => task.intent_id === store.currentIntent?.id);
@@ -42,19 +42,6 @@ const TasksView: React.FC = () => {
   React.useEffect(() => {
     ipc.getTasks().then((data) => store.setTasks(data));
   }, []);
-
-  React.useEffect(() => {
-    let hideConfirm: NodeJS.Timeout | undefined;
-    if (viewConfirmDelete) {
-      hideConfirm = setTimeout(() => {
-        setViewConfirmDelete(false);
-      }, 3000);
-    } else {
-      hideConfirm && clearTimeout(hideConfirm);
-    }
-
-    return () => hideConfirm && clearTimeout(hideConfirm);
-  }, [viewConfirmDelete]);
 
   return (
     <motion.div
@@ -81,30 +68,21 @@ const TasksView: React.FC = () => {
 
         {!viewCreate && selectedIds.length > 0 ? (
           <div className="bg-window/90 border-2 border-base/80 rounded">
-            {!viewConfirmDelete ? (
-              <Button
-                onClick={() => setViewConfirmDelete(true)}
-                transparent
-                color="danger"
-              >
-                <MdDelete size={20} />
-                <div>{selectedIds.length}</div>
-              </Button>
-            ) : (
-              <Button
-                onClick={() =>
+            <Button
+              onClick={() =>
+                onDelete(() =>
                   ipc.deleteTasks(selectedIds).then(() => {
                     setSelectedIds([]);
-                    setViewConfirmDelete(false);
                     toast("Tasks deleted");
                   })
-                }
-                transparent
-                color="danger"
-              >
-                <span>Confirm</span>
-              </Button>
-            )}
+                )
+              }
+              transparent
+              color="danger"
+            >
+              {!viewConfirmDelete && <MdDelete size={20} />}
+              <div>{viewConfirmDelete ? "Confirm" : selectedIds.length}</div>
+            </Button>
           </div>
         ) : null}
       </motion.div>
@@ -207,12 +185,9 @@ const TaskView: React.FC<TaskViewProps> = (props) => {
   const { data } = props;
 
   const [viewEdit, setViewEdit] = React.useState(false);
-  const [viewConfirmDelete, setViewConfirmDelete] = React.useState(false);
 
   const { viewMenu, setViewMenu, onContextMenuHandler } = useContextMenu();
-
   const { register, handleSubmit, setValue } = useForm<{ body: string }>();
-
   const containerRef = useClickOutside<HTMLDivElement>(() => {
     viewEdit && setViewEdit(false);
   });
@@ -237,19 +212,6 @@ const TaskView: React.FC<TaskViewProps> = (props) => {
           style: { whiteSpace: "nowrap" },
         });
     });
-
-  React.useEffect(() => {
-    let hideConfirm: NodeJS.Timeout | undefined;
-    if (viewConfirmDelete) {
-      hideConfirm = setTimeout(() => {
-        setViewConfirmDelete(false);
-      }, 3000);
-    } else {
-      hideConfirm && clearTimeout(hideConfirm);
-    }
-
-    return () => hideConfirm && clearTimeout(hideConfirm);
-  }, [viewConfirmDelete]);
 
   return (
     <>
@@ -348,20 +310,7 @@ interface TaskContextMenuProps {
 }
 
 const TaskContextMenu: React.FC<TaskContextMenuProps> = (props) => {
-  const [viewConfirmDelete, setViewConfirmDelete] = React.useState(false);
-
-  React.useEffect(() => {
-    let hideConfirm: NodeJS.Timeout | undefined;
-    if (viewConfirmDelete) {
-      hideConfirm = setTimeout(() => {
-        setViewConfirmDelete(false);
-      }, 3000);
-    } else {
-      hideConfirm && clearTimeout(hideConfirm);
-    }
-
-    return () => hideConfirm && clearTimeout(hideConfirm);
-  }, [viewConfirmDelete]);
+  const { viewConfirmDelete, onDelete } = useConfirmDelete();
 
   return (
     <ContextMenu
@@ -370,26 +319,22 @@ const TaskContextMenu: React.FC<TaskContextMenuProps> = (props) => {
       topPosition={props.topPosition}
     >
       <React.Fragment>
-        {!viewConfirmDelete ? (
-          <Button
-            onClick={() => setViewConfirmDelete(true)}
-            rounded={false}
-            color="danger"
-          >
-            <MdDelete size={20} />
-            <div className="w-full">Delete</div>
-          </Button>
-        ) : (
-          <Button
-            onClick={() =>
+        <Button
+          onClick={() =>
+            onDelete(() =>
               ipc.deleteTask(props.data.id).then(() => toast("Task deleted"))
-            }
-            rounded={false}
-            color="danger"
-          >
-            Confirm
-          </Button>
-        )}
+            )
+          }
+          rounded={false}
+          color="danger"
+        >
+          <div className="w-fit">
+            <MdDelete size={20} />
+          </div>
+          <div className="w-full">
+            {viewConfirmDelete ? "Confirm" : "Delete"}
+          </div>
+        </Button>
       </React.Fragment>
     </ContextMenu>
   );

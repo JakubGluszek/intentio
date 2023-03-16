@@ -1,191 +1,138 @@
 import React from "react";
+import { MdPauseCircle, MdPlayCircle, MdSkipNext } from "react-icons/md";
+import { VscDebugRestart } from "react-icons/vsc";
+import Color from "color";
 
-type ColorHex = `#${string}`;
-type ColorRGBA = `rgba(${string})`;
-type ColorURL = `url(#${string})`;
-type ColorRGB = `rgb(${string})`;
-export type ColorFormat = ColorHex | ColorRGB | ColorRGBA | ColorURL;
+import ipc from "@/ipc";
+import utils from "@/utils";
+import { Timer } from "@/hooks/useTimer";
+import { Button } from "@/components";
+import CircleTimerBase, { ColorFormat } from "@/components/CircleTimerBase";
+import { Theme } from "@/bindings/Theme";
 
-interface Props {
-  children: React.ReactNode;
-  isPlaying: boolean;
-  duration: number;
-  elapsedTime: number;
-  strokeWidth: number;
-  size: number;
-  color: ColorFormat;
-  trailColor: ColorFormat;
+interface Props extends Timer {
+  displayTimeLeft: boolean;
+  theme: Theme;
 }
 
-const CircleTimer: React.FC<Props> = ({ children, ...props }) => {
-  const { path, pathLength } = getPathProps(
-    props.size,
-    props.strokeWidth,
-    "clockwise"
+const CircleTimer: React.FC<Props> = (props) => {
+  const toggleDisplayTimeLeft = () =>
+    ipc.updateInterfaceConfig({
+      display_timer_countdown: !props.displayTimeLeft,
+    });
+
+  const formattedTimeLeft = utils.formatTimeTimer(
+    props.duration - props.elapsedTime
   );
 
-  const stroke = getStroke(props.color, props.duration, props.elapsedTime);
+  const sessionType =
+    props.type === "Focus"
+      ? "Focus"
+      : props.type === "Break"
+        ? "Break"
+        : "Long break";
 
-  const strokeDashoffset = linearEase(
-    props.elapsedTime,
-    0,
-    pathLength,
-    props.duration
-  );
+  const textColor = props.isPlaying
+    ? props.theme.primary_hex
+    : props.theme.text_hex;
 
   return (
-    <div className="relative grow flex flex-col items-center justify-center">
-      <svg
-        width={props.size}
-        height={props.size}
-        xmlns="http://www.w3.org/2000/svg"
+    <div className="grow flex flex-col bg-window/90 border-2 border-base/80 rounded">
+      <CircleTimerBase
+        isPlaying={props.isPlaying}
+        duration={props.duration}
+        elapsedTime={props.elapsedTimeDetailed}
+        strokeWidth={6}
+        size={210}
+        color={
+          Color(
+            props.isPlaying ? props.theme.primary_hex : props.theme.base_hex
+          )
+            .alpha(0.8)
+            .hex() as ColorFormat
+        }
+        trailColor={Color(props.theme.window_hex).hex() as ColorFormat}
       >
-        <path
-          d={path}
-          stroke={props.trailColor}
-          strokeWidth={props.strokeWidth}
-          fill="transparent"
-        />
-        <path
-          style={{ opacity: 0.2 }}
-          d={path}
-          stroke={"#000"}
-          strokeWidth={props.strokeWidth}
-          fill="transparent"
-        />
+        <div className="flex flex-col items-center gap-1 justify-center">
+          {props.displayTimeLeft ? (
+            <React.Fragment>
+              <span
+                data-tauri-disable-drag
+                className="translate-y-4 font-mono opacity-80"
+                onClick={toggleDisplayTimeLeft}
+                style={{
+                  fontSize: 40,
+                  color: textColor,
+                }}
+              >
+                {formattedTimeLeft}
+              </span>
+              <span className="text-lg text-text/60 whitespace-nowrap">
+                {sessionType}
+              </span>
+            </React.Fragment>
+          ) : (
+            <span
+              className="opacity-80 text-3xl font-bold whitespace-nowrap text-primary"
+              data-tauri-disable-drag
+              onClick={toggleDisplayTimeLeft}
+              style={{
+                color: textColor,
+              }}
+            >
+              {sessionType}
+            </span>
+          )}
+        </div>
 
-        <path
-          d={path}
-          fill="transparent"
-          stroke={stroke}
-          strokeLinecap={"round"}
-          strokeWidth={props.strokeWidth}
-          strokeDasharray={pathLength}
-          strokeDashoffset={strokeDashoffset}
-        />
-      </svg>
-      <div style={timeStyle}>{children}</div>
+        <div className="absolute bottom-6 translate-x-1 w-full flex flex-col items-center gap-1 transition-opacity duration-300">
+          <div className="group flex flex-row items-center justify-center">
+            <button
+              tabIndex={-2}
+              className="opacity-0 group-hover:opacity-100 transition-opacity duration-500 text-primary/80 hover:text-primary"
+              onClick={() => {
+                props.restart();
+              }}
+            >
+              <VscDebugRestart size={21} />
+            </button>
+
+            {props.isPlaying ? (
+              <Button
+                transparent
+                highlight={false}
+                opacity={0.6}
+                onClick={() => {
+                  props.pause();
+                }}
+              >
+                <MdPauseCircle size={36} />
+              </Button>
+            ) : (
+              <Button
+                transparent
+                highlight={false}
+                opacity={0.8}
+                onClick={() => {
+                  props.resume();
+                }}
+              >
+                <MdPlayCircle size={36} />
+              </Button>
+            )}
+            <button
+              tabIndex={-2}
+              className="opacity-0 group-hover:opacity-100 transition-opacity duration-500 text-primary/80 hover:text-primary -translate-x-0.5"
+              onClick={() => {
+                props.skip(true);
+              }}
+            >
+              <MdSkipNext size={26} />
+            </button>
+          </div>
+        </div>
+      </CircleTimerBase>
     </div>
-  );
-};
-
-CircleTimer.displayName = "CircleTimer";
-
-export const linearEase = (
-  time: number,
-  start: number,
-  goal: number,
-  duration: number
-) => {
-  if (duration === 0) {
-    return start;
-  }
-
-  const currentTime = time / duration;
-  return start + goal * currentTime;
-};
-
-const getRGB = (color: string) =>
-  color
-    .replace(
-      /^#?([a-f\d])([a-f\d])([a-f\d])$/i,
-      (_, r, g, b) => `#${r}${r}${g}${g}${b}${b}`
-    )
-    .substring(1)
-    .match(/.{2}/g)
-    ?.map((x) => parseInt(x, 16)) ?? [];
-
-export const getStroke = (
-  color: ColorFormat,
-  duration: number,
-  elapsedTime: number
-): ColorFormat => {
-  if (typeof color === "string") {
-    return color;
-  }
-
-  const currentTime = elapsedTime;
-  const currentDuration = duration;
-  const startColorRGB = getRGB(color);
-  const endColorRGB = getRGB(color);
-
-  return `rgb(${startColorRGB
-    .map(
-      (color, index) =>
-        linearEase(
-          currentTime,
-          color,
-          endColorRGB[index] - color,
-          currentDuration
-        ) | 0
-    )
-    .join(",")})`;
-};
-
-export const getPathProps = (
-  size: number,
-  strokeWidth: number,
-  rotation: "clockwise" | "counterclockwise"
-) => {
-  const halfSize = size / 2;
-  const halfStrokeWith = strokeWidth / 2;
-  const arcRadius = halfSize - halfStrokeWith;
-  const arcDiameter = 2 * arcRadius;
-  const rotationIndicator = rotation === "clockwise" ? "1,0" : "0,1";
-
-  const pathLength = 2 * Math.PI * arcRadius;
-  const path = `m ${halfSize},${halfStrokeWith} a ${arcRadius},${arcRadius} 0 ${rotationIndicator} 0,${arcDiameter} a ${arcRadius},${arcRadius} 0 ${rotationIndicator} 0,-${arcDiameter}`;
-
-  return { path, pathLength };
-};
-
-export const getStartAt = (duration: number, initialRemainingTime?: number) => {
-  if (duration === 0 || duration === initialRemainingTime) {
-    return 0;
-  }
-
-  return typeof initialRemainingTime === "number"
-    ? duration - initialRemainingTime
-    : 0;
-};
-
-export const getWrapperStyle = (size: number): React.CSSProperties => ({
-  position: "relative",
-  width: size,
-  height: size,
-});
-
-export const timeStyle: React.CSSProperties = {
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  position: "absolute",
-  left: 0,
-  top: 0,
-  width: "100%",
-  height: "100%",
-};
-
-export const getIsColorBetweenColors = (
-  color: ColorRGB,
-  start: ColorRGB,
-  end: ColorRGB
-) => {
-  const getIsInRange = (x: number, min: number, max: number) =>
-    (x - min) * (x - max) <= 0;
-
-  const getRGB = (color: ColorRGB): number[] =>
-    color
-      .match(/(\d+),(\d+),(\d+)/)!
-      .splice(1, 4)
-      .map((c: string) => parseInt(c, 10));
-
-  const colorRGB = getRGB(color);
-  const startRGB = getRGB(start);
-  const endRGB = getRGB(end);
-
-  return colorRGB.every((c, index) =>
-    getIsInRange(c, startRGB[index], endRGB[index])
   );
 };
 

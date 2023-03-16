@@ -3,13 +3,15 @@ import { emit } from "@tauri-apps/api/event";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { RiEyeCloseFill, RiEyeFill } from "react-icons/ri";
+import { MdDelete } from "react-icons/md";
 import { ChromePicker } from "react-color";
 import { Tooltip } from "@mantine/core";
 import { useClickOutside } from "@mantine/hooks";
 
 import useStore from "@/store";
 import ipc from "@/ipc";
-import { Button, ModalContainer, DeleteButton } from "@/components";
+import { Button, ModalContainer } from "@/components";
+import { useConfirmDelete } from "@/hooks";
 import { Theme } from "@/bindings/Theme";
 import { ThemeForCreate } from "@/bindings/ThemeForCreate";
 import { ColorType } from "..";
@@ -41,6 +43,7 @@ const EditThemeModal: React.FC<Props> = (props) => {
   });
 
   const store = useStore();
+
   const ref = useClickOutside(() => {
     if (!viewColorPicker) props.hide();
 
@@ -61,6 +64,8 @@ const EditThemeModal: React.FC<Props> = (props) => {
 
     setViewColorPicker(undefined);
   });
+
+  const { viewConfirmDelete, onDelete } = useConfirmDelete();
 
   const disabled =
     watch("name") === props.theme.name &&
@@ -95,7 +100,10 @@ const EditThemeModal: React.FC<Props> = (props) => {
           <form onSubmit={onSubmit} className="flex flex-col gap-4">
             <div className="flex flex-col gap-4">
               <div className="flex flex-row items-center gap-4">
-                <label className="min-w-[64px] text-text/80" htmlFor="color-scheme-name">
+                <label
+                  className="min-w-[64px] text-text/80"
+                  htmlFor="color-scheme-name"
+                >
                   Name
                 </label>
                 <input
@@ -108,7 +116,10 @@ const EditThemeModal: React.FC<Props> = (props) => {
                 />
               </div>
               <div className="flex flex-row items-center gap-4">
-                <label className="min-w-[64px] text-text/80" htmlFor="window-hex">
+                <label
+                  className="min-w-[64px] text-text/80"
+                  htmlFor="window-hex"
+                >
                   Window
                 </label>
                 <input
@@ -158,7 +169,10 @@ const EditThemeModal: React.FC<Props> = (props) => {
                 ></div>
               </div>
               <div className="flex flex-row items-center gap-4">
-                <label className="min-w-[64px] text-text/80" htmlFor="primary-hex">
+                <label
+                  className="min-w-[64px] text-text/80"
+                  htmlFor="primary-hex"
+                >
                   Primary
                 </label>
                 <input
@@ -210,15 +224,23 @@ const EditThemeModal: React.FC<Props> = (props) => {
             </div>
             {/* Form actions */}
             <div className="h-7 flex flex-row items-center justify-between">
-              <DeleteButton
+              <Button
+                transparent={!viewConfirmDelete}
+                color="danger"
+                style={{ width: "fit-content" }}
                 onClick={() =>
-                  ipc.deleteTheme(props.theme.id).then((data) => {
-                    store.removeTheme(data.id);
-                    props.hide();
-                    toast("Theme deleted");
-                  })
+                  onDelete(() =>
+                    ipc.deleteTheme(props.theme.id).then((data) => {
+                      store.removeTheme(data.id);
+                      props.hide();
+                      toast("Theme deleted");
+                    })
+                  )
                 }
-              />
+              >
+                <MdDelete size={viewConfirmDelete ? 24 : 28} />
+                {viewConfirmDelete && "Confirm"}
+              </Button>
               <div className="flex flex-row items-center gap-4">
                 <Tooltip withArrow position="left" label="Preview">
                   <div

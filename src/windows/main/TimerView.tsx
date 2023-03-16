@@ -1,220 +1,156 @@
 import React from "react";
-import { MdPauseCircle, MdPlayCircle, MdSkipNext } from "react-icons/md";
-import { VscDebugRestart } from "react-icons/vsc";
-import Color from "color";
+import { BiTargetLock } from "react-icons/bi";
+import { TbMinimize } from "react-icons/tb";
+import { clsx } from "@mantine/core";
+import { toast } from "react-hot-toast";
+import { AnimatePresence, motion } from "framer-motion";
 
 import utils from "@/utils";
 import ipc from "@/ipc";
-import { Timer } from "@/hooks/useTimer";
-import { Button } from "@/components";
-import CircleTimer, { ColorFormat } from "@/components/timers/CircleTimer";
-import { Theme } from "@/bindings/Theme";
+import { useTimer } from "@/hooks";
+import { Button, CircleTimer, CompactTimer } from "@/components";
+import useStore from "@/store";
+import { MainWindowContext } from "@/contexts";
+import { TimerConfig } from "@/bindings/TimerConfig";
+import { Intent } from "@/bindings/Intent";
 
-interface Props extends Timer {
-  compact: boolean;
-  theme: Theme;
-  displayTimeLeft: boolean;
+interface Props {
+  config: TimerConfig;
 }
 
 const TimerView: React.FC<Props> = (props) => {
-  const toggleDisplayTimeLeft = () =>
-    ipc.updateInterfaceConfig({
-      display_timer_countdown: !props.displayTimeLeft,
-    });
+  const { display, isCompact, toggleIsCompact } =
+    React.useContext(MainWindowContext)!;
 
-  const formattedTimeLeft = utils.formatTimeTimer(
-    props.duration - props.elapsedTime
-  );
+  const store = useStore();
 
-  const sessionType =
-    props.type === "Focus"
-      ? "Focus"
-      : props.type === "Break"
-        ? "Break"
-        : "Long break";
+  const timer = useTimer(props.config, {
+    onCompleted: (session) => {
+      if (
+        session.type === "Focus" &&
+        session.elapsedTime &&
+        session.elapsedTime >= 60 &&
+        session.startedAt
+      ) {
+        ipc
+          .createSession({
+            duration: ~~(session.elapsedTime! / 60),
+            started_at: session.startedAt,
+            intent_id: store.currentIntent?.id!,
+          })
+          .then(() => toast("Session saved"));
+      }
 
-  if (props.compact)
-    return (
-      <CompactTimerView
-        toggleDisplayTimeLeft={toggleDisplayTimeLeft}
-        formattedTimeLeft={formattedTimeLeft}
-        sessionType={sessionType}
-        {...props}
-      />
-    );
+      ipc.playAudio();
+
+      store.scripts.forEach(
+        (script) =>
+          script.active &&
+          (session.type === "Focus"
+            ? script.run_on_session_end
+            : script.run_on_break_end) &&
+          utils.executeScript(script.body)
+      );
+    },
+    onResumed: (session) => {
+      store.scripts.forEach(
+        (script) =>
+          script.active &&
+          (session.type === "Focus"
+            ? script.run_on_session_start
+            : script.run_on_break_start) &&
+          utils.executeScript(script.body)
+      );
+    },
+    onPaused: (session) => {
+      store.scripts.forEach(
+        (script) =>
+          script.active &&
+          (session.type === "Focus"
+            ? script.run_on_session_pause
+            : script.run_on_break_pause) &&
+          utils.executeScript(script.body)
+      );
+    },
+  });
+
+  const displayTimeLeft =
+    store.interfaceConfig?.display_timer_countdown ?? true;
+
+  const theme = store.currentTheme!;
 
   return (
-    <CircleTimerView
-      toggleDisplayTimeLeft={toggleDisplayTimeLeft}
-      formattedTimeLeft={formattedTimeLeft}
-      sessionType={sessionType}
-      {...props}
-    />
+    <AnimatePresence initial={false}>
+      {display === "timer" && (
+        <motion.div
+          className="grow flex flex-col gap-0.5"
+          transition={{ duration: 0.3 }}
+          initial={{ width: "0%", opacity: 0 }}
+          animate={{ width: "100%", opacity: 1 }}
+          exit={{ width: "0%", opacity: 0, translateX: 128 }}
+        >
+          {isCompact ? (
+            <CompactTimer
+              displayTimeLeft={displayTimeLeft}
+              theme={theme}
+              {...timer}
+            />
+          ) : (
+            <CircleTimer
+              displayTimeLeft={displayTimeLeft}
+              theme={theme}
+              {...timer}
+            />
+          )}
+          <TimerDetails
+            isCompact={isCompact}
+            iterations={timer.iterations}
+            intent={store.currentIntent}
+            toggleIsCompact={toggleIsCompact}
+          />
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };
 
-interface TimerProps extends Props {
-  toggleDisplayTimeLeft: () => void;
-  formattedTimeLeft: string;
-  sessionType: string;
+interface TimerDetailsProps {
+  isCompact: boolean;
+  iterations: number;
+  intent?: Intent;
+  toggleIsCompact: () => void;
 }
 
-const CompactTimerView: React.FC<TimerProps> = (props) => {
+const TimerDetails: React.FC<TimerDetailsProps> = (props) => {
   return (
-    <div className="relative grow flex flex-col items-center justify-center bg-window/90 border-2 border-base/80 rounded overflow-clip">
-      <div className="z-10 flex flex-col items-center">
-        {props.displayTimeLeft ? (
-          <React.Fragment>
-            <span
-              data-tauri-disable-drag
-              className="font-mono opacity-80"
-              onClick={props.toggleDisplayTimeLeft}
-              style={{
-                fontSize: 32,
-              }}
-            >
-              {props.formattedTimeLeft}
-            </span>
-            <span className="text-text/60 whitespace-nowrap text-lg">
-              {props.sessionType}
-            </span>
-          </React.Fragment>
-        ) : (
-          <span
-            className="opacity-80 text-3xl font-bold whitespace-nowrap text-primary"
-            data-tauri-disable-drag
-            onClick={props.toggleDisplayTimeLeft}
-          >
-            {props.sessionType}
-          </span>
+    <div className="w-full flex flex-row items-center justify-between gap-0.5 bg-window/90 border-2 border-base/80 rounded overflow-clip">
+      {/* --- Total timer iterations --- */}
+      <span
+        className={clsx(
+          "text-primary/80 font-bold text-center",
+          props.isCompact ? "p-0.5 text-sm" : "p-1.5"
         )}
-      </div>
-      <div className="z-10">
-        <TimerControlers {...props} />
-      </div>
-      <div
-        className="absolute left-0 top-0 h-full bg-primary/20"
-        style={{
-          width: utils.scale(
-            props.elapsedTimeDetailed,
-            0,
-            props.duration,
-            0,
-            296
-          ),
-        }}
-      ></div>
-    </div>
-  );
-};
-
-const CircleTimerView: React.FC<TimerProps> = (props) => {
-  const textColor = props.isPlaying
-    ? props.theme.primary_hex
-    : props.theme.text_hex;
-
-  return (
-    <div className="grow flex flex-col bg-window/90 border-2 border-base/80 rounded">
-      <CircleTimer
-        isPlaying={props.isPlaying}
-        duration={props.duration}
-        elapsedTime={props.elapsedTimeDetailed}
-        strokeWidth={6}
-        size={210}
-        color={
-          Color(
-            props.isPlaying ? props.theme.primary_hex : props.theme.base_hex
-          )
-            .alpha(0.8)
-            .hex() as ColorFormat
-        }
-        trailColor={Color(props.theme.window_hex).hex() as ColorFormat}
       >
-        <div className="flex flex-col items-center gap-1 justify-center">
-          {props.displayTimeLeft ? (
-            <React.Fragment>
-              <span
-                data-tauri-disable-drag
-                className="translate-y-4 font-mono opacity-80"
-                onClick={props.toggleDisplayTimeLeft}
-                style={{
-                  fontSize: 40,
-                  color: textColor,
-                }}
-              >
-                {props.formattedTimeLeft}
-              </span>
-              <span className="text-lg text-text/60 whitespace-nowrap">
-                {props.sessionType}
-              </span>
-            </React.Fragment>
-          ) : (
-            <span
-              className="opacity-80 text-3xl font-bold whitespace-nowrap text-primary"
-              data-tauri-disable-drag
-              onClick={props.toggleDisplayTimeLeft}
-              style={{
-                color: textColor,
-              }}
-            >
-              {props.sessionType}
-            </span>
+        #{props.iterations}
+      </span>
+      {/* --- Current intent label --- */}
+      {props.intent ? (
+        <div
+          className={clsx(
+            "w-full flex flex-row items-center justify-center gap-1 text-text/80",
+            props.isCompact ? "p-0.5 text-sm" : "p-1.5"
           )}
-        </div>
-
-        <div className="absolute bottom-6 translate-x-1 w-full flex flex-col items-center gap-1 transition-opacity duration-300">
-          <TimerControlers {...props} />
-        </div>
-      </CircleTimer>
-    </div>
-  );
-};
-
-const TimerControlers: React.FC<Props> = (props) => {
-  return (
-    <div className="group flex flex-row items-center justify-center">
-      <button
-        tabIndex={-2}
-        className="opacity-0 group-hover:opacity-100 transition-opacity duration-500 text-primary/80 hover:text-primary"
-        onClick={() => {
-          props.restart();
-        }}
-      >
-        <VscDebugRestart size={21} />
-      </button>
-
-      {props.isPlaying ? (
-        <Button
-          transparent
-          highlight={false}
-          opacity={0.6}
-          onClick={() => {
-            props.pause();
-          }}
         >
-          <MdPauseCircle size={36} />
+          <BiTargetLock size={props.isCompact ? 14 : 16} />
+          <span>{props.intent.label}</span>
+        </div>
+      ) : null}
+      {/* --- Toggle window compact mode button --- */}
+      <div className="flex flex-row items-center gap-1">
+        <Button transparent onClick={props.toggleIsCompact} rounded={false}>
+          <TbMinimize size={props.isCompact ? 20 : 28} />
         </Button>
-      ) : (
-        <Button
-          transparent
-          highlight={false}
-          opacity={0.8}
-          onClick={() => {
-            props.resume();
-          }}
-        >
-          <MdPlayCircle size={36} />
-        </Button>
-      )}
-      <button
-        tabIndex={-2}
-        className="opacity-0 group-hover:opacity-100 transition-opacity duration-500 text-primary/80 hover:text-primary -translate-x-0.5"
-        onClick={() => {
-          props.skip(true);
-        }}
-      >
-        <MdSkipNext size={26} />
-      </button>
+      </div>
     </div>
   );
 };

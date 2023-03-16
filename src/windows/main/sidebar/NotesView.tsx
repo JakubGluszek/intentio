@@ -15,7 +15,7 @@ import { motion } from "framer-motion";
 
 import useStore from "@/store";
 import ipc from "@/ipc";
-import { useContextMenu, useEvents } from "@/hooks";
+import { useConfirmDelete, useContextMenu, useEvents } from "@/hooks";
 import { Button, ContextMenu } from "@/components";
 import { Note } from "@/bindings/Note";
 
@@ -24,10 +24,10 @@ const NotesView: React.FC = () => {
   const [viewFilter, setViewFilter] = React.useState(false);
   const [filterQuery, setFilterQuery] = React.useState("");
   const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
-  const [viewConfirmDelete, setViewConfirmDelete] = React.useState(false);
 
   const store = useStore();
   const containerRef = React.useRef<HTMLDivElement>(null);
+  const { viewConfirmDelete, onDelete } = useConfirmDelete();
 
   var notes = useStore((state) => state.notes);
   notes = notes.filter((note) => note.intent_id === store.currentIntent?.id);
@@ -54,19 +54,6 @@ const NotesView: React.FC = () => {
   React.useEffect(() => {
     ipc.getNotes().then((data) => store.setNotes(data));
   }, []);
-
-  React.useEffect(() => {
-    let hideConfirm: NodeJS.Timeout | undefined;
-    if (viewConfirmDelete) {
-      hideConfirm = setTimeout(() => {
-        setViewConfirmDelete(false);
-      }, 3000);
-    } else {
-      hideConfirm && clearTimeout(hideConfirm);
-    }
-
-    return () => hideConfirm && clearTimeout(hideConfirm);
-  }, [viewConfirmDelete]);
 
   React.useEffect(() => {
     setSelectedIds([]);
@@ -107,30 +94,21 @@ const NotesView: React.FC = () => {
           ) : null}
           {!viewCreate && !viewFilter && selectedIds.length > 0 ? (
             <div className="bg-window/90 border-2 border-base/80 rounded">
-              {!viewConfirmDelete ? (
-                <Button
-                  onClick={() => setViewConfirmDelete(true)}
-                  transparent
-                  color="danger"
-                >
-                  <MdDelete size={20} />
-                  <div>{selectedIds.length}</div>
-                </Button>
-              ) : (
-                <Button
-                  onClick={() =>
+              <Button
+                onClick={() =>
+                  onDelete(() =>
                     ipc.deleteNotes(selectedIds).then(() => {
                       setSelectedIds([]);
-                      setViewConfirmDelete(false);
                       toast("Notes deleted");
                     })
-                  }
-                  transparent
-                  color="danger"
-                >
-                  Confirm
-                </Button>
-              )}
+                  )
+                }
+                transparent
+                color="danger"
+              >
+                {!viewConfirmDelete && <MdDelete size={20} />}
+                <div>{viewConfirmDelete ? "Confirm" : selectedIds.length}</div>
+              </Button>
             </div>
           ) : null}
         </div>
@@ -299,7 +277,7 @@ const FilterNotesView: React.FC<FilterNotesViewProps> = (props) => {
       <div className="relative">
         <input
           tabIndex={-2}
-          className="input bg-darker/90"
+          className="input bg-window/90"
           autoFocus
           placeholder='Press "ESCAPE" to exit'
           autoComplete="off"
@@ -397,20 +375,7 @@ interface NoteContextMenuProps {
 }
 
 const NoteContextMenu: React.FC<NoteContextMenuProps> = (props) => {
-  const [viewConfirmDelete, setViewConfirmDelete] = React.useState(false);
-
-  React.useEffect(() => {
-    let hideConfirm: NodeJS.Timeout | undefined;
-    if (viewConfirmDelete) {
-      hideConfirm = setTimeout(() => {
-        setViewConfirmDelete(false);
-      }, 3000);
-    } else {
-      hideConfirm && clearTimeout(hideConfirm);
-    }
-
-    return () => hideConfirm && clearTimeout(hideConfirm);
-  }, [viewConfirmDelete]);
+  const { viewConfirmDelete, onDelete } = useConfirmDelete();
 
   return (
     <ContextMenu
@@ -432,28 +397,22 @@ const NoteContextMenu: React.FC<NoteContextMenuProps> = (props) => {
           </div>
           <div className="w-full">Copy</div>
         </Button>
-        {!viewConfirmDelete ? (
-          <Button
-            onClick={() => setViewConfirmDelete(true)}
-            rounded={false}
-            color="danger"
-          >
-            <div className="w-fit">
-              <MdDelete size={20} />
-            </div>
-            <div className="w-full">Delete</div>
-          </Button>
-        ) : (
-          <Button
-            onClick={() =>
+        <Button
+          onClick={() =>
+            onDelete(() =>
               ipc.deleteNote(props.data.id).then(() => toast("Note deleted"))
-            }
-            rounded={false}
-            color="danger"
-          >
-            Confirm
-          </Button>
-        )}
+            )
+          }
+          rounded={false}
+          color="danger"
+        >
+          <div className="w-fit">
+            <MdDelete size={20} />
+          </div>
+          <div className="w-full">
+            {viewConfirmDelete ? "Confirm" : "Delete"}
+          </div>
+        </Button>
       </React.Fragment>
     </ContextMenu>
   );
@@ -473,7 +432,7 @@ const NoteInput: React.FC<NoteInputProps> = (props) => {
       autoComplete="off"
       classNames={{
         input:
-          "bg-darker/90 border-2 text-[15px] border-primary/80 focus:border-primary/80 text-text p-1 pt-1.5 placeholder:text-text/50 placeholder:font-mono placeholder:text-sm",
+          "bg-window/90 border-2 text-[15px] border-primary/80 focus:border-primary/80 text-text p-1 pt-1.5 placeholder:text-text/50 placeholder:font-mono placeholder:text-sm",
       }}
       value={props.value}
       onChange={(e) => {
