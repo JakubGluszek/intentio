@@ -28,7 +28,12 @@ const IntentsView: React.FC = () => {
   }, []);
 
   return (
-    <div className="grow flex flex-col gap-0.5">
+    <motion.div
+      className="grow flex flex-col gap-0.5"
+      transition={{ duration: 0.3 }}
+      initial={{ scale: 0.9, opacity: 0 }}
+      animate={{ scale: 1.0, opacity: 1 }}
+    >
       <motion.div
         className="flex flex-row gap-0.5"
         transition={{ delay: 0.1, duration: 0.3 }}
@@ -62,7 +67,7 @@ const IntentsView: React.FC = () => {
           onTagSelected={(data) => setSelectedIntentTags(data)}
         />
       </div>
-    </div>
+    </motion.div>
   );
 };
 

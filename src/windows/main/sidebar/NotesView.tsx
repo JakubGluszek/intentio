@@ -73,7 +73,12 @@ const NotesView: React.FC = () => {
   }, [viewCreate, viewFilter]);
 
   return (
-    <div className="grow flex flex-col gap-0.5">
+    <motion.div
+      className="grow flex flex-col gap-0.5"
+      transition={{ duration: 0.3 }}
+      initial={{ scale: 0.9, opacity: 0 }}
+      animate={{ scale: 1.0, opacity: 1 }}
+    >
       <motion.div
         className="flex flex-row gap-0.5"
         transition={{ delay: 0.1, duration: 0.3 }}
@@ -88,7 +93,7 @@ const NotesView: React.FC = () => {
         ) : null}
         <div
           className={clsx(
-            "flex flex-row gap-2",
+            "flex flex-row gap-0.5",
             viewFilter ? "w-full" : "w-fit"
           )}
         >
@@ -101,7 +106,7 @@ const NotesView: React.FC = () => {
             />
           ) : null}
           {!viewCreate && !viewFilter && selectedIds.length > 0 ? (
-            <>
+            <div className="bg-window/90 border-2 border-base/80 rounded">
               {!viewConfirmDelete ? (
                 <Button
                   onClick={() => setViewConfirmDelete(true)}
@@ -126,7 +131,7 @@ const NotesView: React.FC = () => {
                   Confirm
                 </Button>
               )}
-            </>
+            </div>
           ) : null}
         </div>
       </motion.div>
@@ -151,7 +156,7 @@ const NotesView: React.FC = () => {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

@@ -18,6 +18,7 @@ import WindowContainer from "@/components/WindowContainer";
 import { TimerConfig } from "@/bindings/TimerConfig";
 import TimerView from "./TimerView";
 import Sidebar from "./sidebar";
+import { clsx } from "@mantine/core";
 
 const MainWindow: React.FC = () => {
   const [displaySidebar, setDisplaySidebar] = React.useState(false);
@@ -50,7 +51,7 @@ const MainWindow: React.FC = () => {
       appWindow.setSize(size);
     } else {
       // as for now, this doesn't work properly on linux; height is set to 200px for some reason ¯\_(ツ)_/¯
-      let size = new LogicalSize(config.webviews.main.width, 140);
+      let size = new LogicalSize(config.webviews.main.width, 200);
       appWindow.setMinSize(size);
       appWindow.setMaxSize(size);
       appWindow.setSize(size);
@@ -75,6 +76,7 @@ const MainWindow: React.FC = () => {
     <WindowContainer>
       <div className="grow flex flex-col gap-0.5 rounded overflow-clip">
         <Titlebar
+          compact={compact}
           displaySidebar={displaySidebar}
           toggleSidebar={toggleSidebar}
         />
@@ -93,6 +95,7 @@ const MainWindow: React.FC = () => {
 };
 
 interface TitlebarProps {
+  compact: boolean;
   displaySidebar: boolean;
   toggleSidebar: () => void;
 }
@@ -103,7 +106,7 @@ const Titlebar: React.FC<TitlebarProps> = (props) => {
       <div className="flex flex-row">
         <Button onClick={props.toggleSidebar} transparent rounded={false}>
           <motion.div animate={{ rotateZ: props.displaySidebar ? 180 : 0 }}>
-            <TbLayoutSidebarRightCollapse size={28} />
+            <TbLayoutSidebarRightCollapse size={props.compact ? 20 : 28} />
           </motion.div>
         </Button>
         <Button
@@ -113,7 +116,7 @@ const Titlebar: React.FC<TitlebarProps> = (props) => {
           }
           rounded={false}
         >
-          <MdSettings size={28} />
+          <MdSettings size={props.compact ? 20 : 28} />
         </Button>
       </div>
       <h2 className="text-text/80 font-bold">Intentio</h2>
@@ -123,14 +126,14 @@ const Titlebar: React.FC<TitlebarProps> = (props) => {
           onClick={() => ipc.hideMainWindow()}
           rounded={false}
         >
-          <MdRemove size={28} />
+          <MdRemove size={props.compact ? 20 : 28} />
         </Button>
         <Button
           transparent
           onClick={() => ipc.exitMainWindow()}
           rounded={false}
         >
-          <MdClose size={28} />
+          <MdClose size={props.compact ? 20 : 28} />
         </Button>
       </div>
     </div>
@@ -210,23 +213,35 @@ const Content: React.FC<ContentProps> = (props) => {
           <TimerView
             compact={props.compact}
             theme={store.currentTheme!}
-            displayTime={store.interfaceConfig?.display_timer_countdown ?? true}
+            displayTimeLeft={
+              store.interfaceConfig?.display_timer_countdown ?? true
+            }
             {...timer}
           />
 
           <div className="bottom-0 left-0 w-full flex flex-row items-center justify-between gap-0.5 bg-window/90 border-2 border-base/80 rounded overflow-clip">
-            <span className="text-primary/80 font-bold text-center p-1.5">
+            <span
+              className={clsx(
+                "text-primary/80 font-bold text-center",
+                props.compact ? "p-0.5 text-sm" : "p-1.5"
+              )}
+            >
               #{timer.iterations}
             </span>
             {store.currentIntent ? (
-              <div className="w-full flex flex-row items-center justify-center gap-1 text-text/80 p-1.5">
-                <BiTargetLock size={16} />
+              <div
+                className={clsx(
+                  "w-full flex flex-row items-center justify-center gap-1 text-text/80",
+                  props.compact ? "p-0.5 text-sm" : "p-1.5"
+                )}
+              >
+                <BiTargetLock size={props.compact ? 14 : 16} />
                 <span>{store.currentIntent.label}</span>
               </div>
             ) : null}
             <div className="flex flex-row items-center gap-1">
               <Button transparent onClick={props.toggleCompact} rounded={false}>
-                <TbMinimize size={28} />
+                <TbMinimize size={props.compact ? 20 : 28} />
               </Button>
             </div>
           </div>

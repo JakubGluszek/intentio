@@ -57,7 +57,12 @@ const TasksView: React.FC = () => {
   }, [viewConfirmDelete]);
 
   return (
-    <div className="grow flex flex-col gap-0.5">
+    <motion.div
+      className="grow flex flex-col gap-0.5"
+      transition={{ duration: 0.3 }}
+      initial={{ scale: 0.9, opacity: 0 }}
+      animate={{ scale: 1.0, opacity: 1 }}
+    >
       <motion.div
         className="flex flex-row gap-0.5"
         transition={{ delay: 0.1, duration: 0.3 }}
@@ -65,6 +70,14 @@ const TasksView: React.FC = () => {
         animate={{ opacity: 1, height: 36 }}
       >
         <CreateTaskView viewCreate={viewCreate} setViewCreate={setViewCreate} />
+
+        {/* Toggle finished tasks */}
+        {!viewCreate ? (
+          <ToggleTasksView
+            viewCompleted={viewCompletedTasks}
+            toggleTasks={() => setViewCompletedTasks((view) => !view)}
+          />
+        ) : null}
 
         {!viewCreate && selectedIds.length > 0 ? (
           <div className="bg-window/90 border-2 border-base/80 rounded">
@@ -94,14 +107,6 @@ const TasksView: React.FC = () => {
             )}
           </div>
         ) : null}
-
-        {/* Toggle finished tasks */}
-        {!viewCreate ? (
-          <ToggleTasksView
-            viewCompleted={viewCompletedTasks}
-            toggleTasks={() => setViewCompletedTasks((view) => !view)}
-          />
-        ) : null}
       </motion.div>
 
       <div className="grow flex flex-col bg-window/90 border-2 border-base/80 rounded p-1.5">
@@ -123,7 +128,7 @@ const TasksView: React.FC = () => {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
