@@ -24,7 +24,12 @@ const TasksView: React.FC = () => {
 
   const store = useStore();
   const tasksContainer = React.useRef<HTMLDivElement>(null);
-  const { viewConfirmDelete, onDelete } = useConfirmDelete();
+  const { viewConfirmDelete, onDelete } = useConfirmDelete(() =>
+    ipc.deleteTasks(selectedIds).then(() => {
+      setSelectedIds([]);
+      toast("Tasks deleted");
+    })
+  );
 
   var tasks = useStore((state) => state.tasks);
   tasks = tasks.filter((task) => task.intent_id === store.currentIntent?.id);
@@ -67,19 +72,8 @@ const TasksView: React.FC = () => {
         ) : null}
 
         {!viewCreate && selectedIds.length > 0 ? (
-          <div className="bg-window/90 border-2 border-base/80 rounded">
-            <Button
-              onClick={() =>
-                onDelete(() =>
-                  ipc.deleteTasks(selectedIds).then(() => {
-                    setSelectedIds([]);
-                    toast("Tasks deleted");
-                  })
-                )
-              }
-              transparent
-              color="danger"
-            >
+          <div className="window">
+            <Button onClick={() => onDelete()} transparent color="danger">
               {!viewConfirmDelete && <MdDelete size={20} />}
               <div>{viewConfirmDelete ? "Confirm" : selectedIds.length}</div>
             </Button>
@@ -87,7 +81,7 @@ const TasksView: React.FC = () => {
         ) : null}
       </motion.div>
 
-      <div className="grow flex flex-col bg-window/90 border-2 border-base/80 rounded p-1.5">
+      <div className="grow flex flex-col window p-1.5">
         <div className="grow flex flex-col overflow-y-auto gap-1 pb-2">
           <div
             ref={tasksContainer}
@@ -134,7 +128,7 @@ const CreateTaskView: React.FC<CreateTaskViewProps> = (props) => {
 
   if (!props.viewCreate)
     return (
-      <div className="w-full bg-window/90 border-2 border-base/80 rounded">
+      <div className="w-full window">
         <Button
           onClick={() => props.setViewCreate(true)}
           style={{ width: "100%" }}
@@ -310,7 +304,9 @@ interface TaskContextMenuProps {
 }
 
 const TaskContextMenu: React.FC<TaskContextMenuProps> = (props) => {
-  const { viewConfirmDelete, onDelete } = useConfirmDelete();
+  const { viewConfirmDelete, onDelete } = useConfirmDelete(() =>
+    ipc.deleteTask(props.data.id).then(() => toast("Task deleted"))
+  );
 
   return (
     <ContextMenu
@@ -319,15 +315,7 @@ const TaskContextMenu: React.FC<TaskContextMenuProps> = (props) => {
       topPosition={props.topPosition}
     >
       <React.Fragment>
-        <Button
-          onClick={() =>
-            onDelete(() =>
-              ipc.deleteTask(props.data.id).then(() => toast("Task deleted"))
-            )
-          }
-          rounded={false}
-          color="danger"
-        >
+        <Button onClick={() => onDelete()} rounded={false} color="danger">
           <div className="w-fit">
             <MdDelete size={20} />
           </div>
@@ -348,7 +336,7 @@ interface ToggleTasksViewProps {
 const ToggleTasksView: React.FC<ToggleTasksViewProps> = (props) => {
   return (
     <Tooltip label={props.viewCompleted ? "View incomplete" : "View completed"}>
-      <div className="bg-window/90 border-2 border-base/80 rounded">
+      <div className="window">
         <Button
           onClick={() => props.toggleTasks()}
           transparent

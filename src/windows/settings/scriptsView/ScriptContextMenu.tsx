@@ -21,7 +21,12 @@ interface ScriptContextMenuProps {
 
 const ScriptContextMenu: React.FC<ScriptContextMenuProps> = (props) => {
   const store = useStore();
-  const { viewConfirmDelete, onDelete } = useConfirmDelete();
+  const { viewConfirmDelete, onDelete } = useConfirmDelete(() =>
+    ipc.deleteScript(props.data.id).then((data) => {
+      store.removeScript(data.id);
+      toast("Script deleted");
+    })
+  );
 
   return (
     <ContextMenu {...props}>
@@ -50,18 +55,7 @@ const ScriptContextMenu: React.FC<ScriptContextMenuProps> = (props) => {
           </div>
           <div className="w-full">Events</div>
         </Button>
-        <Button
-          onClick={() =>
-            onDelete(() =>
-              ipc.deleteScript(props.data.id).then((data) => {
-                store.removeScript(data.id);
-                toast("Script deleted");
-              })
-            )
-          }
-          rounded={false}
-          color="danger"
-        >
+        <Button onClick={() => onDelete()} rounded={false} color="danger">
           <div className="w-fit">
             <MdDelete size={20} />
           </div>

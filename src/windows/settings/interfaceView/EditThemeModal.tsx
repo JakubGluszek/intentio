@@ -65,7 +65,13 @@ const EditThemeModal: React.FC<Props> = (props) => {
     setViewColorPicker(undefined);
   });
 
-  const { viewConfirmDelete, onDelete } = useConfirmDelete();
+  const { viewConfirmDelete, onDelete } = useConfirmDelete(() =>
+    ipc.deleteTheme(props.theme.id).then((data) => {
+      store.removeTheme(data.id);
+      props.hide();
+      toast("Theme deleted");
+    })
+  );
 
   const disabled =
     watch("name") === props.theme.name &&
@@ -228,15 +234,7 @@ const EditThemeModal: React.FC<Props> = (props) => {
                 transparent={!viewConfirmDelete}
                 color="danger"
                 style={{ width: "fit-content" }}
-                onClick={() =>
-                  onDelete(() =>
-                    ipc.deleteTheme(props.theme.id).then((data) => {
-                      store.removeTheme(data.id);
-                      props.hide();
-                      toast("Theme deleted");
-                    })
-                  )
-                }
+                onClick={() => onDelete()}
               >
                 <MdDelete size={viewConfirmDelete ? 24 : 28} />
                 {viewConfirmDelete && "Confirm"}

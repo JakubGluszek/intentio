@@ -37,7 +37,7 @@ const CircleTimer: React.FC<Props> = (props) => {
     : props.theme.text_hex;
 
   return (
-    <div className="grow flex flex-col bg-window/90 border-2 border-base/80 rounded">
+    <div className="grow flex flex-col window">
       <CircleTimerBase
         isPlaying={props.isPlaying}
         duration={props.duration}

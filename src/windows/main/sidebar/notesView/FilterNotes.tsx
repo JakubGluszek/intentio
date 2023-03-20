@@ -6,43 +6,31 @@ import { Button } from "@/components";
 interface FilterNotesViewProps {
   query: string;
   setQuery: (q: string) => void;
-  toggleDisplay: () => void;
+  hide: () => void;
 }
 
 const FilterNotes: React.FC<FilterNotesViewProps> = (props) => {
   return (
-    <div className="w-full animate-in fade-in-0 zoom-in-90">
-      <div className="relative">
-        <input
-          tabIndex={-2}
-          className="input bg-window/90"
-          autoFocus
-          placeholder='Press "ESCAPE" to exit'
-          autoComplete="off"
-          value={props.query}
-          onChange={(e) => props.setQuery(e.currentTarget.value)}
-          onKeyDown={(e) => {
-            if (e.key !== "Escape") return;
+    <div className="w-full flex flex-row gap-0.5">
+      <input
+        className="w-[220px] bg-window/90 border-base/80"
+        autoFocus
+        placeholder="Filter notes by content"
+        autoComplete="off"
+        tabIndex={-2}
+        value={props.query}
+        onChange={(e) => props.setQuery(e.currentTarget.value)}
+      />
+      <div className="window">
+        <Button
+          onClick={() => {
             props.setQuery("");
-            props.toggleDisplay();
+            props.hide();
           }}
-        />
-        {props.query.length > 1 ? (
-          <Button
-            onClick={() => {
-              props.setQuery("");
-              props.toggleDisplay();
-            }}
-            style={{
-              position: "absolute",
-              right: 4,
-              top: 6,
-            }}
-            transparent
-          >
-            <MdClose size={24} />
-          </Button>
-        ) : null}
+          transparent
+        >
+          <MdClose size={24} />
+        </Button>
       </div>
     </div>
   );

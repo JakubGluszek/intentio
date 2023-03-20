@@ -24,7 +24,9 @@ const DetailsModal: React.FC<Props> = (props) => {
 
   const totalSessionsDuration = sessions.reduce((p, c) => (p += c.duration), 0);
 
-  const { viewConfirmDelete, onDelete } = useConfirmDelete();
+  const { viewConfirmDelete, onDelete } = useConfirmDelete(() =>
+    ipc.deleteIntent(data.id)
+  );
 
   return (
     <ModalContainer display={props.display} hide={props.exit}>
@@ -84,7 +86,7 @@ const DetailsModal: React.FC<Props> = (props) => {
             transparent={!viewConfirmDelete}
             color="danger"
             style={{ width: "fit-content" }}
-            onClick={() => onDelete(() => ipc.deleteIntent(data.id))}
+            onClick={() => onDelete()}
           >
             <MdDelete size={viewConfirmDelete ? 24 : 28} />
             {viewConfirmDelete && "Confirm"}

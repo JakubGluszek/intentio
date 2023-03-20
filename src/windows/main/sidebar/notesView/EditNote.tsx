@@ -1,49 +1,49 @@
 import React from "react";
-import { toast } from "react-hot-toast";
 import { MdCancel } from "react-icons/md";
+import { toast } from "react-hot-toast";
 
-import useStore from "@/store";
 import ipc from "@/ipc";
 import { Button } from "@/components";
+import { Note } from "@/bindings/Note";
 import NoteInput from "./NoteInput";
 
 interface Props {
+  note: Note;
   hide: () => void;
 }
 
-const CreateNote: React.FC<Props> = (props) => {
+const EditNote: React.FC<Props> = (props) => {
   const [body, setBody] = React.useState("");
-  const store = useStore();
 
-  const saveNote = () => {
-    if (body.length === 0 || !store.currentIntent) return;
+  const updateNote = () => {
+    if (body.length === 0 || !props.note) return;
 
-    ipc
-      .createNote({ body, intent_id: store.currentIntent.id })
-      .then(() => {
-        toast("Note created");
-        setBody("");
-        props.hide();
-      })
-      .catch((err) => console.log("ipc.createNote", err));
+    ipc.updateNote(props.note.id, { body }).then(() => {
+      props.hide();
+      toast("Note updated");
+    });
   };
+
+  React.useEffect(() => {
+    props.note && setBody(props.note.body);
+  }, [props.note]);
 
   return (
     <div className="grow flex flex-col gap-0.5">
       <NoteInput
         value={body}
         onChange={(value) => setBody(value)}
-        onCtrlEnter={() => saveNote()}
+        onCtrlEnter={() => updateNote()}
       />
 
       <div className="h-9 flex flex-row gap-0.5">
         <div className="w-full window">
           <Button
-            onClick={() => saveNote()}
+            onClick={() => updateNote()}
             transparent
             style={{ width: "100%" }}
           >
-            Save note
+            Update note
           </Button>
         </div>
         <div className="window">
@@ -56,4 +56,4 @@ const CreateNote: React.FC<Props> = (props) => {
   );
 };
 
-export default CreateNote;
+export default EditNote;

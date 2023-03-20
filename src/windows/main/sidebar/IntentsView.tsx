@@ -41,7 +41,7 @@ const IntentsView: React.FC = () => {
         animate={{ opacity: 1, height: 36 }}
       >
         <CreateIntentView />
-        <div className="bg-window/90 border-2 border-base/80 rounded">
+        <div className="window">
           <Button
             onClick={() =>
               new WebviewWindow("intents", config.webviews.intents)
@@ -55,7 +55,7 @@ const IntentsView: React.FC = () => {
           </Button>
         </div>
       </motion.div>
-      <div className="grow flex flex-col p-1.5 bg-window/90 border-2 border-base/80 rounded">
+      <div className="grow flex flex-col p-1.5 window">
         <IntentsList
           data={store.intents.filter(
             (intent) =>
@@ -93,7 +93,7 @@ const CreateIntentView: React.FC = () => {
 
   if (!viewCreate)
     return (
-      <div className="w-full bg-window/90 border-2 border-base/80 rounded">
+      <div className="w-full window">
         <Button
           transparent
           style={{ width: "100%" }}

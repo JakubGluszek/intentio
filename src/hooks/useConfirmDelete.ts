@@ -1,6 +1,6 @@
 import React from "react";
 
-const useConfirmDelete = () => {
+const useConfirmDelete = (callback: () => void) => {
   const [viewConfirmDelete, setViewConfirmDelete] = React.useState(false);
 
   React.useEffect(() => {
@@ -17,16 +17,18 @@ const useConfirmDelete = () => {
     return () => hideConfirm && clearTimeout(hideConfirm);
   }, [viewConfirmDelete]);
 
+  const onDelete = React.useCallback(() => {
+    if (viewConfirmDelete) {
+      callback();
+      setViewConfirmDelete(false);
+    } else {
+      setViewConfirmDelete(true);
+    }
+  }, [callback, viewConfirmDelete]);
+
   return {
     viewConfirmDelete,
-    onDelete: (callback: () => void) => {
-      if (viewConfirmDelete) {
-        callback();
-        setViewConfirmDelete(false);
-      } else {
-        setViewConfirmDelete(true);
-      }
-    },
+    onDelete: onDelete,
   };
 };
 
