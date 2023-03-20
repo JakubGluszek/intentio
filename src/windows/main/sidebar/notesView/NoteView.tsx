@@ -36,36 +36,39 @@ const NoteView: React.FC<NoteViewProps> = (props) => {
         : `${data.body.slice(0, 128)}...`;
 
   return (
-    <div
-      ref={ref}
-      className={clsx(
-        "min-h-fit flex flex-col gap-1.5 card rounded-sm text-sm p-0 bg-base/80 hover:bg-base",
-        props.isSelected && "border-2 border-primary/50 hover:border-primary/60"
-      )}
-      onContextMenu={(e) => {
-        onContextMenuHandler(e);
-        props.onContextMenu();
-      }}
-      onMouseDown={(e) => {
-        // @ts-ignore
-        if (e.target.closest("button") || e.button === 2) return;
+    <React.Fragment>
+      <div
+        ref={ref}
+        className={clsx(
+          "min-h-fit flex flex-col gap-1.5 card rounded-sm text-sm p-0 bg-base/80 hover:bg-base",
+          props.isSelected &&
+          "border-2 border-primary/50 hover:border-primary/60"
+        )}
+        onContextMenu={(e) => {
+          onContextMenuHandler(e);
+          props.onContextMenu();
+        }}
+        onMouseDown={(e) => {
+          // @ts-ignore
+          if (e.target.closest("button") || e.button === 2) return;
 
-        props.onMouseDown(e);
+          props.onMouseDown(e);
 
-        setViewExpand((prev) => !prev);
-      }}
-      onDoubleClick={() => props.setEdit(data)}
-      data-tauri-disable-drag
-    >
-      <div className="flex flex-row items-start gap-1">
-        <div className="py-2 px-0.5 text-primary">
-          <MdCircle size={8} />
-        </div>
-        <div
-          className="mt-0.5 whitespace-pre-line"
-          style={{ wordBreak: "break-word" }}
-        >
-          {noteBody}
+          setViewExpand((prev) => !prev);
+        }}
+        onDoubleClick={() => props.setEdit(data)}
+        data-tauri-disable-drag
+      >
+        <div className="flex flex-row items-start gap-1">
+          <div className="py-2 px-0.5 text-primary">
+            <MdCircle size={8} />
+          </div>
+          <div
+            className="mt-0.5 whitespace-pre-line"
+            style={{ wordBreak: "break-word" }}
+          >
+            {noteBody}
+          </div>
         </div>
       </div>
 
@@ -76,11 +79,13 @@ const NoteView: React.FC<NoteViewProps> = (props) => {
           topPosition={viewMenu.topPosition}
           hide={() => setViewMenu(undefined)}
           deleteNote={() =>
-            ipc.deleteNote(props.data.id).then(() => toast("Note deleted"))
+            ipc.deleteNote(props.data.id).then(() => {
+              toast("Note deleted");
+            })
           }
         />
       ) : null}
-    </div>
+    </React.Fragment>
   );
 };
 
