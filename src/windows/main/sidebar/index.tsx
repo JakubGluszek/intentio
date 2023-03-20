@@ -10,7 +10,7 @@ import ipc from "@/ipc";
 import { MainWindowContext } from "@/contexts";
 import IntentsView from "./IntentsView";
 import TasksView from "./TasksView";
-import NotesView from "./NotesView";
+import NotesView from "./notesView";
 
 type Tab = "intents" | "notes" | "tasks";
 

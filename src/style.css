@@ -107,7 +107,7 @@
   .card {
     @apply bg-window/80 hover:bg-window p-1.5 rounded border-2 border-base/60 hover:border-base/70 shadow shadow-black/30;
   }
-  
+
   .circle {
     position: relative;
     overflow: hidden;
@@ -121,5 +121,9 @@
     height: 100%;
     border-radius: 100%;
     box-shadow: 0px 300px 0px 300px #448ccb;
+  }
+
+  .window {
+    @apply bg-window/90 border-2 border-base/80 rounded;
   }
 }

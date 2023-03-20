@@ -35,7 +35,7 @@ const IntentsView: React.FC = () => {
       animate={{ scale: 1.0, opacity: 1 }}
     >
       <motion.div
-        className="flex flex-row gap-0.5"
+        className="w-full flex flex-row gap-0.5"
         transition={{ delay: 0.1, duration: 0.3 }}
         initial={{ opacity: 0, height: 0 }}
         animate={{ opacity: 1, height: 36 }}
