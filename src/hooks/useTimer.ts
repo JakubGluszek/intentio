@@ -11,7 +11,8 @@ export interface TimerCallbacks {
   onResumed?: (session: { type: SessionType }) => void;
   onSkipped?: (session: { type: SessionType }) => void;
   onRestarted?: () => void;
-  onCompleted?: (session: Partial<TimerSession>) => void;
+  onCompleted?: (session: { type: SessionType }) => void;
+  onSaveSession: (session: Partial<TimerSession>) => void;
 }
 
 export interface Timer extends TimerSession {
@@ -45,6 +46,7 @@ export const useTimer = (
   };
 
   const restart = () => {
+    saveSession();
     pause();
     reset();
     setStartedAt(undefined);
@@ -52,6 +54,7 @@ export const useTimer = (
   };
 
   const skip = (manual?: boolean) => {
+    saveSession();
     setIsPlaying(false);
     reset();
     setStartedAt(undefined);
@@ -90,13 +93,18 @@ export const useTimer = (
     setDuration(newDuration);
   };
 
+  const saveSession = () => {
+    let session = {
+      elapsedTime: ~~elapsedTime + 1,
+      startedAt,
+      type: sessionType,
+    };
+    callbacks.onSaveSession(session);
+  };
+
   const onComplete = () => {
-    callbacks.onCompleted &&
-      callbacks.onCompleted({
-        elapsedTime: ~~elapsedTime + 1,
-        startedAt,
-        type: sessionType,
-      });
+    saveSession();
+    callbacks.onCompleted && callbacks.onCompleted({ type: sessionType });
     pause();
     skip(false);
   };

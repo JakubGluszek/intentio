@@ -24,7 +24,7 @@ const TimerView: React.FC<Props> = (props) => {
   const store = useStore();
 
   const timer = useTimer(props.config, {
-    onCompleted: (session) => {
+    onSaveSession: (session) => {
       if (
         session.type === "Focus" &&
         session.elapsedTime &&
@@ -39,7 +39,8 @@ const TimerView: React.FC<Props> = (props) => {
           })
           .then(() => toast("Session saved"));
       }
-
+    },
+    onCompleted: (session) => {
       ipc.playAudio();
 
       store.scripts.forEach(
