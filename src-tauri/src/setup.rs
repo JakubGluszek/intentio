@@ -16,7 +16,6 @@ pub fn init_setup(app: &mut App) {
     BehaviorCfg::setup();
     InterfaceCfg::setup();
 
-    setup_hotkeys_manager(app);
     build_main_window(&app.app_handle());
 }
 
@@ -42,43 +41,4 @@ fn build_main_window(handle: &AppHandle) {
         .transparent(true)
         .build()
         .unwrap();
-}
-
-fn setup_hotkeys_manager(app: &mut App) {
-    let mut hm = HotkeyManager::new();
-    let handle = app.app_handle();
-
-    hm.register(
-        Hotkey {
-            modifiers: vec![Modifier::CTRL],
-            keys: vec![Key::F1],
-        },
-        move || {
-            let cmd_window = match handle.get_window("commands") {
-                Some(window) => window,
-                None => {
-                    let window = tauri::WindowBuilder::new(
-                        &handle,
-                        "commands",
-                        tauri::WindowUrl::App("/commands".into()),
-                    )
-                    .visible(true)
-                    .center()
-                    .skip_taskbar(true)
-                    .focused(true)
-                    .decorations(false)
-                    .inner_size(480f64, 240f64)
-                    .build()
-                    .unwrap();
-
-                    window
-                }
-            };
-
-            cmd_window.show().unwrap();
-        },
-    )
-    .expect("CTRL + F1 failed to register");
-
-    app.manage(hm);
 }
