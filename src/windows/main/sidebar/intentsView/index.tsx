@@ -10,6 +10,7 @@ import config from "@/config";
 import { useEvents } from "@/hooks";
 import { Intent } from "@/bindings/Intent";
 import CreateIntent from "./CreateIntent";
+import motions from "@/motions";
 
 const IntentsView: React.FC = () => {
   const [selectedIntentTags, setSelectedIntentTags] = React.useState<string[]>(
@@ -46,13 +47,8 @@ const IntentsView: React.FC = () => {
   }, []);
 
   return (
-    <motion.div
-      className="grow flex flex-col gap-0.5"
-      transition={{ duration: 0.3 }}
-      initial={{ scale: 0.9, opacity: 0 }}
-      animate={{ scale: 1.0, opacity: 1 }}
-    >
-      <div className="w-full flex flex-row gap-0.5">
+    <div className="grow flex flex-col gap-0.5">
+      <motion.div className="w-full flex flex-row gap-0.5" {...motions.scaleIn}>
         <CreateIntent />
         <div className="window">
           <Button
@@ -64,9 +60,12 @@ const IntentsView: React.FC = () => {
             <MdAnalytics size={24} />
           </Button>
         </div>
-      </div>
+      </motion.div>
 
-      <div className="grow flex flex-col p-1.5 window">
+      <motion.div
+        className="grow flex flex-col p-1.5 window"
+        {...motions.scaleIn}
+      >
         <IntentsList
           data={store.intents.filter((intent) => !intent.archived_at)}
           selectedIntentId={store.currentIntent?.id}
@@ -74,8 +73,8 @@ const IntentsView: React.FC = () => {
           onSelected={onIntentChange}
           onTagSelected={(data) => setSelectedIntentTags(data)}
         />
-      </div>
-    </motion.div>
+      </motion.div>
+    </div>
   );
 };
 

@@ -32,13 +32,18 @@ const MainWindow: React.FC = () => {
   return (
     <MainWindowProvider>
       <WindowContainer>
-        <div className="grow flex flex-col gap-0.5 rounded">
+        <motion.div
+          className="grow flex flex-col gap-0.5 rounded"
+          transition={{ duration: 0.6 }}
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+        >
           <Titlebar />
           <div className="grow flex flex-row">
             <Sidebar />
             <TimerView config={store.timerConfig} />
           </div>
-        </div>
+        </motion.div>
       </WindowContainer>
     </MainWindowProvider>
   );
@@ -49,7 +54,7 @@ const Titlebar: React.FC = () => {
     React.useContext(MainWindowContext)!;
 
   return (
-    <div className="w-full flex flex-row items-center justify-between window overflow-clip">
+    <div className="z-[1000] w-full flex flex-row items-center justify-between window overflow-clip">
       <div className="flex flex-row">
         <Button onClick={toggleDisplay} transparent rounded={false}>
           <motion.div animate={{ rotateZ: display === "sidebar" ? 180 : 0 }}>

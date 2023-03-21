@@ -8,6 +8,7 @@ import ipc from "@/ipc";
 import { useConfirmDelete, useEvents } from "@/hooks";
 import { Button } from "@/components";
 import { Note } from "@/bindings/Note";
+import motions from "@/motions";
 import CreateNote from "./CreateNote";
 import FilterNotes from "./FilterNotes";
 import NoteView from "./NoteView";
@@ -37,12 +38,7 @@ const NotesView: React.FC = () => {
   }, []);
 
   return (
-    <motion.div
-      className="grow flex flex-col gap-0.5"
-      transition={{ duration: 0.3 }}
-      initial={{ scale: 0.9, opacity: 0 }}
-      animate={{ scale: 1.0, opacity: 1 }}
-    >
+    <motion.div className="grow flex flex-col gap-0.5">
       <Top
         display={!viewCreate && !editNote}
         toggleViewCreate={() => setViewCreate(true)}
@@ -85,7 +81,7 @@ const Top: React.FC<TopProps> = (props) => {
   if (!props.display) return null;
 
   return (
-    <div className="flex flex-row gap-0.5">
+    <motion.div className="flex flex-row gap-0.5" {...motions.scaleIn}>
       {!viewFilter ? (
         <React.Fragment>
           <div className="w-full window">
@@ -118,7 +114,7 @@ const Top: React.FC<TopProps> = (props) => {
         selectedNotesIds={props.selectedNotesIds}
         setSelectedNotesIds={props.setSelectedNotesIds}
       />
-    </div>
+    </motion.div>
   );
 };
 
@@ -150,7 +146,10 @@ const NotesList: React.FC<NotesListProps> = (props) => {
   if (!props.display) return null;
 
   return (
-    <div className="grow flex flex-col p-1.5 window">
+    <motion.div
+      className="grow flex flex-col p-1.5 window"
+      {...motions.scaleIn}
+    >
       <div className="grow flex flex-col overflow-y-auto gap-1 pb-2">
         <div
           ref={props.innerRef}
@@ -189,7 +188,7 @@ const NotesList: React.FC<NotesListProps> = (props) => {
           })}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

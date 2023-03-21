@@ -36,7 +36,7 @@ const Sidebar: React.FC = () => {
       {display === "sidebar" && (
         <motion.aside
           className="h-[278px] flex flex-row gap-0.5"
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0.2 }}
           initial={{ width: "0%", opacity: 0 }}
           animate={{ width: "100%", opacity: 1 }}
           exit={{

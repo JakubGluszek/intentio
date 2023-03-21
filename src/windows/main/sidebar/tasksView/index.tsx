@@ -8,6 +8,8 @@ import useStore from "@/store";
 import ipc from "@/ipc";
 import { useConfirmDelete, useEvents } from "@/hooks";
 import { Button } from "@/components";
+import motions from "@/motions";
+import { Task } from "@/bindings/Task";
 import CreateTask from "./CreateTask";
 import TaskView from "./TaskView";
 
@@ -39,57 +41,21 @@ const TasksView: React.FC = () => {
   tasks = tasks.filter((task) => task.intent_id === store.currentIntent?.id);
 
   return (
-    <motion.div
-      className="grow flex flex-col gap-0.5"
-      transition={{ duration: 0.3 }}
-      initial={{ scale: 0.9, opacity: 0 }}
-      animate={{ scale: 1.0, opacity: 1 }}
-    >
+    <div className="grow flex flex-col gap-0.5">
       <Top
         viewCompletedTasks={viewCompletedTasks}
         setViewCompletedTasks={setViewCompletedTasks}
         selectedTasksIds={selectedTasksIds}
         setSelectedTasksIds={setSelectedTasksIds}
       />
-
-      <div className="grow flex flex-col window p-1.5">
-        <div className="grow flex flex-col overflow-y-auto gap-1 pb-2">
-          <div
-            ref={tasksContainer}
-            className="w-full max-h-0 flex flex-col gap-1"
-          >
-            {tasks.map((task) => {
-              if (task.done === viewCompletedTasks) {
-                let isSelected = selectedTasksIds.includes(task.id);
-
-                return (
-                  <TaskView
-                    key={task.id}
-                    data={task}
-                    isSelected={isSelected}
-                    onMouseDown={(e) => {
-                      if (e.ctrlKey) {
-                        if (isSelected) {
-                          setSelectedTasksIds((ids) =>
-                            ids.filter((id) => id !== task.id)
-                          );
-                        } else {
-                          setSelectedTasksIds((ids) => [task.id, ...ids]);
-                        }
-                        return;
-                      }
-
-                      setSelectedTasksIds([]);
-                    }}
-                    onContextMenu={() => setSelectedTasksIds([])}
-                  />
-                );
-              }
-            })}
-          </div>
-        </div>
-      </div>
-    </motion.div>
+      <TasksList
+        innerRef={tasksContainer}
+        tasks={tasks}
+        viewCompletedTasks={viewCompletedTasks}
+        selectedTasksIds={selectedTasksIds}
+        setSelectedTasksIds={setSelectedTasksIds}
+      />
+    </div>
   );
 };
 
@@ -104,7 +70,7 @@ const Top: React.FC<TopProps> = (props) => {
   const [viewCreate, setViewCreate] = React.useState(false);
 
   return (
-    <div className="flex flex-row gap-0.5">
+    <motion.div className="flex flex-row gap-0.5" {...motions.scaleIn}>
       <CreateTask viewCreate={viewCreate} setViewCreate={setViewCreate} />
 
       {/* Toggle finished tasks */}
@@ -121,7 +87,60 @@ const Top: React.FC<TopProps> = (props) => {
           setSelectedTasksIds={props.setSelectedTasksIds}
         />
       )}
-    </div>
+    </motion.div>
+  );
+};
+
+interface TasksListProps {
+  innerRef: React.RefObject<HTMLDivElement>;
+  tasks: Task[];
+  viewCompletedTasks: boolean;
+  selectedTasksIds: string[];
+  setSelectedTasksIds: React.Dispatch<React.SetStateAction<string[]>>;
+}
+
+const TasksList: React.FC<TasksListProps> = (props) => {
+  return (
+    <motion.div
+      className="grow flex flex-col window p-1.5"
+      {...motions.scaleIn}
+    >
+      <div className="grow flex flex-col overflow-y-auto gap-1 pb-2">
+        <div
+          ref={props.innerRef}
+          className="w-full max-h-0 flex flex-col gap-1"
+        >
+          {props.tasks.map((task) => {
+            if (task.done === props.viewCompletedTasks) {
+              let isSelected = props.selectedTasksIds.includes(task.id);
+
+              return (
+                <TaskView
+                  key={task.id}
+                  data={task}
+                  isSelected={isSelected}
+                  onMouseDown={(e) => {
+                    if (e.ctrlKey) {
+                      if (isSelected) {
+                        props.setSelectedTasksIds((ids) =>
+                          ids.filter((id) => id !== task.id)
+                        );
+                      } else {
+                        props.setSelectedTasksIds((ids) => [task.id, ...ids]);
+                      }
+                      return;
+                    }
+
+                    props.setSelectedTasksIds([]);
+                  }}
+                  onContextMenu={() => props.setSelectedTasksIds([])}
+                />
+              );
+            }
+          })}
+        </div>
+      </div>
+    </motion.div>
   );
 };
 

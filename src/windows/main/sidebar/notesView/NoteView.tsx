@@ -40,7 +40,7 @@ const NoteView: React.FC<NoteViewProps> = (props) => {
       <div
         ref={ref}
         className={clsx(
-          "min-h-fit flex flex-col gap-1.5 card rounded-sm text-sm p-0 bg-base/80 hover:bg-base",
+          "min-h-fit flex flex-col gap-1.5 card rounded-sm text-sm p-0.5 bg-base/80 hover:bg-base",
           props.isSelected &&
           "border-2 border-primary/50 hover:border-primary/60"
         )}
@@ -60,11 +60,11 @@ const NoteView: React.FC<NoteViewProps> = (props) => {
         data-tauri-disable-drag
       >
         <div className="flex flex-row items-start gap-1">
-          <div className="py-2 px-0.5 text-primary">
+          <div className="py-1.5 px-0.5 text-primary">
             <MdCircle size={8} />
           </div>
           <div
-            className="mt-0.5 whitespace-pre-line"
+            className="whitespace-pre-line"
             style={{ wordBreak: "break-word" }}
           >
             {noteBody}

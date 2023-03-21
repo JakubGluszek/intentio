@@ -83,7 +83,7 @@ const TimerView: React.FC<Props> = (props) => {
       {display === "timer" && (
         <motion.div
           className="grow flex flex-col gap-0.5"
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0.2 }}
           initial={{ width: "0%", opacity: 0 }}
           animate={{ width: "100%", opacity: 1 }}
           exit={{ width: "0%", opacity: 0, translateX: 128 }}
@@ -139,7 +139,7 @@ const TimerDetails: React.FC<TimerDetailsProps> = (props) => {
             "w-full flex flex-row items-center justify-center gap-1 text-text/80",
             props.isCompact ? "p-0.5 text-sm" : "p-1.5"
           )}
-          transition={{ delay: 0.3, duration: 0.3 }}
+          transition={{ delay: 0.2, duration: 0.2 }}
           initial={{ opacity: 0, display: "none" }}
           animate={{ opacity: 1, display: "flex" }}
         >

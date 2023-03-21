@@ -1,11 +1,13 @@
 import React from "react";
 import { MdCancel } from "react-icons/md";
 import { toast } from "react-hot-toast";
+import { motion } from "framer-motion";
 
 import ipc from "@/ipc";
 import { Button } from "@/components";
 import { Note } from "@/bindings/Note";
 import NoteInput from "./NoteInput";
+import motions from "@/motions";
 
 interface Props {
   note: Note;
@@ -29,7 +31,7 @@ const EditNote: React.FC<Props> = (props) => {
   }, [props.note]);
 
   return (
-    <div className="grow flex flex-col gap-0.5">
+    <motion.div className="grow flex flex-col gap-0.5" {...motions.scaleIn}>
       <NoteInput
         value={body}
         onChange={(value) => setBody(value)}
@@ -52,7 +54,7 @@ const EditNote: React.FC<Props> = (props) => {
           </Button>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
