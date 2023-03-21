@@ -20,8 +20,8 @@ const CreateIntent: React.FC = () => {
       .createIntent(data)
       .then(() => {
         toast("Intent created");
-        setViewCreate(false);
         setValue("label", "");
+        setViewCreate(false);
       })
       .catch((err) => console.log("ipc.createTask", err));
   });
@@ -30,13 +30,9 @@ const CreateIntent: React.FC = () => {
     return (
       <div className="w-full window">
         <Button
-          transparent
-          style={{ width: "100%" }}
           onClick={() => setViewCreate(true)}
-          transition={{ delay: 0.2, duration: 0.3 }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0, transition: { duration: 0.1 } }}
+          style={{ width: "100%" }}
+          transparent
         >
           <MdAddCircle size={20} />
           <span>Add Intent</span>
@@ -45,9 +41,9 @@ const CreateIntent: React.FC = () => {
     );
 
   return (
-    <form ref={ref} onSubmit={onSubmit} className="w-full window border-0">
+    <form ref={ref} onSubmit={onSubmit} className="w-full">
       <input
-        className="w-full h-full bg-window/90 border-none"
+        className="input bg-window/90"
         onKeyDown={(e) => {
           if (e.key !== "Escape") return;
           setViewCreate(false);

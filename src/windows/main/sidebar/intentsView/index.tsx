@@ -52,12 +52,7 @@ const IntentsView: React.FC = () => {
       initial={{ scale: 0.9, opacity: 0 }}
       animate={{ scale: 1.0, opacity: 1 }}
     >
-      <motion.div
-        className="w-full flex flex-row gap-0.5"
-        transition={{ delay: 0.1, duration: 0.3 }}
-        initial={{ opacity: 0, height: 0 }}
-        animate={{ opacity: 1, height: 36 }}
-      >
+      <div className="w-full flex flex-row gap-0.5">
         <CreateIntent />
         <div className="window">
           <Button
@@ -65,14 +60,11 @@ const IntentsView: React.FC = () => {
               new WebviewWindow("intents", config.webviews.intents)
             }
             transparent
-            transition={{ delay: 0.2, duration: 0.3 }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
           >
             <MdAnalytics size={24} />
           </Button>
         </div>
-      </motion.div>
+      </div>
 
       <div className="grow flex flex-col p-1.5 window">
         <IntentsList

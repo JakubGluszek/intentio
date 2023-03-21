@@ -50,9 +50,14 @@ const Sidebar: React.FC = () => {
             tab={tab}
             setTab={setTab}
           />
-          {tab === "intents" ? <IntentsView /> : null}
-          {tab === "tasks" ? <TasksView /> : null}
-          {tab === "notes" ? <NotesView /> : null}
+          <div
+            className="grow flex flex-col"
+            style={{ width: store.currentIntent ? 258 : undefined }} // needed to combat odd overflow caused by some children with 'w-full'
+          >
+            {tab === "intents" ? <IntentsView /> : null}
+            {tab === "tasks" ? <TasksView /> : null}
+            {tab === "notes" ? <NotesView /> : null}
+          </div>
         </motion.aside>
       )}
     </AnimatePresence>
