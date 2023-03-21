@@ -32,7 +32,7 @@ const MainWindow: React.FC = () => {
   return (
     <MainWindowProvider>
       <WindowContainer>
-        <div className="grow flex flex-col gap-0.5 rounded overflow-clip">
+        <div className="grow flex flex-col gap-0.5 rounded">
           <Titlebar />
           <div className="grow flex flex-row">
             <Sidebar />
@@ -49,7 +49,7 @@ const Titlebar: React.FC = () => {
     React.useContext(MainWindowContext)!;
 
   return (
-    <div className="w-full flex flex-row items-center justify-between window overflow-clip">
+    <div className="w-full flex flex-row items-center justify-between window">
       <div className="flex flex-row">
         <Button onClick={toggleDisplay} transparent rounded={false}>
           <motion.div animate={{ rotateZ: display === "sidebar" ? 180 : 0 }}>

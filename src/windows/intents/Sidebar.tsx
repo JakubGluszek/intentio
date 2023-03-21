@@ -117,12 +117,13 @@ const CreateIntentView: React.FC<CreateIntentViewProps> = (props) => {
           <input
             autoComplete="off"
             autoFocus
-            maxLength={24}
+            minLength={1}
+            maxLength={20}
             placeholder="Label your intent"
             {...register("label", {
               required: true,
               minLength: 1,
-              maxLength: 24,
+              maxLength: 20,
             })}
           />
         </div>

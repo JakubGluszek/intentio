@@ -1,5 +1,4 @@
 import React from "react";
-import { BiTargetLock } from "react-icons/bi";
 import { TbMinimize } from "react-icons/tb";
 import { clsx } from "@mantine/core";
 import { toast } from "react-hot-toast";
@@ -135,15 +134,17 @@ const TimerDetails: React.FC<TimerDetailsProps> = (props) => {
       </span>
       {/* --- Current intent label --- */}
       {props.intent ? (
-        <div
+        <motion.div
           className={clsx(
             "w-full flex flex-row items-center justify-center gap-1 text-text/80",
             props.isCompact ? "p-0.5 text-sm" : "p-1.5"
           )}
+          transition={{ delay: 0.3, duration: 0.3 }}
+          initial={{ opacity: 0, display: "none" }}
+          animate={{ opacity: 1, display: "flex" }}
         >
-          <BiTargetLock size={props.isCompact ? 14 : 16} />
           <span>{props.intent.label}</span>
-        </div>
+        </motion.div>
       ) : null}
       {/* --- Toggle window compact mode button --- */}
       <div className="flex flex-row items-center gap-1">

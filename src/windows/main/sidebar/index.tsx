@@ -5,45 +5,17 @@ import { AnimatePresence, motion } from "framer-motion";
 
 import useStore from "@/store";
 import { Button } from "@/components";
-import { useEvents } from "@/hooks";
-import ipc from "@/ipc";
 import { MainWindowContext } from "@/contexts";
-import IntentsView from "./IntentsView";
-import TasksView from "./TasksView";
+import IntentsView from "./intentsView";
+import TasksView from "./tasksView";
 import NotesView from "./notesView";
 
 type Tab = "intents" | "notes" | "tasks";
 
 const Sidebar: React.FC = () => {
   const [tab, setTab] = React.useState<Tab>("intents");
-
   const { display, toggleDisplay } = React.useContext(MainWindowContext)!;
-
   const store = useStore();
-
-  useEvents({
-    intent_created: (data) => store.addIntent(data),
-    intent_updated: (data) => store.patchIntent(data.id, data),
-    intent_deleted: (data) => {
-      if (store.currentIntent?.id === data.id) {
-        store.setCurrentIntent(undefined);
-      }
-
-      store.removeIntent(data.id);
-    },
-    intent_archived: (data) => {
-      if (store.currentIntent?.id === data.id) {
-        store.setCurrentIntent(undefined);
-      }
-
-      store.patchIntent(data.id, data);
-    },
-    intent_unarchived: (data) => store.patchIntent(data.id, data),
-  });
-
-  React.useEffect(() => {
-    ipc.getIntents().then((data) => store.setIntents(data));
-  }, []);
 
   // handles toggling sidebar via pressing 'Tab' key
   React.useEffect(() => {
@@ -63,7 +35,7 @@ const Sidebar: React.FC = () => {
     <AnimatePresence>
       {display === "sidebar" && (
         <motion.aside
-          className="grow flex flex-row gap-0.5"
+          className="h-[278px] flex flex-row gap-0.5"
           transition={{ duration: 0.3 }}
           initial={{ width: "0%", opacity: 0 }}
           animate={{ width: "100%", opacity: 1 }}
@@ -104,7 +76,7 @@ const TabsView: React.FC<TabsViewProps> = (props) => {
           animate={{ width: 40 }}
           exit={{ width: 0 }}
         >
-          <div className="flex-1 bg-window/80 border-2 border-base/80 rounded">
+          <div className="h-full window">
             <Button
               style={{ height: "100%", borderRadius: 2 }}
               transparent
@@ -114,7 +86,7 @@ const TabsView: React.FC<TabsViewProps> = (props) => {
               <BiTargetLock size={28} />
             </Button>
           </div>
-          <div className="flex-1 bg-window/80 border-2 border-base/80 rounded">
+          <div className="h-full window">
             <Button
               style={{ height: "100%", borderRadius: 2 }}
               transparent
@@ -124,7 +96,7 @@ const TabsView: React.FC<TabsViewProps> = (props) => {
               <MdCheckBox size={28} />
             </Button>
           </div>
-          <div className="flex-1 bg-window/80 border-2 border-base/80 rounded">
+          <div className="h-full window">
             <Button
               style={{ height: "100%", borderRadius: 2 }}
               transparent
