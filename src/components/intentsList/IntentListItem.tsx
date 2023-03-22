@@ -28,7 +28,8 @@ const IntentListItem: React.FC<Props> = (props) => {
   const { data } = props;
 
   const [viewTagsModal, setViewTagsModal] = React.useState(false);
-  const { viewMenu, setViewMenu, onContextMenuHandler } = useContextMenu();
+  const { menuPosition, setMenuPosition, onContextMenuHandler } =
+    useContextMenu();
 
   const container = React.useRef<HTMLDivElement | null>(null);
 
@@ -94,50 +95,46 @@ const IntentListItem: React.FC<Props> = (props) => {
         ) : null}
       </div>
 
-      {viewMenu ? (
-        <ContextMenu
-          leftPosition={viewMenu.leftPosition}
-          topPosition={viewMenu.topPosition}
-          hide={() => setViewMenu(undefined)}
-        >
-          <React.Fragment>
-            <Button
-              onClick={() =>
-                ipc
-                  .updateIntent(props.data.id, { pinned: !props.data.pinned })
-                  .then((data) => {
-                    setViewMenu(undefined);
-                    toast(data.pinned ? "Pinned to top" : "Unpinned");
-                  })
-              }
-              rounded={false}
-            >
-              <div className="w-fit">
-                {props.data.pinned ? (
-                  <TiPin size={20} />
-                ) : (
-                  <TiPinOutline size={20} />
-                )}
-              </div>
-              <div className="w-full">
-                {props.data.pinned ? "Unpin" : "Pin"}
-              </div>
-            </Button>
-            <Button
-              onClick={() => {
-                setViewTagsModal(true);
-                setViewMenu(undefined);
-              }}
-              rounded={false}
-            >
-              <div className="w-fit">
-                <TbTags size={20} />
-              </div>
-              <div className="w-full">Tags</div>
-            </Button>
-          </React.Fragment>
-        </ContextMenu>
-      ) : null}
+      <ContextMenu
+        display={menuPosition ? true : false}
+        position={menuPosition}
+        hide={() => setMenuPosition(undefined)}
+      >
+        <React.Fragment>
+          <Button
+            onClick={() =>
+              ipc
+                .updateIntent(props.data.id, { pinned: !props.data.pinned })
+                .then((data) => {
+                  setMenuPosition(undefined);
+                  toast(data.pinned ? "Pinned to top" : "Unpinned");
+                })
+            }
+            rounded={false}
+          >
+            <div className="w-fit">
+              {props.data.pinned ? (
+                <TiPin size={20} />
+              ) : (
+                <TiPinOutline size={20} />
+              )}
+            </div>
+            <div className="w-full">{props.data.pinned ? "Unpin" : "Pin"}</div>
+          </Button>
+          <Button
+            onClick={() => {
+              setViewTagsModal(true);
+              setMenuPosition(undefined);
+            }}
+            rounded={false}
+          >
+            <div className="w-fit">
+              <TbTags size={20} />
+            </div>
+            <div className="w-full">Tags</div>
+          </Button>
+        </React.Fragment>
+      </ContextMenu>
 
       <TagsModal
         display={viewTagsModal}

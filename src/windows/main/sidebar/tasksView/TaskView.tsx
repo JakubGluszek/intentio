@@ -9,6 +9,7 @@ import ipc from "@/ipc";
 import { useConfirmDelete, useContextMenu } from "@/hooks";
 import { Button, ContextMenu } from "@/components";
 import { Task } from "@/bindings/Task";
+import { MenuPosition } from "@/hooks/useContextMenu";
 
 interface TaskViewProps {
   data: Task;
@@ -21,8 +22,11 @@ const TaskView: React.FC<TaskViewProps> = (props) => {
   const { data } = props;
 
   const [viewEdit, setViewEdit] = React.useState(false);
-  const { viewMenu, setViewMenu, onContextMenuHandler } = useContextMenu();
+
+  const { menuPosition, setMenuPosition, onContextMenuHandler } =
+    useContextMenu();
   const { register, handleSubmit, setValue } = useForm<{ body: string }>();
+
   const containerRef = useClickOutside<HTMLDivElement>(() => {
     viewEdit && setViewEdit(false);
   });
@@ -102,23 +106,21 @@ const TaskView: React.FC<TaskViewProps> = (props) => {
           </form>
         )}
       </div>
-      {viewMenu ? (
-        <TaskContextMenu
-          data={data}
-          leftPosition={viewMenu.leftPosition}
-          topPosition={viewMenu.topPosition}
-          hide={() => setViewMenu(undefined)}
-          setViewEdit={() => setViewEdit(true)}
-        />
-      ) : null}
+      <TaskContextMenu
+        display={menuPosition ? true : false}
+        position={menuPosition}
+        data={data}
+        hide={() => setMenuPosition(undefined)}
+        setViewEdit={() => setViewEdit(true)}
+      />
     </React.Fragment>
   );
 };
 
 interface TaskContextMenuProps {
+  display: boolean;
   data: Task;
-  leftPosition: number;
-  topPosition: number;
+  position?: MenuPosition;
   hide: () => void;
   setViewEdit: () => void;
 }
@@ -130,9 +132,9 @@ const TaskContextMenu: React.FC<TaskContextMenuProps> = (props) => {
 
   return (
     <ContextMenu
+      display={props.display}
+      position={props.position}
       hide={() => props.hide()}
-      leftPosition={props.leftPosition}
-      topPosition={props.topPosition}
     >
       <React.Fragment>
         <Button onClick={() => onDelete()} rounded={false} color="danger">

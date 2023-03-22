@@ -8,11 +8,12 @@ import useStore from "@/store";
 import { Button, ContextMenu } from "@/components";
 import { Script } from "@/bindings/Script";
 import { useConfirmDelete } from "@/hooks";
+import { MenuPosition } from "@/hooks/useContextMenu";
 
 interface ScriptContextMenuProps {
+  display: boolean;
   data: Script;
-  leftPosition: number;
-  topPosition: number;
+  position?: MenuPosition;
   hide: () => void;
   runScript: () => void;
   viewCode: () => void;

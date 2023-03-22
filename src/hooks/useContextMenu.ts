@@ -1,13 +1,18 @@
 import React from "react";
 
+export type MenuPosition = {
+  left: number;
+  top: number;
+};
+
 export const useContextMenu = () => {
-  const [viewMenu, setViewMenu] = React.useState<{ leftPosition: number; topPosition: number }>();
+  const [menuPosition, setMenuPosition] = React.useState<MenuPosition>();
 
   const onContextMenuHandler = (
     e: React.MouseEvent<HTMLElement, MouseEvent>
   ) => {
-    setViewMenu({ leftPosition: e.pageX, topPosition: e.pageY });
+    setMenuPosition({ left: e.pageX, top: e.pageY });
   };
 
-  return { viewMenu, setViewMenu, onContextMenuHandler };
+  return { menuPosition, setMenuPosition, onContextMenuHandler };
 };

@@ -10,6 +10,7 @@ import ipc from "@/ipc";
 import { useConfirmDelete, useContextMenu } from "@/hooks";
 import { Button, ContextMenu } from "@/components";
 import { Note } from "@/bindings/Note";
+import { MenuPosition } from "@/hooks/useContextMenu";
 
 interface NoteViewProps {
   data: Note;
@@ -22,7 +23,8 @@ interface NoteViewProps {
 const NoteView: React.FC<NoteViewProps> = (props) => {
   const { data } = props;
   const [viewExpand, setViewExpand] = React.useState(false);
-  const { viewMenu, setViewMenu, onContextMenuHandler } = useContextMenu();
+  const { menuPosition, setMenuPosition, onContextMenuHandler } =
+    useContextMenu();
 
   const ref = useClickOutside<HTMLDivElement>(() => {
     setViewExpand(false);
@@ -72,27 +74,25 @@ const NoteView: React.FC<NoteViewProps> = (props) => {
         </div>
       </div>
 
-      {viewMenu ? (
-        <NoteContextMenu
-          data={data}
-          leftPosition={viewMenu.leftPosition}
-          topPosition={viewMenu.topPosition}
-          hide={() => setViewMenu(undefined)}
-          deleteNote={() =>
-            ipc.deleteNote(props.data.id).then(() => {
-              toast("Note deleted");
-            })
-          }
-        />
-      ) : null}
+      <NoteContextMenu
+        display={menuPosition ? true : false}
+        data={data}
+        position={menuPosition}
+        hide={() => setMenuPosition(undefined)}
+        deleteNote={() =>
+          ipc.deleteNote(props.data.id).then(() => {
+            toast("Note deleted");
+          })
+        }
+      />
     </React.Fragment>
   );
 };
 
 interface NoteContextMenuProps {
+  display: boolean;
   data: Note;
-  leftPosition: number;
-  topPosition: number;
+  position?: MenuPosition;
   hide: () => void;
   deleteNote: () => void;
 }
@@ -102,8 +102,8 @@ const NoteContextMenu: React.FC<NoteContextMenuProps> = (props) => {
 
   return (
     <ContextMenu
-      leftPosition={props.leftPosition}
-      topPosition={props.topPosition}
+      display={props.display}
+      position={props.position}
       hide={props.hide}
     >
       <Button
