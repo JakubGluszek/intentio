@@ -70,7 +70,7 @@ const Top: React.FC<TopProps> = (props) => {
   const [viewCreate, setViewCreate] = React.useState(false);
 
   return (
-    <motion.div className="flex flex-row gap-0.5" {...motions.scaleIn}>
+    <div className="flex flex-row gap-0.5">
       <CreateTask viewCreate={viewCreate} setViewCreate={setViewCreate} />
 
       {/* Toggle finished tasks */}
@@ -87,7 +87,7 @@ const Top: React.FC<TopProps> = (props) => {
           setSelectedTasksIds={props.setSelectedTasksIds}
         />
       )}
-    </motion.div>
+    </div>
   );
 };
 
@@ -100,6 +100,41 @@ interface TasksListProps {
 }
 
 const TasksList: React.FC<TasksListProps> = (props) => {
+  const emptyFiller = React.useMemo(
+    () =>
+      [
+        <>
+          <p>No tasks?</p>
+          <p>That's like going on a road trip without a map.</p>
+          <p>Add one now!</p>
+        </>,
+        <>
+          <p>Your task list is empty, it's like a ghost town.</p>
+          <p>Let's liven it up!</p>
+        </>,
+        <>
+          <p>Don't let your tasks disappear into thin air.</p>
+          <p>Add some now!</p>
+        </>,
+        <>
+          <p>Break it down.</p>
+          <p>Complete.</p>
+          <p>Repeat.</p>
+        </>,
+      ][Math.floor(Math.random() * 4)],
+    []
+  );
+
+  if (props.tasks.length === 0) {
+    return (
+      <motion.div
+        className="grow flex flex-col items-center justify-center text-center text-sm text-text/40 gap-2 p-1.5 window"
+        {...motions.scaleIn}
+      >
+        {emptyFiller}
+      </motion.div>
+    );
+  }
   return (
     <motion.div
       className="grow flex flex-col window p-1.5"
@@ -152,7 +187,7 @@ interface ToggleTasksViewProps {
 const ToggleTasksView: React.FC<ToggleTasksViewProps> = (props) => {
   return (
     <Tooltip label={props.viewCompleted ? "View incomplete" : "View completed"}>
-      <div className="window">
+      <motion.div className="window" {...motions.scaleIn}>
         <Button onClick={() => props.toggleTasks()} transparent>
           {props.viewCompleted ? (
             <MdCheckBox size={24} />
@@ -160,7 +195,7 @@ const ToggleTasksView: React.FC<ToggleTasksViewProps> = (props) => {
             <MdCheckBoxOutlineBlank size={24} />
           )}
         </Button>
-      </div>
+      </motion.div>
     </Tooltip>
   );
 };
@@ -181,14 +216,14 @@ const DeleteMultiTasksButton: React.FC<DeleteMultiTasksButtonProps> = (
   );
 
   return (
-    <div className="window">
+    <motion.div className="window" {...motions.scaleIn}>
       <Button onClick={() => onDelete()} transparent color="danger">
         {!viewConfirmDelete && <MdDelete size={20} />}
         <div>
           {viewConfirmDelete ? "Confirm" : props.selectedTasksIds.length}
         </div>
       </Button>
-    </div>
+    </motion.div>
   );
 };
 

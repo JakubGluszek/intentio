@@ -81,10 +81,10 @@ const Top: React.FC<TopProps> = (props) => {
   if (!props.display) return null;
 
   return (
-    <motion.div className="flex flex-row gap-0.5" {...motions.scaleIn}>
+    <div className="flex flex-row gap-0.5">
       {!viewFilter ? (
         <React.Fragment>
-          <div className="w-full window">
+          <motion.div className="w-full window" {...motions.scaleIn}>
             <Button
               onClick={() => props.toggleViewCreate()}
               style={{ width: "100%" }}
@@ -93,13 +93,12 @@ const Top: React.FC<TopProps> = (props) => {
               <MdAddCircle size={20} />
               <span>Add note</span>
             </Button>
-          </div>
-
-          <div className="window">
+          </motion.div>
+          <motion.div className="window" {...motions.scaleIn}>
             <Button onClick={() => setViewFilter(true)} transparent>
               <MdSearch size={24} />
             </Button>
-          </div>
+          </motion.div>
         </React.Fragment>
       ) : (
         <FilterNotes
@@ -114,7 +113,7 @@ const Top: React.FC<TopProps> = (props) => {
         selectedNotesIds={props.selectedNotesIds}
         setSelectedNotesIds={props.setSelectedNotesIds}
       />
-    </motion.div>
+    </div>
   );
 };
 
@@ -143,7 +142,41 @@ const NotesList: React.FC<NotesListProps> = (props) => {
     parseInt(a.created_at) > parseInt(b.created_at) ? -1 : 1
   );
 
+  const emptyFiller = React.useMemo(
+    () =>
+      [
+        <>
+          <p>
+            No project notes detected, it's time to get organized and capture
+            your progress.
+          </p>
+        </>,
+        <>
+          <p>
+            Study sessions are more productive with notes, let's get started and
+            take some.
+          </p>
+          <p>Let's liven it up!</p>
+        </>,
+        <>
+          <p>Writing summaries helps condense information.</p>
+          <p>Let's get started and create some!</p>
+        </>,
+      ][Math.floor(Math.random() * 3)],
+    []
+  );
+
   if (!props.display) return null;
+
+  if (notes.length === 0)
+    return (
+      <motion.div
+        className="grow flex flex-col items-center justify-center text-center text-sm text-text/40 gap-2 p-1.5 window"
+        {...motions.scaleIn}
+      >
+        {emptyFiller}
+      </motion.div>
+    );
 
   return (
     <motion.div

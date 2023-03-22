@@ -27,7 +27,7 @@ const ModalContainer: React.FC<Props> = (props) => {
             initial={{ opacity: 0 }}
             animate={{
               opacity: 0.6,
-              transition: { duration: 0.4 },
+              transition: { duration: 0.3 },
             }}
             exit={{
               opacity: 0,
@@ -35,7 +35,7 @@ const ModalContainer: React.FC<Props> = (props) => {
             }}
           ></motion.div>
           <motion.div
-            className="m-auto card bg-window p-2.5 shadow-2xl"
+            className="m-auto card bg-window shadow-2xl"
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{
               scale: 1.0,

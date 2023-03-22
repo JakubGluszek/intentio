@@ -48,9 +48,9 @@ const IntentsView: React.FC = () => {
 
   return (
     <div className="grow flex flex-col gap-0.5">
-      <motion.div className="w-full flex flex-row gap-0.5" {...motions.scaleIn}>
+      <div className="w-full flex flex-row gap-0.5">
         <CreateIntent />
-        <div className="window">
+        <motion.div className="window" {...motions.scaleIn}>
           <Button
             onClick={() =>
               new WebviewWindow("intents", config.webviews.intents)
@@ -59,8 +59,8 @@ const IntentsView: React.FC = () => {
           >
             <MdAnalytics size={24} />
           </Button>
-        </div>
-      </motion.div>
+        </motion.div>
+      </div>
 
       <motion.div
         className="grow flex flex-col p-1.5 window"

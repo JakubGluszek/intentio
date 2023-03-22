@@ -87,7 +87,6 @@ const TaskView: React.FC<TaskViewProps> = (props) => {
         ) : (
           <form onSubmit={onEditSubmit}>
             <input
-              className="input"
               onKeyDown={(e) => {
                 if (e.key !== "Escape") return;
                 setViewEdit(false);

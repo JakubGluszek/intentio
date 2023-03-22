@@ -76,7 +76,7 @@ const TabsView: React.FC<TabsViewProps> = (props) => {
       {props.display && (
         <motion.div
           className="h-full flex flex-col gap-0.5 overflow-clip"
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0.2 }}
           initial={{ width: 0 }}
           animate={{ width: 40 }}
           exit={{ width: 0 }}

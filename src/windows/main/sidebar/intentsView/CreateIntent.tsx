@@ -3,8 +3,11 @@ import { MdAddCircle } from "react-icons/md";
 import { useClickOutside } from "@mantine/hooks";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
+import { motion } from "framer-motion";
+
 import { Button } from "@/components";
 import ipc from "@/ipc";
+import motions from "@/motions";
 
 const CreateIntent: React.FC = () => {
   const [viewCreate, setViewCreate] = React.useState(false);
@@ -28,7 +31,7 @@ const CreateIntent: React.FC = () => {
 
   if (!viewCreate)
     return (
-      <div className="w-full window">
+      <motion.div className="w-full window" {...motions.scaleIn}>
         <Button
           onClick={() => setViewCreate(true)}
           style={{ width: "100%" }}
@@ -37,13 +40,18 @@ const CreateIntent: React.FC = () => {
           <MdAddCircle size={20} />
           <span>Add Intent</span>
         </Button>
-      </div>
+      </motion.div>
     );
 
   return (
-    <form ref={ref} onSubmit={onSubmit} className="w-full">
+    <motion.form
+      ref={ref}
+      onSubmit={onSubmit}
+      className="w-full"
+      {...motions.scaleIn}
+    >
       <input
-        className="input bg-window/90"
+        className="bg-window/90"
         onKeyDown={(e) => {
           if (e.key !== "Escape") return;
           setViewCreate(false);
@@ -61,7 +69,7 @@ const CreateIntent: React.FC = () => {
           maxLength: 20,
         })}
       />
-    </form>
+    </motion.form>
   );
 };
 

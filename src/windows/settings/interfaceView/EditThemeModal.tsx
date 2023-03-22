@@ -116,7 +116,7 @@ const EditThemeModal: React.FC<Props> = (props) => {
                   {...register("name", { required: true, maxLength: 16 })}
                   id="color-scheme-name"
                   autoComplete="off"
-                  className="input border-base/60"
+                  className="border-base/60"
                   type="text"
                   tabIndex={-2}
                 />
@@ -135,7 +135,7 @@ const EditThemeModal: React.FC<Props> = (props) => {
                   })}
                   autoComplete="off"
                   id="window-hex"
-                  className="input border-base/60"
+                  className="border-base/60"
                   type="text"
                   tabIndex={-2}
                 />
@@ -160,7 +160,7 @@ const EditThemeModal: React.FC<Props> = (props) => {
                   })}
                   autoComplete="off"
                   id="base-hex"
-                  className="input border-base/60"
+                  className="border-base/60"
                   type="text"
                   tabIndex={-2}
                 />
@@ -188,7 +188,7 @@ const EditThemeModal: React.FC<Props> = (props) => {
                   })}
                   autoComplete="off"
                   id="primary-hex"
-                  className="input border-base/60"
+                  className="border-base/60"
                   type="text"
                   tabIndex={-2}
                 />
@@ -213,7 +213,7 @@ const EditThemeModal: React.FC<Props> = (props) => {
                   })}
                   autoComplete="off"
                   id="text-hex"
-                  className="input border-base/60"
+                  className="border-base/60"
                   type="text"
                   tabIndex={-2}
                 />

@@ -86,7 +86,7 @@ const IntentListItem: React.FC<Props> = (props) => {
                   isSelected={props.selectedTags.includes(tag)}
                   onClick={() => props.onTagSelect(tag)}
                 >
-                  {tag}
+                  <div className="px-1 py-0.5">{tag}</div>
                 </TagButton>
               ))}
             </div>

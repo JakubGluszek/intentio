@@ -70,7 +70,7 @@ export const TagsModal: React.FC<Props> = (props) => {
               .map((tag, idx) => (
                 <TagButton key={idx} disabled={true}>
                   <div className="flex flex-row items-center gap-1">
-                    <div>{tag}</div>
+                    <div className="px-1 py-0.5">{tag}</div>
                     <Button
                       onClick={() =>
                         ipc
