@@ -103,7 +103,6 @@ export const useTimer = (
   };
 
   const onComplete = () => {
-    saveSession();
     callbacks.onCompleted && callbacks.onCompleted({ type: sessionType });
     pause();
     skip(false);
