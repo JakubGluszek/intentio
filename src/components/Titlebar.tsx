@@ -11,11 +11,11 @@ interface Props {
 
 const Titlebar: React.FC<Props> = (props) => {
   return (
-    <div className="flex flex-col gap-2 px-2 py-2">
+    <div className="flex flex-col window overflow-clip">
       <div className="flex flex-row items-center justify-between">
-        <div className="flex flex-row items-center gap-2">
+        <div className="flex flex-row items-center gap-1 p-1">
           {props.icon}
-          <span className="text-xl">{props.title}</span>
+          <span className="text-lg">{props.title}</span>
         </div>
         <Button transparent onClick={() => appWindow.close()}>
           <MdClose size={28} />

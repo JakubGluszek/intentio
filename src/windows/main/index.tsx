@@ -34,12 +34,12 @@ const MainWindow: React.FC = () => {
       <WindowContainer>
         <motion.div
           className="grow flex flex-col gap-0.5 rounded"
-          transition={{ duration: 0.6 }}
-          initial={{ scale: 0, opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
         >
           <Titlebar />
-          <div className="grow flex flex-row">
+          <div className="grow flex flex-row rounded overflow-clip">
             <Sidebar />
             <TimerView config={store.timerConfig} />
           </div>

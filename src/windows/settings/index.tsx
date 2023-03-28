@@ -33,12 +33,12 @@ const SettingsWindow: React.FC = () => {
 
   return (
     <WindowContainer>
-      <div className="grow flex flex-col bg-window">
-        <Titlebar icon={<MdSettings size={28} />} title="Settings" />
+      <div className="grow flex flex-col gap-0.5">
+        <Titlebar icon={<MdSettings size={24} />} title="Settings" />
 
-        <div className="grow flex flex-row">
+        <div className="grow flex flex-row gap-0.5">
           {/* Sidebar */}
-          <div className="min-w-[176px] flex flex-col justify-between p-2">
+          <div className="min-w-[176px] flex flex-col justify-between p-1 window">
             {/* Navigation */}
             <div className="flex flex-col gap-1.5 rounded">
               <Button
@@ -112,17 +112,13 @@ const SettingsWindow: React.FC = () => {
             </div>
           </div>
           {/* Main */}
-          <div className="relative grow flex flex-col p-2 pl-0">
-            <div className="grow bg-darker/40 shadow-inner rounded p-2.5 overflow-y-auto">
-              <div className="max-h-0 overflow-y">
+          <div className="relative grow flex flex-col rounded overflow-clip">
                 {tab === "timer" ? <TimerView /> : null}
                 {tab === "audio" ? <AudioView /> : null}
                 {tab === "interface" ? <InterfaceView /> : null}
                 {tab === "behavior" ? <BehaviorView /> : null}
                 {tab === "scripts" ? <ScriptsView /> : null}
                 {tab === "about" ? <AboutView /> : null}
-              </div>
-            </div>
           </div>
         </div>
       </div>
