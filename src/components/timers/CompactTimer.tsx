@@ -31,7 +31,7 @@ const CompactTimer: React.FC<Props> = (props) => {
         : "Long break";
 
   return (
-    <div className="relative grow flex flex-col items-center justify-evenly window overflow-clip">
+    <div className="relative grow flex flex-col items-center justify-evenly overflow-clip">
       <div className="z-10 flex flex-col items-center">
         {props.displayTimeLeft ? (
           <React.Fragment>
