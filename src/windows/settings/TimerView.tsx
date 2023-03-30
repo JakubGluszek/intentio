@@ -25,140 +25,128 @@ const TimerView: React.FC = () => {
   if (!config) return null;
 
   return (
-    <div className="grow flex flex-col">
-      <div className="grow flex flex-col overflow-y-auto">
-        <div className="max-h-0 overflow-y flex flex-col gap-0.5">
-          <div className="flex flex-row items-center window p-1.5">
-            <label className="w-full" htmlFor="auto-start-pomodoros">
-              Auto Start Pomodoros
-            </label>
-            <Checkbox
-              tabIndex={-2}
-              id="auto-start-pomodoros"
-              size="sm"
-              defaultChecked={config.auto_start_focus}
-              onChange={async (value) =>
-                updateConfig({
-                  auto_start_focus: value.currentTarget.checked,
-                })
-              }
-              styles={{
-                icon: { color: "rgb(var(--primary-color)) !important" },
-                root: { height: "20px" },
-              }}
-              classNames={{
-                input:
-                  "border-primary checked:border-primary bg-transparent checked:bg-transparent border-2",
-              }}
-            />
-          </div>
-          <div className="flex flex-row items-center window p-1.5">
-            <label className="w-full" htmlFor="auto-start-breaks">
-              Auto Start Breaks
-            </label>
-            <Checkbox
-              tabIndex={-2}
-              size="sm"
-              id="auto-start-breaks"
-              defaultChecked={config.auto_start_breaks}
-              onChange={async (value) =>
-                updateConfig({
-                  auto_start_breaks: value.currentTarget.checked,
-                })
-              }
-              styles={{
-                icon: { color: "rgb(var(--primary-color)) !important" },
-                root: { height: "20px" },
-              }}
-              classNames={{
-                input:
-                  "border-primary checked:border-primary bg-transparent checked:bg-transparent border-2",
-              }}
-            />
-          </div>
-          <div className="flex flex-col gap-2 window p-1.5">
-            <div className="flex flex-row items-center justify-between">
-              <span className="font-medium">Focus</span>
-              <div className="bg-base rounded px-2 py-1">
-                <span className="text-sm">
-                  {formatTimeTimer(config.focus_duration * 60)}
-                </span>
-              </div>
-            </div>
-            <Slider
-              min={1}
-              max={90}
-              defaultValue={config.focus_duration}
-              onChangeEnd={async (minutes) =>
-                updateConfig({
-                  focus_duration: minutes,
-                })
-              }
-            />
-          </div>
-          <div className="flex flex-col gap-2 window p-1.5">
-            <div className="flex flex-row items-center justify-between">
-              <span className="text-sm font-medium">Break</span>
-              <div className="bg-base rounded px-2 py-1">
-                <span className="text-sm">
-                  {formatTimeTimer(config.break_duration * 60)}
-                </span>
-              </div>
-            </div>
-            <Slider
-              min={1}
-              max={25}
-              defaultValue={config.break_duration}
-              onChangeEnd={async (minutes) =>
-                updateConfig({
-                  break_duration: minutes,
-                })
-              }
-            />
-          </div>
-          <div className="flex flex-col gap-2 window p-1.5">
-            <div className="flex flex-row items-center justify-between">
-              <span className="text-sm font-medium">Long Break</span>
-              <div className="bg-base rounded px-2 py-1">
-                <span className="text-sm">
-                  {formatTimeTimer(config.long_break_duration * 60)}
-                </span>
-              </div>
-            </div>
-            <Slider
-              min={1}
-              max={45}
-              defaultValue={config.long_break_duration}
-              onChangeEnd={async (minutes) =>
-                updateConfig({
-                  long_break_duration: minutes,
-                })
-              }
-            />
-          </div>
-          <div className="flex flex-col gap-2 window p-1.5">
-            <div className="flex flex-row items-center justify-between">
-              <span className="text-sm font-medium">Long Break Interval</span>
-              <div className="bg-base rounded px-2 py-1 w-[50px]">
-                <div className="text-sm text-center">
-                  - {config.long_break_interval} -
-                </div>
-              </div>
-            </div>
-            <Slider
-              min={2}
-              max={16}
-              defaultValue={config.long_break_interval}
-              onChangeEnd={async (intervals) =>
-                updateConfig({
-                  long_break_interval: intervals,
-                })
-              }
-            />
-          </div>
+    <div className="grow flex flex-col window bg-window overflow-y-auto">
+      <div className="max-h-0 overflow-y">
+        <div className="flex flex-col gap-2 p-2">
+          <BooleanView
+            label="Auto Start Pomodoros"
+            checked={config.auto_start_focus}
+            onChange={(value) =>
+              updateConfig({
+                auto_start_focus: value,
+              })
+            }
+          />
+          <BooleanView
+            label="Auto Start Breaks"
+            checked={config.auto_start_breaks}
+            onChange={(value) =>
+              updateConfig({
+                auto_start_breaks: value,
+              })
+            }
+          />
+          <SliderView
+            type="duration"
+            label="Focus"
+            digit={config.focus_duration}
+            minDigit={1}
+            maxDigit={90}
+            onChange={(minutes) => updateConfig({ focus_duration: minutes })}
+          />
+          <SliderView
+            type="duration"
+            label="Break"
+            digit={config.break_duration}
+            minDigit={1}
+            maxDigit={45}
+            onChange={(minutes) => updateConfig({ break_duration: minutes })}
+          />
+          <SliderView
+            type="duration"
+            label="Long Break"
+            digit={config.long_break_duration}
+            minDigit={1}
+            maxDigit={45}
+            onChange={(minutes) =>
+              updateConfig({ long_break_duration: minutes })
+            }
+          />
+          <SliderView
+            type="iterations"
+            label="Long Break Interval"
+            digit={config.long_break_interval}
+            minDigit={2}
+            maxDigit={16}
+            onChange={(interval) =>
+              updateConfig({ long_break_interval: interval })
+            }
+          />
         </div>
       </div>
-    </div >
+    </div>
+  );
+};
+
+interface BooleanViewProps {
+  label: string;
+  checked: boolean;
+  onChange: (checked: boolean) => void;
+}
+
+const BooleanView: React.FC<BooleanViewProps> = (props) => {
+  return (
+    <div className="flex flex-row items-center card p-1.5">
+      <label className="w-full text-sm" htmlFor={props.label}>
+        {props.label}
+      </label>
+      <Checkbox
+        id={props.label}
+        size="sm"
+        defaultChecked={props.checked}
+        onChange={(value) => props.onChange(value.currentTarget.checked)}
+        styles={{
+          icon: { color: "rgb(var(--primary-color)) !important" },
+          root: { height: "20px" },
+        }}
+        classNames={{
+          input:
+            "border-primary checked:border-primary bg-transparent checked:bg-transparent border-2",
+        }}
+        tabIndex={-2}
+      />
+    </div>
+  );
+};
+
+interface SliderViewProps {
+  type: "duration" | "iterations";
+  label: string;
+  digit: number;
+  minDigit: number;
+  maxDigit: number;
+  onChange: (minutes: number) => void;
+}
+
+const SliderView: React.FC<SliderViewProps> = (props) => {
+  const content =
+    props.type === "duration" ? formatTimeTimer(props.digit * 60) : props.digit;
+
+  return (
+    <div className="flex flex-col gap-2 card p-1.5">
+      <div className="flex flex-row items-center justify-between">
+        <span className="font-medium">{props.label}</span>
+        <div className="w-16 bg-window border-2 border-base rounded-sm py-0.5">
+          <div className="text-sm text-center">{content}</div>
+        </div>
+      </div>
+      <Slider
+        min={props.minDigit}
+        max={props.maxDigit}
+        defaultValue={props.digit}
+        onChangeEnd={(value) => props.onChange(value)}
+      />
+    </div>
   );
 };
 

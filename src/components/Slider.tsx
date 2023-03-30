@@ -30,7 +30,7 @@ const Slider: React.FC<Props> = ({
         root: "w-full",
         bar: "bg-primary",
         thumb: "bg-primary border-primary",
-        track: "before:bg-base",
+        track: "before:bg-primary/20",
         label:
           "bg-base text-text shadow border-2 px-2 -translate-y-2 border-primary",
       }}

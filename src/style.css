@@ -78,6 +78,10 @@
     cursor: pointer;
   }
 
+  button:disabled > * {
+    cursor: not-allowed;
+  }
+
   /* Hides controls in input of type "number" */
   /* Chrome, Safari, Edge, Opera */
   input::-webkit-outer-spin-button,
@@ -105,7 +109,7 @@
 
 @layer components {
   .card {
-    @apply bg-window/80 hover:bg-window p-1.5 rounded border-2 border-base/60 hover:border-base/70 shadow shadow-black/30;
+    @apply bg-base/20 hover:bg-base/30 p-1.5 rounded-sm border-2 border-base/80 hover:border-base shadow shadow-black/30;
   }
 
   .circle {

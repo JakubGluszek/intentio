@@ -27,8 +27,8 @@ export const MainWindowProvider: React.FC<Props> = ({ children }) => {
   const toggleDisplay = () => {
     if (display === "timer") {
       let size = new LogicalSize(
-        config.webviews.main.width,
-        config.webviews.main.height
+        config.windows.main.width,
+        config.windows.main.height
       );
       appWindow.setMinSize(size);
       appWindow.setMaxSize(size);
@@ -41,15 +41,15 @@ export const MainWindowProvider: React.FC<Props> = ({ children }) => {
   const toggleIsCompact = () => {
     if (isCompact) {
       let size = new LogicalSize(
-        config.webviews.main.width,
-        config.webviews.main.height
+        config.windows.main.width,
+        config.windows.main.height
       );
       appWindow.setMinSize(size);
       appWindow.setMaxSize(size);
       appWindow.setSize(size);
     } else {
       // as for now, this doesn't work properly on linux; height is set to 200px for some reason ¯\_(ツ)_/¯
-      let size = new LogicalSize(config.webviews.main.width, 200);
+      let size = new LogicalSize(config.windows.main.width, 200);
       appWindow.setMinSize(size);
       appWindow.setMaxSize(size);
       appWindow.setSize(size);

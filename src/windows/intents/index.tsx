@@ -58,9 +58,9 @@ const IntentsWindow: React.FC = () => {
 
   return (
     <WindowContainer>
-      <div className="w-screen h-screen grow flex flex-col bg-window">
+      <div className="w-screen h-screen grow flex flex-col gap-0.5">
         <Titlebar icon={<BiTargetLock size={28} />} title="Intents" />
-        <div className="grow flex flex-row">
+        <div className="grow flex flex-row window bg-window">
           <Sidebar
             selectedId={selectedId}
             setSelectedId={setSelectedId}

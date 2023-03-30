@@ -64,7 +64,7 @@ const Titlebar: React.FC = () => {
         <Button
           transparent
           onClick={() =>
-            new WebviewWindow("settings", config.webviews.settings)
+            new WebviewWindow("settings", config.windows.settings)
           }
           rounded={false}
         >

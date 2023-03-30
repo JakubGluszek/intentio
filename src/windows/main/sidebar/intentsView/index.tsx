@@ -53,7 +53,7 @@ const IntentsView: React.FC = () => {
         <motion.div className="window" {...motions.scaleIn}>
           <Button
             onClick={() =>
-              new WebviewWindow("intents", config.webviews.intents)
+              new WebviewWindow("intents", config.windows.intents)
             }
             transparent
           >

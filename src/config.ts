@@ -18,7 +18,7 @@ const config = {
     author: "Jakub Głuszek",
     authorHomepage: "https://jacobgluszek.dev",
   },
-  webviews: {
+  windows: {
     main: {
       width: 300,
       height: 320,
@@ -26,8 +26,8 @@ const config = {
     settings: {
       url: "/settings",
       title: "Settings",
-      width: 480,
-      height: 340,
+      width: 400,
+      height: 320,
       ...WebviewConfig,
     },
     intents: {

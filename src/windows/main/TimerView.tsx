@@ -84,7 +84,7 @@ const TimerView: React.FC<Props> = (props) => {
       {display === "timer" && (
         <motion.div
           className="grow flex flex-col gap-0.5 window overflow-clip"
-          transition={{ duration: 0.2 }}
+          transition={{ duration: 0.3 }}
           initial={{ width: "0%", opacity: 0 }}
           animate={{ width: "100%", opacity: 1 }}
           exit={{ width: "0%", opacity: 0, translateX: 128 }}
