@@ -13,7 +13,7 @@ import { OsType, type } from "@tauri-apps/api/os";
 import { Titlebar, Button } from "@/components";
 import TimerView from "./TimerView";
 import AudioView from "./AudioView";
-import InterfaceView from "./interfaceView";
+import ThemesView from "./interfaceView";
 import BehaviorView from "./BehaviorView";
 import ScriptsView from "./scriptsView";
 import AboutView from "./AboutView";
@@ -36,7 +36,7 @@ const SettingsWindow: React.FC = () => {
           <div className="relative grow flex flex-col rounded overflow-clip">
             {tab === "timer" ? <TimerView /> : null}
             {tab === "audio" ? <AudioView /> : null}
-            {tab === "interface" ? <InterfaceView /> : null}
+            {tab === "interface" ? <ThemesView /> : null}
             {tab === "behavior" ? <BehaviorView /> : null}
             {tab === "scripts" ? <ScriptsView /> : null}
             {tab === "about" ? <AboutView /> : null}
