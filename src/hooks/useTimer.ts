@@ -46,18 +46,15 @@ export const useTimer = (
   };
 
   const restart = () => {
-    saveSession();
     pause();
+    saveSession();
     reset();
     setStartedAt(undefined);
     callbacks.onRestarted && callbacks.onRestarted();
   };
 
   const skip = (manual?: boolean) => {
-    saveSession();
-    setIsPlaying(false);
-    reset();
-    setStartedAt(undefined);
+    restart();
     switchSession(manual ?? false);
     if (!manual) {
       if (sessionType === "Focus" && config.auto_start_focus) resume();
@@ -103,9 +100,8 @@ export const useTimer = (
   };
 
   const onComplete = () => {
-    callbacks.onCompleted && callbacks.onCompleted({ type: sessionType });
-    pause();
     skip(false);
+    callbacks.onCompleted && callbacks.onCompleted({ type: sessionType });
   };
 
   const { reset, elapsedTime } = useElapsedTime({
