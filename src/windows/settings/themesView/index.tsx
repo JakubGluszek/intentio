@@ -21,25 +21,27 @@ const ThemesView: React.FC = () => {
 
   return (
     <div className="grow flex flex-col gap-0.5">
-      <div className="window bg-window p-1">
-        <Button
-          onClick={() => setViewCreate(true)}
-          transparent
-          highlight={false}
-        >
-          <MdAddCircle size={20} />
-          <span>Add theme</span>
-        </Button>
-      </div>
-
       <div className="grow flex flex-col overflow-y-auto window bg-window">
+        <div className="flex flex-col gap-1 p-2">
+          {/* <p>Select random theme on new session (maybe)</p> */}
+          <p>Select Favorite only</p>
+          <p>Restore default</p>
+        </div>
         <div className="max-h-0 overflow-y">
           <div className="flex flex-col gap-1.5 p-2">
-            {store.themes
-              .sort((a, b) => (a.default ? 1 : 0) - (b.default ? 1 : 0))
-              .map((theme) => (
-                <ThemeView key={theme.id} theme={theme} />
-              ))}
+            <div>
+              <Button onClick={() => setViewCreate(true)}>
+                <MdAddCircle size={20} />
+                <span>Add theme</span>
+              </Button>
+            </div>
+            <div className="flex flex-col gap-1">
+              {store.themes
+                .sort((a, b) => (a.default ? 1 : 0) - (b.default ? 1 : 0))
+                .map((theme) => (
+                  <ThemeView key={theme.id} theme={theme} />
+                ))}
+            </div>
           </div>
         </div>
       </div>

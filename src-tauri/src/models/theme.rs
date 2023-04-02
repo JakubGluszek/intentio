@@ -21,6 +21,7 @@ pub struct Theme {
     id: String,
     name: String,
     default: bool,
+    favorite: bool,
     window_hex: String,
     base_hex: String,
     primary_hex: String,
@@ -34,6 +35,7 @@ impl TryFrom<Object> for Theme {
             id: val.x_take_val("id")?,
             name: val.x_take_val("name")?,
             default: val.x_take_val("default")?,
+            favorite: val.x_take_val("favorite")?,
             window_hex: val.x_take_val("window_hex")?,
             base_hex: val.x_take_val("base_hex")?,
             primary_hex: val.x_take_val("primary_hex")?,
@@ -59,6 +61,7 @@ impl From<ThemeForCreate> for Value {
         let data = map![
             "name".into() => val.name.into(),
             "default".into() => false.into(),
+            "favorite".into() => false.into(),
             "window_hex".into() => val.window_hex.into(),
             "base_hex".into() => val.base_hex.into(),
             "primary_hex".into() => val.primary_hex.into(),
@@ -76,6 +79,7 @@ impl Creatable for ThemeForCreate {}
 #[ts(export, export_to = "../src/bindings/")]
 pub struct ThemeForUpdate {
     name: Option<String>,
+    favorite: Option<bool>,
     window_hex: Option<String>,
     base_hex: Option<String>,
     primary_hex: Option<String>,
@@ -87,6 +91,9 @@ impl From<ThemeForUpdate> for Value {
         let mut data = BTreeMap::new();
         if let Some(name) = val.name {
             data.insert("name".into(), name.into());
+        }
+        if let Some(favorite) = val.favorite {
+            data.insert("favorite".into(), favorite.into());
         }
         if let Some(window_hex) = val.window_hex {
             data.insert("window_hex".into(), window_hex.into());
@@ -119,6 +126,7 @@ impl ThemeBmc {
                 CREATE theme:abyss CONTENT {
                     name: 'abyss',
                     default: true,
+                    favorite: false,
                     window_hex: '#222831',
                     base_hex: '#393E46',
                     primary_hex: '#00ADB5',
@@ -127,6 +135,7 @@ impl ThemeBmc {
                 CREATE theme:forest CONTENT {
                     name: 'forest',
                     default: true,
+                    favorite: false,
                     window_hex: '#002a37',
                     base_hex: '#09494e',
                     primary_hex: '#0feda2',
@@ -136,6 +145,7 @@ impl ThemeBmc {
                     name: 'dracula',
                     default: true,
                     window_hex: '#282a36',
+                    favorite: false,
                     base_hex: '#383a59',
                     primary_hex: '#bd93f9',
                     text_hex: '#f8f8f2',
@@ -143,6 +153,7 @@ impl ThemeBmc {
                 CREATE theme:space CONTENT {
                     name: 'space',
                     default: true,
+                    favorite: false,
                     window_hex: '#161853',
                     base_hex: '#292C6D',
                     primary_hex: '#EC255A',
@@ -151,6 +162,7 @@ impl ThemeBmc {
                 CREATE theme:blaze CONTENT {
                     name: 'blaze',
                     default: true,
+                    favorite: false,
                     window_hex: '#112B3C',
                     base_hex: '#205375',
                     primary_hex: '#F66B0E',

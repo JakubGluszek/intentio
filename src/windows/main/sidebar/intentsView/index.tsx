@@ -50,12 +50,11 @@ const IntentsView: React.FC = () => {
     <div className="grow flex flex-col gap-0.5">
       <div className="w-full flex flex-row gap-0.5">
         <CreateIntent />
-        <motion.div className="window" {...motions.scaleIn}>
+        <motion.div className="window rounded-none" {...motions.scaleIn}>
           <Button
-            onClick={() =>
-              new WebviewWindow("intents", config.windows.intents)
-            }
+            onClick={() => new WebviewWindow("intents", config.windows.intents)}
             transparent
+            rounded={false}
           >
             <MdAnalytics size={24} />
           </Button>
@@ -63,7 +62,7 @@ const IntentsView: React.FC = () => {
       </div>
 
       <motion.div
-        className="grow flex flex-col p-1.5 window"
+        className="grow flex flex-col p-1.5 window rounded-t-none rounded-l-none"
         {...motions.scaleIn}
       >
         <IntentsList

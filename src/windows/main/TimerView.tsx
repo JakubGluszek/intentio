@@ -83,7 +83,7 @@ const TimerView: React.FC<Props> = (props) => {
     <AnimatePresence initial={false}>
       {display === "timer" && (
         <motion.div
-          className="grow flex flex-col gap-0.5 window overflow-clip"
+          className="grow flex flex-col gap-0.5"
           transition={{ duration: 0.3 }}
           initial={{ width: "0%", opacity: 0 }}
           animate={{ width: "100%", opacity: 1 }}
@@ -123,7 +123,7 @@ interface TimerDetailsProps {
 
 const TimerDetails: React.FC<TimerDetailsProps> = (props) => {
   return (
-    <div className="w-full flex flex-row items-center justify-between gap-0.5 border-t-2 border-base/40">
+    <div className="w-full flex flex-row items-center justify-between gap-0.5 window rounded-t-none overflow-clip">
       {/* --- Total timer iterations --- */}
       <span
         className={clsx(

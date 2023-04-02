@@ -81,32 +81,35 @@ const TabsView: React.FC<TabsViewProps> = (props) => {
           animate={{ width: 40, opacity: 1 }}
           exit={{ width: 0 }}
         >
-          <div className="h-full window">
+          <div className="h-full window rounded-none">
             <Button
-              style={{ height: "100%", borderRadius: 2 }}
-              transparent
-              isSelected={props.tab === "intents"}
               onClick={() => props.setTab("intents")}
+              isSelected={props.tab === "intents"}
+              style={{ height: "100%" }}
+              transparent
+              rounded={false}
             >
               <BiTargetLock size={28} />
             </Button>
           </div>
-          <div className="h-full window">
+          <div className="h-full window rounded-none">
             <Button
-              style={{ height: "100%", borderRadius: 2 }}
-              transparent
-              isSelected={props.tab === "tasks"}
               onClick={() => props.setTab("tasks")}
+              isSelected={props.tab === "tasks"}
+              style={{ height: "100%" }}
+              transparent
+              rounded={false}
             >
               <MdCheckBox size={28} />
             </Button>
           </div>
-          <div className="h-full window">
+          <div className="h-full window rounded-none rounded-bl">
             <Button
-              style={{ height: "100%", borderRadius: 2 }}
-              transparent
-              isSelected={props.tab === "notes"}
               onClick={() => props.setTab("notes")}
+              isSelected={props.tab === "notes"}
+              style={{ height: "100%" }}
+              transparent
+              rounded={false}
             >
               <MdStickyNote2 size={28} />
             </Button>

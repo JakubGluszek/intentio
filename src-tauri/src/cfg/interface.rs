@@ -10,6 +10,10 @@ use ts_rs::TS;
 pub struct InterfaceConfig {
     pub theme_id: String,
     pub display_timer_countdown: bool,
+    pub paused_theme_id: String,
+    pub focus_theme_id: String,
+    pub break_theme_id: String,
+    pub long_break_theme_id: String,
 }
 
 impl Default for InterfaceConfig {
@@ -17,6 +21,10 @@ impl Default for InterfaceConfig {
         Self {
             theme_id: DEFAULT_THEME.to_string(),
             display_timer_countdown: true,
+            paused_theme_id: DEFAULT_THEME.to_string(),
+            focus_theme_id: DEFAULT_THEME.to_string(),
+            break_theme_id: DEFAULT_THEME.to_string(),
+            long_break_theme_id: DEFAULT_THEME.to_string(),
         }
     }
 }
@@ -27,6 +35,10 @@ impl Default for InterfaceConfig {
 pub struct InterfaceConfigForUpdate {
     pub theme_id: Option<String>,
     pub display_timer_countdown: Option<bool>,
+    pub paused_theme_id: Option<String>,
+    pub focus_theme_id: Option<String>,
+    pub break_theme_id: Option<String>,
+    pub long_break_theme_id: Option<String>,
 }
 
 pub struct InterfaceCfg;
@@ -72,6 +84,18 @@ impl InterfaceCfg {
         }
         if let Some(display_timer_countdown) = data.display_timer_countdown {
             config.display_timer_countdown = display_timer_countdown;
+        }
+        if let Some(paused_theme_id) = data.paused_theme_id {
+            config.paused_theme_id = paused_theme_id;
+        }
+        if let Some(focus_theme_id) = data.focus_theme_id {
+            config.focus_theme_id = focus_theme_id;
+        }
+        if let Some(break_theme_id) = data.break_theme_id {
+            config.break_theme_id = break_theme_id;
+        }
+        if let Some(long_break_theme_id) = data.long_break_theme_id {
+            config.long_break_theme_id = long_break_theme_id;
         }
 
         Self::save(&config);

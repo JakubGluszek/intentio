@@ -107,7 +107,6 @@ export const useTimer = (
   const { reset, elapsedTime } = useElapsedTime({
     isPlaying,
     duration,
-    updateInterval: 0,
     onComplete: onComplete,
   });
 

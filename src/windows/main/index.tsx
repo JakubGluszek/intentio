@@ -39,7 +39,7 @@ const MainWindow: React.FC = () => {
           animate={{ scale: 1, opacity: 1 }}
         >
           <Titlebar />
-          <div className="grow flex flex-row rounded overflow-clip">
+          <div className="grow flex flex-row overflow-clip">
             <Sidebar />
             <TimerView config={store.timerConfig} />
           </div>
@@ -54,7 +54,7 @@ const Titlebar: React.FC = () => {
     React.useContext(MainWindowContext)!;
 
   return (
-    <div className="z-[1000] w-full flex flex-row items-center justify-between window overflow-clip">
+    <div className="z-[1000] w-full flex flex-row items-center justify-between window rounded-b-none overflow-clip">
       <div className="flex flex-row">
         <Button onClick={toggleDisplay} transparent rounded={false}>
           <motion.div animate={{ rotateZ: display === "sidebar" ? 180 : 0 }}>
@@ -63,9 +63,7 @@ const Titlebar: React.FC = () => {
         </Button>
         <Button
           transparent
-          onClick={() =>
-            new WebviewWindow("settings", config.windows.settings)
-          }
+          onClick={() => new WebviewWindow("settings", config.windows.settings)}
           rounded={false}
         >
           <MdSettings size={isCompact ? 20 : 28} />

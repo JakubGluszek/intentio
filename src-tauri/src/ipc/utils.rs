@@ -39,6 +39,8 @@ pub async fn set_current_theme(
     }
 }
 
+// set_random_theme(); 
+
 #[command]
 pub async fn open_audio_dir(handle: AppHandle) {
     let mut cmd = "xdg-open";

@@ -31,11 +31,12 @@ const CreateIntent: React.FC = () => {
 
   if (!viewCreate)
     return (
-      <motion.div className="w-full window" {...motions.scaleIn}>
+      <motion.div className="w-full window rounded-none" {...motions.scaleIn}>
         <Button
           onClick={() => setViewCreate(true)}
           style={{ width: "100%" }}
           transparent
+          rounded={false}
         >
           <MdAddCircle size={20} />
           <span>Add Intent</span>
@@ -51,7 +52,7 @@ const CreateIntent: React.FC = () => {
       {...motions.scaleIn}
     >
       <input
-        className="bg-window/90"
+        className="bg-window/90 rounded-none"
         onKeyDown={(e) => {
           if (e.key !== "Escape") return;
           setViewCreate(false);

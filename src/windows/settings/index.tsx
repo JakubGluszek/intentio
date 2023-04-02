@@ -6,20 +6,18 @@ import {
   MdSettings,
   MdTimer,
 } from "react-icons/md";
-import { RiToolsFill } from "react-icons/ri";
 import { AiFillCode } from "react-icons/ai";
 import { OsType, type } from "@tauri-apps/api/os";
 
 import { Titlebar, Button } from "@/components";
 import TimerView from "./TimerView";
-import AudioView from "./AudioView";
-import ThemesView from "./interfaceView";
-import BehaviorView from "./BehaviorView";
+import AudioView from "./audioView";
+import ThemesView from "./themesView";
 import ScriptsView from "./scriptsView";
 import AboutView from "./AboutView";
 import WindowContainer from "@/components/WindowContainer";
 
-type Tab = "timer" | "audio" | "interface" | "behavior" | "scripts" | "about";
+type Tab = "timer" | "audio" | "themes" | "scripts" | "about";
 
 export type ColorType = "window" | "base" | "primary" | "text";
 
@@ -36,8 +34,7 @@ const SettingsWindow: React.FC = () => {
           <div className="relative grow flex flex-col rounded overflow-clip">
             {tab === "timer" ? <TimerView /> : null}
             {tab === "audio" ? <AudioView /> : null}
-            {tab === "interface" ? <ThemesView /> : null}
-            {tab === "behavior" ? <BehaviorView /> : null}
+            {tab === "themes" ? <ThemesView /> : null}
             {tab === "scripts" ? <ScriptsView /> : null}
             {tab === "about" ? <AboutView /> : null}
           </div>
@@ -70,16 +67,10 @@ const Sidebar: React.FC<SidebarProps> = ({ tab, setTab }) => {
             <MdAudiotrack size={24} />
           </Button>
           <Button
-            isSelected={tab === "interface"}
-            onClick={() => setTab("interface")}
+            isSelected={tab === "themes"}
+            onClick={() => setTab("themes")}
           >
             <MdColorLens size={24} />
-          </Button>
-          <Button
-            isSelected={tab === "behavior"}
-            onClick={() => setTab("behavior")}
-          >
-            <RiToolsFill size={24} />
           </Button>
           {osType !== "Windows_NT" ? (
             <Button
