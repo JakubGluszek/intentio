@@ -21,7 +21,7 @@ interface Props {
 
 const SelectedTrack: React.FC<Props> = (props) => {
   return (
-    <div className="flex flex-col window bg-window border-primary/20 p-2 gap-1">
+    <div className="flex flex-col window bg-window rounded-none p-2 gap-1">
       {/* Selected audio file with volume and repeat control */}
       <div className="flex flex-row items-center justify-between">
         <div className="font-mono text-primary/80 uppercase font-black">
@@ -62,7 +62,7 @@ const SelectedTrack: React.FC<Props> = (props) => {
               onChangeEnd={(volume) => props.onVolumeChange(volume / 100)}
             />
           </div>
-          <div className="flex flex-row items-center border-2 bg-darker/10 border-primary/20 rounded-sm">
+          <div className="flex flex-row items-center border-2 bg-darker/10 border-primary/40 rounded-sm">
             <Button
               style={{ height: "100%" }}
               rounded={false}

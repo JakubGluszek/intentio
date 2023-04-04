@@ -14,6 +14,7 @@ type Tab = "intents" | "notes" | "tasks";
 
 const Sidebar: React.FC = () => {
   const [tab, setTab] = React.useState<Tab>("intents");
+
   const { display, toggleDisplay } = React.useContext(MainWindowContext)!;
   const store = useStore();
 
@@ -75,13 +76,13 @@ const TabsView: React.FC<TabsViewProps> = (props) => {
     <AnimatePresence>
       {props.display && (
         <motion.div
-          className="h-full flex flex-col gap-0.5 overflow-clip"
+          className="h-full flex flex-col gap-0.5 overflow-clip rounded-bl"
           transition={{ duration: 0.3 }}
           initial={{ width: 0, opacity: 0 }}
           animate={{ width: 40, opacity: 1 }}
           exit={{ width: 0 }}
         >
-          <div className="h-full window rounded-none">
+          <div className="h-full window">
             <Button
               onClick={() => props.setTab("intents")}
               isSelected={props.tab === "intents"}
@@ -92,7 +93,7 @@ const TabsView: React.FC<TabsViewProps> = (props) => {
               <BiTargetLock size={28} />
             </Button>
           </div>
-          <div className="h-full window rounded-none">
+          <div className="h-full window">
             <Button
               onClick={() => props.setTab("tasks")}
               isSelected={props.tab === "tasks"}
@@ -103,7 +104,7 @@ const TabsView: React.FC<TabsViewProps> = (props) => {
               <MdCheckBox size={28} />
             </Button>
           </div>
-          <div className="h-full window rounded-none rounded-bl">
+          <div className="h-full window">
             <Button
               onClick={() => props.setTab("notes")}
               isSelected={props.tab === "notes"}

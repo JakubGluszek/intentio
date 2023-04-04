@@ -10,5 +10,6 @@ export { default as IntentioLogo } from "./IntentioLogo";
 export { default as IntentsList } from "./intentsList";
 export { default as WindowContainer } from "./WindowContainer";
 export { default as CircleTimerBase } from "./CircleTimerBase";
+export { default as BooleanView } from "./BooleanView";
 export * from "./timers";
 export * from "./timeline";

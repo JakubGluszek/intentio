@@ -54,7 +54,7 @@ const Titlebar: React.FC = () => {
     React.useContext(MainWindowContext)!;
 
   return (
-    <div className="z-[1000] w-full flex flex-row items-center justify-between window rounded-b-none overflow-clip">
+    <div className="z-[1000] w-full flex flex-row items-center justify-between window rounded rounded-b-none overflow-clip">
       <div className="flex flex-row">
         <Button onClick={toggleDisplay} transparent rounded={false}>
           <motion.div animate={{ rotateZ: display === "sidebar" ? 180 : 0 }}>

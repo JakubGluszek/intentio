@@ -123,7 +123,7 @@ interface TimerDetailsProps {
 
 const TimerDetails: React.FC<TimerDetailsProps> = (props) => {
   return (
-    <div className="w-full flex flex-row items-center justify-between gap-0.5 window rounded-t-none overflow-clip">
+    <div className="w-full flex flex-row items-center justify-between gap-0.5 window rounded rounded-t-none overflow-clip">
       {/* --- Total timer iterations --- */}
       <span
         className={clsx(

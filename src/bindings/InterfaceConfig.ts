@@ -3,7 +3,7 @@
 export interface InterfaceConfig {
   theme_id: string;
   display_timer_countdown: boolean;
-  paused_theme_id: string;
+  idle_theme_id: string;
   focus_theme_id: string;
   break_theme_id: string;
   long_break_theme_id: string;

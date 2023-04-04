@@ -128,6 +128,6 @@
   }
 
   .window {
-    @apply bg-window/90 border-2 border-base/80 rounded;
+    @apply bg-window/90 border-2 border-base/80;
   }
 }
