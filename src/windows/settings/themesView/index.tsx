@@ -63,7 +63,10 @@ const ThemesView: React.FC = () => {
           View themes
         </Button>
       </div>
-      <div className="grow flex flex-col p-1.5 gap-1 window bg-window">
+      <div className="grow flex flex-col p-1.5 gap-2 window bg-window">
+        <div className="text-text/60 p-1.5">
+          Select a different theme for each state of the timer.
+        </div>
         <ThemeState
           onClick={() => setViewThemeSelection("idle_theme_id")}
           label="Idle"
@@ -138,7 +141,7 @@ interface ThemeStateProps {
 
 const ThemeState: React.FC<ThemeStateProps> = (props) => {
   return (
-    <div
+    <button
       onClick={() => props.onClick()}
       className="relative card flex flex-row p-0 gap-2"
       data-tauri-disable-drag
@@ -155,8 +158,10 @@ const ThemeState: React.FC<ThemeStateProps> = (props) => {
           backgroundColor: props.theme.primary_hex,
         }}
       ></div>
-      <div className="py-1">{props.label}</div>
-    </div>
+      <div className="py-2" style={{ color: props.theme.text_hex }}>
+        {props.label}
+      </div>
+    </button>
   );
 };
 

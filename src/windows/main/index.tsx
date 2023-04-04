@@ -27,7 +27,7 @@ const MainWindow: React.FC = () => {
     interface_config_updated: (data) => store.setInterfaceConfig(data),
   });
 
-  if (!store.timerConfig) return null;
+  if (!store.timerConfig || !store.interfaceConfig) return null;
 
   return (
     <MainWindowProvider>

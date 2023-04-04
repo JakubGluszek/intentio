@@ -12,6 +12,7 @@ import useStore from "@/store";
 import { MainWindowContext } from "@/contexts";
 import { TimerConfig } from "@/bindings/TimerConfig";
 import { Intent } from "@/bindings/Intent";
+import { SessionType } from "@/types";
 
 interface Props {
   config: TimerConfig;
@@ -22,6 +23,17 @@ const TimerView: React.FC<Props> = (props) => {
     React.useContext(MainWindowContext)!;
 
   const store = useStore();
+
+  const handleScriptExecution = (sessionType: SessionType) => {
+    store.scripts.forEach(
+      (script) =>
+        script.active &&
+        (sessionType === "Focus"
+          ? script.run_on_session_start
+          : script.run_on_break_start) &&
+        utils.executeScript(script.body)
+    );
+  };
 
   const timer = useTimer(props.config, {
     onSaveSession: (session) => {
@@ -42,35 +54,29 @@ const TimerView: React.FC<Props> = (props) => {
     },
     onCompleted: (session) => {
       ipc.playAudio();
-
-      store.scripts.forEach(
-        (script) =>
-          script.active &&
-          (session.type === "Focus"
-            ? script.run_on_session_end
-            : script.run_on_break_end) &&
-          utils.executeScript(script.body)
-      );
+      handleScriptExecution(session.type);
     },
     onResumed: (session) => {
-      store.scripts.forEach(
-        (script) =>
-          script.active &&
-          (session.type === "Focus"
-            ? script.run_on_session_start
-            : script.run_on_break_start) &&
-          utils.executeScript(script.body)
-      );
+      let themeId: string;
+      switch (session.type) {
+        case "Focus":
+          themeId = store.interfaceConfig?.focus_theme_id!;
+          break;
+        case "Break":
+          themeId = store.interfaceConfig?.break_theme_id!;
+          break;
+        case "LongBreak":
+          themeId = store.interfaceConfig?.long_break_theme_id!;
+          break;
+      }
+      ipc.setCurrentTheme(themeId);
+      handleScriptExecution(session.type);
     },
     onPaused: (session) => {
-      store.scripts.forEach(
-        (script) =>
-          script.active &&
-          (session.type === "Focus"
-            ? script.run_on_session_pause
-            : script.run_on_break_pause) &&
-          utils.executeScript(script.body)
+      ipc.setCurrentTheme(
+        store.interfaceConfig?.idle_theme_id ?? store.currentTheme!.id
       );
+      handleScriptExecution(session.type);
     },
   });
 

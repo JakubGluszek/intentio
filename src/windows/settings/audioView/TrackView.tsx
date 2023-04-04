@@ -12,7 +12,7 @@ interface Props {
 const TrackView: React.FC<Props> = (props) => {
   return (
     <div
-      className="card p-1"
+      className="card p-0 pl-2 text-text/70 hover:text-text/80"
       onClick={(e) =>
         // @ts-ignore
         !e.target.closest("button") && props.onSelected(props.name)
