@@ -6,8 +6,8 @@ import { Theme } from "@/bindings/Theme";
 
 interface Props {
   data: Theme;
-  onSelected: () => void;
   onViewEdit: () => void;
+  onSelected: () => void;
 }
 
 const ThemeView: React.FC<Props> = (props) => {
@@ -20,43 +20,26 @@ const ThemeView: React.FC<Props> = (props) => {
     <React.Fragment>
       <ThemeViewContent
         {...props}
-        onClick={() => props.onSelected()}
         onContextMenuHandler={onContextMenuHandler}
       />
       <ThemeViewContext
         display={menuPosition ? true : false}
         position={menuPosition!}
+        onEdit={() => props.onViewEdit()}
         hide={() => hideContextMenu()}
       />
     </React.Fragment>
   );
 };
 
-interface ThemeViewContextProps {
-  display: boolean;
-  position: MenuPosition;
-  hide: () => void;
-}
-
-const ThemeViewContext: React.FC<ThemeViewContextProps> = (props) => {
-  return (
-    <ContextMenu {...props}>
-      <Button rounded={false}>Favorite</Button>
-      <Button rounded={false}>Edit</Button>
-      <Button rounded={false}>Delete</Button>
-    </ContextMenu>
-  );
-};
-
 interface ThemeViewContentProps extends Props {
-  onClick: () => void;
   onContextMenuHandler: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void;
 }
 
 const ThemeViewContent: React.FC<ThemeViewContentProps> = (props) => {
   return (
     <div
-      onClick={() => props.onClick()}
+      onClick={() => props.onSelected()}
       onContextMenu={props.onContextMenuHandler}
       style={{ color: props.data.text_hex }}
       className="group flex flex-col rounded-sm overflow-clip border-2 border-base"
@@ -87,4 +70,22 @@ const ThemeViewContent: React.FC<ThemeViewContentProps> = (props) => {
   );
 };
 
+interface ThemeViewContextProps {
+  display: boolean;
+  position: MenuPosition;
+  hide: () => void;
+  onEdit: () => void;
+}
+
+const ThemeViewContext: React.FC<ThemeViewContextProps> = (props) => {
+  return (
+    <ContextMenu {...props}>
+      <Button rounded={false}>Favorite</Button>
+      <Button onClick={() => props.onEdit()} rounded={false}>
+        Edit
+      </Button>
+      <Button rounded={false}>Delete</Button>
+    </ContextMenu>
+  );
+};
 export default ThemeView;

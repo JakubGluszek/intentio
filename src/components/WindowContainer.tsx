@@ -14,8 +14,6 @@ const WindowContainer: React.FC<Props> = (props) => {
   const store = useStore();
 
   useEvents({
-    interface_config_updated: (data) => {
-    },
     preview_theme: (data) => {
       utils.applyTheme(data);
     },

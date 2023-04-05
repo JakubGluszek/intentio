@@ -1,5 +1,4 @@
 import React from "react";
-import { Checkbox } from "@mantine/core";
 
 import { formatTimeTimer } from "@/utils";
 import { BooleanView, Slider } from "@/components";

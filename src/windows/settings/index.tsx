@@ -34,7 +34,7 @@ const SettingsWindow: React.FC = () => {
   return (
     <WindowContainer>
       <div className="grow flex flex-col gap-0.5">
-        <Titlebar icon={<MdSettings size={24} />} title="Settings" />
+        <Titlebar icon={<MdSettings size={20} />} title="Settings" />
 
         <div className="grow flex flex-col gap-0.5">
           <Navbar tab={tab} setTab={setTab} />
