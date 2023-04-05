@@ -25,7 +25,6 @@ export type ColorType = "window" | "base" | "primary" | "text";
 
 const SettingsWindow: React.FC = () => {
   const [tab, setTab] = React.useState<Tab>("timer");
-
   const store = useStore();
 
   useEvents({

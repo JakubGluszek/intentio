@@ -19,7 +19,6 @@ const MainWindow: React.FC = () => {
   React.useEffect(() => {
     ipc.getTimerConfig().then((data) => store.setTimerConfig(data));
     ipc.getScripts().then((data) => store.setScripts(data));
-    ipc.getInterfaceConfig().then((data) => store.setInterfaceConfig(data));
   }, []);
 
   useEvents({

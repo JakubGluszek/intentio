@@ -34,16 +34,16 @@ export const useTimer = (
   const [startedAt, setStartedAt] = React.useState<string>(); // epoch in ms
   const [iterations, setIterations] = React.useState(0);
 
-  const resume = () => {
+  const resume = React.useCallback(() => {
     if (!startedAt) setStartedAt(new Date().getTime().toString());
     setIsPlaying(true);
     callbacks.onResumed && callbacks.onResumed({ type: sessionType });
-  };
+  }, [sessionType]);
 
-  const pause = () => {
+  const pause = React.useCallback(() => {
     setIsPlaying(false);
     callbacks.onPaused && callbacks.onPaused({ type: sessionType });
-  };
+  }, [sessionType]);
 
   const restart = () => {
     pause();

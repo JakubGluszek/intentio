@@ -19,7 +19,8 @@ export const createUtilsSlice: StateCreator<
   UtilsSlice
 > = (set, get) => ({
   currentTheme: undefined,
-  setCurrentTheme: (currentTheme) => set(() => ({ currentTheme })),
+  setCurrentTheme: (currentTheme) =>
+    set((state) => ({ ...state, currentTheme })),
   getIdleTheme: () =>
     get().themes.find(
       (theme) => theme.id === get().interfaceConfig?.idle_theme_id

@@ -12,7 +12,7 @@ import useStore from "@/store";
 import { MainWindowContext } from "@/contexts";
 import { TimerConfig } from "@/bindings/TimerConfig";
 import { Intent } from "@/bindings/Intent";
-import { SessionType } from "@/types";
+import { emit } from "@tauri-apps/api/event";
 
 interface Props {
   config: TimerConfig;
@@ -23,17 +23,6 @@ const TimerView: React.FC<Props> = (props) => {
     React.useContext(MainWindowContext)!;
 
   const store = useStore();
-
-  const handleScriptExecution = (sessionType: SessionType) => {
-    store.scripts.forEach(
-      (script) =>
-        script.active &&
-        (sessionType === "Focus"
-          ? script.run_on_session_start
-          : script.run_on_break_start) &&
-        utils.executeScript(script.body)
-    );
-  };
 
   const timer = useTimer(props.config, {
     onSaveSession: (session) => {
@@ -54,10 +43,19 @@ const TimerView: React.FC<Props> = (props) => {
     },
     onCompleted: (session) => {
       ipc.playAudio();
-      handleScriptExecution(session.type);
+
+      store.scripts.forEach(
+        (script) =>
+          script.active &&
+          (session.type === "Focus"
+            ? script.run_on_session_end
+            : script.run_on_break_end) &&
+          utils.executeScript(script.body)
+      );
     },
     onResumed: (session) => {
       let themeId: string;
+
       switch (session.type) {
         case "Focus":
           themeId = store.interfaceConfig?.focus_theme_id!;
@@ -69,14 +67,35 @@ const TimerView: React.FC<Props> = (props) => {
           themeId = store.interfaceConfig?.long_break_theme_id!;
           break;
       }
-      ipc.setCurrentTheme(themeId);
-      handleScriptExecution(session.type);
+
+      ipc
+        .setCurrentTheme(themeId)
+        .then((data) => emit("current_theme_updated", data));
+
+      store.scripts.forEach(
+        (script) =>
+          script.active &&
+          (session.type === "Focus"
+            ? script.run_on_session_start
+            : script.run_on_break_start) &&
+          utils.executeScript(script.body)
+      );
     },
     onPaused: (session) => {
-      ipc.setCurrentTheme(
-        store.interfaceConfig?.idle_theme_id ?? store.currentTheme!.id
+      ipc
+        .setCurrentTheme(
+          store.interfaceConfig?.idle_theme_id ?? store.currentTheme!.id
+        )
+        .then((data) => emit("current_theme_updated", data));
+
+      store.scripts.forEach(
+        (script) =>
+          script.active &&
+          (session.type === "Focus"
+            ? script.run_on_session_pause
+            : script.run_on_break_pause) &&
+          utils.executeScript(script.body)
       );
-      handleScriptExecution(session.type);
     },
   });
 

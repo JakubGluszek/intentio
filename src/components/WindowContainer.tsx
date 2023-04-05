@@ -14,11 +14,8 @@ const WindowContainer: React.FC<Props> = (props) => {
   const store = useStore();
 
   useEvents({
-    interface_config_updated: () =>
-      ipc.getCurrentTheme().then((data) => {
-        utils.applyTheme(data);
-        store.setCurrentTheme(data);
-      }),
+    interface_config_updated: (data) => {
+    },
     preview_theme: (data) => {
       utils.applyTheme(data);
     },

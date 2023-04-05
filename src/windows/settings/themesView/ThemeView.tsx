@@ -56,7 +56,7 @@ interface ThemeViewContentProps extends Props {
 const ThemeViewContent: React.FC<ThemeViewContentProps> = (props) => {
   return (
     <div
-      onClick={props.onClick}
+      onClick={() => props.onClick()}
       onContextMenu={props.onContextMenuHandler}
       style={{ color: props.data.text_hex }}
       className="group flex flex-col rounded-sm overflow-clip border-2 border-base"
