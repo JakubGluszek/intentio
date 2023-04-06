@@ -16,7 +16,7 @@ pub enum Error {
     StateNotAccessed,
 
     #[error("Fail to create. Cause: {0}")]
-    StoreFailToCreate(String),
+    DatabaseFailToCreate(String),
 
     #[error("No current project")]
     NoCurrentProject,

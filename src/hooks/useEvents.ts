@@ -9,11 +9,14 @@ import { Theme } from "@/bindings/Theme";
 import { Task } from "@/bindings/Task";
 import { Note } from "@/bindings/Note";
 import { Script } from "@/bindings/Script";
+import { TimerConfig } from "@/bindings/TimerConfig";
+import { BehaviorConfig } from "@/bindings/BehaviorConfig";
+import { AudioConfig } from "@/bindings/AudioConfig";
+import { InterfaceConfig } from "@/bindings/InterfaceConfig";
 
 type Events = {
   [key: string]: any;
   settings_updated: Settings;
-  active_intent_id_updated: { active_intent_id: string | undefined };
   current_theme_updated: Theme;
   current_theme_changed: undefined;
   intent_created: Intent;
@@ -34,6 +37,11 @@ type Events = {
   script_created: Script;
   script_updated: Script;
   script_deleted: ModelDeleteResultData;
+  timer_config_updated: TimerConfig;
+  behavior_config_updated: BehaviorConfig;
+  audio_config_updated: AudioConfig;
+  interface_config_updated: InterfaceConfig;
+  theme_updated: Theme;
 };
 
 type Callback<T extends keyof Events> = (data: Events[T]) => void;
@@ -44,8 +52,8 @@ Hook that registers event listeners and invokes the corresponding callbacks when
 
 Events can be emitted by both backend and client side.
 */
-export default function useEvents<T extends keyof Events>(callbacks: {
-  [K in T]?: Callback<K>;
+export default function useEvents(callbacks: {
+  [K in keyof Events]?: Callback<K>;
 }) {
   React.useEffect(() => {
     // Create an array of listener promises by mapping over the callbacks and registering a listener for each event type

@@ -29,6 +29,12 @@
           "$CONFIG/**/*"
         ]
       },
+      "globalShortcut": {
+        "all": true
+      },
+      "window": {
+        "all": true
+      },
       "shell": {
         "open": true,
         "scope": [
@@ -96,21 +102,7 @@
     "updater": {
       "active": false
     },
-    "windows": [
-      {
-        "label": "main",
-        "title": "Intentio",
-        "width": 340,
-        "height": 380,
-        "maxWidth": 340,
-        "maxHeight": 380,
-        "fullscreen": false,
-        "resizable": false,
-        "decorations": false,
-        "alwaysOnTop": true,
-        "center": true
-      }
-    ],
+    "windows": [],
     "systemTray": {
       "iconPath": "icons/icon.png",
       "iconAsTemplate": true

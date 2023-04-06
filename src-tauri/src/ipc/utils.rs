@@ -5,8 +5,9 @@ use std::fs::File;
 use tauri::{command, AppHandle, Manager, Wry};
 
 use crate::{
+    cfg::{AudioCfg, BehaviorCfg, InterfaceCfg, InterfaceConfigForUpdate},
     ctx::Ctx,
-    model::{SettingsBmc, SettingsForUpdate, Theme, ThemeBmc},
+    models::{Theme, ThemeBmc},
     prelude::{Error, Result},
 };
 
@@ -14,26 +15,31 @@ use crate::{
 pub async fn get_current_theme(app: AppHandle<Wry>) -> Result<Theme> {
     match Ctx::from_app(app) {
         Ok(ctx) => {
-            let settings = SettingsBmc::get().unwrap();
-            ThemeBmc::get(ctx, &settings.current_theme_id).await.into()
+            let config = InterfaceCfg::get();
+            ThemeBmc::get(ctx, &config.theme_id).await.into()
         }
         Err(_) => Err(Error::CtxFail).into(),
     }
 }
 
 #[command]
-pub async fn set_current_theme(data: SettingsForUpdate, app: AppHandle<Wry>) -> Result<Theme> {
+pub async fn set_current_theme(
+    data: InterfaceConfigForUpdate,
+    app: AppHandle<Wry>,
+) -> Result<Theme> {
     match Ctx::from_app(app) {
         Ok(ctx) => {
-            SettingsBmc::update(ctx.clone(), data);
+            InterfaceCfg::update(ctx.clone(), data);
 
-            let settings = SettingsBmc::get().unwrap();
+            let config = InterfaceCfg::get();
 
-            ThemeBmc::get(ctx, &settings.current_theme_id).await.into()
+            ThemeBmc::get(ctx, &config.theme_id).await.into()
         }
         Err(_) => Err(Error::CtxFail).into(),
     }
 }
+
+// set_random_theme(); 
 
 #[command]
 pub async fn open_audio_dir(handle: AppHandle) {
@@ -61,11 +67,11 @@ pub async fn open_audio_dir(handle: AppHandle) {
 
 #[command]
 pub async fn hide_main_window(app: AppHandle) {
-    let settings = SettingsBmc::get().unwrap();
+    let config = BehaviorCfg::get();
 
     let window = app.get_window("main").unwrap();
 
-    if settings.main_window_to_tray {
+    if config.main_minimize_to_tray {
         window.hide().unwrap();
     } else {
         window.minimize().unwrap();
@@ -79,11 +85,11 @@ pub async fn exit_main_window() {
 
 #[command]
 pub async fn play_audio(audio: Option<String>, handle: AppHandle) {
-    let mut settings = SettingsBmc::get().unwrap();
+    let mut config = AudioCfg::get();
 
     let audio = match audio {
         Some(path) => path,
-        None => settings.alert_audio,
+        None => config.alert_file,
     };
 
     let path = handle
@@ -93,12 +99,12 @@ pub async fn play_audio(audio: Option<String>, handle: AppHandle) {
 
     let (_stream, stream_handle) = rodio::OutputStream::try_default().unwrap();
 
-    for _i in 0..settings.alert_repeat {
-        settings = SettingsBmc::get().unwrap();
+    for _i in 0..config.alert_repeat {
+        config = AudioCfg::get();
 
         let file = File::open(path.as_path()).unwrap();
         let sink = stream_handle.play_once(file).unwrap();
-        sink.set_volume(settings.alert_volume as f32);
+        sink.set_volume(config.alert_volume as f32);
         sink.sleep_until_end();
     }
 }

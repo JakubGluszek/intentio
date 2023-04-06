@@ -1,151 +1,119 @@
 import React from "react";
-import { Checkbox } from "@mantine/core";
 
 import { formatTimeTimer } from "@/utils";
-import { Settings } from "@/bindings/Settings";
-import { Slider } from "@/components";
-import { SettingsForUpdate } from "@/bindings/SettingsForUpdate";
+import { BooleanView, Slider } from "@/components";
+import useStore from "@/store";
+import ipc from "@/ipc";
+import { TimerConfigForUpdate } from "@/bindings/TimerConfigForUpdate";
 
-interface Props {
-  settings: Settings;
-  update: (data: Partial<SettingsForUpdate>) => Promise<Settings>;
+const TimerView: React.FC = () => {
+  const store = useStore();
+
+  const config = store.timerConfig;
+
+  const updateConfig = async (data: Partial<TimerConfigForUpdate>) => {
+    const result = await ipc.updateTimerConfig(data);
+    store.setTimerConfig(result);
+    return result;
+  };
+
+  React.useEffect(() => {
+    ipc.getTimerConfig().then((data) => store.setTimerConfig(data));
+  }, []);
+
+  if (!config) return null;
+
+  return (
+    <div className="grow flex flex-col window bg-window overflow-y-auto">
+      <div className="max-h-0 overflow-y">
+        <div className="flex flex-col gap-2 p-2">
+          <BooleanView
+            label="Auto Start Pomodoros"
+            checked={config.auto_start_focus}
+            onChange={(value) =>
+              updateConfig({
+                auto_start_focus: value,
+              })
+            }
+          />
+          <BooleanView
+            label="Auto Start Breaks"
+            checked={config.auto_start_breaks}
+            onChange={(value) =>
+              updateConfig({
+                auto_start_breaks: value,
+              })
+            }
+          />
+          <SliderView
+            type="duration"
+            label="Focus"
+            digit={config.focus_duration}
+            minDigit={1}
+            maxDigit={90}
+            onChange={(minutes) => updateConfig({ focus_duration: minutes })}
+          />
+          <SliderView
+            type="duration"
+            label="Break"
+            digit={config.break_duration}
+            minDigit={1}
+            maxDigit={45}
+            onChange={(minutes) => updateConfig({ break_duration: minutes })}
+          />
+          <SliderView
+            type="duration"
+            label="Long Break"
+            digit={config.long_break_duration}
+            minDigit={1}
+            maxDigit={45}
+            onChange={(minutes) =>
+              updateConfig({ long_break_duration: minutes })
+            }
+          />
+          <SliderView
+            type="iterations"
+            label="Long Break Interval"
+            digit={config.long_break_interval}
+            minDigit={2}
+            maxDigit={16}
+            onChange={(interval) =>
+              updateConfig({ long_break_interval: interval })
+            }
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+interface SliderViewProps {
+  type: "duration" | "iterations";
+  label: string;
+  digit: number;
+  minDigit: number;
+  maxDigit: number;
+  onChange: (minutes: number) => void;
 }
 
-const TimerView: React.FC<Props> = (props) => {
+const SliderView: React.FC<SliderViewProps> = (props) => {
+  const content =
+    props.type === "duration" ? formatTimeTimer(props.digit * 60) : props.digit;
+
   return (
-    <div className="flex flex-col gap-3 pb-2 animate-in fade-in-0 zoom-in-95">
-      <div className="flex flex-col gap-1.5">
-        <div className="flex flex-row items-center card">
-          <label className="w-full" htmlFor="auto-start-pomodoros">
-            Auto Start Pomodoros
-          </label>
-          <Checkbox
-            tabIndex={-2}
-            id="auto-start-pomodoros"
-            size="sm"
-            defaultChecked={props.settings.auto_start_pomodoros}
-            onChange={(value) =>
-              props.update({
-                auto_start_pomodoros: value.currentTarget.checked,
-              })
-            }
-            styles={{
-              icon: { color: "rgb(var(--primary-color)) !important" },
-              root: { height: "20px" },
-            }}
-            classNames={{
-              input:
-                "border-primary checked:border-primary bg-transparent checked:bg-transparent border-2",
-            }}
-          />
-        </div>
-        <div className="flex flex-row items-center card">
-          <label className="w-full" htmlFor="auto-start-breaks">
-            Auto Start Breaks
-          </label>
-          <Checkbox
-            tabIndex={-2}
-            size="sm"
-            id="auto-start-breaks"
-            defaultChecked={props.settings.auto_start_breaks}
-            onChange={(value) =>
-              props.update({
-                auto_start_breaks: value.currentTarget.checked,
-              })
-            }
-            styles={{
-              icon: { color: "rgb(var(--primary-color)) !important" },
-              root: { height: "20px" },
-            }}
-            classNames={{
-              input:
-                "border-primary checked:border-primary bg-transparent checked:bg-transparent border-2",
-            }}
-          />
+    <div className="flex flex-col gap-2 card p-1.5">
+      <div className="flex flex-row items-center justify-between">
+        <span className="font-medium">{props.label}</span>
+        <div className="w-16 bg-window border-2 border-base rounded-sm py-0.5">
+          <div className="text-sm text-center">{content}</div>
         </div>
       </div>
-      <div className="flex flex-col gap-1.5">
-        <div className="flex flex-col gap-2 card">
-          <div className="flex flex-row items-center justify-between">
-            <span className="font-medium">Focus</span>
-            <div className="bg-base rounded px-2 py-1">
-              <span className="text-sm">
-                {formatTimeTimer(props.settings.pomodoro_duration * 60)}
-              </span>
-            </div>
-          </div>
-          <Slider
-            min={1}
-            max={90}
-            defaultValue={props.settings.pomodoro_duration}
-            onChangeEnd={(minutes) =>
-              props.update({
-                pomodoro_duration: minutes,
-              })
-            }
-          />
-        </div>
-        <div className="flex flex-col gap-2 card">
-          <div className="flex flex-row items-center justify-between">
-            <span className="text-sm font-medium">Break</span>
-            <div className="bg-base rounded px-2 py-1">
-              <span className="text-sm">
-                {formatTimeTimer(props.settings.break_duration * 60)}
-              </span>
-            </div>
-          </div>
-          <Slider
-            min={1}
-            max={25}
-            defaultValue={props.settings.break_duration}
-            onChangeEnd={(minutes) =>
-              props.update({
-                break_duration: minutes,
-              })
-            }
-          />
-        </div>
-        <div className="flex flex-col gap-2 card">
-          <div className="flex flex-row items-center justify-between">
-            <span className="text-sm font-medium">Long Break</span>
-            <div className="bg-base rounded px-2 py-1">
-              <span className="text-sm">
-                {formatTimeTimer(props.settings.long_break_duration * 60)}
-              </span>
-            </div>
-          </div>
-          <Slider
-            min={1}
-            max={45}
-            defaultValue={props.settings.long_break_duration}
-            onChangeEnd={(minutes) =>
-              props.update({
-                long_break_duration: minutes,
-              })
-            }
-          />
-        </div>
-        <div className="flex flex-col gap-2 card">
-          <div className="flex flex-row items-center justify-between">
-            <span className="text-sm font-medium">Long Break Interval</span>
-            <div className="bg-base rounded px-2 py-1 w-[50px]">
-              <div className="text-sm text-center">
-                - {props.settings.long_break_interval} -
-              </div>
-            </div>
-          </div>
-          <Slider
-            min={2}
-            max={16}
-            defaultValue={props.settings.long_break_interval}
-            onChangeEnd={(intervals) =>
-              props.update({
-                long_break_interval: intervals,
-              })
-            }
-          />
-        </div>
-      </div>
+      <Slider
+        min={props.minDigit}
+        max={props.maxDigit}
+        defaultValue={props.digit}
+        onChangeEnd={(value) => props.onChange(value)}
+      />
     </div>
   );
 };

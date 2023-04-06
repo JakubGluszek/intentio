@@ -2,6 +2,7 @@
 
 export interface ThemeForUpdate {
   name?: string;
+  favorite?: boolean;
   window_hex?: string;
   base_hex?: string;
   primary_hex?: string;

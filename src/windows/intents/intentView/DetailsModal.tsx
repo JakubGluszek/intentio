@@ -1,11 +1,13 @@
 import React from "react";
 import { BiArchiveIn, BiArchiveOut } from "react-icons/bi";
+import { MdDelete } from "react-icons/md";
 import { useClickOutside } from "@mantine/hooks";
 
 import useStore from "@/store";
 import utils from "@/utils";
 import ipc from "@/ipc";
-import { ModalContainer, Button, DeleteButton } from "@/components";
+import { ModalContainer, Button } from "@/components";
+import { useConfirmDelete } from "@/hooks";
 import { Intent } from "@/bindings/Intent";
 
 interface Props {
@@ -17,25 +19,14 @@ interface Props {
 const DetailsModal: React.FC<Props> = (props) => {
   const { data } = props;
 
-  const [viewConfirmDelete, setViewConfirmDelete] = React.useState(false);
-
   const ref = useClickOutside(() => props.exit());
   const sessions = useStore((state) => state.getSessionsByIntentId)(data.id);
 
   const totalSessionsDuration = sessions.reduce((p, c) => (p += c.duration), 0);
 
-  React.useEffect(() => {
-    let hideConfirm: NodeJS.Timeout | undefined;
-    if (viewConfirmDelete) {
-      hideConfirm = setTimeout(() => {
-        setViewConfirmDelete(false);
-      }, 2000);
-    } else {
-      hideConfirm && clearTimeout(hideConfirm);
-    }
-
-    return () => hideConfirm && clearTimeout(hideConfirm);
-  }, [viewConfirmDelete]);
+  const { viewConfirmDelete, onDelete } = useConfirmDelete(() =>
+    ipc.deleteIntent(data.id)
+  );
 
   return (
     <ModalContainer display={props.display} hide={props.exit}>
@@ -91,7 +82,15 @@ const DetailsModal: React.FC<Props> = (props) => {
               <span>Archive</span>
             </Button>
           )}
-          <DeleteButton onClick={() => ipc.deleteIntent(data.id)} />
+          <Button
+            transparent={!viewConfirmDelete}
+            color="danger"
+            style={{ width: "fit-content" }}
+            onClick={() => onDelete()}
+          >
+            <MdDelete size={viewConfirmDelete ? 24 : 28} />
+            {viewConfirmDelete && "Confirm"}
+          </Button>
         </div>
       </div>
     </ModalContainer>

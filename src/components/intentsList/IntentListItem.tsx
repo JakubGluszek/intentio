@@ -1,6 +1,6 @@
 import React from "react";
 import { TiPin, TiPinOutline } from "react-icons/ti";
-import { BiArchive } from "react-icons/bi";
+import { BiArchive, BiTargetLock } from "react-icons/bi";
 import { TbTags } from "react-icons/tb";
 import { toast } from "react-hot-toast";
 import { clsx } from "@mantine/core";
@@ -28,7 +28,8 @@ const IntentListItem: React.FC<Props> = (props) => {
   const { data } = props;
 
   const [viewTagsModal, setViewTagsModal] = React.useState(false);
-  const { viewMenu, setViewMenu, onContextMenuHandler } = useContextMenu();
+  const { menuPosition, setMenuPosition, onContextMenuHandler } =
+    useContextMenu();
 
   const container = React.useRef<HTMLDivElement | null>(null);
 
@@ -49,9 +50,9 @@ const IntentListItem: React.FC<Props> = (props) => {
         ref={container}
         data-tauri-disable-drag
         className={clsx(
-          "w-full h-fit flex flex-col p-1 rounded transition-all",
+          "w-full h-fit flex flex-col p-1 rounded-sm transition-all",
           props.selected
-            ? "bg-primary/60 hover:bg-primary/80 text-window -translate-y-[2px] shadow-lg shadow-black/30"
+            ? "bg-primary/50 hover:bg-primary/60 text-text -translate-y-[1px] shadow-lg shadow-black/30"
             : "border-transparent bg-base/80 hover:bg-base text-text/80 hover:text-text shadow shadow-black/30"
         )}
         onClick={(e) => props.onSelected(e, data)}
@@ -59,6 +60,7 @@ const IntentListItem: React.FC<Props> = (props) => {
       >
         {/* Label */}
         <div className="h-6 w-full flex flex-row items-center gap-1">
+          <BiTargetLock size={20} className="min-w-[20px]" />
           <div className="w-full text-left whitespace-nowrap overflow-ellipsis overflow-hidden font-black">
             {data.label}
           </div>
@@ -77,12 +79,7 @@ const IntentListItem: React.FC<Props> = (props) => {
 
         {/* Tags */}
         {sortedTags.length > 0 ? (
-          <div
-            className={clsx(
-              "p-1 rounded shadow-inner shadow-black/30",
-              props.selected ? "bg-window" : "bg-window/80"
-            )}
-          >
+          <div className="p-1 rounded shadow-inner shadow-black/20 bg-window">
             <div className="flex flex-row gap-1 overflow-x-auto rounded-sm">
               {sortedTags.map((tag, i) => (
                 <TagButton
@@ -90,7 +87,7 @@ const IntentListItem: React.FC<Props> = (props) => {
                   isSelected={props.selectedTags.includes(tag)}
                   onClick={() => props.onTagSelect(tag)}
                 >
-                  {tag}
+                  <div className="px-1 py-0.5">{tag}</div>
                 </TagButton>
               ))}
             </div>
@@ -98,50 +95,46 @@ const IntentListItem: React.FC<Props> = (props) => {
         ) : null}
       </div>
 
-      {viewMenu ? (
-        <ContextMenu
-          leftPosition={viewMenu.leftPosition}
-          topPosition={viewMenu.topPosition}
-          hide={() => setViewMenu(undefined)}
-        >
-          <React.Fragment>
-            <Button
-              onClick={() =>
-                ipc
-                  .updateIntent(props.data.id, { pinned: !props.data.pinned })
-                  .then((data) => {
-                    setViewMenu(undefined);
-                    toast(data.pinned ? "Pinned to top" : "Unpinned");
-                  })
-              }
-              rounded={false}
-            >
-              <div className="w-fit">
-                {props.data.pinned ? (
-                  <TiPin size={20} />
-                ) : (
-                  <TiPinOutline size={20} />
-                )}
-              </div>
-              <div className="w-full">
-                {props.data.pinned ? "Unpin" : "Pin"}
-              </div>
-            </Button>
-            <Button
-              onClick={() => {
-                setViewTagsModal(true);
-                setViewMenu(undefined);
-              }}
-              rounded={false}
-            >
-              <div className="w-fit">
-                <TbTags size={20} />
-              </div>
-              <div className="w-full">Tags</div>
-            </Button>
-          </React.Fragment>
-        </ContextMenu>
-      ) : null}
+      <ContextMenu
+        display={menuPosition ? true : false}
+        position={menuPosition}
+        hide={() => setMenuPosition(undefined)}
+      >
+        <React.Fragment>
+          <Button
+            onClick={() =>
+              ipc
+                .updateIntent(props.data.id, { pinned: !props.data.pinned })
+                .then((data) => {
+                  setMenuPosition(undefined);
+                  toast(data.pinned ? "Pinned to top" : "Unpinned");
+                })
+            }
+            rounded={false}
+          >
+            <div className="w-fit">
+              {props.data.pinned ? (
+                <TiPin size={20} />
+              ) : (
+                <TiPinOutline size={20} />
+              )}
+            </div>
+            <div className="w-full">{props.data.pinned ? "Unpin" : "Pin"}</div>
+          </Button>
+          <Button
+            onClick={() => {
+              setViewTagsModal(true);
+              setMenuPosition(undefined);
+            }}
+            rounded={false}
+          >
+            <div className="w-fit">
+              <TbTags size={20} />
+            </div>
+            <div className="w-full">Tags</div>
+          </Button>
+        </React.Fragment>
+      </ContextMenu>
 
       <TagsModal
         display={viewTagsModal}

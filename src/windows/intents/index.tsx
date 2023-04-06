@@ -5,10 +5,11 @@ import { toast } from "react-hot-toast";
 import useStore from "@/store";
 import ipc from "@/ipc";
 import { useEvents } from "@/hooks";
-import { Layout, Titlebar } from "@/components";
+import { Titlebar } from "@/components";
 import Sidebar from "./Sidebar";
 import Dashboard from "./dashboard";
 import IntentView from "./intentView";
+import WindowContainer from "@/components/WindowContainer";
 
 const IntentsWindow: React.FC = () => {
   const [selectedId, setSelectedId] = React.useState<string>();
@@ -56,31 +57,33 @@ const IntentsWindow: React.FC = () => {
   const intent = store.getIntentById(selectedId);
 
   return (
-    <Layout>
-      <Titlebar icon={<BiTargetLock size={28} />} title="Intents" />
-      <div className="grow flex flex-row">
-        <Sidebar
-          selectedId={selectedId}
-          setSelectedId={setSelectedId}
-          selectedTags={selectedTags}
-          setSelectedTags={setSelectedTags}
-        />
-        {intent ? (
-          <IntentView
-            data={intent}
-            sessions={store.sessions.filter(
-              (session) => session.intent_id === selectedId
-            )}
+    <WindowContainer>
+      <div className="w-screen h-screen grow flex flex-col gap-0.5">
+        <Titlebar icon={<BiTargetLock size={28} />} title="Intents" />
+        <div className="grow flex flex-row window bg-window">
+          <Sidebar
+            selectedId={selectedId}
+            setSelectedId={setSelectedId}
+            selectedTags={selectedTags}
+            setSelectedTags={setSelectedTags}
           />
-        ) : (
-          <Dashboard
-            sessions={store.sessions}
-            intents={store.intents}
-            tags={selectedTags}
-          />
-        )}
+          {intent ? (
+            <IntentView
+              data={intent}
+              sessions={store.sessions.filter(
+                (session) => session.intent_id === selectedId
+              )}
+            />
+          ) : (
+            <Dashboard
+              sessions={store.sessions}
+              intents={store.intents}
+              tags={selectedTags}
+            />
+          )}
+        </div>
       </div>
-    </Layout>
+    </WindowContainer>
   );
 };
 

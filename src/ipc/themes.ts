@@ -20,3 +20,7 @@ export const updateTheme = async (id: string, data: ThemeForUpdate) => {
 export const deleteTheme = async (id: string) => {
   return await invoke<ModelDeleteResultData>("delete_theme", { id });
 };
+
+export const deleteThemes = async (ids: string[]) => {
+  return await invoke<ModelDeleteResultData[]>("delete_themes", { ids });
+};

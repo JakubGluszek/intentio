@@ -1,48 +1,55 @@
 import React from "react";
 import { appWindow } from "@tauri-apps/api/window";
-import { MdClose } from "react-icons/md";
+import { Toaster } from "react-hot-toast";
 
 import useStore from "@/store";
-import utils from "@/utils";
-import ipc from "@/ipc";
-import { useEvents } from "@/hooks";
-import Button from "./Button";
 
 interface Props {
   children: React.ReactNode;
 }
 
+/**
+ * Layout's functionality is as follows:
+ * - drags window on mousedown
+ * - prevents default context menu
+ * - renders 'Toaster' notifications container next to 'root' div;
+ * */
 const Layout: React.FC<Props> = (props) => {
   const store = useStore();
 
-  useDragWindow(store.tauriDragEnabled);
+  useDragWindow();
+  usePreventContextMenu();
 
-  useEvents({
-    settings_updated: (data) => store.setSettings(data),
-    current_theme_changed: () =>
-      ipc.getCurrentTheme().then((data) => {
-        utils.applyTheme(data);
-        store.setCurrentTheme(data);
-      }),
-    preview_theme: (data) => {
-      utils.applyTheme(data);
-    },
-    current_theme_updated: (data) => {
-      utils.applyTheme(data);
-      store.setCurrentTheme(data);
-    },
-  });
+  if (!store.currentTheme) return null;
 
-  React.useEffect(() => {
-    ipc.getSettings().then((data) => store.setSettings(data));
-    ipc.getCurrentTheme().then((data) => {
-      utils.applyTheme(data);
-      store.setCurrentTheme(data);
-    });
-  }, []);
+  return (
+    <div className="w-screen h-screen flex flex-col">
+      {props.children}
+      <Toaster
+        position="top-center"
+        containerStyle={{ top: 8, zIndex: 9999999 }}
+        toastOptions={{
+          duration: 1400,
+          style: {
+            padding: 1,
+            paddingInline: 2,
+            backgroundColor: "rgb(var(--base-color))",
+            border: 2,
+            borderColor: "rgb(var(--text-color))",
+            borderRadius: 2,
+            fontSize: 14,
+            color: "rgb(var(--text-color))",
+            textAlign: "center",
+          },
+        }}
+      />
+    </div>
+  );
+};
 
-  // prevents default context menu on production build
-  // hold CTRL and right click to access context menu on a dev build
+// prevents default context menu on production build
+// hold CTRL and right click to access context menu on a dev build
+const usePreventContextMenu = () => {
   React.useEffect(() => {
     const contextMenuHandler = (event: MouseEvent) => {
       if (import.meta.env.PROD) event.preventDefault();
@@ -54,21 +61,13 @@ const Layout: React.FC<Props> = (props) => {
     return () =>
       document.removeEventListener("contextmenu", contextMenuHandler);
   }, []);
-
-  if (!store.currentTheme) return null;
-
-  return (
-    <div className="relative w-screen h-screen max-h-screen flex flex-col overflow-hidden">
-      {props.children}
-    </div>
-  );
 };
 
 /** Starts dragging the window on 'mousedown' event.
  * Dragging will not occur if:
  * - the target element (or it's child element of a fixed depth) was of a certain type (button, input etc.)
  * - the tauriDragEnabled state property was exclusively disabled */
-const useDragWindow = (tauriDragEnabled: boolean) => {
+const useDragWindow = () => {
   React.useEffect(() => {
     const handleMouseDown = async (e: MouseEvent) => {
       if (
@@ -76,8 +75,7 @@ const useDragWindow = (tauriDragEnabled: boolean) => {
           "data-tauri-disable-drag",
           e.target as HTMLElement,
           15
-        ) ||
-        !tauriDragEnabled
+        )
       )
         return; // a non-draggable element either in target or its ancestors
       await appWindow.startDragging();
@@ -85,7 +83,7 @@ const useDragWindow = (tauriDragEnabled: boolean) => {
 
     document.addEventListener("mousedown", handleMouseDown);
     return () => document.removeEventListener("mousedown", handleMouseDown);
-  }, [tauriDragEnabled]);
+  }, []);
 
   const checkAllowDragging = (
     attribute: string,

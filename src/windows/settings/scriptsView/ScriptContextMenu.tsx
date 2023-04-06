@@ -7,11 +7,13 @@ import ipc from "@/ipc";
 import useStore from "@/store";
 import { Button, ContextMenu } from "@/components";
 import { Script } from "@/bindings/Script";
+import { useConfirmDelete } from "@/hooks";
+import { MenuPosition } from "@/hooks/useContextMenu";
 
 interface ScriptContextMenuProps {
+  display: boolean;
   data: Script;
-  leftPosition: number;
-  topPosition: number;
+  position?: MenuPosition;
   hide: () => void;
   runScript: () => void;
   viewCode: () => void;
@@ -19,22 +21,13 @@ interface ScriptContextMenuProps {
 }
 
 const ScriptContextMenu: React.FC<ScriptContextMenuProps> = (props) => {
-  const [viewConfirmDelete, setViewConfirmDelete] = React.useState(false);
-
   const store = useStore();
-
-  React.useEffect(() => {
-    let hideConfirm: NodeJS.Timeout | undefined;
-    if (viewConfirmDelete) {
-      hideConfirm = setTimeout(() => {
-        setViewConfirmDelete(false);
-      }, 3000);
-    } else {
-      hideConfirm && clearTimeout(hideConfirm);
-    }
-
-    return () => hideConfirm && clearTimeout(hideConfirm);
-  }, [viewConfirmDelete]);
+  const { viewConfirmDelete, onDelete } = useConfirmDelete(() =>
+    ipc.deleteScript(props.data.id).then((data) => {
+      store.removeScript(data.id);
+      toast("Script deleted");
+    })
+  );
 
   return (
     <ContextMenu {...props}>
@@ -63,31 +56,14 @@ const ScriptContextMenu: React.FC<ScriptContextMenuProps> = (props) => {
           </div>
           <div className="w-full">Events</div>
         </Button>
-        {!viewConfirmDelete ? (
-          <Button
-            onClick={() => setViewConfirmDelete(true)}
-            rounded={false}
-            color="danger"
-          >
-            <div className="w-fit">
-              <MdDelete size={20} />
-            </div>
-            <div className="w-full">Delete</div>
-          </Button>
-        ) : (
-          <Button
-            onClick={() =>
-              ipc.deleteScript(props.data.id).then((data) => {
-                store.removeScript(data.id);
-                toast("Script deleted");
-              })
-            }
-            rounded={false}
-            color="danger"
-          >
-            <div className="w-full">Confirm</div>
-          </Button>
-        )}
+        <Button onClick={() => onDelete()} rounded={false} color="danger">
+          <div className="w-fit">
+            <MdDelete size={20} />
+          </div>
+          <div className="w-full">
+            {viewConfirmDelete ? "Confirm" : "Delete"}
+          </div>
+        </Button>
       </React.Fragment>
     </ContextMenu>
   );

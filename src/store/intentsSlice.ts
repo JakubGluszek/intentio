@@ -4,12 +4,14 @@ import { Intent } from "@/bindings/Intent";
 
 export interface IntentsSlice {
   intents: Intent[];
+  currentIntent: Intent | undefined;
   setIntents: (data: Intent[]) => void;
   addIntent: (data: Intent) => void;
   patchIntent: (id: string, data: Intent) => void;
   removeIntent: (id: string) => void;
   getIntentById: (id?: string | null) => Intent | undefined;
   getAllTags: () => string[];
+  setCurrentIntent: (data: Intent | undefined) => void;
 }
 
 export const createIntentsSlice: StateCreator<
@@ -19,6 +21,8 @@ export const createIntentsSlice: StateCreator<
   IntentsSlice
 > = (set, get) => ({
   intents: [],
+
+  currentIntent: undefined,
 
   setIntents: (intents) => set(() => ({ intents })),
 
@@ -44,4 +48,7 @@ export const createIntentsSlice: StateCreator<
 
     return allTags;
   },
+
+  setCurrentIntent: (currentIntent) =>
+    set((state) => ({ ...state, currentIntent })),
 });

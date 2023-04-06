@@ -13,7 +13,7 @@ pub async fn get_tasks(app: AppHandle<Wry>) -> Result<Vec<Task>> {
 
 use crate::{
     ctx::Ctx,
-    model::{ModelDeleteResultData, Task, TaskBmc, TaskForCreate, TaskForUpdate},
+    models::{ModelDeleteResultData, Task, TaskBmc, TaskForCreate, TaskForUpdate},
     prelude::{Error, Result},
 };
 

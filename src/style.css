@@ -49,20 +49,11 @@
   }
 
   html {
-    @apply font-quicksand font-medium tracking-wider text-text cursor-default;
+    @apply w-screen h-screen flex flex-col font-quicksand font-medium tracking-wider text-text cursor-default;
   }
 
   body {
-    @apply bg-window transition-colors duration-300;
-  }
-
-  span,
-  p,
-  h1,
-  h2,
-  h3,
-  div {
-    cursor: default;
+    @apply w-screen h-screen flex flex-col bg-transparent transition-colors duration-300;
   }
 
   h1 {
@@ -76,6 +67,10 @@
 
   button > * {
     cursor: pointer;
+  }
+
+  button:disabled > * {
+    cursor: not-allowed;
   }
 
   /* Hides controls in input of type "number" */
@@ -105,6 +100,25 @@
 
 @layer components {
   .card {
-    @apply bg-window/80 hover:bg-window p-1.5 rounded border-2 border-base/80 hover:border-base shadow shadow-black/30;
+    @apply bg-base/20 hover:bg-base/30 p-1.5 rounded-sm border-2 border-base/80 hover:border-base shadow shadow-black/30;
+  }
+
+  .circle {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .circle::before {
+    content: "";
+    position: absolute;
+    bottom: 50%;
+    width: 100%;
+    height: 100%;
+    border-radius: 100%;
+    box-shadow: 0px 300px 0px 300px #448ccb;
+  }
+
+  .window {
+    @apply bg-window/90 border-2 border-base/80;
   }
 }

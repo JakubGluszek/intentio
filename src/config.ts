@@ -5,6 +5,7 @@ const WebviewConfig = {
   resizable: false,
   fullscreen: false,
   alwaysOnTop: true,
+  transparent: true,
   focus: true,
 };
 
@@ -17,16 +18,16 @@ const config = {
     author: "Jakub Głuszek",
     authorHomepage: "https://jacobgluszek.dev",
   },
-  webviews: {
+  windows: {
     main: {
-      width: 340,
-      height: 380,
+      width: 300,
+      height: 320,
     },
     settings: {
       url: "/settings",
       title: "Settings",
-      width: 480,
-      height: 360,
+      width: 300,
+      height: 410,
       ...WebviewConfig,
     },
     intents: {

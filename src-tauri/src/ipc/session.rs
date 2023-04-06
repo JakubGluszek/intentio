@@ -1,10 +1,10 @@
-//! Tauri IPC commands to bridge the Focused Backend Model Controller with Client side.
+//! Tauri IPC commands to bridge the Focused Backend models Controller with Client side.
 
 use tauri::{command, AppHandle, Wry};
 
 use crate::{
     ctx::Ctx,
-    model::{Session, SessionBmc, SessionForCreate},
+    models::{Session, SessionBmc, SessionForCreate},
     prelude::{Error, Result},
 };
 

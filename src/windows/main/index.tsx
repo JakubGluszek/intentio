@@ -1,111 +1,91 @@
 import React from "react";
-import { MdSettings, MdRemove, MdClose } from "react-icons/md";
+import { MdRemove, MdClose, MdSettings } from "react-icons/md";
 import { TbLayoutSidebarRightCollapse } from "react-icons/tb";
 import { WebviewWindow } from "@tauri-apps/api/window";
-import { toast } from "react-hot-toast";
+import { motion } from "framer-motion";
 
-import { useEvents } from "@/hooks";
 import ipc from "@/ipc";
 import useStore from "@/store";
 import config from "@/config";
-import { Layout, Button } from "@/components";
-import Timer from "./timer";
+import { Button, WindowContainer } from "@/components";
+import { useEvents } from "@/hooks";
+import { MainWindowContext, MainWindowProvider } from "@/contexts";
+import TimerView from "./TimerView";
 import Sidebar from "./sidebar";
 
 const MainWindow: React.FC = () => {
-  const [viewSidebar, setViewSidebar] = React.useState(false);
-
   const store = useStore();
 
+  React.useEffect(() => {
+    ipc.getTimerConfig().then((data) => store.setTimerConfig(data));
+    ipc.getScripts().then((data) => store.setScripts(data));
+  }, []);
+
   useEvents({
-    active_intent_id_updated: (data) => {
-      store.setActiveIntentId(data.active_intent_id);
-    },
-    intent_created: (data) => store.addIntent(data),
-    intent_updated: (data) => store.patchIntent(data.id, data),
-    intent_deleted: (data) => {
-      if (store.activeIntentId === data.id) {
-        ipc.setActiveIntentId(undefined).then(() => {
-          store.setActiveIntentId(undefined);
-          toast("Active intent has been deleted");
-        });
-      }
-
-      store.removeIntent(data.id);
-    },
-    intent_archived: (data) => {
-      if (store.activeIntentId === data.id) {
-        ipc.setActiveIntentId(undefined).then(() => {
-          store.setActiveIntentId(undefined);
-          toast("Active intent has been archived");
-        });
-      }
-
-      store.patchIntent(data.id, data);
-    },
-    intent_unarchived: (data) => store.patchIntent(data.id, data),
+    timer_config_updated: (data) => store.setTimerConfig(data),
+    interface_config_updated: (data) => store.setInterfaceConfig(data),
   });
 
-  React.useEffect(() => {
-    ipc.getIntents().then((data) => store.setIntents(data));
-    ipc.getActiveIntentId().then((data) => store.setActiveIntentId(data));
-  }, []);
-
-  // handles toggling sidebar via pressing 'Tab' key
-  React.useEffect(() => {
-    const handleOnKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Tab") setViewSidebar((view) => !view);
-    };
-
-    document.addEventListener("keydown", handleOnKeyDown);
-    return () => document.removeEventListener("keydown", handleOnKeyDown);
-  }, []);
+  if (!store.timerConfig) return null;
 
   return (
-    <Layout>
-      {/* Window Titlebar */}
-      <div className="flex flex-row items-center justify-between p-2">
-        <div className="flex flex-row items-center gap-2">
-          <Button transparent onClick={() => setViewSidebar(true)}>
-            <TbLayoutSidebarRightCollapse size={28} />
-          </Button>
-          <div>
-            <Button
-              transparent
-              onClick={() =>
-                new WebviewWindow("settings", config.webviews.settings)
-              }
-            >
-              <MdSettings size={28} />
-            </Button>
+    <MainWindowProvider>
+      <WindowContainer>
+        <motion.div
+          className="grow flex flex-col gap-0.5 rounded"
+          transition={{ duration: 0.2 }}
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+        >
+          <Titlebar />
+          <div className="grow flex flex-row overflow-clip">
+            <Sidebar />
+            <TimerView config={store.timerConfig} />
           </div>
-        </div>
-        <h1 className="text-text/80 font-bold">Intentio</h1>
-        <div className="flex flex-row items-center gap-2">
-          <div>
-            <Button transparent onClick={() => ipc.hideMainWindow()}>
-              <MdRemove size={28} />
-            </Button>
-          </div>
-          <Button transparent onClick={() => ipc.exitMainWindow()}>
-            <MdClose size={28} />
-          </Button>
-        </div>
-      </div>
+        </motion.div>
+      </WindowContainer>
+    </MainWindowProvider>
+  );
+};
 
-      {/* Window Content */}
-      <div className="grow flex flex-col p-2">
-        {store.settings && store.currentTheme && (
-          <Timer
-            settings={store.settings}
-            theme={store.currentTheme}
-            activeIntent={store.getActiveIntent()}
-          />
-        )}
-      </div>
+const Titlebar: React.FC = () => {
+  const { display, isCompact, toggleDisplay } =
+    React.useContext(MainWindowContext)!;
 
-      <Sidebar isVisible={viewSidebar} collapse={() => setViewSidebar(false)} />
-    </Layout>
+  return (
+    <div className="z-[1000] w-full flex flex-row items-center justify-between window rounded rounded-b-none overflow-clip">
+      <div className="flex flex-row">
+        <Button onClick={toggleDisplay} transparent rounded={false}>
+          <motion.div animate={{ rotateZ: display === "sidebar" ? 180 : 0 }}>
+            <TbLayoutSidebarRightCollapse size={isCompact ? 20 : 28} />
+          </motion.div>
+        </Button>
+        <Button
+          transparent
+          onClick={() => new WebviewWindow("settings", config.windows.settings)}
+          rounded={false}
+        >
+          <MdSettings size={isCompact ? 20 : 28} />
+        </Button>
+      </div>
+      <h2 className="text-text/80 font-bold">Intentio</h2>
+      <div className="flex flex-row">
+        <Button
+          transparent
+          onClick={() => ipc.hideMainWindow()}
+          rounded={false}
+        >
+          <MdRemove size={isCompact ? 20 : 28} />
+        </Button>
+        <Button
+          transparent
+          onClick={() => ipc.exitMainWindow()}
+          rounded={false}
+        >
+          <MdClose size={isCompact ? 20 : 28} />
+        </Button>
+      </div>
+    </div>
   );
 };
 

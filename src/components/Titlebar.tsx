@@ -11,14 +11,14 @@ interface Props {
 
 const Titlebar: React.FC<Props> = (props) => {
   return (
-    <div className="flex flex-col gap-2 px-2 py-2">
-      <div className="flex flex-row items-center justify-between">
-        <div className="flex flex-row items-center gap-2">
+    <div className="h-10 flex flex-col window bg-window rounded rounded-b-none overflow-clip">
+      <div className="flex flex-row justify-between">
+        <div className="flex flex-row items-center gap-0.5 p-1 text-text/70 font-black">
           {props.icon}
-          <span className="text-xl">{props.title}</span>
+          <span className="text-lg">{props.title}</span>
         </div>
-        <Button transparent onClick={() => appWindow.close()}>
-          <MdClose size={28} />
+        <Button transparent rounded={false} onClick={() => appWindow.close()}>
+          <MdClose size={24} />
         </Button>
       </div>
     </div>
