@@ -215,6 +215,25 @@ impl ThemeBmc {
         Ok(result)
     }
 
+    pub async fn delete_multi(
+        ctx: Arc<Ctx>,
+        ids: Vec<String>,
+    ) -> Result<Vec<ModelDeleteResultData>> {
+        let database = ctx.get_database();
+
+        let mut data: Vec<ModelDeleteResultData> = vec![];
+
+        for id in ids {
+            let id = database.exec_delete(&id).await?;
+            let result = ModelDeleteResultData::from(id);
+            data.push(result);
+        }
+
+        ctx.emit_event("themes_deleted", data.clone());
+
+        Ok(data)
+    }
+
     pub async fn list(ctx: Arc<Ctx>) -> Result<Vec<Theme>> {
         let objects = ctx.get_database().exec_select(Self::ENTITY).await?;
 

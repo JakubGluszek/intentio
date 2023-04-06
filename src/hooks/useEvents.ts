@@ -41,6 +41,7 @@ type Events = {
   behavior_config_updated: BehaviorConfig;
   audio_config_updated: AudioConfig;
   interface_config_updated: InterfaceConfig;
+  theme_updated: Theme;
 };
 
 type Callback<T extends keyof Events> = (data: Events[T]) => void;

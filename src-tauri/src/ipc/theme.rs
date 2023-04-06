@@ -59,3 +59,17 @@ pub async fn delete_theme(app: AppHandle<Wry>, id: String) -> Result<ModelDelete
         Err(_) => Err(Error::CtxFail).into(),
     }
 }
+
+#[command]
+pub async fn delete_themes(
+    app: AppHandle<Wry>,
+    ids: Vec<String>,
+) -> Result<Vec<ModelDeleteResultData>> {
+    match Ctx::from_app(app) {
+        Ok(ctx) => match ThemeBmc::delete_multi(ctx, ids).await {
+            Ok(data) => Ok(data),
+            Err(err) => Err(err).into(),
+        },
+        Err(_) => Err(Error::CtxFail).into(),
+    }
+}

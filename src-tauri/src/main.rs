@@ -56,6 +56,7 @@ async fn main() -> Result<()> {
             create_theme,
             update_theme,
             delete_theme,
+            delete_themes,
             // Intent
             get_intents,
             create_intent,

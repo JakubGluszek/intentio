@@ -9,18 +9,16 @@ import {
 import { AiFillCode } from "react-icons/ai";
 import { OsType, type } from "@tauri-apps/api/os";
 
-import { Titlebar, Button } from "@/components";
+import useStore from "@/store";
+import { useEvents } from "@/hooks";
+import { Titlebar, Button, WindowContainer } from "@/components";
 import TimerView from "./TimerView";
 import AudioView from "./audioView";
 import ThemesView from "./themesView";
 import ScriptsView from "./scriptsView";
 import AboutView from "./AboutView";
-import WindowContainer from "@/components/WindowContainer";
-import useStore from "@/store";
-import { useEvents } from "@/hooks";
 
 type Tab = "timer" | "audio" | "themes" | "scripts" | "about";
-
 export type ColorType = "window" | "base" | "primary" | "text";
 
 const SettingsWindow: React.FC = () => {
@@ -29,6 +27,7 @@ const SettingsWindow: React.FC = () => {
 
   useEvents({
     interface_config_updated: (data) => store.setInterfaceConfig(data),
+    theme_updated: (data) => store.patchTheme(data.id, data),
   });
 
   return (
@@ -65,7 +64,6 @@ const Navbar: React.FC<NavbarProps> = ({ tab, setTab }) => {
 
   return (
     <div className="flex flex-col justify-between window bg-window overflow-y-auto">
-      {/* <div className="max-h-0 overflow-y rounded"> */}
       <div className="flex flex-row gap-1 p-1">
         <Button isSelected={tab === "timer"} onClick={() => setTab("timer")}>
           <MdTimer size={24} />
@@ -88,7 +86,6 @@ const Navbar: React.FC<NavbarProps> = ({ tab, setTab }) => {
           <MdInfo size={24} />
         </Button>
       </div>
-      {/* </div> */}
     </div>
   );
 };

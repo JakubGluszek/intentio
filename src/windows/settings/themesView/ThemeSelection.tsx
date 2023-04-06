@@ -2,12 +2,14 @@ import React from "react";
 import { MdArrowBack } from "react-icons/md";
 
 import { Button } from "@/components";
+import { Theme } from "@/bindings/Theme";
 
 interface Props {
+  data: Theme;
   onHide: () => void;
 }
 
-const ThemeSelection: React.FC<Props> = (props) => {
+const ThemeConfig: React.FC<Props> = (props) => {
   return (
     <div className="grow flex flex-col gap-0.5">
       <div className="h-fit flex flex-row gap-0.5">
@@ -25,4 +27,4 @@ const ThemeSelection: React.FC<Props> = (props) => {
   );
 };
 
-export default ThemeSelection;
+export default ThemeConfig;

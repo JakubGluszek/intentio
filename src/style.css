@@ -56,15 +56,6 @@
     @apply w-screen h-screen flex flex-col bg-transparent transition-colors duration-300;
   }
 
-  span,
-  p,
-  h1,
-  h2,
-  h3,
-  div {
-    cursor: default;
-  }
-
   h1 {
     @apply text-xl;
   }
