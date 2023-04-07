@@ -38,12 +38,12 @@ export const useTimer = (
     if (!startedAt) setStartedAt(new Date().getTime().toString());
     setIsPlaying(true);
     callbacks.onResumed && callbacks.onResumed({ type: sessionType });
-  }, [sessionType]);
+  }, [sessionType, callbacks]);
 
   const pause = React.useCallback(() => {
     setIsPlaying(false);
     callbacks.onPaused && callbacks.onPaused({ type: sessionType });
-  }, [sessionType]);
+  }, [sessionType, callbacks]);
 
   const restart = () => {
     pause();

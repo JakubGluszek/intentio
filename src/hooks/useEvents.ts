@@ -1,7 +1,6 @@
 import React from "react";
 import { listen } from "@tauri-apps/api/event";
 
-import { Settings } from "@/bindings/Settings";
 import { Intent } from "@/bindings/Intent";
 import { ModelDeleteResultData } from "@/bindings/ModelDeleteResultData";
 import { Session } from "@/bindings/Session";
@@ -16,7 +15,6 @@ import { InterfaceConfig } from "@/bindings/InterfaceConfig";
 
 type Events = {
   [key: string]: any;
-  settings_updated: Settings;
   current_theme_updated: Theme;
   current_theme_changed: undefined;
   intent_created: Intent;

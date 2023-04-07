@@ -1,33 +1,22 @@
 import React from "react";
-import { MdFavorite, MdFavoriteBorder } from "react-icons/md";
-
-import { Button, ContextMenu } from "@/components";
-import { useContextMenu } from "@/hooks/useContextMenu";
-import { Theme } from "@/bindings/Theme";
-import ipc from "@/ipc";
+import { MdEdit, MdFavorite, MdFavoriteBorder } from "react-icons/md";
 import { emit } from "@tauri-apps/api/event";
-import useStore from "@/store";
-import { useConfirmDelete } from "@/hooks";
 
-interface Props
-  extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
-  > {
+import ipc from "@/ipc";
+import useStore from "@/store";
+import { useContextMenu } from "@/hooks";
+import { Theme } from "@/bindings/Theme";
+
+interface Props {
   data: Theme;
-  isSelected?: boolean;
-  onViewEdit?: () => void;
-  disableContextMenu?: boolean;
+  selectable: boolean;
+  onViewEdit: () => void;
+  onSelected: () => void;
 }
 
 const ThemeView: React.FC<Props> = (props) => {
-  const { disableContextMenu = false, isSelected = false } = props;
-
   const store = useStore();
   const [menu, onContextMenuHandler] = useContextMenu();
-  const { viewConfirmDelete, onDelete } = useConfirmDelete(() =>
-    ipc.deleteTheme(props.data.id)
-  );
 
   const handleToggleFavorite = () =>
     ipc
@@ -35,81 +24,73 @@ const ThemeView: React.FC<Props> = (props) => {
       .then(() => menu.hide());
 
   return (
-    <React.Fragment>
-      <div
-        {...props}
-        className="group flex flex-row h-9 font-black overflow-clip shadow-lg rounded-sm"
-        style={{
-          color: props.data.text_hex,
-          borderColor: isSelected
-            ? props.data.primary_hex
-            : menu.display
-              ? props.data.primary_hex
-              : props.data.base_hex,
-          borderWidth: 2,
-          backgroundColor: props.data.window_hex,
+    <div
+      onClick={(e) =>
+        // @ts-ignore
+        !e.target.closest("button") && props.selectable && props.onSelected()
+      }
+      className="group flex flex-row h-9 font-black overflow-clip shadow-lg rounded-sm"
+      style={{
+        color: props.data.text_hex,
+        borderColor: props.data.base_hex,
+        borderWidth: 2,
+        backgroundColor: props.data.window_hex,
+        cursor: props.selectable ? "pointer" : "default",
+      }}
+      onContextMenu={onContextMenuHandler}
+      data-tauri-disable-drag
+    >
+      <button
+        className="min-w-[32px] h-full cursor-pointer"
+        style={{ backgroundColor: props.data.primary_hex }}
+        onMouseDown={() => {
+          if (props.selectable) {
+            props.onSelected();
+            return;
+          }
+          emit("preview_theme", props.data);
         }}
-        onContextMenu={onContextMenuHandler}
-      >
+        onMouseUp={() => emit("preview_theme", store.currentTheme)}
+        onMouseOut={() => emit("preview_theme", store.currentTheme)}
+      ></button>
+
+      <div className="w-full h-full flex flex-row justify-between">
         <div
-          className="min-w-[36px] h-full cursor-pointer"
-          data-tauri-disable-drag
-          style={{ backgroundColor: props.data.primary_hex }}
-          onMouseDown={(e) => {
-            if (!e.ctrlKey && e.button === 0) {
-              emit("preview_theme", props.data);
-            }
-            props.onMouseDown?.(e);
-          }}
-          onMouseUp={(e) => {
-            if (!e.ctrlKey) {
-              emit("preview_theme", store.currentTheme);
-            }
-            props.onMouseUp?.(e);
-          }}
-          onMouseOut={(e) => {
-            if (!e.ctrlKey) {
-              emit("preview_theme", store.currentTheme);
-            }
-            props.onMouseOut?.(e);
-          }}
-        ></div>
-
-        <div className="w-full h-full flex flex-row items-center justify-between px-2">
-          <span data-tauri-disable-drag style={{ color: props.data.text_hex }}>
-            {props.data.name}
-          </span>
-          <button
-            onClick={() => handleToggleFavorite()}
-            style={{
-              color: menu.display
-                ? props.data.primary_hex
-                : props.data.base_hex,
-            }}
-          >
-            {props.data.favorite ? (
-              <MdFavorite size={20} />
-            ) : (
-              <MdFavoriteBorder size={20} />
-            )}
-          </button>
+          className="h-full flex items-center justify-center opacity-80 px-2 text-sm font-bold"
+          style={{ color: props.data.text_hex }}
+        >
+          {props.data.name}
         </div>
-      </div>
 
-      {disableContextMenu === false && (
-        <ContextMenu {...menu}>
-          <Button onClick={() => handleToggleFavorite()} rounded={false}>
-            Favorite
-          </Button>
-          <Button onClick={() => props.onViewEdit?.()} rounded={false}>
-            Edit
-          </Button>
-          <Button onClick={() => onDelete()} rounded={false} color="danger">
-            {viewConfirmDelete ? "Confirm" : "Delete"}
-          </Button>
-        </ContextMenu>
-      )}
-    </React.Fragment>
+        {/* Theme operations */}
+        {props.selectable === false && (
+          <div className="flex flex-row gap-2 px-2">
+            <button
+              onClick={() => props.onViewEdit()}
+              className="opacity-60 hover:opacity-100 duration-75"
+              style={{
+                color: props.data.primary_hex,
+              }}
+            >
+              <MdEdit size={20} />
+            </button>
+            <button
+              onClick={() => handleToggleFavorite()}
+              className="opacity-60 hover:opacity-100"
+              style={{
+                color: props.data.primary_hex,
+              }}
+            >
+              {props.data.favorite ? (
+                <MdFavorite size={20} />
+              ) : (
+                <MdFavoriteBorder size={20} />
+              )}
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 

@@ -6,7 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 
 import utils from "@/utils";
 import ipc from "@/ipc";
-import { useTimer } from "@/hooks";
+import { useEvents, useTimer } from "@/hooks";
 import { Button, CircleTimer, CompactTimer } from "@/components";
 import useStore from "@/store";
 import { MainWindowContext } from "@/contexts";
@@ -96,6 +96,20 @@ const TimerView: React.FC<Props> = (props) => {
             : script.run_on_break_pause) &&
           utils.executeScript(script.body)
       );
+    },
+  });
+
+  useEvents({
+    interface_config_updated: (data) => {
+      if (!timer.isPlaying) {
+        ipc.setCurrentTheme(data.idle_theme_id);
+      } else if (timer.type === "Focus") {
+        ipc.setCurrentTheme(data.focus_theme_id);
+      } else if (timer.type === "Break") {
+        ipc.setCurrentTheme(data.break_theme_id);
+      } else if (timer.type === "LongBreak") {
+        ipc.setCurrentTheme(data.long_break_theme_id);
+      }
     },
   });
 

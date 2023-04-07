@@ -2,8 +2,10 @@ import React from "react";
 import { MdArrowBack } from "react-icons/md";
 
 import { Button } from "@/components";
+import { Theme } from "@/bindings/Theme";
 
 interface Props {
+  data: Theme;
   onHide: () => void;
 }
 
@@ -17,7 +19,7 @@ const EditTheme: React.FC<Props> = (props) => {
           </Button>
         </div>
         <div className="grow window bg-window flex flex-row items-center px-2">
-          Edit theme
+          Edit theme: {props.data.name}
         </div>
       </div>
       <div className="grow flex flex-col window bg-window p-1.5"></div>

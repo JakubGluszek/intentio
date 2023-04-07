@@ -21,9 +21,13 @@ const WindowContainer: React.FC<Props> = (props) => {
       utils.applyTheme(data);
       store.setCurrentTheme(data);
     },
+    interface_config_updated: (data) => {
+      store.setInterfaceConfig(data);
+    },
   });
 
   React.useEffect(() => {
+    ipc.getInterfaceConfig().then((data) => store.setInterfaceConfig(data));
     ipc.getCurrentTheme().then((data) => {
       utils.applyTheme(data);
       store.setCurrentTheme(data);

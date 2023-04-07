@@ -1,7 +1,6 @@
 use std::{fs, path::Path};
 
 use tauri::{App, AppHandle, Manager};
-use tauri_hotkey::{Hotkey, HotkeyManager, Key, Modifier};
 
 use crate::{
     cfg::{AudioCfg, BehaviorCfg, InterfaceCfg, TimerCfg},

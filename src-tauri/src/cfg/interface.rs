@@ -69,6 +69,14 @@ impl InterfaceCfg {
         }
     }
 
+    pub fn set_current_theme(id: String) {
+        let mut config = Self::get();
+
+        config.theme_id = id;
+
+        Self::save(&config);
+    }
+
     pub fn save(config: &InterfaceConfig) {
         let path = Self::get_path();
         let content = serde_json::to_string_pretty(&config).unwrap();

@@ -5,10 +5,8 @@ export const getCurrentTheme = async () => {
   return await invoke<Theme>("get_current_theme");
 };
 
-export const setCurrentTheme = async (themeId: string) => {
-  return await invoke<Theme>("set_current_theme", {
-    data: { theme_id: themeId },
-  });
+export const setCurrentTheme = async (id: string) => {
+  return await invoke<Theme>("set_current_theme", { id });
 };
 
 // remove this if howler.js is implemented instead of calling tauri command

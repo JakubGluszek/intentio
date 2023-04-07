@@ -78,7 +78,7 @@ const Navbar: React.FC = () => {
 
   return (
     <div className="flex flex-col justify-between window bg-window overflow-y-auto rounded-b">
-      <div className="flex flex-row gap-0.5 p-0.5">
+      <div className="flex flex-row gap-1 p-1">
         <Button
           isSelected={panel === "Timer"}
           onClick={() => setPanel("Timer")}

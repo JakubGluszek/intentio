@@ -5,10 +5,10 @@ import ThemeView from "./ThemeView";
 
 interface Props {
   themes: Theme[];
-  selectedIds: string[];
-  setSelectedIds: React.Dispatch<React.SetStateAction<string[]>>;
+  selectable: boolean;
   viewFavoriteOnly: boolean;
   onThemeViewEdit: (theme: Theme) => void;
+  onThemeSelected: (theme: Theme) => void;
 }
 
 const ThemesList: React.FC<Props> = (props) => {
@@ -23,32 +23,16 @@ const ThemesList: React.FC<Props> = (props) => {
   return (
     <div className="grow flex flex-col window bg-window overflow-y-auto">
       <div className="max-h-0 overflow-y">
-        <div className="flex flex-col gap-1.5 p-2">
-          {themes.map((theme) => {
-            let isSelected = props.selectedIds.includes(theme.id);
-
-            return (
-              <ThemeView
-                key={theme.id}
-                data={theme}
-                isSelected={isSelected}
-                onViewEdit={() => props.onThemeViewEdit(theme)}
-                onMouseDown={(e) => {
-                  if (!e.ctrlKey) {
-                    props.setSelectedIds([]);
-                    return;
-                  }
-                  if (isSelected) {
-                    props.setSelectedIds((ids) =>
-                      ids.filter((id) => id !== theme.id)
-                    );
-                  } else {
-                    props.setSelectedIds((ids) => [theme.id, ...ids]);
-                  }
-                }}
-              />
-            );
-          })}
+        <div className="flex flex-col gap-1.5 p-1.5">
+          {themes.map((theme) => (
+            <ThemeView
+              key={theme.id}
+              data={theme}
+              selectable={props.selectable}
+              onViewEdit={() => props.onThemeViewEdit(theme)}
+              onSelected={() => props.onThemeSelected(theme)}
+            />
+          ))}
         </div>
       </div>
     </div>

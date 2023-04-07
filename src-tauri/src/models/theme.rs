@@ -15,7 +15,7 @@ use crate::{
 
 use super::ModelDeleteResultData;
 
-#[derive(Serialize, TS, Debug)]
+#[derive(Serialize, TS, Debug, Clone)]
 #[ts(export, export_to = "../src/bindings/")]
 pub struct Theme {
     id: String,

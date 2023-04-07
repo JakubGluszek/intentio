@@ -5,7 +5,7 @@ use std::fs::File;
 use tauri::{command, AppHandle, Manager, Wry};
 
 use crate::{
-    cfg::{AudioCfg, BehaviorCfg, InterfaceCfg, InterfaceConfigForUpdate},
+    cfg::{AudioCfg, BehaviorCfg, InterfaceCfg},
     ctx::Ctx,
     models::{Theme, ThemeBmc},
     prelude::{Error, Result},
@@ -23,27 +23,27 @@ pub async fn get_current_theme(app: AppHandle<Wry>) -> Result<Theme> {
 }
 
 #[command]
-pub async fn set_current_theme(
-    data: InterfaceConfigForUpdate,
-    app: AppHandle<Wry>,
-) -> Result<Theme> {
+pub async fn set_current_theme(id: String, app: AppHandle<Wry>) -> Result<Theme> {
     match Ctx::from_app(app) {
         Ok(ctx) => {
-            InterfaceCfg::update(ctx.clone(), data);
+            InterfaceCfg::set_current_theme(id);
 
             let config = InterfaceCfg::get();
 
-            ThemeBmc::get(ctx, &config.theme_id).await.into()
+            let theme = ThemeBmc::get(ctx.clone(), &config.theme_id).await.unwrap();
+
+            ctx.emit_event("current_theme_updated", theme.clone());
+
+            Ok(theme)
         }
         Err(_) => Err(Error::CtxFail).into(),
     }
 }
 
-// set_random_theme(); 
-
 #[command]
 pub async fn open_audio_dir(handle: AppHandle) {
     let mut cmd = "xdg-open";
+
     #[cfg(target_os = "linux")]
     {
         cmd = "xdg-open";
