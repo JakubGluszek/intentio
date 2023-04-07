@@ -38,7 +38,7 @@ const ThemeView: React.FC<Props> = (props) => {
     <React.Fragment>
       <div
         {...props}
-        className="group opacity-80 hover:opacity-100 flex flex-row h-9 font-black overflow-clip shadow-lg rounded-sm"
+        className="group flex flex-row h-9 font-black overflow-clip shadow-lg rounded-sm"
         style={{
           color: props.data.text_hex,
           borderColor: isSelected
@@ -79,7 +79,8 @@ const ThemeView: React.FC<Props> = (props) => {
           <span data-tauri-disable-drag style={{ color: props.data.text_hex }}>
             {props.data.name}
           </span>
-          <div
+          <button
+            onClick={() => handleToggleFavorite()}
             style={{
               color: menu.display
                 ? props.data.primary_hex
@@ -91,7 +92,7 @@ const ThemeView: React.FC<Props> = (props) => {
             ) : (
               <MdFavoriteBorder size={20} />
             )}
-          </div>
+          </button>
         </div>
       </div>
 

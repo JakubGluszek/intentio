@@ -37,14 +37,14 @@ const SettingsWindow: React.FC = () => {
         <Titlebar icon={<MdSettings size={20} />} title="Settings" />
 
         <div className="grow flex flex-col gap-0.5">
-          <Navbar tab={tab} setTab={setTab} />
-          <div className="relative grow flex flex-col rounded-none rounded-b overflow-clip">
+          <div className="relative grow flex flex-col overflow-clip">
             {tab === "timer" ? <TimerView /> : null}
             {tab === "audio" ? <AudioView /> : null}
             {tab === "themes" ? <ThemesView /> : null}
             {tab === "scripts" ? <ScriptsView /> : null}
             {tab === "about" ? <AboutView /> : null}
           </div>
+          <Navbar tab={tab} setTab={setTab} />
         </div>
       </div>
     </WindowContainer>
@@ -64,7 +64,7 @@ const Navbar: React.FC<NavbarProps> = ({ tab, setTab }) => {
   }, []);
 
   return (
-    <div className="flex flex-col justify-between window bg-window overflow-y-auto">
+    <div className="flex flex-col justify-between window bg-window overflow-y-auto rounded-b">
       <div className="flex flex-row gap-1 p-1">
         <Button isSelected={tab === "timer"} onClick={() => setTab("timer")}>
           <MdTimer size={24} />
