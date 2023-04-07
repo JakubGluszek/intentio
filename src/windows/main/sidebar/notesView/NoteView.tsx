@@ -23,8 +23,7 @@ interface NoteViewProps {
 const NoteView: React.FC<NoteViewProps> = (props) => {
   const { data } = props;
   const [viewExpand, setViewExpand] = React.useState(false);
-  const { menuPosition, setMenuPosition, onContextMenuHandler } =
-    useContextMenu();
+  const [menu, onContextMenuHandler] = useContextMenu();
 
   const ref = useClickOutside<HTMLDivElement>(() => {
     setViewExpand(false);
@@ -53,9 +52,7 @@ const NoteView: React.FC<NoteViewProps> = (props) => {
         onMouseDown={(e) => {
           // @ts-ignore
           if (e.target.closest("button") || e.button === 2) return;
-
           props.onMouseDown(e);
-
           setViewExpand((prev) => !prev);
         }}
         onDoubleClick={() => props.setEdit(data)}
@@ -75,10 +72,8 @@ const NoteView: React.FC<NoteViewProps> = (props) => {
       </div>
 
       <NoteContextMenu
-        display={menuPosition ? true : false}
+        {...menu}
         data={data}
-        position={menuPosition}
-        hide={() => setMenuPosition(undefined)}
         deleteNote={() =>
           ipc.deleteNote(props.data.id).then(() => {
             toast("Note deleted");

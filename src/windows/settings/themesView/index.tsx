@@ -3,7 +3,6 @@ import {
   MdAddCircle,
   MdFavorite,
   MdFavoriteBorder,
-  MdInfo,
 } from "react-icons/md";
 
 import useStore from "@/store";

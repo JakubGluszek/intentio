@@ -6,13 +6,21 @@ export type MenuPosition = {
 };
 
 export const useContextMenu = () => {
-  const [menuPosition, setMenuPosition] = React.useState<MenuPosition>();
+  const [display, setDisplay] = React.useState(false);
+  const [position, setPosition] = React.useState<MenuPosition>();
 
   const onContextMenuHandler = (
     e: React.MouseEvent<HTMLElement, MouseEvent>
   ) => {
-    setMenuPosition({ left: e.pageX, top: e.pageY });
+    setPosition({ left: e.pageX, top: e.pageY });
+    show();
   };
 
-  return { menuPosition, setMenuPosition, onContextMenuHandler };
+  const show = () => setDisplay(true);
+  const hide = () => setDisplay(false);
+
+  return [
+    { display, position, show, hide, setPosition },
+    onContextMenuHandler,
+  ] as const;
 };

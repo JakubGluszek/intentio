@@ -59,14 +59,13 @@ interface DefaultViewProps {
 }
 
 const DefaultView: React.FC<DefaultViewProps> = (props) => {
-  const { menuPosition, setMenuPosition, onContextMenuHandler } =
-    useContextMenu();
+  const [menu, onContextMenuHandler] = useContextMenu();
 
   return (
     <Tooltip
       openDelay={600}
       position="top-end"
-      hidden={menuPosition ? true : false}
+      hidden={menu.display}
       label={
         <div className="flex flex-col gap-0.5">
           <div>Right click to open menu</div>
@@ -94,10 +93,8 @@ const DefaultView: React.FC<DefaultViewProps> = (props) => {
         </div>
 
         <ScriptContextMenu
+          {...menu}
           data={props.data}
-          display={menuPosition ? true : false}
-          position={menuPosition}
-          hide={() => setMenuPosition(undefined)}
           viewCode={() => props.viewCode()}
           viewEvents={() => props.viewEvents()}
           runScript={() => utils.executeScript(props.data.body)}

@@ -28,8 +28,7 @@ const IntentListItem: React.FC<Props> = (props) => {
   const { data } = props;
 
   const [viewTagsModal, setViewTagsModal] = React.useState(false);
-  const { menuPosition, setMenuPosition, onContextMenuHandler } =
-    useContextMenu();
+  const [menu, onContextMenuHandler] = useContextMenu();
 
   const container = React.useRef<HTMLDivElement | null>(null);
 
@@ -95,18 +94,14 @@ const IntentListItem: React.FC<Props> = (props) => {
         ) : null}
       </div>
 
-      <ContextMenu
-        display={menuPosition ? true : false}
-        position={menuPosition}
-        hide={() => setMenuPosition(undefined)}
-      >
+      <ContextMenu {...menu}>
         <React.Fragment>
           <Button
             onClick={() =>
               ipc
                 .updateIntent(props.data.id, { pinned: !props.data.pinned })
                 .then((data) => {
-                  setMenuPosition(undefined);
+                  menu.hide();
                   toast(data.pinned ? "Pinned to top" : "Unpinned");
                 })
             }
@@ -124,7 +119,7 @@ const IntentListItem: React.FC<Props> = (props) => {
           <Button
             onClick={() => {
               setViewTagsModal(true);
-              setMenuPosition(undefined);
+              menu.hide();
             }}
             rounded={false}
           >

@@ -33,7 +33,6 @@ const ContextMenu: React.FC<Props> = (props) => {
       left =
         left - (left + ref.current.clientWidth - root.clientWidth) - padding;
     }
-
     // fix possible y overflow
     if (top + ref.current.clientHeight > root.clientHeight) {
       top =
@@ -47,22 +46,20 @@ const ContextMenu: React.FC<Props> = (props) => {
     <AnimatePresence>
       {props.display && (
         <motion.div
+          className="flex flex-col gap-0.5 border-2 border-window rounded-sm text-sm bg-window overflow-clip"
           ref={ref}
-          className="bg-window rounded shadow-lg shadow-black/60 text-sm p-0.5"
           style={{
             zIndex: 9999,
             position: "fixed",
             left: position.left,
             top: position.top,
           }}
-          transition={{ duration: 0.2 }}
-          initial={{ opacity: 0, scale: 0 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0 }}
+          transition={{ duration: 0.1 }}
+          initial={{ opacity: 0, scale: 0.8, translateY: 16 }}
+          animate={{ opacity: 1, scale: 1, translateY: 0 }}
+          exit={{ opacity: 0, scale: 0, translateY: 16 }}
         >
-          <div className="w-28 flex flex-col gap-0.5 overflow-clip rounded">
-            {props.children}
-          </div>
+          {props.children}
         </motion.div>
       )}
     </AnimatePresence>

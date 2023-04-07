@@ -23,8 +23,7 @@ const TaskView: React.FC<TaskViewProps> = (props) => {
 
   const [viewEdit, setViewEdit] = React.useState(false);
 
-  const { menuPosition, setMenuPosition, onContextMenuHandler } =
-    useContextMenu();
+  const [menu, onContextMenuHandler] = useContextMenu();
   const { register, handleSubmit, setValue } = useForm<{ body: string }>();
 
   const containerRef = useClickOutside<HTMLDivElement>(() => {
@@ -107,10 +106,8 @@ const TaskView: React.FC<TaskViewProps> = (props) => {
         )}
       </div>
       <TaskContextMenu
-        display={menuPosition ? true : false}
-        position={menuPosition}
+        {...menu}
         data={data}
-        hide={() => setMenuPosition(undefined)}
         setViewEdit={() => setViewEdit(true)}
       />
     </React.Fragment>
