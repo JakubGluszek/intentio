@@ -7,6 +7,7 @@ import { Theme } from "@/bindings/Theme";
 import ipc from "@/ipc";
 import { emit } from "@tauri-apps/api/event";
 import useStore from "@/store";
+import { useConfirmDelete } from "@/hooks";
 
 interface Props
   extends React.DetailedHTMLProps<
@@ -16,7 +17,6 @@ interface Props
   data: Theme;
   isSelected?: boolean;
   onViewEdit?: () => void;
-  onViewConfig?: () => void;
   disableContextMenu?: boolean;
 }
 
@@ -25,6 +25,9 @@ const ThemeView: React.FC<Props> = (props) => {
 
   const store = useStore();
   const [menu, onContextMenuHandler] = useContextMenu();
+  const { viewConfirmDelete, onDelete } = useConfirmDelete(() =>
+    ipc.deleteTheme(props.data.id)
+  );
 
   const handleToggleFavorite = () =>
     ipc
@@ -100,7 +103,9 @@ const ThemeView: React.FC<Props> = (props) => {
           <Button onClick={() => props.onViewEdit?.()} rounded={false}>
             Edit
           </Button>
-          <Button rounded={false}>Delete</Button>
+          <Button onClick={() => onDelete()} rounded={false} color="danger">
+            {viewConfirmDelete ? "Confirm" : "Delete"}
+          </Button>
         </ContextMenu>
       )}
     </React.Fragment>

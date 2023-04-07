@@ -119,6 +119,6 @@
   }
 
   .window {
-    @apply bg-window/90 border-2 border-base/80;
+    @apply bg-window/90 border-2 border-base/80 bg-gradient-to-b from-primary/5 via-transparent to-primary/5;
   }
 }

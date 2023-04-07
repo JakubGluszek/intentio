@@ -55,7 +55,7 @@ const AudioView: React.FC = () => {
         onTrackPreview={() => ipc.playAudio(config.alert_file)}
       />
       <div className="grow flex flex-col overflow-y-auto window bg-window">
-        <div className="flex flex-row gap-1 items-center p-1 bg-window">
+        <div className="flex flex-row gap-1 items-center p-1">
           <OpenFileExplorerButton />
         </div>
         <div className="max-h-0 overflow-y">

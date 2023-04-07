@@ -28,6 +28,7 @@ const SettingsWindow: React.FC = () => {
   useEvents({
     interface_config_updated: (data) => store.setInterfaceConfig(data),
     theme_updated: (data) => store.patchTheme(data.id, data),
+    theme_deleted: (data) => store.removeTheme(data.id),
   });
 
   return (

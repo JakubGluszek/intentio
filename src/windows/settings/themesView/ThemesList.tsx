@@ -9,7 +9,6 @@ interface Props {
   setSelectedIds: React.Dispatch<React.SetStateAction<string[]>>;
   viewFavoriteOnly: boolean;
   onThemeViewEdit: (theme: Theme) => void;
-  onThemeViewConfig: (theme: Theme) => void;
 }
 
 const ThemesList: React.FC<Props> = (props) => {
@@ -34,7 +33,6 @@ const ThemesList: React.FC<Props> = (props) => {
                 data={theme}
                 isSelected={isSelected}
                 onViewEdit={() => props.onThemeViewEdit(theme)}
-                onViewConfig={() => props.onThemeViewConfig(theme)}
                 onMouseDown={(e) => {
                   if (!e.ctrlKey) {
                     props.setSelectedIds([]);
