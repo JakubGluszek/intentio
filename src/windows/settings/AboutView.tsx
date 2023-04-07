@@ -8,7 +8,7 @@ import { IoIosBug, IoIosGlobe, IoLogoGithub } from "react-icons/io";
 
 const AboutView: React.FC = () => {
   return (
-    <div className="grow flex flex-col justify-between pb-2 text-text/80 animate-in fade-in-0 zoom-in-95">
+    <div className="grow flex flex-col justify-between pb-2 text-text/80 window bg-window">
       <div className="flex-1 text-primary">
         <IntentioLogo />
         <div className="text-center text-sm -translate-y-3 text-text/80">
@@ -46,7 +46,7 @@ const AboutView: React.FC = () => {
               target="_blank"
               rel="noreferrer"
             >
-              <Button transparent>
+              <Button transparent highlight={false}>
                 <IoIosGlobe size={28} />
               </Button>
             </a>
@@ -59,7 +59,7 @@ const AboutView: React.FC = () => {
               target="_blank"
               rel="noreferrer"
             >
-              <Button transparent>
+              <Button transparent highlight={false}>
                 <SiDiscord size={28} />
               </Button>
             </a>
@@ -74,7 +74,7 @@ const AboutView: React.FC = () => {
               target="_blank"
               rel="noreferrer"
             >
-              <Button transparent>
+              <Button transparent highlight={false}>
                 <IoLogoGithub size={26} />
               </Button>
             </a>
@@ -86,7 +86,7 @@ const AboutView: React.FC = () => {
               target="_blank"
               rel="noreferrer"
             >
-              <Button transparent>
+              <Button transparent highlight={false}>
                 <IoIosBug size={28} />
               </Button>
             </a>

@@ -1,11 +1,11 @@
 import React from "react";
+import { MdAddCircle } from "react-icons/md";
 
 import { Button } from "@/components";
 import ipc from "@/ipc";
 import useStore from "@/store";
 import ScriptView from "./ScriptView";
 import CreateScriptView from "./CreateScriptView";
-import { MdAddCircle } from "react-icons/md";
 
 const ScriptsView: React.FC = () => {
   const [viewCreate, setViewCreate] = React.useState(false);
@@ -17,7 +17,7 @@ const ScriptsView: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex flex-col gap-3 pb-2 animate-in fade-in-0 zoom-in-95">
+    <div className="grow flex flex-col gap-3 p-2 window bg-window">
       {viewCreate === false ? (
         <div className="">
           <Button transparent onClick={() => setViewCreate(true)}>
