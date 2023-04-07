@@ -44,12 +44,32 @@ const ThemesView: React.FC = () => {
 
   return (
     <div className="grow flex flex-col gap-0.5">
-      <Top
-        viewFavoriteOnly={viewFavoriteOnly}
-        onViewCreate={() => setDisplay("create")}
-        onDisplayInfo={() => setDisplay("info")}
-        toggleViewFavorite={() => setViewFavoriteOnly((prev) => !prev)}
-      />
+      <div className="flex flex-row justify-between window bg-window p-0.5">
+        <Button
+          onClick={() => setDisplay("create")}
+          transparent
+          rounded={false}
+          highlight={false}
+        >
+          <MdAddCircle size={20} />
+          <div>Add theme</div>
+        </Button>
+        <div className="flex flex-row">
+          <Button
+            onClick={() => setViewFavoriteOnly((prev) => !prev)}
+            transparent
+            rounded={false}
+            highlight={false}
+          >
+            {viewFavoriteOnly ? (
+              <MdFavorite size={24} />
+            ) : (
+              <MdFavoriteBorder size={24} />
+            )}
+          </Button>
+        </div>
+      </div>
+
       <ThemesList
         themes={store.themes}
         selectedIds={selectedThemesIds}
@@ -64,51 +84,6 @@ const ThemesView: React.FC = () => {
           setTheme(theme);
         }}
       />
-    </div>
-  );
-};
-
-interface TopProps {
-  viewFavoriteOnly: boolean;
-  onViewCreate: () => void;
-  onDisplayInfo: () => void;
-  toggleViewFavorite: () => void;
-}
-
-const Top: React.FC<TopProps> = (props) => {
-  return (
-    <div className="flex flex-row justify-between window bg-window p-0.5">
-      <Button
-        onClick={() => props.onViewCreate()}
-        transparent
-        rounded={false}
-        highlight={false}
-      >
-        <MdAddCircle size={20} />
-        <div>Add theme</div>
-      </Button>
-      <div className="flex flex-row">
-        <Button
-          onClick={() => props.toggleViewFavorite()}
-          transparent
-          rounded={false}
-          highlight={false}
-        >
-          {props.viewFavoriteOnly ? (
-            <MdFavorite size={24} />
-          ) : (
-            <MdFavoriteBorder size={24} />
-          )}
-        </Button>
-        <Button
-          onClick={() => props.onDisplayInfo()}
-          transparent
-          rounded={false}
-          highlight={false}
-        >
-          <MdInfo size={24} />
-        </Button>
-      </div>
     </div>
   );
 };

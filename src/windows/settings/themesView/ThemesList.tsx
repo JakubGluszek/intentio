@@ -40,7 +40,6 @@ const ThemesList: React.FC<Props> = (props) => {
                     props.setSelectedIds([]);
                     return;
                   }
-
                   if (isSelected) {
                     props.setSelectedIds((ids) =>
                       ids.filter((id) => id !== theme.id)

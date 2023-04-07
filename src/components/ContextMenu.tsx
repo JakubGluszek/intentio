@@ -1,6 +1,7 @@
 import React from "react";
 import { useClickOutside } from "@mantine/hooks";
 import { AnimatePresence, motion } from "framer-motion";
+
 import { MenuPosition } from "@/hooks/useContextMenu";
 
 interface Props {

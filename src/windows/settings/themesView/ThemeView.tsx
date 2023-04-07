@@ -67,6 +67,7 @@ const ThemeView: React.FC<Props> = (props) => {
           style={{ backgroundColor: props.data.primary_hex }}
           className="min-w-[36px] h-full"
         ></div>
+
         <div className="w-full h-full flex flex-row items-center justify-between px-2">
           <span data-tauri-disable-drag style={{ color: props.data.text_hex }}>
             {props.data.name}
