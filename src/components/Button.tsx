@@ -122,7 +122,7 @@ const Button: React.FC<Props> = (props) => {
         gap: "0.25rem",
         letterSpacing: "0.05em",
         textTransform: "uppercase",
-        borderRadius: rounded ? "2px" : undefined,
+        borderRadius: rounded ? "1px" : undefined,
         paddingTop: !transparent ? "0.25rem" : "0.25rem",
         paddingBottom: !transparent ? "0.25rem" : "0.25rem",
         paddingInline: !transparent ? "0.75rem" : "0.25rem",

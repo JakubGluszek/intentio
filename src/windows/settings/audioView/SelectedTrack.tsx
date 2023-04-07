@@ -21,18 +21,17 @@ interface Props {
 
 const SelectedTrack: React.FC<Props> = (props) => {
   return (
-    <div className="flex flex-col window bg-window rounded-none p-2 gap-1">
+    <div className="flex flex-col window bg-window rounded-none p-2 gap-2">
       {/* Selected audio file with volume and repeat control */}
       <div className="flex flex-row items-center justify-between">
-        <div className="font-mono text-primary/80 uppercase font-black">
-          {props.name}
-        </div>
+        <div className="text-text/80 uppercase font-bold">{props.name}</div>
         <Button
           onClick={() => props.onTrackPreview(props.name)}
           transparent
           highlight={false}
+          style={{ padding: 0 }}
         >
-          <MdPlayCircle size={28} />
+          <MdPlayCircle size={24} />
         </Button>
       </div>
       <div className="flex flex-col">

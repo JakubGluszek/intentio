@@ -17,12 +17,14 @@ import AudioView from "./audioView";
 import ThemesView from "./themesView";
 import ScriptsView from "./scriptsView";
 import AboutView from "./AboutView";
+import {
+  SettingsWindowContext,
+  SettingsWindowProvider,
+} from "@/contexts/settingsWindowContext";
 
-type Tab = "timer" | "audio" | "themes" | "scripts" | "about";
 export type ColorType = "window" | "base" | "primary" | "text";
 
 const SettingsWindow: React.FC = () => {
-  const [tab, setTab] = React.useState<Tab>("timer");
   const store = useStore();
 
   useEvents({
@@ -32,32 +34,43 @@ const SettingsWindow: React.FC = () => {
   });
 
   return (
-    <WindowContainer>
-      <div className="grow flex flex-col gap-0.5">
-        <Titlebar icon={<MdSettings size={20} />} title="Settings" />
-
+    <SettingsWindowProvider>
+      <WindowContainer>
         <div className="grow flex flex-col gap-0.5">
-          <div className="relative grow flex flex-col overflow-clip">
-            {tab === "timer" ? <TimerView /> : null}
-            {tab === "audio" ? <AudioView /> : null}
-            {tab === "themes" ? <ThemesView /> : null}
-            {tab === "scripts" ? <ScriptsView /> : null}
-            {tab === "about" ? <AboutView /> : null}
+          <SettingsTitlebar />
+          <div className="grow flex flex-col gap-0.5">
+            <Content />
+            <Navbar />
           </div>
-          <Navbar tab={tab} setTab={setTab} />
         </div>
-      </div>
-    </WindowContainer>
+      </WindowContainer>
+    </SettingsWindowProvider>
   );
 };
 
-interface NavbarProps {
-  tab: Tab;
-  setTab: React.Dispatch<React.SetStateAction<Tab>>;
-}
+const SettingsTitlebar: React.FC = () => {
+  const { panel } = React.useContext(SettingsWindowContext)!;
 
-const Navbar: React.FC<NavbarProps> = ({ tab, setTab }) => {
+  return <Titlebar icon={<MdSettings size={20} />} title={`${panel}`} />;
+};
+
+const Content: React.FC = () => {
+  const { panel } = React.useContext(SettingsWindowContext)!;
+
+  return (
+    <div className="relative grow flex flex-col overflow-clip">
+      {panel === "Timer" ? <TimerView /> : null}
+      {panel === "Audio" ? <AudioView /> : null}
+      {panel === "Themes" ? <ThemesView /> : null}
+      {panel === "Scripts" ? <ScriptsView /> : null}
+      {panel === "About" ? <AboutView /> : null}
+    </div>
+  );
+};
+
+const Navbar: React.FC = () => {
   const [osType, setOsType] = React.useState<OsType>();
+  const { panel, setPanel } = React.useContext(SettingsWindowContext)!;
 
   React.useEffect(() => {
     type().then((type) => setOsType(type));
@@ -65,25 +78,37 @@ const Navbar: React.FC<NavbarProps> = ({ tab, setTab }) => {
 
   return (
     <div className="flex flex-col justify-between window bg-window overflow-y-auto rounded-b">
-      <div className="flex flex-row gap-1 p-1">
-        <Button isSelected={tab === "timer"} onClick={() => setTab("timer")}>
+      <div className="flex flex-row gap-0.5 p-0.5">
+        <Button
+          isSelected={panel === "Timer"}
+          onClick={() => setPanel("Timer")}
+        >
           <MdTimer size={24} />
         </Button>
-        <Button isSelected={tab === "audio"} onClick={() => setTab("audio")}>
+        <Button
+          isSelected={panel === "Audio"}
+          onClick={() => setPanel("Audio")}
+        >
           <MdAudiotrack size={24} />
         </Button>
-        <Button isSelected={tab === "themes"} onClick={() => setTab("themes")}>
+        <Button
+          isSelected={panel === "Themes"}
+          onClick={() => setPanel("Themes")}
+        >
           <MdColorLens size={24} />
         </Button>
         {osType !== "Windows_NT" ? (
           <Button
-            isSelected={tab === "scripts"}
-            onClick={() => setTab("scripts")}
+            isSelected={panel === "Scripts"}
+            onClick={() => setPanel("Scripts")}
           >
             <AiFillCode size={24} />
           </Button>
         ) : null}
-        <Button isSelected={tab === "about"} onClick={() => setTab("about")}>
+        <Button
+          isSelected={panel === "About"}
+          onClick={() => setPanel("About")}
+        >
           <MdInfo size={24} />
         </Button>
       </div>
