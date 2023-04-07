@@ -13,6 +13,7 @@ import { MainWindowContext } from "@/contexts";
 import { TimerConfig } from "@/bindings/TimerConfig";
 import { Intent } from "@/bindings/Intent";
 import { emit } from "@tauri-apps/api/event";
+import { InterfaceConfig } from "@/bindings/InterfaceConfig";
 
 interface Props {
   config: TimerConfig;
@@ -99,8 +100,8 @@ const TimerView: React.FC<Props> = (props) => {
     },
   });
 
-  useEvents({
-    interface_config_updated: (data) => {
+  const onInterfaceConfigUpdated = React.useCallback(
+    (data: InterfaceConfig) => {
       if (!timer.isPlaying) {
         ipc.setCurrentTheme(data.idle_theme_id);
       } else if (timer.type === "Focus") {
@@ -111,6 +112,11 @@ const TimerView: React.FC<Props> = (props) => {
         ipc.setCurrentTheme(data.long_break_theme_id);
       }
     },
+    [timer]
+  );
+
+  useEvents({
+    interface_config_updated: onInterfaceConfigUpdated,
   });
 
   const displayTimeLeft =

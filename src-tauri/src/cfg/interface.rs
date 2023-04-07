@@ -62,7 +62,7 @@ impl InterfaceCfg {
             Err(_) => {
                 let config = InterfaceConfig::default();
 
-                Self::save(&config);
+                // Self::save(&config);
 
                 config
             }

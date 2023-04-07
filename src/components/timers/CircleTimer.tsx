@@ -16,10 +16,11 @@ interface Props extends Timer {
 }
 
 const CircleTimer: React.FC<Props> = (props) => {
-  const toggleDisplayTimeLeft = () =>
+  const toggleDisplayTimeLeft = () => {
     ipc.updateInterfaceConfig({
       display_timer_countdown: !props.displayTimeLeft,
     });
+  };
 
   const formattedTimeLeft = utils.formatTimeTimer(
     props.duration - props.elapsedTime
