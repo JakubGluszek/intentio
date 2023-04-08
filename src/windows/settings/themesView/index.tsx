@@ -1,5 +1,10 @@
 import React from "react";
-import { MdAddCircle, MdFavorite, MdFavoriteBorder } from "react-icons/md";
+import {
+  MdAddCircle,
+  MdFavorite,
+  MdFavoriteBorder,
+  MdInfoOutline,
+} from "react-icons/md";
 
 import useStore from "@/store";
 import ipc from "@/ipc";
@@ -8,6 +13,7 @@ import { Theme } from "@/bindings/Theme";
 import EditTheme from "./EditTheme";
 import CreateTheme from "./CreateTheme";
 import ThemesList from "./ThemesList";
+import { clsx } from "@mantine/core";
 
 type ThemeState = "idle" | "focus" | "break" | "long break";
 type Display = "themes" | "create" | "edit";
@@ -69,32 +75,42 @@ const ThemesView: React.FC = () => {
         />
       </div>
 
-      <ThemesList
-        themes={store.themes}
-        selectable={!!themeState}
-        viewFavoriteOnly={viewFavoriteOnly}
-        onThemeViewEdit={(theme) => {
-          setDisplay("edit");
-          setTheme(theme);
-        }}
-        onThemeSelected={(theme) => {
-          switch (themeState) {
-            case "idle":
-              ipc.updateInterfaceConfig({ idle_theme_id: theme.id });
-              break;
-            case "focus":
-              ipc.updateInterfaceConfig({ focus_theme_id: theme.id });
-              break;
-            case "break":
-              ipc.updateInterfaceConfig({ break_theme_id: theme.id });
-              break;
-            case "long break":
-              ipc.updateInterfaceConfig({ long_break_theme_id: theme.id });
-              break;
-          }
-          setThemeState(null);
-        }}
-      />
+      <div className="grow flex flex-col window bg-window overflow-y-auto">
+        <div className="max-h-0 overflow-y">
+          {themeState && (
+            <div className="flex flex-row items-center gap-1 p-1.5 text-text/80">
+              <MdInfoOutline size={20} />
+              <span>Select a new theme</span>
+            </div>
+          )}
+          <ThemesList
+            themes={store.themes}
+            selectable={!!themeState}
+            viewFavoriteOnly={viewFavoriteOnly}
+            onThemeViewEdit={(theme) => {
+              setDisplay("edit");
+              setTheme(theme);
+            }}
+            onThemeSelected={(theme) => {
+              switch (themeState) {
+                case "idle":
+                  ipc.setIdleTheme(theme);
+                  break;
+                case "focus":
+                  ipc.setFocusTheme(theme);
+                  break;
+                case "break":
+                  ipc.setBreakTheme(theme);
+                  break;
+                case "long break":
+                  ipc.setLongBreakTheme(theme);
+                  break;
+              }
+              setThemeState(null);
+            }}
+          />
+        </div>
+      </div>
     </div>
   );
 };
@@ -114,53 +130,65 @@ const CurrentThemes: React.FC<CurrentThemesProps> = (props) => {
 
   return (
     <div className="flex flex-row justify-between font-bold py-1 px-2">
-      <button
+      <CurrentThemeButton
         onClick={() =>
           props.setSelectedState((prev) => (prev !== "idle" ? "idle" : null))
         }
-        style={{
-          color: idleTheme.primary_hex,
-          opacity: props.selectedState === "idle" ? 1.0 : 0.5,
-        }}
-      >
-        Idle
-      </button>
-      <button
+        label="Idle"
+        color={idleTheme.primary_hex}
+        selected={props.selectedState === "idle"}
+      />
+      <CurrentThemeButton
         onClick={() =>
           props.setSelectedState((prev) => (prev !== "focus" ? "focus" : null))
         }
-        style={{
-          color: focusTheme.primary_hex,
-          opacity: props.selectedState === "focus" ? 1.0 : 0.5,
-        }}
-      >
-        Focus
-      </button>
-      <button
+        label="Focus"
+        color={focusTheme.primary_hex}
+        selected={props.selectedState === "focus"}
+      />
+      <CurrentThemeButton
         onClick={() =>
           props.setSelectedState((prev) => (prev !== "break" ? "break" : null))
         }
-        style={{
-          color: breakTheme.primary_hex,
-          opacity: props.selectedState === "break" ? 1.0 : 0.5,
-        }}
-      >
-        Break
-      </button>
-      <button
+        label="Break"
+        color={breakTheme.primary_hex}
+        selected={props.selectedState === "break"}
+      />
+      <CurrentThemeButton
         onClick={() =>
           props.setSelectedState((prev) =>
             prev !== "long break" ? "long break" : null
           )
         }
-        style={{
-          color: longBreakTheme.primary_hex,
-          opacity: props.selectedState === "long break" ? 1.0 : 0.5,
-        }}
-      >
-        Long Break
-      </button>
+        label="Long Break"
+        color={longBreakTheme.primary_hex}
+        selected={props.selectedState === "long break"}
+      />
     </div>
+  );
+};
+
+interface CurrentThemeButtonProps {
+  onClick: () => void;
+  label: string;
+  color: string;
+  selected: boolean;
+}
+
+const CurrentThemeButton: React.FC<CurrentThemeButtonProps> = (props) => {
+  return (
+    <button
+      onClick={() => props.onClick()}
+      className={clsx(
+        "hover:opacity-100",
+        props.selected ? "opacity-100" : "opacity-50"
+      )}
+      style={{
+        color: props.color,
+      }}
+    >
+      {props.label}
+    </button>
   );
 };
 

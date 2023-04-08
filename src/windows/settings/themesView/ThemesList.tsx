@@ -21,20 +21,16 @@ const ThemesList: React.FC<Props> = (props) => {
   themes = themes.sort((a, b) => (b.favorite ? 1 : 0) - (a.favorite ? 1 : 0));
 
   return (
-    <div className="grow flex flex-col window bg-window overflow-y-auto">
-      <div className="max-h-0 overflow-y">
-        <div className="flex flex-col gap-1.5 p-1.5">
-          {themes.map((theme) => (
-            <ThemeView
-              key={theme.id}
-              data={theme}
-              selectable={props.selectable}
-              onViewEdit={() => props.onThemeViewEdit(theme)}
-              onSelected={() => props.onThemeSelected(theme)}
-            />
-          ))}
-        </div>
-      </div>
+    <div className="flex flex-col gap-1.5 p-1.5">
+      {themes.map((theme) => (
+        <ThemeView
+          key={theme.id}
+          data={theme}
+          selectable={props.selectable}
+          onViewEdit={() => props.onThemeViewEdit(theme)}
+          onSelected={() => props.onThemeSelected(theme)}
+        />
+      ))}
     </div>
   );
 };

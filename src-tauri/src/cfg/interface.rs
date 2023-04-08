@@ -99,6 +99,32 @@ impl InterfaceCfg {
         config
     }
 
+    pub fn set_idle_theme_id(ctx: Arc<Ctx>, id: String) {
+        let mut config = Self::get();
+        config.idle_theme_id = id;
+        Self::save(&config);
+        ctx.emit_event("interface_config_updated", config.clone());
+    }
+
+    pub fn set_focus_theme_id(ctx: Arc<Ctx>, id: String) {
+        let mut config = Self::get();
+        config.focus_theme_id = id;
+        Self::save(&config);
+        ctx.emit_event("interface_config_updated", config.clone());
+    }
+    pub fn set_break_theme_id(ctx: Arc<Ctx>, id: String) {
+        let mut config = Self::get();
+        config.break_theme_id = id;
+        Self::save(&config);
+        ctx.emit_event("interface_config_updated", config.clone());
+    }
+    pub fn set_long_break_theme_id(ctx: Arc<Ctx>, id: String) {
+        let mut config = Self::get();
+        config.long_break_theme_id = id;
+        Self::save(&config);
+        ctx.emit_event("interface_config_updated", config.clone());
+    }
+
     fn get_path() -> String {
         utils::get_config_path() + "/interface.json"
     }

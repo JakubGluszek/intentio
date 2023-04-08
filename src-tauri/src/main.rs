@@ -48,6 +48,10 @@ fn main() -> Result<()> {
             // state
             get_current_theme,
             update_timer_state,
+            set_idle_theme,
+            set_focus_theme,
+            set_break_theme,
+            set_long_break_theme,
             // config
             get_timer_config,
             update_timer_config,

@@ -14,16 +14,16 @@ use crate::{
 
 use super::ModelDeleteResultData;
 
-#[derive(Serialize, TS, Debug, Clone)]
+#[derive(Deserialize, Serialize, TS, Debug, Clone)]
 #[ts(export, export_to = "../src/bindings/")]
 pub struct Theme {
-    id: String,
-    name: String,
-    favorite: bool,
-    window_hex: String,
-    base_hex: String,
-    primary_hex: String,
-    text_hex: String,
+    pub id: String,
+    pub name: String,
+    pub favorite: bool,
+    pub window_hex: String,
+    pub base_hex: String,
+    pub primary_hex: String,
+    pub text_hex: String,
 }
 
 impl TryFrom<Object> for Theme {

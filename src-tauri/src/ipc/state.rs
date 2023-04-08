@@ -1,8 +1,9 @@
 use std::sync::{Arc, Mutex};
 
-use tauri::{command, AppHandle, Wry};
+use tauri::{command, AppHandle, Manager, Wry};
 
 use crate::{
+    cfg::InterfaceCfg,
     ctx::Ctx,
     models::Theme,
     state::{AppState, SessionType, TimerStateForUpdate},
@@ -42,6 +43,74 @@ pub async fn update_timer_state(
         update_current_theme(ctx, &state);
     }
 
+    Ok(())
+}
+
+#[command]
+pub async fn set_idle_theme(
+    data: Theme,
+    app: AppHandle<Wry>,
+    state: tauri::State<'_, Mutex<AppState>>,
+) -> Result<(), ()> {
+    if let Ok(ctx) = Ctx::from_app(app.app_handle()) {
+        InterfaceCfg::set_idle_theme_id(ctx.clone(), data.id.clone());
+
+        let mut state = state.lock().unwrap();
+        state.idle_theme = data;
+
+        update_current_theme(ctx, &state);
+    }
+    Ok(())
+}
+
+#[command]
+pub async fn set_focus_theme(
+    data: Theme,
+    app: AppHandle<Wry>,
+    state: tauri::State<'_, Mutex<AppState>>,
+) -> Result<(), ()> {
+    if let Ok(ctx) = Ctx::from_app(app.app_handle()) {
+        InterfaceCfg::set_focus_theme_id(ctx.clone(), data.id.clone());
+
+        let mut state = state.lock().unwrap();
+        state.focus_theme = data;
+
+        update_current_theme(ctx, &state);
+    }
+    Ok(())
+}
+
+#[command]
+pub async fn set_break_theme(
+    data: Theme,
+    app: AppHandle<Wry>,
+    state: tauri::State<'_, Mutex<AppState>>,
+) -> Result<(), ()> {
+    if let Ok(ctx) = Ctx::from_app(app.app_handle()) {
+        InterfaceCfg::set_break_theme_id(ctx.clone(), data.id.clone());
+
+        let mut state = state.lock().unwrap();
+        state.break_theme = data;
+
+        update_current_theme(ctx, &state);
+    }
+    Ok(())
+}
+
+#[command]
+pub async fn set_long_break_theme(
+    data: Theme,
+    app: AppHandle<Wry>,
+    state: tauri::State<'_, Mutex<AppState>>,
+) -> Result<(), ()> {
+    if let Ok(ctx) = Ctx::from_app(app.app_handle()) {
+        InterfaceCfg::set_long_break_theme_id(ctx.clone(), data.id.clone());
+
+        let mut state = state.lock().unwrap();
+        state.long_break_theme = data;
+
+        update_current_theme(ctx, &state);
+    }
     Ok(())
 }
 
