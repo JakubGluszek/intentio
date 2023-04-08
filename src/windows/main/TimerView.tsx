@@ -6,14 +6,12 @@ import { AnimatePresence, motion } from "framer-motion";
 
 import utils from "@/utils";
 import ipc from "@/ipc";
-import { useEvents, useTimer } from "@/hooks";
+import { useTimer } from "@/hooks";
 import { Button, CircleTimer, CompactTimer } from "@/components";
 import useStore from "@/store";
 import { MainWindowContext } from "@/contexts";
 import { TimerConfig } from "@/bindings/TimerConfig";
 import { Intent } from "@/bindings/Intent";
-import { emit } from "@tauri-apps/api/event";
-import { InterfaceConfig } from "@/bindings/InterfaceConfig";
 
 interface Props {
   config: TimerConfig;
@@ -26,6 +24,11 @@ const TimerView: React.FC<Props> = (props) => {
   const store = useStore();
 
   const timer = useTimer(props.config, {
+    onStateUpdate: (state) =>
+      ipc.updateTimerState({
+        session_type: state.type,
+        is_playing: state.isPlaying,
+      }),
     onSaveSession: (session) => {
       if (
         session.type === "Focus" &&
@@ -55,24 +58,6 @@ const TimerView: React.FC<Props> = (props) => {
       );
     },
     onResumed: (session) => {
-      let themeId: string;
-
-      switch (session.type) {
-        case "Focus":
-          themeId = store.interfaceConfig?.focus_theme_id!;
-          break;
-        case "Break":
-          themeId = store.interfaceConfig?.break_theme_id!;
-          break;
-        case "LongBreak":
-          themeId = store.interfaceConfig?.long_break_theme_id!;
-          break;
-      }
-
-      ipc
-        .setCurrentTheme(themeId)
-        .then((data) => emit("current_theme_updated", data));
-
       store.scripts.forEach(
         (script) =>
           script.active &&
@@ -83,12 +68,6 @@ const TimerView: React.FC<Props> = (props) => {
       );
     },
     onPaused: (session) => {
-      ipc
-        .setCurrentTheme(
-          store.interfaceConfig?.idle_theme_id ?? store.currentTheme!.id
-        )
-        .then((data) => emit("current_theme_updated", data));
-
       store.scripts.forEach(
         (script) =>
           script.active &&
@@ -100,29 +79,11 @@ const TimerView: React.FC<Props> = (props) => {
     },
   });
 
-  const onInterfaceConfigUpdated = React.useCallback(
-    (data: InterfaceConfig) => {
-      if (!timer.isPlaying) {
-        ipc.setCurrentTheme(data.idle_theme_id);
-      } else if (timer.type === "Focus") {
-        ipc.setCurrentTheme(data.focus_theme_id);
-      } else if (timer.type === "Break") {
-        ipc.setCurrentTheme(data.break_theme_id);
-      } else if (timer.type === "LongBreak") {
-        ipc.setCurrentTheme(data.long_break_theme_id);
-      }
-    },
-    [timer]
-  );
-
-  useEvents({
-    interface_config_updated: onInterfaceConfigUpdated,
-  });
-
   const displayTimeLeft =
     store.interfaceConfig?.display_timer_countdown ?? true;
+  const theme = store.currentTheme;
 
-  const theme = store.currentTheme!;
+  if (!theme) return null;
 
   return (
     <AnimatePresence initial={false}>

@@ -1,9 +1,10 @@
-import { Theme } from "@/bindings/Theme";
 import { StateCreator } from "zustand";
+
+import { Theme } from "@/bindings/Theme";
 import { ConfigSlice } from "./configSlice";
 import { ThemesSlice } from "./themesSlice";
 
-export interface UtilsSlice {
+export interface StateSlice {
   currentTheme?: Theme;
   setCurrentTheme: (theme: Theme) => void;
   getIdleTheme: () => Theme | undefined;
@@ -12,11 +13,11 @@ export interface UtilsSlice {
   getLongBreakTheme: () => Theme | undefined;
 }
 
-export const createUtilsSlice: StateCreator<
-  UtilsSlice & ThemesSlice & ConfigSlice,
+export const createStateSlice: StateCreator<
+  StateSlice & ThemesSlice & ConfigSlice,
   [],
   [],
-  UtilsSlice
+  StateSlice
 > = (set, get) => ({
   currentTheme: undefined,
   setCurrentTheme: (currentTheme) =>

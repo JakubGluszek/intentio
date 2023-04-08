@@ -1,4 +1,5 @@
 import { Session } from "./bindings/Session";
+import { SessionType } from "./bindings/SessionType";
 
 export type IntentsSort = "asc" | "desc";
 
@@ -7,8 +8,6 @@ export interface DayDetail {
   duration: number;
   sessions?: Session[];
 }
-
-export type SessionType = "Focus" | "Break" | "LongBreak";
 
 export interface TimerSession {
   type: SessionType;

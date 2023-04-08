@@ -11,6 +11,7 @@ mod ipc;
 mod models;
 mod prelude;
 mod setup;
+mod state;
 mod utils;
 
 use crate::ipc::*;
@@ -21,19 +22,32 @@ use setup::init_setup;
 use std::sync::Arc;
 use tauri::Manager;
 use tauri::{CustomMenuItem, SystemTray, SystemTrayEvent, SystemTrayMenu, SystemTrayMenuItem};
+use tokio::runtime::Builder;
 
-#[tokio::main]
-async fn main() -> Result<()> {
-    let database = Database::new().await?;
-    let database = Arc::new(database);
+fn main() -> Result<()> {
+    let runtime = Builder::new_current_thread()
+        .build()
+        .expect("expected tokio runtime");
 
-    ThemeBmc::init_default_themes(database.clone()).await?;
+    let database = runtime.block_on(async {
+        let database = Database::new().await.unwrap();
+        let database = Arc::new(database);
+
+        ThemeBmc::init_default_themes(database.clone())
+            .await
+            .unwrap();
+
+        database
+    });
 
     tauri::Builder::default()
         .manage(database)
         .system_tray(SystemTray::new().with_menu(create_tray_menu()))
         .on_system_tray_event(handle_on_system_tray_event)
         .invoke_handler(tauri::generate_handler![
+            // state
+            get_current_theme,
+            update_timer_state,
             // config
             get_timer_config,
             update_timer_config,
@@ -46,8 +60,6 @@ async fn main() -> Result<()> {
             // Utils
             open_audio_dir,
             play_audio,
-            get_current_theme,
-            set_current_theme,
             hide_main_window,
             exit_main_window,
             // Theme
@@ -85,10 +97,7 @@ async fn main() -> Result<()> {
             update_script,
             delete_script
         ])
-        .setup(|app| {
-            init_setup(app);
-            Ok(())
-        })
+        .setup(move |app| Ok(runtime.block_on(init_setup(app))))
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
     Ok(())

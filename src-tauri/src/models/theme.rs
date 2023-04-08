@@ -6,10 +6,9 @@ use surrealdb::sql::{Object, Value};
 use ts_rs::TS;
 
 use crate::{
-    cfg::InterfaceCfg,
     ctx::Ctx,
     database::{Creatable, Database, Patchable},
-    prelude::{Error, Result, DEFAULT_THEME},
+    prelude::{Error, Result},
     utils::{map, XTakeVal},
 };
 
@@ -193,16 +192,6 @@ impl ThemeBmc {
         let result = ModelDeleteResultData::from(id);
 
         ctx.emit_event("theme_deleted", result.clone());
-
-        let mut config = InterfaceCfg::get();
-
-        if config.theme_id == result.id {
-            config.theme_id = DEFAULT_THEME.to_string();
-
-            InterfaceCfg::save(&config);
-
-            ctx.emit_event("current_theme_changed", "");
-        }
 
         Ok(result)
     }

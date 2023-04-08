@@ -13,6 +13,7 @@ export interface TimerCallbacks {
   onRestarted?: () => void;
   onCompleted?: (session: { type: SessionType }) => void;
   onSaveSession: (session: Partial<TimerSession>) => void;
+  onStateUpdate?: (state: Partial<TimerSession>) => void;
 }
 
 export interface Timer extends TimerSession {
@@ -37,12 +38,14 @@ export const useTimer = (
   const resume = React.useCallback(() => {
     if (!startedAt) setStartedAt(new Date().getTime().toString());
     setIsPlaying(true);
-    callbacks.onResumed && callbacks.onResumed({ type: sessionType });
+    callbacks.onResumed?.({ type: sessionType });
+    callbacks.onStateUpdate?.({ isPlaying: true });
   }, [sessionType, callbacks]);
 
   const pause = React.useCallback(() => {
     setIsPlaying(false);
-    callbacks.onPaused && callbacks.onPaused({ type: sessionType });
+    callbacks.onPaused?.({ type: sessionType });
+    callbacks.onStateUpdate?.({ isPlaying: false });
   }, [sessionType, callbacks]);
 
   const restart = () => {
@@ -50,45 +53,54 @@ export const useTimer = (
     saveSession();
     reset();
     setStartedAt(undefined);
-    callbacks.onRestarted && callbacks.onRestarted();
+    callbacks.onRestarted?.();
   };
 
-  const skip = (manual?: boolean) => {
-    restart();
-    switchSession(manual ?? false);
-    if (!manual) {
-      if (sessionType === "Focus" && config.auto_start_focus) resume();
-      else if (config.auto_start_breaks) resume();
-    }
-    callbacks.onSkipped && callbacks.onSkipped({ type: sessionType });
-  };
+  const skip = React.useCallback(
+    (manual?: boolean) => {
+      restart();
+      switchSession(manual ?? false);
+      callbacks.onSkipped?.({ type: sessionType });
+    },
+    [sessionType, isPlaying]
+  );
 
-  const switchSession = (manual: boolean) => {
-    let newSessionType = sessionType;
-    let newDuration = duration;
+  const switchSession = React.useCallback(
+    (manual: boolean) => {
+      let newSessionType = sessionType;
+      let newDuration = duration;
 
-    if (sessionType === "Focus") {
-      !manual && setIterations((iterations) => iterations + 1);
+      if (sessionType === "Focus") {
+        !manual && setIterations((iterations) => iterations + 1);
 
-      const isLongBreak =
-        iterations >= config.long_break_interval &&
-        iterations % config.long_break_interval === 0;
+        const isLongBreak =
+          iterations >= config.long_break_interval &&
+          iterations % config.long_break_interval === 0;
 
-      if (isLongBreak) {
-        newSessionType = "LongBreak";
-        newDuration = config.long_break_duration * 60;
+        if (isLongBreak) {
+          newSessionType = "LongBreak";
+          newDuration = config.long_break_duration * 60;
+        } else {
+          newSessionType = "Break";
+          newDuration = config.break_duration * 60;
+        }
       } else {
-        newSessionType = "Break";
-        newDuration = config.break_duration * 60;
+        newSessionType = "Focus";
+        newDuration = config.focus_duration * 60;
       }
-    } else {
-      newSessionType = "Focus";
-      newDuration = config.focus_duration * 60;
-    }
 
-    setSessionType(newSessionType);
-    setDuration(newDuration);
-  };
+      setSessionType(newSessionType);
+      setDuration(newDuration);
+
+      callbacks.onStateUpdate?.({ type: newSessionType, isPlaying: false });
+
+      if (!manual) {
+        if (sessionType === "Focus" && config.auto_start_focus) resume();
+        else if (config.auto_start_breaks) resume();
+      }
+    },
+    [sessionType, isPlaying]
+  );
 
   const saveSession = () => {
     let session = {
@@ -99,10 +111,10 @@ export const useTimer = (
     callbacks.onSaveSession(session);
   };
 
-  const onComplete = () => {
+  const onComplete = React.useCallback(() => {
     skip(false);
-    callbacks.onCompleted && callbacks.onCompleted({ type: sessionType });
-  };
+    callbacks.onCompleted?.({ type: sessionType });
+  }, [sessionType, isPlaying]);
 
   const { reset, elapsedTime } = useElapsedTime({
     isPlaying,

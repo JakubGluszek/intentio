@@ -5,7 +5,7 @@ import { createNotesSlice, NotesSlice } from "./notesSlice";
 import { createSessionsSlice, SessionsSlice } from "./sessionsSlice";
 import { createTasksSlice, TasksSlice } from "./tasksSlice";
 import { createThemesSlice, ThemesSlice } from "./themesSlice";
-import { createUtilsSlice, UtilsSlice } from "./utilsSlice";
+import { createStateSlice, StateSlice } from "./stateSlice";
 import { createScriptsSlice, ScriptsSlice } from "./scriptsSlice";
 import { ConfigSlice, createConfigSlice } from "./configSlice";
 
@@ -14,7 +14,7 @@ type Store = IntentsSlice &
   ThemesSlice &
   TasksSlice &
   NotesSlice &
-  UtilsSlice &
+  StateSlice &
   ScriptsSlice &
   ConfigSlice;
 
@@ -24,7 +24,7 @@ const useStore = create<Store>()((...a) => ({
   ...createThemesSlice(...a),
   ...createTasksSlice(...a),
   ...createNotesSlice(...a),
-  ...createUtilsSlice(...a),
+  ...createStateSlice(...a),
   ...createScriptsSlice(...a),
   ...createConfigSlice(...a),
 }));

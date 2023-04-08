@@ -1,44 +1,9 @@
 //! Utils IPC commands.
-
 use std::fs::File;
 
-use tauri::{command, AppHandle, Manager, Wry};
+use tauri::{command, AppHandle, Manager};
 
-use crate::{
-    cfg::{AudioCfg, BehaviorCfg, InterfaceCfg},
-    ctx::Ctx,
-    models::{Theme, ThemeBmc},
-    prelude::{Error, Result},
-};
-
-#[command]
-pub async fn get_current_theme(app: AppHandle<Wry>) -> Result<Theme> {
-    match Ctx::from_app(app) {
-        Ok(ctx) => {
-            let config = InterfaceCfg::get();
-            ThemeBmc::get(ctx, &config.theme_id).await.into()
-        }
-        Err(_) => Err(Error::CtxFail).into(),
-    }
-}
-
-#[command]
-pub async fn set_current_theme(id: String, app: AppHandle<Wry>) -> Result<Theme> {
-    match Ctx::from_app(app) {
-        Ok(ctx) => {
-            InterfaceCfg::set_current_theme(id);
-
-            let config = InterfaceCfg::get();
-
-            let theme = ThemeBmc::get(ctx.clone(), &config.theme_id).await.unwrap();
-
-            ctx.emit_event("current_theme_updated", theme.clone());
-
-            Ok(theme)
-        }
-        Err(_) => Err(Error::CtxFail).into(),
-    }
-}
+use crate::cfg::{AudioCfg, BehaviorCfg};
 
 #[command]
 pub async fn open_audio_dir(handle: AppHandle) {

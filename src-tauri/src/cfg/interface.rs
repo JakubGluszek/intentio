@@ -8,7 +8,6 @@ use ts_rs::TS;
 #[derive(Serialize, Deserialize, TS, Debug, PartialEq, Clone)]
 #[ts(export, export_to = "../src/bindings/")]
 pub struct InterfaceConfig {
-    pub theme_id: String,
     pub display_timer_countdown: bool,
     pub idle_theme_id: String,
     pub focus_theme_id: String,
@@ -19,7 +18,6 @@ pub struct InterfaceConfig {
 impl Default for InterfaceConfig {
     fn default() -> Self {
         Self {
-            theme_id: DEFAULT_THEME.to_string(),
             display_timer_countdown: true,
             idle_theme_id: DEFAULT_THEME.to_string(),
             focus_theme_id: DEFAULT_THEME.to_string(),
@@ -33,7 +31,6 @@ impl Default for InterfaceConfig {
 #[derive(Deserialize, TS, Debug)]
 #[ts(export, export_to = "../src/bindings/")]
 pub struct InterfaceConfigForUpdate {
-    pub theme_id: Option<String>,
     pub display_timer_countdown: Option<bool>,
     pub idle_theme_id: Option<String>,
     pub focus_theme_id: Option<String>,
@@ -62,19 +59,11 @@ impl InterfaceCfg {
             Err(_) => {
                 let config = InterfaceConfig::default();
 
-                // Self::save(&config);
+                Self::save(&config);
 
                 config
             }
         }
-    }
-
-    pub fn set_current_theme(id: String) {
-        let mut config = Self::get();
-
-        config.theme_id = id;
-
-        Self::save(&config);
     }
 
     pub fn save(config: &InterfaceConfig) {
@@ -87,9 +76,6 @@ impl InterfaceCfg {
     pub fn update(ctx: Arc<Ctx>, data: InterfaceConfigForUpdate) -> InterfaceConfig {
         let mut config = Self::get();
 
-        if let Some(theme_id) = data.theme_id {
-            config.theme_id = theme_id;
-        }
         if let Some(display_timer_countdown) = data.display_timer_countdown {
             config.display_timer_countdown = display_timer_countdown;
         }
