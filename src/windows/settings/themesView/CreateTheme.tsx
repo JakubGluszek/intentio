@@ -1,20 +1,20 @@
 import React from "react";
 import { MdArrowBack } from "react-icons/md";
 import { toast } from "react-hot-toast";
-import { useForm, UseFormRegister, UseFormWatch } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { ChromePicker } from "react-color";
 import { emit } from "@tauri-apps/api/event";
 import { RiEyeCloseFill, RiEyeFill } from "react-icons/ri";
 import { useClickOutside } from "@mantine/hooks";
 
-import { Button, ModalContainer } from "@/components";
+import { Button, ColorInput, ModalContainer } from "@/components";
 import useStore from "@/store";
 import ipc from "@/ipc";
 import { ThemeForCreate } from "@/bindings/ThemeForCreate";
 import { ColorType } from "..";
 
 interface Props {
-  exit: () => void;
+  onExit: () => void;
 }
 
 const CreateTheme: React.FC<Props> = (props) => {
@@ -47,7 +47,7 @@ const CreateTheme: React.FC<Props> = (props) => {
   const onSubmit = handleSubmit(async (data) => {
     await ipc.createTheme(data).then((data) => {
       store.addTheme(data);
-      props.exit();
+      props.onExit();
       toast("Theme created");
     });
   });
@@ -64,7 +64,7 @@ const CreateTheme: React.FC<Props> = (props) => {
     <div className="grow flex flex-col gap-0.5">
       <div className="h-fit flex flex-row gap-0.5">
         <div className="window bg-window">
-          <Button onClick={() => props.exit()} transparent rounded={false}>
+          <Button onClick={() => props.onExit()} transparent rounded={false}>
             <MdArrowBack size={24} />
           </Button>
         </div>
@@ -171,41 +171,6 @@ const CreateTheme: React.FC<Props> = (props) => {
           </div>
         </form>
       </div>
-    </div>
-  );
-};
-
-interface ColorInputProps {
-  label: string;
-  type: "window_hex" | "primary_hex" | "base_hex" | "text_hex";
-  watch: UseFormWatch<ThemeForCreate>;
-  register: UseFormRegister<ThemeForCreate>;
-  onViewColorPicker: () => void;
-}
-
-const ColorInput: React.FC<ColorInputProps> = (props) => {
-  return (
-    <div className="flex flex-row items-center gap-2">
-      <label className="min-w-[64px] text-text/80" htmlFor={props.type}>
-        {props.label}
-      </label>
-      <input
-        {...props.register(props.type, {
-          required: true,
-          pattern: /^#([0-9a-f]{3}){1,2}$/i,
-        })}
-        className="border-base/60 text-sm"
-        id="text-hex"
-        autoComplete="off"
-        tabIndex={-2}
-        type="text"
-      />
-      <div
-        data-tauri-disable-drag
-        onClick={() => props.onViewColorPicker()}
-        style={{ backgroundColor: props.watch(props.type) }}
-        className="min-w-[40px] h-8 shadow-lg rounded cursor-pointer"
-      ></div>
     </div>
   );
 };

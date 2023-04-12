@@ -65,15 +65,17 @@ const ThemeView: React.FC<Props> = (props) => {
         {/* Theme operations */}
         {props.selectable === false && (
           <div className="flex flex-row gap-2 px-2">
-            <button
-              onClick={() => props.onViewEdit()}
-              className="opacity-60 hover:opacity-100 duration-75"
-              style={{
-                color: props.data.primary_hex,
-              }}
-            >
-              <MdEdit size={20} />
-            </button>
+            {!props.data.default && (
+              <button
+                onClick={() => props.onViewEdit()}
+                className="opacity-60 hover:opacity-100 duration-75"
+                style={{
+                  color: props.data.primary_hex,
+                }}
+              >
+                <MdEdit size={20} />
+              </button>
+            )}
             <button
               onClick={() => handleToggleFavorite()}
               className="opacity-60 hover:opacity-100"

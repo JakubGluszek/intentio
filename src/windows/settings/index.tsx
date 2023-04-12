@@ -29,7 +29,6 @@ const SettingsWindow: React.FC = () => {
 
   useEvents({
     interface_config_updated: (data) => store.setInterfaceConfig(data),
-    theme_updated: (data) => store.patchTheme(data.id, data),
     theme_deleted: (data) => store.removeTheme(data.id),
   });
 
@@ -58,7 +57,7 @@ const Content: React.FC = () => {
   const { panel } = React.useContext(SettingsWindowContext)!;
 
   return (
-    <div className="relative grow flex flex-col overflow-clip">
+    <div className="relative grow flex flex-col overflow-clip rounded-b">
       {panel === "Timer" ? <TimerView /> : null}
       {panel === "Audio" ? <AudioView /> : null}
       {panel === "Themes" ? <ThemesView /> : null}
@@ -77,7 +76,7 @@ const Navbar: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex flex-col justify-between window bg-window overflow-y-auto rounded-b">
+    <div className="flex flex-col justify-between window bg-window overflow-y-auto">
       <div className="flex flex-row gap-1 p-1">
         <Button
           isSelected={panel === "Timer"}

@@ -1,13 +1,13 @@
 use std::{collections::BTreeMap, sync::Arc};
 
 use serde::{Deserialize, Serialize};
-use surrealdb::sql::{Array, Datetime, Object, Value};
+use surrealdb::sql::{Datetime, Object, Value};
 use ts_rs::TS;
 
 use crate::{
     ctx::Ctx,
     database::{Creatable, Patchable},
-    prelude::{Error, Result, W},
+    prelude::{Error, Result},
     utils::{map, XTake, XTakeVal},
 };
 
@@ -138,36 +138,6 @@ impl NoteBmc {
 
     pub async fn get_multi(ctx: Arc<Ctx>) -> Result<Vec<Note>> {
         let objects = ctx.get_database().exec_select(Self::ENTITY).await?;
-
-        objects.into_iter().map(|o| o.try_into()).collect()
-    }
-
-    pub async fn get_multi_by_intent_id(
-        ctx: Arc<Ctx>,
-        intent_id: Option<String>,
-    ) -> Result<Vec<Note>> {
-        let database = ctx.get_database();
-
-        let sql = "SELECT * FROM note WHERE intent_id = $intent_id";
-
-        let vars = map!["intent_id".into() => intent_id.unwrap().into()];
-
-        let ress = database
-            .ds
-            .execute(&sql, &database.ses, Some(vars), false)
-            .await?;
-
-        let first_res = ress.into_iter().next().expect("Did not get a response");
-
-        // Get the result value as value array (fail if it is not)
-        let array: Array = W(first_res.result?).try_into()?;
-
-        // build the list of objects
-        let objects: Vec<Object> = array
-            .into_iter()
-            .map(|value| W(value).try_into())
-            .collect::<Result<Vec<_>>>()
-            .unwrap();
 
         objects.into_iter().map(|o| o.try_into()).collect()
     }

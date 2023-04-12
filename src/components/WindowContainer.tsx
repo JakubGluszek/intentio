@@ -24,6 +24,21 @@ const WindowContainer: React.FC<Props> = (props) => {
     interface_config_updated: (data) => {
       store.setInterfaceConfig(data);
     },
+    theme_updated: (data) => {
+      if (store.currentTheme?.id === data.id) {
+        ipc.setCurrentTheme(data);
+      } else if (store.getIdleTheme()?.id === data.id) {
+        ipc.setIdleTheme(data);
+      } else if (store.getFocusTheme()?.id === data.id) {
+        ipc.setFocusTheme(data);
+      } else if (store.getBreakTheme()?.id === data.id) {
+        ipc.setBreakTheme(data);
+      } else if (store.getLongBreakTheme()?.id === data.id) {
+        ipc.setLongBreakTheme(data);
+      }
+
+      store.patchTheme(data.id, data);
+    },
   });
 
   React.useEffect(() => {

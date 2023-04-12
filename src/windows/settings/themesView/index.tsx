@@ -33,9 +33,9 @@ const ThemesView: React.FC = () => {
 
   const setDefaultDisplay = () => setDisplay("themes");
 
-  if (display === "create") return <CreateTheme exit={setDefaultDisplay} />;
+  if (display === "create") return <CreateTheme onExit={setDefaultDisplay} />;
   if (display === "edit" && theme)
-    return <EditTheme data={theme} onHide={setDefaultDisplay} />;
+    return <EditTheme data={theme} onExit={setDefaultDisplay} />;
 
   if (store.themes.length === 0) return null;
 

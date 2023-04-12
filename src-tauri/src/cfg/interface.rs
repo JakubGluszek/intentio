@@ -1,6 +1,10 @@
 use std::{fs, path::Path, sync::Arc};
 
-use crate::{ctx::Ctx, prelude::DEFAULT_THEME, utils};
+use crate::{
+    ctx::Ctx,
+    prelude::{BREAK_THEME_ID, FOCUS_THEME_ID, IDLE_THEME_ID, LONG_BREAK_THEME_ID},
+    utils,
+};
 use serde::{Deserialize, Serialize};
 use serde_with_macros::skip_serializing_none;
 use ts_rs::TS;
@@ -19,10 +23,10 @@ impl Default for InterfaceConfig {
     fn default() -> Self {
         Self {
             display_timer_countdown: true,
-            idle_theme_id: DEFAULT_THEME.to_string(),
-            focus_theme_id: DEFAULT_THEME.to_string(),
-            break_theme_id: DEFAULT_THEME.to_string(),
-            long_break_theme_id: DEFAULT_THEME.to_string(),
+            idle_theme_id: IDLE_THEME_ID.to_string(),
+            focus_theme_id: FOCUS_THEME_ID.to_string(),
+            break_theme_id: BREAK_THEME_ID.to_string(),
+            long_break_theme_id: LONG_BREAK_THEME_ID.to_string(),
         }
     }
 }

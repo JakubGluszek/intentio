@@ -1,17 +1,17 @@
-use std::sync::{Arc, Mutex};
-
 use tauri::{command, AppHandle, Manager, Wry};
 
 use crate::{
     cfg::InterfaceCfg,
     ctx::Ctx,
     models::Theme,
-    state::{AppState, SessionType, TimerStateForUpdate},
+    state::{update_current_theme, AppState, SessionType, TimerStateForUpdate},
 };
 
 #[command]
-pub async fn get_current_theme(state: tauri::State<'_, Mutex<AppState>>) -> Result<Theme, ()> {
-    let state = state.lock().unwrap();
+pub async fn get_current_theme(
+    state: tauri::State<'_, tokio::sync::Mutex<AppState>>,
+) -> Result<Theme, ()> {
+    let state = state.lock().await;
 
     if state.timer.is_playing == false {
         return Ok(state.idle_theme.clone());
@@ -25,12 +25,42 @@ pub async fn get_current_theme(state: tauri::State<'_, Mutex<AppState>>) -> Resu
 }
 
 #[command]
+pub async fn set_current_theme(
+    data: Theme,
+    state: tauri::State<'_, tokio::sync::Mutex<AppState>>,
+    app: AppHandle<Wry>,
+) -> Result<(), ()> {
+    if let Ok(ctx) = Ctx::from_app(app) {
+        let mut state = state.lock().await;
+
+        if state.timer.is_playing == false {
+            state.idle_theme = data.clone();
+        } else {
+            match state.timer.session_type {
+                SessionType::Focus => {
+                    state.focus_theme = data.clone();
+                }
+                SessionType::Break => {
+                    state.break_theme = data.clone();
+                }
+                SessionType::LongBreak => {
+                    state.long_break_theme = data.clone();
+                }
+            }
+        }
+        ctx.emit_event("current_theme_updated", data);
+    }
+
+    Ok(())
+}
+
+#[command]
 pub async fn update_timer_state(
     data: TimerStateForUpdate,
     app: AppHandle<Wry>,
-    state: tauri::State<'_, Mutex<AppState>>,
+    state: tauri::State<'_, tokio::sync::Mutex<AppState>>,
 ) -> Result<(), ()> {
-    let mut state = state.lock().unwrap();
+    let mut state = state.lock().await;
 
     if let Some(session_type) = data.session_type {
         state.timer.session_type = session_type;
@@ -50,12 +80,12 @@ pub async fn update_timer_state(
 pub async fn set_idle_theme(
     data: Theme,
     app: AppHandle<Wry>,
-    state: tauri::State<'_, Mutex<AppState>>,
+    state: tauri::State<'_, tokio::sync::Mutex<AppState>>,
 ) -> Result<(), ()> {
     if let Ok(ctx) = Ctx::from_app(app.app_handle()) {
         InterfaceCfg::set_idle_theme_id(ctx.clone(), data.id.clone());
 
-        let mut state = state.lock().unwrap();
+        let mut state = state.lock().await;
         state.idle_theme = data;
 
         update_current_theme(ctx, &state);
@@ -67,12 +97,12 @@ pub async fn set_idle_theme(
 pub async fn set_focus_theme(
     data: Theme,
     app: AppHandle<Wry>,
-    state: tauri::State<'_, Mutex<AppState>>,
+    state: tauri::State<'_, tokio::sync::Mutex<AppState>>,
 ) -> Result<(), ()> {
     if let Ok(ctx) = Ctx::from_app(app.app_handle()) {
         InterfaceCfg::set_focus_theme_id(ctx.clone(), data.id.clone());
 
-        let mut state = state.lock().unwrap();
+        let mut state = state.lock().await;
         state.focus_theme = data;
 
         update_current_theme(ctx, &state);
@@ -84,12 +114,12 @@ pub async fn set_focus_theme(
 pub async fn set_break_theme(
     data: Theme,
     app: AppHandle<Wry>,
-    state: tauri::State<'_, Mutex<AppState>>,
+    state: tauri::State<'_, tokio::sync::Mutex<AppState>>,
 ) -> Result<(), ()> {
     if let Ok(ctx) = Ctx::from_app(app.app_handle()) {
         InterfaceCfg::set_break_theme_id(ctx.clone(), data.id.clone());
 
-        let mut state = state.lock().unwrap();
+        let mut state = state.lock().await;
         state.break_theme = data;
 
         update_current_theme(ctx, &state);
@@ -101,33 +131,15 @@ pub async fn set_break_theme(
 pub async fn set_long_break_theme(
     data: Theme,
     app: AppHandle<Wry>,
-    state: tauri::State<'_, Mutex<AppState>>,
+    state: tauri::State<'_, tokio::sync::Mutex<AppState>>,
 ) -> Result<(), ()> {
     if let Ok(ctx) = Ctx::from_app(app.app_handle()) {
         InterfaceCfg::set_long_break_theme_id(ctx.clone(), data.id.clone());
 
-        let mut state = state.lock().unwrap();
+        let mut state = state.lock().await;
         state.long_break_theme = data;
 
         update_current_theme(ctx, &state);
     }
     Ok(())
-}
-
-fn update_current_theme(ctx: Arc<Ctx>, state: &AppState) {
-    if state.timer.is_playing == false {
-        ctx.emit_event("current_theme_updated", state.idle_theme.clone());
-    } else {
-        match state.timer.session_type {
-            SessionType::Focus => {
-                ctx.emit_event("current_theme_updated", state.focus_theme.clone())
-            }
-            SessionType::Break => {
-                ctx.emit_event("current_theme_updated", state.break_theme.clone())
-            }
-            SessionType::LongBreak => {
-                ctx.emit_event("current_theme_updated", state.long_break_theme.clone())
-            }
-        }
-    }
 }

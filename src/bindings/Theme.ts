@@ -3,6 +3,7 @@
 export interface Theme {
   id: string;
   name: string;
+  default: boolean;
   favorite: boolean;
   window_hex: string;
   base_hex: string;

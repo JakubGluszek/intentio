@@ -107,10 +107,6 @@ pub struct IntentBmc {}
 impl IntentBmc {
     const ENTITY: &'static str = "intent";
 
-    pub async fn get(ctx: Arc<Ctx>, id: &str) -> Result<Intent> {
-        ctx.get_database().exec_get(id).await?.try_into()
-    }
-
     pub async fn create(ctx: Arc<Ctx>, data: IntentForCreate) -> Result<Intent> {
         let obj = ctx.get_database().exec_create(Self::ENTITY, data).await?;
 

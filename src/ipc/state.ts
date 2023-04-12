@@ -7,6 +7,10 @@ export const updateTimerState = async (data: Partial<TimerStateForUpdate>) => {
   return await invoke("update_timer_state", { data });
 };
 
+export const setCurrentTheme = async (data: Theme) => {
+  return await invoke("set_current_theme", { data });
+};
+
 export const setIdleTheme = async (data: Theme) => {
   return await invoke("set_idle_theme", { data });
 };

@@ -1,4 +1,4 @@
-use std::{fs, path::Path, sync::Mutex};
+use std::{fs, path::Path};
 
 use tauri::{App, AppHandle, Manager};
 
@@ -57,7 +57,7 @@ async fn setup_state(app: &mut App) {
             long_break_theme,
         };
 
-        app.manage(Mutex::new(app_state));
+        app.manage(tokio::sync::Mutex::new(app_state));
     }
 }
 

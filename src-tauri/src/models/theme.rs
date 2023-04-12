@@ -19,6 +19,7 @@ use super::ModelDeleteResultData;
 pub struct Theme {
     pub id: String,
     pub name: String,
+    pub default: bool,
     pub favorite: bool,
     pub window_hex: String,
     pub base_hex: String,
@@ -32,6 +33,7 @@ impl TryFrom<Object> for Theme {
         let theme = Theme {
             id: val.x_take_val("id")?,
             name: val.x_take_val("name")?,
+            default: val.x_take_val("default")?,
             favorite: val.x_take_val("favorite")?,
             window_hex: val.x_take_val("window_hex")?,
             base_hex: val.x_take_val("base_hex")?,
@@ -57,6 +59,7 @@ impl From<ThemeForCreate> for Value {
     fn from(val: ThemeForCreate) -> Value {
         let data = map![
             "name".into() => val.name.into(),
+            "default".into() => false.into(),
             "favorite".into() => false.into(),
             "window_hex".into() => val.window_hex.into(),
             "base_hex".into() => val.base_hex.into(),
@@ -121,6 +124,7 @@ impl ThemeBmc {
             let sql = "
                 CREATE theme:abyss CONTENT {
                     name: 'abyss',
+                    default: true,
                     favorite: false,
                     window_hex: '#222831',
                     base_hex: '#393E46',
@@ -129,6 +133,7 @@ impl ThemeBmc {
                 };
                 CREATE theme:forest CONTENT {
                     name: 'forest',
+                    default: true,
                     favorite: false,
                     window_hex: '#002a37',
                     base_hex: '#09494e',
@@ -137,6 +142,7 @@ impl ThemeBmc {
                 };
                 CREATE theme:dracula CONTENT {
                     name: 'dracula',
+                    default: true,
                     window_hex: '#282a36',
                     favorite: false,
                     base_hex: '#383a59',
@@ -145,6 +151,7 @@ impl ThemeBmc {
                 };
                 CREATE theme:space CONTENT {
                     name: 'space',
+                    default: true,
                     favorite: false,
                     window_hex: '#161853',
                     base_hex: '#292C6D',
@@ -153,6 +160,7 @@ impl ThemeBmc {
                 };
                 CREATE theme:blaze CONTENT {
                     name: 'blaze',
+                    default: true,
                     favorite: false,
                     window_hex: '#112B3C',
                     base_hex: '#205375',

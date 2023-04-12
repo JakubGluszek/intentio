@@ -47,6 +47,7 @@ fn main() -> Result<()> {
         .invoke_handler(tauri::generate_handler![
             // state
             get_current_theme,
+            set_current_theme,
             update_timer_state,
             set_idle_theme,
             set_focus_theme,
