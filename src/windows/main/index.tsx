@@ -8,7 +8,6 @@ import ipc from "@/ipc";
 import useStore from "@/store";
 import config from "@/config";
 import { Button, WindowContainer } from "@/components";
-import { useEvents } from "@/hooks";
 import { MainWindowContext, MainWindowProvider } from "@/contexts";
 import TimerView from "./TimerView";
 import Sidebar from "./sidebar";
@@ -20,11 +19,6 @@ const MainWindow: React.FC = () => {
     ipc.getTimerConfig().then((data) => store.setTimerConfig(data));
     ipc.getScripts().then((data) => store.setScripts(data));
   }, []);
-
-  useEvents({
-    timer_config_updated: (data) => store.setTimerConfig(data),
-    interface_config_updated: (data) => store.setInterfaceConfig(data),
-  });
 
   if (!store.timerConfig) return null;
 

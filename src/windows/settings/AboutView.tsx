@@ -8,7 +8,7 @@ import { IoIosBug, IoIosGlobe, IoLogoGithub } from "react-icons/io";
 
 const AboutView: React.FC = () => {
   return (
-    <div className="grow flex flex-col justify-between pb-2 text-text/80 window bg-window">
+    <div className="grow flex flex-col justify-between text-text/80 window bg-window">
       <div className="flex-1 text-primary">
         <IntentioLogo />
         <div className="text-center text-sm -translate-y-3 text-text/80">

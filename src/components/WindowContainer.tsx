@@ -24,6 +24,7 @@ const WindowContainer: React.FC<Props> = (props) => {
     interface_config_updated: (data) => {
       store.setInterfaceConfig(data);
     },
+    timer_config_updated: (data) => store.setTimerConfig(data),
     theme_updated: (data) => {
       if (store.currentTheme?.id === data.id) {
         ipc.setCurrentTheme(data);

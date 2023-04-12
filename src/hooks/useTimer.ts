@@ -34,13 +34,14 @@ export const useTimer = (
   const [duration, setDuration] = React.useState(config.focus_duration * 60);
   const [startedAt, setStartedAt] = React.useState<string>(); // epoch in ms
   const [iterations, setIterations] = React.useState(0);
+  const [elapsedTime, setElapsedTime] = React.useState(0);
 
   const resume = React.useCallback(() => {
     if (!startedAt) setStartedAt(new Date().getTime().toString());
     setIsPlaying(true);
     callbacks.onResumed?.({ type: sessionType });
     callbacks.onStateUpdate?.({ isPlaying: true });
-  }, [sessionType, callbacks]);
+  }, [sessionType, callbacks, startedAt]);
 
   const pause = React.useCallback(() => {
     setIsPlaying(false);
@@ -62,7 +63,7 @@ export const useTimer = (
       switchSession(manual ?? false);
       callbacks.onSkipped?.({ type: sessionType });
     },
-    [sessionType, isPlaying]
+    [sessionType, isPlaying, config, startedAt, elapsedTime]
   );
 
   const switchSession = React.useCallback(
@@ -95,32 +96,33 @@ export const useTimer = (
       callbacks.onStateUpdate?.({ type: newSessionType, isPlaying: false });
 
       if (!manual) {
-        if (sessionType === "Focus" && config.auto_start_focus) resume();
+        if (newSessionType === "Focus" && config.auto_start_focus) resume();
         else if (config.auto_start_breaks) resume();
       }
     },
-    [sessionType, isPlaying]
+    [sessionType, config, isPlaying, startedAt]
   );
 
-  const saveSession = () => {
+  const onComplete = React.useCallback(() => {
+    skip(false);
+    callbacks.onCompleted?.({ type: sessionType });
+  }, [sessionType, isPlaying, config, startedAt, elapsedTime]);
+
+  const { reset } = useElapsedTime({
+    isPlaying,
+    duration,
+    onComplete: onComplete,
+    onUpdate: (elapsedTime) => setElapsedTime(elapsedTime),
+  });
+
+  const saveSession = React.useCallback(() => {
     let session = {
       elapsedTime: ~~elapsedTime + 1,
       startedAt,
       type: sessionType,
     };
     callbacks.onSaveSession(session);
-  };
-
-  const onComplete = React.useCallback(() => {
-    skip(false);
-    callbacks.onCompleted?.({ type: sessionType });
-  }, [sessionType, isPlaying]);
-
-  const { reset, elapsedTime } = useElapsedTime({
-    isPlaying,
-    duration,
-    onComplete: onComplete,
-  });
+  }, [elapsedTime, startedAt, sessionType]);
 
   React.useEffect(() => {
     let newDuration = duration;

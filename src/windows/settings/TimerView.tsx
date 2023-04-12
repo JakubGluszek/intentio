@@ -11,11 +11,8 @@ const TimerView: React.FC = () => {
 
   const config = store.timerConfig;
 
-  const updateConfig = async (data: Partial<TimerConfigForUpdate>) => {
-    const result = await ipc.updateTimerConfig(data);
-    store.setTimerConfig(result);
-    return result;
-  };
+  const updateConfig = async (data: Partial<TimerConfigForUpdate>) =>
+    await ipc.updateTimerConfig(data);
 
   React.useEffect(() => {
     ipc.getTimerConfig().then((data) => store.setTimerConfig(data));
@@ -28,7 +25,7 @@ const TimerView: React.FC = () => {
       <div className="max-h-0 overflow-y">
         <div className="flex flex-col gap-2 p-2">
           <BooleanView
-            label="Auto Start Pomodoros"
+            label="Auto Start Focus"
             checked={config.auto_start_focus}
             onChange={(value) =>
               updateConfig({

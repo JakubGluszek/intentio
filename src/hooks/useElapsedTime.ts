@@ -115,7 +115,7 @@ export const useElapsedTime = ({
   }, [isPlaying]);
 
   React.useEffect(() => {
-    onUpdate?.(Math.ceil(elapsedTime));
+    onUpdate?.(elapsedTime);
 
     if (duration && elapsedTime >= duration) {
       totalElapsedTimeRef.current += duration * 1000;
