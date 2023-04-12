@@ -31,7 +31,7 @@ const ScriptContextMenu: React.FC<ScriptContextMenuProps> = (props) => {
 
   return (
     <ContextMenu {...props}>
-      <React.Fragment>
+      <div className="flex flex-col gap-0.5 w-28">
         <Button
           onClick={() => {
             props.runScript();
@@ -64,7 +64,7 @@ const ScriptContextMenu: React.FC<ScriptContextMenuProps> = (props) => {
             {viewConfirmDelete ? "Confirm" : "Delete"}
           </div>
         </Button>
-      </React.Fragment>
+      </div>
     </ContextMenu>
   );
 };

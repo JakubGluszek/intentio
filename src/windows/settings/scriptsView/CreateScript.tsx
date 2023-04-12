@@ -9,10 +9,10 @@ import utils from "@/utils";
 import { ScriptForCreate } from "@/bindings/ScriptForCreate";
 
 interface CreateScriptViewProps {
-  exit: () => void;
+  onExit: () => void;
 }
 
-const CreateScriptView: React.FC<CreateScriptViewProps> = (props) => {
+const CreateScript: React.FC<CreateScriptViewProps> = (props) => {
   const [body, setBody] = React.useState("");
 
   const store = useStore();
@@ -21,7 +21,7 @@ const CreateScriptView: React.FC<CreateScriptViewProps> = (props) => {
   const onSubmit = handleSubmit((data) => {
     ipc.createScript({ ...data, body }).then((data) => {
       store.addScript(data);
-      props.exit();
+      props.onExit();
       toast("Script saved");
     });
   });
@@ -29,22 +29,25 @@ const CreateScriptView: React.FC<CreateScriptViewProps> = (props) => {
   return (
     <form
       onSubmit={onSubmit}
-      className="flex flex-col gap-2 p-1.5 bg-window rounded shadow text-sm"
+      className="grow flex flex-col gap-1.5 p-1.5 window bg-window rounded-b"
     >
       <input
-        className="border-transparent"
         placeholder="Script label"
         autoComplete="off"
         maxLength={24}
         {...register("label", { required: true, minLength: 1, maxLength: 24 })}
       />
       <Editor value={body} onChange={setBody} />
-      <div className="h-6 flex flex-row items-center justify-between">
-        <Button transparent onClick={() => props.exit()}>
+      <div className="h-7 flex flex-row items-center justify-between">
+        <Button onClick={() => props.onExit()} transparent highlight={false}>
           Exit
         </Button>
         <div className="h-full flex flex-row items-center gap-2">
-          <Button transparent onClick={async () => utils.executeScript(body)}>
+          <Button
+            onClick={() => utils.executeScript(body)}
+            transparent
+            highlight={false}
+          >
             Test
           </Button>
           <Button type="submit" style={{ width: "fit-content" }}>
@@ -56,4 +59,4 @@ const CreateScriptView: React.FC<CreateScriptViewProps> = (props) => {
   );
 };
 
-export default CreateScriptView;
+export default CreateScript;

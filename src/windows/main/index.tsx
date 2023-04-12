@@ -11,6 +11,7 @@ import { Button, WindowContainer } from "@/components";
 import { MainWindowContext, MainWindowProvider } from "@/contexts";
 import TimerView from "./TimerView";
 import Sidebar from "./sidebar";
+import { useEvents } from "@/hooks";
 
 const MainWindow: React.FC = () => {
   const store = useStore();
@@ -19,6 +20,8 @@ const MainWindow: React.FC = () => {
     ipc.getTimerConfig().then((data) => store.setTimerConfig(data));
     ipc.getScripts().then((data) => store.setScripts(data));
   }, []);
+
+  useEvents({ script_updated: (data) => store.patchScript(data.id, data) });
 
   if (!store.timerConfig) return null;
 

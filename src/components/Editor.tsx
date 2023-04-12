@@ -30,12 +30,12 @@ const Editor: React.FC<Props> = (props) => {
       value={props.value}
       autoComplete="off"
       language="shell"
-      placeholder="Enter your bash code here"
       onChange={(evn) => props.onChange(evn.target.value)}
       padding={8}
-      className="bg-darker/20 rounded"
+      placeholder="Enter your script here"
+      className="grow bg-darker/20 rounded-sm border-2 border-primary/20 focus-within:border-primary/40"
       style={{
-        fontSize: 12,
+        fontSize: 14,
         fontFamily:
           "ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace",
       }}
