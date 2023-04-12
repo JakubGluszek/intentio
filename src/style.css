@@ -86,7 +86,7 @@
   }
 
   input {
-    @apply w-full bg-darker/20 border-2 border-window focus:border-primary/40 outline-none py-1 px-2 rounded shadow-inner text-text transition-colors;
+    @apply w-full bg-darker/20 border-2 border-window focus:border-primary/40 outline-none py-1 px-2 rounded-sm shadow-inner text-text transition-colors;
   }
 
   input::placeholder {
@@ -119,6 +119,6 @@
   }
 
   .window {
-    @apply bg-window/95 border-2 border-primary/20;
+    @apply bg-window/95 border-2 border-base;
   }
 }

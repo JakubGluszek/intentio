@@ -5,6 +5,7 @@ import {
   MdFavoriteBorder,
   MdInfoOutline,
 } from "react-icons/md";
+import { clsx } from "@mantine/core";
 
 import useStore from "@/store";
 import ipc from "@/ipc";
@@ -13,7 +14,6 @@ import { Theme } from "@/bindings/Theme";
 import EditTheme from "./EditTheme";
 import CreateTheme from "./CreateTheme";
 import ThemesList from "./ThemesList";
-import { clsx } from "@mantine/core";
 
 type ThemeState = "idle" | "focus" | "break" | "long break";
 type Display = "themes" | "create" | "edit";
@@ -33,7 +33,7 @@ const ThemesView: React.FC = () => {
 
   const setDefaultDisplay = () => setDisplay("themes");
 
-  if (display === "create") return <CreateTheme onHide={setDefaultDisplay} />;
+  if (display === "create") return <CreateTheme exit={setDefaultDisplay} />;
   if (display === "edit" && theme)
     return <EditTheme data={theme} onHide={setDefaultDisplay} />;
 
