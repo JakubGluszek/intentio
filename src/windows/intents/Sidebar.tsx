@@ -59,6 +59,7 @@ const Sidebar: React.FC<Props> = (props) => {
           </Button>
           {/* Filter by archived_at property */}
           <Tooltip
+            classNames={{ tooltip: "tooltip" }}
             withArrow
             label={viewArchived ? "Hide Archived" : "View Archived"}
           >

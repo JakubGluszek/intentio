@@ -38,7 +38,7 @@ const AboutView: React.FC = () => {
       </div>
       <div className="flex flex-row items-center justify-between p-2">
         <div className="flex flex-row gap-1">
-          <Tooltip withArrow label="Home page">
+          <Tooltip classNames={{ tooltip: "tooltip" }} label="Home page">
             <a
               className="mr-auto"
               tabIndex={-2}
@@ -51,7 +51,11 @@ const AboutView: React.FC = () => {
               </Button>
             </a>
           </Tooltip>
-          <Tooltip withArrow label="Discord server">
+          <Tooltip
+            withArrow
+            label="Discord server"
+            classNames={{ tooltip: "tooltip" }}
+          >
             <a
               className="mr-auto"
               tabIndex={-2}
@@ -67,7 +71,11 @@ const AboutView: React.FC = () => {
         </div>
 
         <div className="flex flex-row gap-1">
-          <Tooltip withArrow label="Source code">
+          <Tooltip
+            withArrow
+            label="Source code"
+            classNames={{ tooltip: "tooltip" }}
+          >
             <a
               tabIndex={-2}
               href={config.about.sourceCode}
@@ -79,7 +87,11 @@ const AboutView: React.FC = () => {
               </Button>
             </a>
           </Tooltip>
-          <Tooltip withArrow label="Report a bug">
+          <Tooltip
+            withArrow
+            label="Report a bug"
+            classNames={{ tooltip: "tooltip" }}
+          >
             <a
               tabIndex={-2}
               href={config.about.sourceCode + "/issues"}

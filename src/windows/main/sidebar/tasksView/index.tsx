@@ -186,7 +186,10 @@ interface ToggleTasksViewProps {
 
 const ToggleTasksView: React.FC<ToggleTasksViewProps> = (props) => {
   return (
-    <Tooltip label={props.viewCompleted ? "View incomplete" : "View completed"}>
+    <Tooltip
+      label={props.viewCompleted ? "View incomplete" : "View completed"}
+      classNames={{ tooltip: "tooltip" }}
+    >
       <motion.div className="window" {...motions.scaleIn}>
         <Button onClick={() => props.toggleTasks()} transparent>
           {props.viewCompleted ? (

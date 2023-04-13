@@ -32,7 +32,10 @@ const ScriptView: React.FC<ScriptView> = (props) => {
       onContextMenu={onContextMenuHandler}
     >
       <div className="w-full flex flex-row items-center gap-2">
-        <Tooltip label={props.data.active ? "Active" : "Disabled"}>
+        <Tooltip
+          label={props.data.active ? "Active" : "Disabled"}
+          classNames={{ tooltip: "tooltip" }}
+        >
           <button
             className={clsx(
               "pt-0.5",
