@@ -33,7 +33,7 @@ const EditScriptEvents: React.FC<Props> = (props) => {
           .map(([key, value]: [string, boolean]) => (
             <div
               key={key}
-              className="flex flex-row items-center justify-between bg-base rounded-sm shadow p-1 px-1.5"
+              className="flex flex-row items-center justify-between bg-base/50 border-2 border-base rounded-sm shadow p-0.5 px-1.5"
             >
               <label className="w-full" htmlFor={key}>
                 {utils.capitalize(key.replaceAll("_", " "))}

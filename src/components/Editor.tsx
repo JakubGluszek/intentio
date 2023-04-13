@@ -22,24 +22,26 @@ const Editor: React.FC<Props> = (props) => {
   }, []);
 
   return (
-    <CodeEditor
-      data-color-mode={
-        Color(store.currentTheme?.window_hex).isDark() ? "dark" : "light"
-      }
-      ref={ref}
-      value={props.value}
-      autoComplete="off"
-      language="shell"
-      onChange={(evn) => props.onChange(evn.target.value)}
-      padding={8}
-      placeholder="Enter your script here"
-      className="grow bg-darker/20 rounded-sm border-2 border-primary/20 focus-within:border-primary/40"
-      style={{
-        fontSize: 14,
-        fontFamily:
-          "ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace",
-      }}
-    />
+    <div className="grow flex bg-window rounded-sm border-2 border-primary/20 focus-within:border-primary/40">
+      <CodeEditor
+        data-color-mode={
+          Color(store.currentTheme?.window_hex).isDark() ? "dark" : "light"
+        }
+        ref={ref}
+        value={props.value}
+        autoComplete="off"
+        language="shell"
+        onChange={(evn) => props.onChange(evn.target.value)}
+        padding={8}
+        placeholder="Enter your script here"
+        className="grow"
+        style={{
+          fontSize: 14,
+          fontFamily:
+            "ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace",
+        }}
+      />
+    </div>
   );
 };
 
