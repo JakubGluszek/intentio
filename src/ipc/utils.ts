@@ -5,7 +5,6 @@ export const getCurrentTheme = async () => {
   return await invoke<Theme>("get_current_theme");
 };
 
-// remove this if howler.js is implemented instead of calling tauri command
 export const playAudio = async (path?: string) => {
   return await invoke("play_audio", { audio: path });
 };

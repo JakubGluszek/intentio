@@ -5,7 +5,7 @@ use crate::models::{ModelDeleteResultData, ThemeBmc, ThemeForCreate, ThemeForUpd
 use crate::prelude::{
     Error, Result, BREAK_THEME_ID, FOCUS_THEME_ID, IDLE_THEME_ID, LONG_BREAK_THEME_ID,
 };
-use crate::state::{update_current_theme, AppState};
+use crate::state::AppState;
 use crate::{ctx::Ctx, models::Theme};
 use tauri::{command, AppHandle, Wry};
 
@@ -85,7 +85,7 @@ pub async fn delete_theme(
                         LONG_BREAK_THEME_ID.to_string(),
                     );
                 }
-                update_current_theme(ctx, &state);
+                state.update_current_theme(ctx);
                 Ok(data)
             }
             Err(err) => Err(err).into(),

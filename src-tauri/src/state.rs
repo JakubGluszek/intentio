@@ -43,19 +43,21 @@ pub struct AppState {
     pub long_break_theme: Theme,
 }
 
-pub fn update_current_theme(ctx: Arc<Ctx>, state: &AppState) {
-    if state.timer.is_playing == false {
-        ctx.emit_event("current_theme_updated", state.idle_theme.clone());
-    } else {
-        match state.timer.session_type {
-            SessionType::Focus => {
-                ctx.emit_event("current_theme_updated", state.focus_theme.clone())
-            }
-            SessionType::Break => {
-                ctx.emit_event("current_theme_updated", state.break_theme.clone())
-            }
-            SessionType::LongBreak => {
-                ctx.emit_event("current_theme_updated", state.long_break_theme.clone())
+impl AppState {
+    pub fn update_current_theme(self: &AppState, ctx: Arc<Ctx>) {
+        if self.timer.is_playing == false {
+            ctx.emit_event("current_theme_updated", self.idle_theme.clone());
+        } else {
+            match self.timer.session_type {
+                SessionType::Focus => {
+                    ctx.emit_event("current_theme_updated", self.focus_theme.clone())
+                }
+                SessionType::Break => {
+                    ctx.emit_event("current_theme_updated", self.break_theme.clone())
+                }
+                SessionType::LongBreak => {
+                    ctx.emit_event("current_theme_updated", self.long_break_theme.clone())
+                }
             }
         }
     }

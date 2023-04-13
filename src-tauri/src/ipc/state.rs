@@ -4,7 +4,7 @@ use crate::{
     cfg::InterfaceCfg,
     ctx::Ctx,
     models::Theme,
-    state::{update_current_theme, AppState, SessionType, TimerStateForUpdate},
+    state::{AppState, SessionType, TimerStateForUpdate},
 };
 
 #[command]
@@ -70,7 +70,7 @@ pub async fn update_timer_state(
     }
 
     if let Ok(ctx) = Ctx::from_app(app) {
-        update_current_theme(ctx, &state);
+        state.update_current_theme(ctx);
     }
 
     Ok(())
@@ -88,7 +88,7 @@ pub async fn set_idle_theme(
         let mut state = state.lock().await;
         state.idle_theme = data;
 
-        update_current_theme(ctx, &state);
+        state.update_current_theme(ctx);
     }
     Ok(())
 }
@@ -105,7 +105,7 @@ pub async fn set_focus_theme(
         let mut state = state.lock().await;
         state.focus_theme = data;
 
-        update_current_theme(ctx, &state);
+        state.update_current_theme(ctx);
     }
     Ok(())
 }
@@ -122,7 +122,7 @@ pub async fn set_break_theme(
         let mut state = state.lock().await;
         state.break_theme = data;
 
-        update_current_theme(ctx, &state);
+        state.update_current_theme(ctx);
     }
     Ok(())
 }
@@ -139,7 +139,7 @@ pub async fn set_long_break_theme(
         let mut state = state.lock().await;
         state.long_break_theme = data;
 
-        update_current_theme(ctx, &state);
+        state.update_current_theme(ctx);
     }
     Ok(())
 }
