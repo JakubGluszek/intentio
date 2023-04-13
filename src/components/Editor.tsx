@@ -1,8 +1,12 @@
 import React from "react";
-import CodeEditor from "@uiw/react-textarea-code-editor";
+import CodeMirror from "@uiw/react-codemirror";
+import { langs } from "@uiw/codemirror-extensions-langs";
+import { createTheme } from "@uiw/codemirror-themes";
+import { tags as t } from "@lezer/highlight";
 import Color from "color";
 
 import useStore from "@/store";
+import { Theme } from "@/bindings/Theme";
 
 interface Props {
   value: string;
@@ -10,39 +14,47 @@ interface Props {
 }
 
 const Editor: React.FC<Props> = (props) => {
+  const [height, setHeight] = React.useState(0);
+
   const store = useStore();
-  const ref = React.useRef<HTMLTextAreaElement | null>(null);
+  const containerRef = React.useRef<HTMLDivElement | null>(null);
 
   React.useEffect(() => {
-    ref.current?.parentElement?.style.setProperty(
-      "background-color",
-      "rgba(0, 0, 0, 0.2)",
-      "important"
-    );
+    containerRef.current && setHeight(containerRef.current.clientHeight);
   }, []);
 
   return (
-    <div className="grow flex bg-window rounded-sm border-2 border-primary/20 focus-within:border-primary/40">
-      <CodeEditor
-        data-color-mode={
-          Color(store.currentTheme?.window_hex).isDark() ? "dark" : "light"
-        }
-        ref={ref}
+    <div ref={containerRef} className="grow window bg-window text-sm">
+      <CodeMirror
         value={props.value}
-        autoComplete="off"
-        language="shell"
-        onChange={(evn) => props.onChange(evn.target.value)}
-        padding={8}
-        placeholder="Enter your script here"
-        className="grow"
-        style={{
-          fontSize: 14,
-          fontFamily:
-            "ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace",
-        }}
+        onChange={(value) => props.onChange(value)}
+        extensions={[langs.markdown()]}
+        height={`${height}px`}
+        theme={makeCustomTheme(store.currentTheme!)}
+        basicSetup={{ lineNumbers: false, foldGutter: false }}
+        data-tauri-disable-drag
       />
     </div>
   );
 };
+
+const makeCustomTheme = (data: Theme) =>
+  createTheme({
+    theme: "light",
+    settings: {
+      background: data.window_hex,
+      foreground: data.text_hex,
+      caret: data.primary_hex,
+      selection: "#036dd626",
+      selectionMatch: "#036dd626",
+      lineHighlight: "#8a91991a",
+    },
+    styles: [
+      { tag: t.comment, color: Color(data.base_hex).lighten(0.6).hex() },
+      { tag: t.variableName, color: data.primary_hex },
+      { tag: t.keyword, color: Color(data.primary_hex).negate().hex() },
+      { tag: t.typeName, color: Color(data.primary_hex).negate().hex() },
+    ],
+  });
 
 export default Editor;

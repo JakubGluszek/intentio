@@ -39,13 +39,13 @@ const EditScript: React.FC<Props> = (props) => {
     <form onSubmit={onSubmit} className="grow flex flex-col gap-0.5">
       <input
         placeholder="Script label"
-        className="p-1.5 window bg-window"
+        className="window bg-window"
         autoComplete="off"
         maxLength={24}
         {...register("label", { required: true, minLength: 1, maxLength: 24 })}
       />
       <Editor value={body} onChange={setBody} />
-      <div className="h-fit flex flex-row items-center justify-between p-1 window bg-window">
+      <div className="h-10 flex flex-row items-center justify-between window bg-window">
         <Button transparent highlight={false} onClick={() => props.onExit()}>
           Exit
         </Button>

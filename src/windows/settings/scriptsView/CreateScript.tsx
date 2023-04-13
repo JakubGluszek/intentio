@@ -29,16 +29,17 @@ const CreateScript: React.FC<CreateScriptViewProps> = (props) => {
   return (
     <form
       onSubmit={onSubmit}
-      className="grow flex flex-col gap-1.5 p-1.5 window bg-window rounded-b"
+      className="grow flex flex-col gap-0.5"
     >
       <input
         placeholder="Script label"
+        className="window bg-window"
         autoComplete="off"
         maxLength={24}
         {...register("label", { required: true, minLength: 1, maxLength: 24 })}
       />
       <Editor value={body} onChange={setBody} />
-      <div className="h-7 flex flex-row items-center justify-between">
+      <div className="h-10 flex flex-row items-center justify-between window bg-window">
         <Button onClick={() => props.onExit()} transparent highlight={false}>
           Exit
         </Button>
