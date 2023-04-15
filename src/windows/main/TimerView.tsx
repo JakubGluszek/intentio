@@ -1,20 +1,16 @@
 import React from "react";
 import { TbMinimize } from "react-icons/tb";
 import { clsx } from "@mantine/core";
-import { toast } from "react-hot-toast";
 import { AnimatePresence, motion } from "framer-motion";
 
-import utils from "@/utils";
-import ipc from "@/ipc";
-import { useTimer } from "@/hooks";
 import { Button, CircleTimer, CompactTimer } from "@/components";
 import useStore from "@/store";
 import { MainWindowContext } from "@/contexts";
-import { TimerConfig } from "@/bindings/TimerConfig";
 import { Intent } from "@/bindings/Intent";
+import { Timer } from "@/hooks/useTimer";
 
 interface Props {
-  config: TimerConfig;
+  data: Timer;
 }
 
 const TimerView: React.FC<Props> = (props) => {
@@ -23,64 +19,9 @@ const TimerView: React.FC<Props> = (props) => {
 
   const store = useStore();
 
-  const timer = useTimer(props.config, {
-    onStateUpdate: (state) =>
-      ipc.updateTimerState({
-        session_type: state.type,
-        is_playing: state.isPlaying,
-      }),
-    onSaveSession: (session) => {
-      if (
-        session.type === "Focus" &&
-        session.elapsedTime &&
-        session.elapsedTime >= 60 &&
-        session.startedAt
-      ) {
-        ipc
-          .createSession({
-            duration: ~~(session.elapsedTime! / 60),
-            started_at: session.startedAt,
-            intent_id: store.currentIntent?.id!,
-          })
-          .then(() => toast("Session saved"));
-      }
-    },
-    onCompleted: (session) => {
-      ipc.playAudio();
-
-      store.scripts.forEach(
-        (script) =>
-          script.active &&
-          (session.type === "Focus"
-            ? script.run_on_session_end
-            : script.run_on_break_end) &&
-          utils.executeScript(script.body)
-      );
-    },
-    onResumed: (session) => {
-      store.scripts.forEach(
-        (script) =>
-          script.active &&
-          (session.type === "Focus"
-            ? script.run_on_session_start
-            : script.run_on_break_start) &&
-          utils.executeScript(script.body)
-      );
-    },
-    onPaused: (session) => {
-      store.scripts.forEach(
-        (script) =>
-          script.active &&
-          (session.type === "Focus"
-            ? script.run_on_session_pause
-            : script.run_on_break_pause) &&
-          utils.executeScript(script.body)
-      );
-    },
-  });
-
   const displayTimeLeft =
     store.interfaceConfig?.display_timer_countdown ?? true;
+
   const theme = store.currentTheme;
 
   if (!theme) return null;
@@ -91,26 +32,26 @@ const TimerView: React.FC<Props> = (props) => {
         <motion.div
           className="grow flex flex-col gap-0.5"
           transition={{ duration: 0.3 }}
-          initial={{ width: "0%", opacity: 0 }}
-          animate={{ width: "100%", opacity: 1 }}
+          initial={{ width: "0%", opacity: 0, translateX: 128 }}
+          animate={{ width: "100%", opacity: 1, translateX: 0 }}
           exit={{ width: "0%", opacity: 0, translateX: 128 }}
         >
           {isCompact ? (
             <CompactTimer
               displayTimeLeft={displayTimeLeft}
               theme={theme}
-              {...timer}
+              {...props.data}
             />
           ) : (
             <CircleTimer
               displayTimeLeft={displayTimeLeft}
               theme={theme}
-              {...timer}
+              {...props.data}
             />
           )}
           <TimerDetails
             isCompact={isCompact}
-            iterations={timer.iterations}
+            iterations={props.data.iterations}
             intent={store.currentIntent}
             toggleIsCompact={toggleIsCompact}
           />

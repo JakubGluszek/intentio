@@ -119,7 +119,7 @@
   }
 
   .window {
-    @apply bg-window/95 border-2 border-base;
+    @apply bg-window/95 border-2 border-primary/20 transition-colors;
   }
 
   .tooltip {

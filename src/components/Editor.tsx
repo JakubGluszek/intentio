@@ -10,6 +10,7 @@ import { Theme } from "@/bindings/Theme";
 
 interface Props {
   value: string;
+  lang: "shell" | "md";
   onChange: (code: string) => void;
 }
 
@@ -28,7 +29,7 @@ const Editor: React.FC<Props> = (props) => {
       <CodeMirror
         value={props.value}
         onChange={(value) => props.onChange(value)}
-        extensions={[langs.markdown()]}
+        extensions={props.lang === "md" ? [langs.markdown()] : [langs.shell()]}
         height={`${height}px`}
         theme={makeCustomTheme(store.currentTheme!)}
         basicSetup={{ lineNumbers: false, foldGutter: false }}

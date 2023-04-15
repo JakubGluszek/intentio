@@ -36,7 +36,7 @@ const Sidebar: React.FC = () => {
     <AnimatePresence>
       {display === "sidebar" && (
         <motion.aside
-          className="h-[278px] flex flex-row gap-0.5"
+          className="h-[278px] flex flex-row gap-0.5 rounded-b overflow-clip"
           transition={{ duration: 0.3 }}
           initial={{ width: "0%", opacity: 0 }}
           animate={{ width: "100%", opacity: 1 }}
@@ -76,8 +76,8 @@ const TabsView: React.FC<TabsViewProps> = (props) => {
     <AnimatePresence>
       {props.display && (
         <motion.div
-          className="h-full flex flex-col gap-0.5 overflow-clip rounded-bl"
-          transition={{ duration: 0.3 }}
+          className="h-full flex flex-col gap-0.5 overflow-clip"
+          transition={{ duration: 0.075 }}
           initial={{ width: 0, opacity: 0 }}
           animate={{ width: 40, opacity: 1 }}
           exit={{ width: 0 }}

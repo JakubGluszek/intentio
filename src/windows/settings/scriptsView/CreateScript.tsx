@@ -27,10 +27,7 @@ const CreateScript: React.FC<CreateScriptViewProps> = (props) => {
   });
 
   return (
-    <form
-      onSubmit={onSubmit}
-      className="grow flex flex-col gap-0.5"
-    >
+    <form onSubmit={onSubmit} className="grow flex flex-col gap-0.5">
       <input
         placeholder="Script label"
         className="window bg-window"
@@ -38,21 +35,25 @@ const CreateScript: React.FC<CreateScriptViewProps> = (props) => {
         maxLength={24}
         {...register("label", { required: true, minLength: 1, maxLength: 24 })}
       />
-      <Editor value={body} onChange={setBody} />
-      <div className="h-10 flex flex-row items-center justify-between window bg-window">
-        <Button onClick={() => props.onExit()} transparent highlight={false}>
+      <Editor lang="shell" value={body} onChange={setBody} />
+      <div className="h-10 flex flex-row items-center justify-between window bg-window p-1">
+        <button
+          className="text-text/80 hover:text-primary/80 px-1"
+          onClick={() => props.onExit()}
+          type="button"
+        >
           Exit
-        </Button>
+        </button>
         <div className="h-full flex flex-row items-center gap-2">
-          <Button
+          <button
+            type="button"
+            className="text-text/80 hover:text-primary/80"
             onClick={() => utils.executeScript(body)}
-            transparent
-            highlight={false}
           >
             Test
-          </Button>
+          </button>
           <Button type="submit" style={{ width: "fit-content" }}>
-            Save
+            Create
           </Button>
         </div>
       </div>

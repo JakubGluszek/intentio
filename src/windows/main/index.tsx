@@ -11,10 +11,68 @@ import { Button, WindowContainer } from "@/components";
 import { MainWindowContext, MainWindowProvider } from "@/contexts";
 import TimerView from "./TimerView";
 import Sidebar from "./sidebar";
-import { useEvents } from "@/hooks";
+import { useEvents, useTimer } from "@/hooks";
+import { toast } from "react-hot-toast";
+import utils from "@/utils";
 
 const MainWindow: React.FC = () => {
   const store = useStore();
+
+  const timer = useTimer(store.timerConfig, {
+    onStateUpdate: (state) =>
+      ipc.updateTimerState({
+        session_type: state.type,
+        is_playing: state.isPlaying,
+      }),
+    onSaveSession: (session) => {
+      if (
+        session.type === "Focus" &&
+        session.elapsedTime &&
+        session.elapsedTime >= 60 &&
+        session.startedAt
+      ) {
+        ipc
+          .createSession({
+            duration: ~~(session.elapsedTime! / 60),
+            started_at: session.startedAt,
+            intent_id: store.currentIntent?.id!,
+          })
+          .then(() => toast("Session saved"));
+      }
+    },
+    onCompleted: (session) => {
+      ipc.playAudio();
+
+      store.scripts.forEach(
+        (script) =>
+          script.active &&
+          (session.type === "Focus"
+            ? script.run_on_session_end
+            : script.run_on_break_end) &&
+          utils.executeScript(script.body)
+      );
+    },
+    onResumed: (session) => {
+      store.scripts.forEach(
+        (script) =>
+          script.active &&
+          (session.type === "Focus"
+            ? script.run_on_session_start
+            : script.run_on_break_start) &&
+          utils.executeScript(script.body)
+      );
+    },
+    onPaused: (session) => {
+      store.scripts.forEach(
+        (script) =>
+          script.active &&
+          (session.type === "Focus"
+            ? script.run_on_session_pause
+            : script.run_on_break_pause) &&
+          utils.executeScript(script.body)
+      );
+    },
+  });
 
   React.useEffect(() => {
     ipc.getTimerConfig().then((data) => store.setTimerConfig(data));
@@ -29,15 +87,15 @@ const MainWindow: React.FC = () => {
     <MainWindowProvider>
       <WindowContainer>
         <motion.div
-          className="grow flex flex-col gap-0.5 rounded"
+          className="grow flex flex-col gap-0.5"
           transition={{ duration: 0.2 }}
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
         >
           <Titlebar />
-          <div className="grow flex flex-row overflow-clip">
+          <div className="grow flex flex-row">
             <Sidebar />
-            <TimerView config={store.timerConfig} />
+            <TimerView data={timer} />
           </div>
         </motion.div>
       </WindowContainer>

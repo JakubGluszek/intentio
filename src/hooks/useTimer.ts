@@ -26,7 +26,14 @@ export interface Timer extends TimerSession {
 }
 
 export const useTimer = (
-  config: TimerConfig,
+  config: TimerConfig = {
+    focus_duration: 25 * 60,
+    break_duration: 5 * 60,
+    long_break_duration: 10 * 60,
+    long_break_interval: 4,
+    auto_start_focus: true,
+    auto_start_breaks: true,
+  },
   callbacks: TimerCallbacks
 ): Timer => {
   const [sessionType, setSessionType] = React.useState<SessionType>("Focus");
