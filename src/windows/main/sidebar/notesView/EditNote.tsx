@@ -4,9 +4,8 @@ import { toast } from "react-hot-toast";
 import { motion } from "framer-motion";
 
 import ipc from "@/ipc";
-import { Button } from "@/components";
+import { Button, Editor } from "@/components";
 import { Note } from "@/bindings/Note";
-import NoteInput from "./NoteInput";
 import motions from "@/motions";
 
 interface Props {
@@ -32,11 +31,7 @@ const EditNote: React.FC<Props> = (props) => {
 
   return (
     <motion.div className="grow flex flex-col gap-0.5" {...motions.scaleIn}>
-      <NoteInput
-        value={body}
-        onChange={(value) => setBody(value)}
-        onCtrlEnter={() => updateNote()}
-      />
+      <Editor lang="md" value={body} onChange={(value) => setBody(value)} />
 
       <div className="h-9 flex flex-row gap-0.5">
         <div className="w-full window">

@@ -85,14 +85,6 @@
     -moz-appearance: textfield;
   }
 
-  input {
-    @apply w-full bg-darker/20 border-2 border-primary/20 focus:border-primary/40 outline-none py-1 px-2 rounded-sm shadow-inner text-text transition-colors;
-  }
-
-  input::placeholder {
-    @apply text-text/60;
-  }
-
   input > * {
     user-select: all;
   }

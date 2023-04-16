@@ -52,7 +52,7 @@ const IntentListItem: React.FC<Props> = (props) => {
           "w-full h-fit flex flex-col p-1 rounded-sm card transition-all",
           props.selected
             ? "border-primary/60 hover:border-primary/80 text-primary/80 shadow-lg shadow-black/30"
-            : "shadow shadow-black/30"
+            : "shadow shadow-black/30 text-text/80"
         )}
         onClick={(e) => props.onSelected(e, data)}
         onContextMenu={onContextMenuHandler}

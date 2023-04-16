@@ -1,16 +1,16 @@
 import React from "react";
-import { MdCircle, MdDelete } from "react-icons/md";
+import { MdDelete, MdEdit } from "react-icons/md";
 import { IoMdClipboard } from "react-icons/io";
 import { toast } from "react-hot-toast";
-import { useClickOutside } from "@mantine/hooks";
 import { clsx } from "@mantine/core";
 import { writeText } from "@tauri-apps/api/clipboard";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
-import ipc from "@/ipc";
 import { useConfirmDelete, useContextMenu } from "@/hooks";
 import { Button, ContextMenu } from "@/components";
 import { Note } from "@/bindings/Note";
-import { MenuPosition } from "@/hooks/useContextMenu";
+import ipc from "@/ipc";
 
 interface NoteViewProps {
   data: Note;
@@ -21,27 +21,16 @@ interface NoteViewProps {
 }
 
 const NoteView: React.FC<NoteViewProps> = (props) => {
-  const { data } = props;
-  const [viewExpand, setViewExpand] = React.useState(false);
   const [menu, onContextMenuHandler] = useContextMenu();
-
-  const ref = useClickOutside<HTMLDivElement>(() => {
-    setViewExpand(false);
-  });
-
-  const noteBody =
-    data.body.length <= 128
-      ? data.body
-      : viewExpand
-        ? data.body
-        : `${data.body.slice(0, 128)}...`;
+  const { viewConfirmDelete, onDelete } = useConfirmDelete(() =>
+    ipc.deleteNote(props.data.id).then(() => toast("Note deleted"))
+  );
 
   return (
     <React.Fragment>
       <div
-        ref={ref}
         className={clsx(
-          "min-h-fit flex flex-col gap-1.5 card rounded-sm text-sm p-0.5 bg-base/80 hover:bg-base",
+          "min-h-fit flex flex-col gap-1.5 card rounded-sm text-sm p-0.5 bg-base/20 hover:bg-base/40",
           props.isSelected &&
           "border-2 border-primary/50 hover:border-primary/60"
         )}
@@ -49,78 +38,60 @@ const NoteView: React.FC<NoteViewProps> = (props) => {
           onContextMenuHandler(e);
           props.onContextMenu();
         }}
-        onMouseDown={(e) => {
-          // @ts-ignore
-          if (e.target.closest("button") || e.button === 2) return;
-          props.onMouseDown(e);
-          setViewExpand((prev) => !prev);
-        }}
-        onDoubleClick={() => props.setEdit(data)}
         data-tauri-disable-drag
       >
-        <div className="flex flex-row items-start gap-1">
-          <div className="py-1.5 px-0.5 text-primary">
-            <MdCircle size={8} />
-          </div>
-          <div
-            className="whitespace-pre-line"
-            style={{ wordBreak: "break-word" }}
-          >
-            {noteBody}
-          </div>
-        </div>
+        <ReactMarkdown
+          children={props.data.body}
+          remarkPlugins={[remarkGfm]}
+          components={{
+            a: ({ node, ...props }) => (
+              <a
+                {...props}
+                className="text-primary/60 hover:text-primary/80"
+                target="_blank"
+              />
+            ),
+          }}
+        />
       </div>
 
-      <NoteContextMenu
-        {...menu}
-        data={data}
-        deleteNote={() =>
-          ipc.deleteNote(props.data.id).then(() => {
-            toast("Note deleted");
-          })
-        }
-      />
+      <ContextMenu {...menu}>
+        <div className="w-28 flex flex-col gap-0.5">
+          <Button
+            onClick={() => {
+              props.setEdit(props.data);
+              menu.hide();
+            }}
+          >
+            <div className="w-fit">
+              <MdEdit size={20} />
+            </div>
+            <div className="w-full">Edit</div>
+          </Button>
+          <Button
+            onClick={async () => {
+              await writeText(props.data.body);
+              toast("Copied to clipboard");
+              menu.hide();
+            }}
+            rounded={false}
+          >
+            <div className="w-fit">
+              <IoMdClipboard size={20} />
+            </div>
+            <div className="w-full">Copy</div>
+          </Button>
+          <Button onClick={() => onDelete()} rounded={false} color="danger">
+            <div className="w-fit">
+              <MdDelete size={20} />
+            </div>
+            <div className="w-full">
+              {viewConfirmDelete ? "Confirm" : "Delete"}
+            </div>
+          </Button>
+        </div>
+      </ContextMenu>
     </React.Fragment>
-  );
-};
-
-interface NoteContextMenuProps {
-  display: boolean;
-  data: Note;
-  position?: MenuPosition;
-  hide: () => void;
-  deleteNote: () => void;
-}
-
-const NoteContextMenu: React.FC<NoteContextMenuProps> = (props) => {
-  const { viewConfirmDelete, onDelete } = useConfirmDelete(props.deleteNote);
-
-  return (
-    <ContextMenu
-      display={props.display}
-      position={props.position}
-      hide={props.hide}
-    >
-      <Button
-        onClick={async () => {
-          await writeText(props.data.body);
-          toast("Copied to clipboard");
-          props.hide();
-        }}
-        rounded={false}
-      >
-        <div className="w-fit">
-          <IoMdClipboard size={20} />
-        </div>
-        <div className="w-full">Copy</div>
-      </Button>
-      <Button onClick={() => onDelete()} rounded={false} color="danger">
-        <div className="w-fit">
-          <MdDelete size={20} />
-        </div>
-        <div className="w-full">{viewConfirmDelete ? "Confirm" : "Delete"}</div>
-      </Button>
-    </ContextMenu>
   );
 };
 
