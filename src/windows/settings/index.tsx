@@ -1,12 +1,14 @@
 import React from "react";
 import {
+  MdAccountCircle,
   MdAudiotrack,
   MdColorLens,
   MdInfo,
   MdSettings,
   MdTimer,
+  MdWindow,
 } from "react-icons/md";
-import { AiFillCode } from "react-icons/ai";
+import { FiCommand } from "react-icons/fi";
 import { OsType, type } from "@tauri-apps/api/os";
 
 import useStore from "@/store";
@@ -21,7 +23,8 @@ import {
   SettingsWindowContext,
   SettingsWindowProvider,
 } from "@/contexts/settingsWindowContext";
-import { Button } from "@/ui";
+import { VscTerminalBash } from "react-icons/vsc";
+import { Tabs } from "@/ui";
 
 export type ColorType = "window" | "base" | "primary" | "text";
 
@@ -51,7 +54,7 @@ const SettingsWindow: React.FC = () => {
 const SettingsTitlebar: React.FC = () => {
   const { panel } = React.useContext(SettingsWindowContext)!;
 
-  return <Titlebar icon={<MdSettings size={20} />} title={`${panel}`} />;
+  return <Titlebar icon={<MdSettings size={24} />} title={`${panel}`} />;
 };
 
 const Content: React.FC = () => {
@@ -70,7 +73,7 @@ const Content: React.FC = () => {
 
 const Navbar: React.FC = () => {
   const [osType, setOsType] = React.useState<OsType>();
-  const { setPanel } = React.useContext(SettingsWindowContext)!;
+  const { panel, setPanel } = React.useContext(SettingsWindowContext)!;
 
   React.useEffect(() => {
     type().then((type) => setOsType(type));
@@ -78,25 +81,34 @@ const Navbar: React.FC = () => {
 
   return (
     <div className="flex flex-col justify-between window bg-window overflow-y-auto">
-      <div className="flex flex-row gap-1 p-1">
-        <Button variant="ghost" onClick={() => setPanel("Timer")}>
+      <Tabs value={panel} onChange={(value) => setPanel(value)}>
+        <Tabs.Tab value="Timer">
           <MdTimer size={24} />
-        </Button>
-        <Button variant="ghost" onClick={() => setPanel("Audio")}>
+        </Tabs.Tab>
+        <Tabs.Tab value="Audio">
           <MdAudiotrack size={24} />
-        </Button>
-        <Button variant="ghost" onClick={() => setPanel("Themes")}>
+        </Tabs.Tab>
+        <Tabs.Tab value="Themes">
           <MdColorLens size={24} />
-        </Button>
-        {osType !== "Windows_NT" ? (
-          <Button variant="ghost" onClick={() => setPanel("Scripts")}>
-            <AiFillCode size={24} />
-          </Button>
-        ) : null}
-        <Button variant="ghost" onClick={() => setPanel("About")}>
+        </Tabs.Tab>
+        <Tabs.Tab value="Windows">
+          <MdWindow size={24} />
+        </Tabs.Tab>
+        <Tabs.Tab value="Hotkeys">
+          <FiCommand size={24} />
+        </Tabs.Tab>
+        {osType !== "Windows_NT" && (
+          <Tabs.Tab value="Scripts">
+            <VscTerminalBash size={24} />
+          </Tabs.Tab>
+        )}
+        <Tabs.Tab value="Account">
+          <MdAccountCircle size={24} />
+        </Tabs.Tab>
+        <Tabs.Tab value="About">
           <MdInfo size={24} />
-        </Button>
-      </div>
+        </Tabs.Tab>
+      </Tabs>
     </div>
   );
 };
