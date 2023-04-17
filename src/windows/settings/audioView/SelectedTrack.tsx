@@ -8,7 +8,8 @@ import {
   MdVolumeUp,
 } from "react-icons/md";
 
-import { Button, Slider } from "@/components";
+import { Slider } from "@/components";
+import { Button } from "@/ui";
 
 interface Props {
   name: string;
@@ -27,9 +28,7 @@ const SelectedTrack: React.FC<Props> = (props) => {
         <div className="text-text/80 uppercase font-bold">{props.name}</div>
         <Button
           onClick={() => props.onTrackPreview(props.name)}
-          transparent
-          highlight={false}
-          style={{ padding: 0 }}
+          variant="ghost"
         >
           <MdPlayCircle size={24} />
         </Button>
@@ -38,10 +37,8 @@ const SelectedTrack: React.FC<Props> = (props) => {
         <div className="flex flex-row gap-2">
           <div className="w-full flex flex-row gap-1 items-center">
             <Button
-              style={{ padding: 0 }}
-              highlight={false}
-              transparent
               onClick={() => props.onVolumeChange(props.volume > 0 ? 0 : 0.5)}
+              variant="ghost"
             >
               {props.volume > 0 ? (
                 props.volume < 0.5 ? (
@@ -63,10 +60,8 @@ const SelectedTrack: React.FC<Props> = (props) => {
           </div>
           <div className="flex flex-row items-center border-2 bg-darker/10 border-primary/40 rounded-sm">
             <Button
-              style={{ height: "100%" }}
-              rounded={false}
-              transparent
               onClick={() => props.onRepeatChange(props.repeat - 1)}
+              variant="ghost"
             >
               <MdRemove size={20} />
             </Button>
@@ -74,9 +69,7 @@ const SelectedTrack: React.FC<Props> = (props) => {
               {props.repeat}
             </div>
             <Button
-              style={{ height: "100%" }}
-              rounded={false}
-              transparent
+              variant="ghost"
               onClick={() => props.onRepeatChange(props.repeat + 1)}
             >
               <MdAdd size={20} />

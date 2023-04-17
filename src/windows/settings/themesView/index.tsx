@@ -9,11 +9,11 @@ import { clsx } from "@mantine/core";
 
 import useStore from "@/store";
 import ipc from "@/ipc";
-import { Button } from "@/components";
 import { Theme } from "@/bindings/Theme";
 import EditTheme from "./EditTheme";
 import CreateTheme from "./CreateTheme";
 import ThemesList from "./ThemesList";
+import { Button } from "@/ui";
 
 type ThemeState = "idle" | "focus" | "break" | "long break";
 type Display = "themes" | "create" | "edit";
@@ -44,12 +44,7 @@ const ThemesView: React.FC = () => {
       <div className="flex flex-col window bg-window">
         <div className="flex flex-row justify-between p-0.5">
           {/* Prompt create theme view */}
-          <Button
-            onClick={() => setDisplay("create")}
-            transparent
-            rounded={false}
-            highlight={false}
-          >
+          <Button variant="ghost" onClick={() => setDisplay("create")}>
             <MdAddCircle size={20} />
             <div>Add theme</div>
           </Button>
@@ -57,9 +52,7 @@ const ThemesView: React.FC = () => {
             {/* Toggle view only favorite themes */}
             <Button
               onClick={() => setViewFavoriteOnly((prev) => !prev)}
-              transparent
-              rounded={false}
-              highlight={false}
+              variant="ghost"
             >
               {viewFavoriteOnly ? (
                 <MdFavorite size={24} />

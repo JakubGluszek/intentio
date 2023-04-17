@@ -6,9 +6,9 @@ import Color from "color";
 import ipc from "@/ipc";
 import utils from "@/utils";
 import { Timer } from "@/hooks/useTimer";
-import { Button } from "@/components";
 import CircleTimerBase, { ColorFormat } from "@/components/CircleTimerBase";
 import { Theme } from "@/bindings/Theme";
+import { Button } from "@/ui";
 
 interface Props extends Timer {
   displayTimeLeft: boolean;
@@ -100,9 +100,7 @@ const CircleTimer: React.FC<Props> = (props) => {
 
             {props.isPlaying ? (
               <Button
-                transparent
-                highlight={false}
-                opacity={0.6}
+                variant="ghost"
                 onClick={() => {
                   props.pause();
                 }}
@@ -111,9 +109,7 @@ const CircleTimer: React.FC<Props> = (props) => {
               </Button>
             ) : (
               <Button
-                transparent
-                highlight={false}
-                opacity={0.8}
+                variant="ghost"
                 onClick={() => {
                   props.resume();
                 }}

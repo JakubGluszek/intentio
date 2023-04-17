@@ -7,8 +7,8 @@ import { motion } from "framer-motion";
 
 import useStore from "@/store";
 import ipc from "@/ipc";
-import { Button } from "@/components";
 import motions from "@/motions";
+import { Button } from "@/ui";
 
 interface CreateTaskViewProps {
   viewCreate: boolean;
@@ -35,11 +35,7 @@ const CreateTask: React.FC<CreateTaskViewProps> = (props) => {
   if (!props.viewCreate)
     return (
       <motion.div className="w-full window" {...motions.scaleIn}>
-        <Button
-          onClick={() => props.setViewCreate(true)}
-          style={{ width: "100%" }}
-          transparent
-        >
+        <Button variant="base" onClick={() => props.setViewCreate(true)}>
           <MdAddCircle size={20} />
           <div>Add task</div>
         </Button>

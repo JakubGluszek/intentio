@@ -3,11 +3,12 @@ import { TbMinimize } from "react-icons/tb";
 import { clsx } from "@mantine/core";
 import { AnimatePresence, motion } from "framer-motion";
 
-import { Button, CircleTimer, CompactTimer } from "@/components";
+import { CircleTimer, CompactTimer } from "@/components";
 import useStore from "@/store";
 import { MainWindowContext } from "@/contexts";
 import { Intent } from "@/bindings/Intent";
 import { Timer } from "@/hooks/useTimer";
+import { Button } from "@/ui";
 
 interface Props {
   data: Timer;
@@ -96,7 +97,7 @@ const TimerDetails: React.FC<TimerDetailsProps> = (props) => {
       ) : null}
       {/* --- Toggle window compact mode button --- */}
       <div className="flex flex-row items-center gap-1">
-        <Button transparent onClick={props.toggleIsCompact} rounded={false}>
+        <Button variant="ghost" onClick={props.toggleIsCompact}>
           <TbMinimize size={props.isCompact ? 20 : 28} />
         </Button>
       </div>

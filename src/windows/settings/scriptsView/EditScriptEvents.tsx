@@ -6,7 +6,7 @@ import ipc from "@/ipc";
 import useStore from "@/store";
 import { Script } from "@/bindings/Script";
 import { ScriptForUpdate } from "@/bindings/ScriptForUpdate";
-import { Button } from "@/components";
+import { Button } from "@/ui";
 
 interface Props {
   data: Script;
@@ -60,7 +60,7 @@ const EditScriptEvents: React.FC<Props> = (props) => {
             </div>
           ))}
       </div>
-      <Button onClick={() => props.onExit()} style={{ height: 32 }}>
+      <Button variant="base" onClick={() => props.onExit()}>
         Exit
       </Button>
     </div>

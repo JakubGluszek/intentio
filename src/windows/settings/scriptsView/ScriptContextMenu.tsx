@@ -5,10 +5,11 @@ import { MdDelete } from "react-icons/md";
 
 import ipc from "@/ipc";
 import useStore from "@/store";
-import { Button, ContextMenu } from "@/components";
+import { ContextMenu } from "@/components";
 import { Script } from "@/bindings/Script";
 import { useConfirmDelete } from "@/hooks";
 import { MenuPosition } from "@/hooks/useContextMenu";
+import { Button } from "@/ui";
 
 interface ScriptContextMenuProps {
   display: boolean;
@@ -37,26 +38,26 @@ const ScriptContextMenu: React.FC<ScriptContextMenuProps> = (props) => {
             props.runScript();
             props.hide();
           }}
-          rounded={false}
+          variant="base"
         >
           <div className="w-fit">
             <VscDebugStart size={20} />
           </div>
           <div className="w-full">Run</div>
         </Button>
-        <Button onClick={() => props.viewCode()} rounded={false}>
+        <Button onClick={() => props.viewCode()} variant="base">
           <div className="w-fit">
             <VscEdit size={20} />
           </div>
           <div className="w-full">Edit</div>
         </Button>
-        <Button onClick={() => props.viewEvents()} rounded={false}>
+        <Button onClick={() => props.viewEvents()} variant="base">
           <div className="w-fit">
             <VscSymbolEvent size={20} />
           </div>
           <div className="w-full">Events</div>
         </Button>
-        <Button onClick={() => onDelete()} rounded={false} color="danger">
+        <Button onClick={() => onDelete()} variant="base">
           <div className="w-fit">
             <MdDelete size={20} />
           </div>

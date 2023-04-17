@@ -11,7 +11,7 @@ import { OsType, type } from "@tauri-apps/api/os";
 
 import useStore from "@/store";
 import { useEvents } from "@/hooks";
-import { Titlebar, Button, WindowContainer } from "@/components";
+import { Titlebar, WindowContainer } from "@/components";
 import TimerView from "./TimerView";
 import AudioView from "./audioView";
 import ThemesView from "./themesView";
@@ -21,6 +21,7 @@ import {
   SettingsWindowContext,
   SettingsWindowProvider,
 } from "@/contexts/settingsWindowContext";
+import { Button } from "@/ui";
 
 export type ColorType = "window" | "base" | "primary" | "text";
 
@@ -69,7 +70,7 @@ const Content: React.FC = () => {
 
 const Navbar: React.FC = () => {
   const [osType, setOsType] = React.useState<OsType>();
-  const { panel, setPanel } = React.useContext(SettingsWindowContext)!;
+  const { setPanel } = React.useContext(SettingsWindowContext)!;
 
   React.useEffect(() => {
     type().then((type) => setOsType(type));
@@ -78,36 +79,21 @@ const Navbar: React.FC = () => {
   return (
     <div className="flex flex-col justify-between window bg-window overflow-y-auto">
       <div className="flex flex-row gap-1 p-1">
-        <Button
-          isSelected={panel === "Timer"}
-          onClick={() => setPanel("Timer")}
-        >
+        <Button variant="ghost" onClick={() => setPanel("Timer")}>
           <MdTimer size={24} />
         </Button>
-        <Button
-          isSelected={panel === "Audio"}
-          onClick={() => setPanel("Audio")}
-        >
+        <Button variant="ghost" onClick={() => setPanel("Audio")}>
           <MdAudiotrack size={24} />
         </Button>
-        <Button
-          isSelected={panel === "Themes"}
-          onClick={() => setPanel("Themes")}
-        >
+        <Button variant="ghost" onClick={() => setPanel("Themes")}>
           <MdColorLens size={24} />
         </Button>
         {osType !== "Windows_NT" ? (
-          <Button
-            isSelected={panel === "Scripts"}
-            onClick={() => setPanel("Scripts")}
-          >
+          <Button variant="ghost" onClick={() => setPanel("Scripts")}>
             <AiFillCode size={24} />
           </Button>
         ) : null}
-        <Button
-          isSelected={panel === "About"}
-          onClick={() => setPanel("About")}
-        >
+        <Button variant="ghost" onClick={() => setPanel("About")}>
           <MdInfo size={24} />
         </Button>
       </div>

@@ -4,11 +4,11 @@ import { MdCheckBox, MdStickyNote2 } from "react-icons/md";
 import { AnimatePresence, motion } from "framer-motion";
 
 import useStore from "@/store";
-import { Button } from "@/components";
 import { MainWindowContext } from "@/contexts";
 import IntentsView from "./intentsView";
 import TasksView from "./tasksView";
 import NotesView from "./notesView";
+import { Button } from "@/ui";
 
 type Tab = "intents" | "notes" | "tasks";
 
@@ -84,33 +84,45 @@ const TabsView: React.FC<TabsViewProps> = (props) => {
         >
           <div className="h-full window">
             <Button
+              variant="ghost"
               onClick={() => props.setTab("intents")}
-              isSelected={props.tab === "intents"}
-              style={{ height: "100%" }}
-              transparent
-              rounded={false}
+              style={{
+                height: "100%",
+                backgroundColor:
+                  props.tab === "intents"
+                    ? "rgb(var(--primary-color) / 0.2)"
+                    : undefined,
+              }}
             >
               <BiTargetLock size={28} />
             </Button>
           </div>
           <div className="h-full window">
             <Button
+              variant="ghost"
               onClick={() => props.setTab("tasks")}
-              isSelected={props.tab === "tasks"}
-              style={{ height: "100%" }}
-              transparent
-              rounded={false}
+              style={{
+                height: "100%",
+                backgroundColor:
+                  props.tab === "tasks"
+                    ? "rgb(var(--primary-color) / 0.2)"
+                    : undefined,
+              }}
             >
               <MdCheckBox size={28} />
             </Button>
           </div>
           <div className="h-full window">
             <Button
+              variant="ghost"
               onClick={() => props.setTab("notes")}
-              isSelected={props.tab === "notes"}
-              style={{ height: "100%" }}
-              transparent
-              rounded={false}
+              style={{
+                height: "100%",
+                backgroundColor:
+                  props.tab === "notes"
+                    ? "rgb(var(--primary-color) / 0.2)"
+                    : undefined,
+              }}
             >
               <MdStickyNote2 size={28} />
             </Button>

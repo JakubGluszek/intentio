@@ -7,11 +7,12 @@ import { emit } from "@tauri-apps/api/event";
 import { RiEyeCloseFill, RiEyeFill } from "react-icons/ri";
 import { useClickOutside } from "@mantine/hooks";
 
-import { Button, ColorInput, ModalContainer } from "@/components";
+import { ColorInput, ModalContainer } from "@/components";
 import useStore from "@/store";
 import ipc from "@/ipc";
 import { ThemeForCreate } from "@/bindings/ThemeForCreate";
 import { ColorType } from "..";
+import { Button } from "@/ui";
 
 interface Props {
   onExit: () => void;
@@ -64,7 +65,7 @@ const CreateTheme: React.FC<Props> = (props) => {
     <div className="grow flex flex-col gap-0.5">
       <div className="h-fit flex flex-row gap-0.5">
         <div className="window bg-window">
-          <Button onClick={() => props.onExit()} transparent rounded={false}>
+          <Button onClick={() => props.onExit()} variant="ghost">
             <MdArrowBack size={24} />
           </Button>
         </div>
@@ -165,7 +166,7 @@ const CreateTheme: React.FC<Props> = (props) => {
                 <RiEyeCloseFill size={24} />
               )}
             </div>
-            <Button type="submit" style={{ width: "fit-content" }}>
+            <Button variant="base" type="submit">
               Create theme
             </Button>
           </div>

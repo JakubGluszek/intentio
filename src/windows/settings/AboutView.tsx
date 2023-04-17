@@ -1,10 +1,11 @@
 import React from "react";
 
 import config from "@/config";
-import { Button, IntentioLogo } from "@/components";
+import { IntentioLogo } from "@/components";
 import { Tooltip } from "@mantine/core";
 import { SiDiscord } from "react-icons/si";
 import { IoIosBug, IoIosGlobe, IoLogoGithub } from "react-icons/io";
+import { Button } from "@/ui";
 
 const AboutView: React.FC = () => {
   return (
@@ -46,7 +47,7 @@ const AboutView: React.FC = () => {
               target="_blank"
               rel="noreferrer"
             >
-              <Button transparent highlight={false}>
+              <Button variant="ghost">
                 <IoIosGlobe size={28} />
               </Button>
             </a>
@@ -63,7 +64,7 @@ const AboutView: React.FC = () => {
               target="_blank"
               rel="noreferrer"
             >
-              <Button transparent highlight={false}>
+              <Button variant="ghost">
                 <SiDiscord size={28} />
               </Button>
             </a>
@@ -82,7 +83,7 @@ const AboutView: React.FC = () => {
               target="_blank"
               rel="noreferrer"
             >
-              <Button transparent highlight={false}>
+              <Button variant="ghost">
                 <IoLogoGithub size={26} />
               </Button>
             </a>
@@ -98,7 +99,7 @@ const AboutView: React.FC = () => {
               target="_blank"
               rel="noreferrer"
             >
-              <Button transparent highlight={false}>
+              <Button variant="ghost">
                 <IoIosBug size={28} />
               </Button>
             </a>

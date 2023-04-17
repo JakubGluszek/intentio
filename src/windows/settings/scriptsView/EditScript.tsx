@@ -4,10 +4,11 @@ import { toast } from "react-hot-toast";
 
 import useStore from "@/store";
 import ipc from "@/ipc";
-import { Button, Editor } from "@/components";
+import { Editor } from "@/components";
 import utils from "@/utils";
 import { Script } from "@/bindings/Script";
 import { ScriptForUpdate } from "@/bindings/ScriptForUpdate";
+import { Button } from "@/ui";
 
 interface Props {
   data: Script;
@@ -61,7 +62,7 @@ const EditScript: React.FC<Props> = (props) => {
           >
             Test
           </button>
-          <Button type="submit" style={{ width: "fit-content" }}>
+          <Button variant="base" type="submit">
             Update
           </Button>
         </div>

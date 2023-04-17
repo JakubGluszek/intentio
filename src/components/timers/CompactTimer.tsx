@@ -6,7 +6,7 @@ import ipc from "@/ipc";
 import utils from "@/utils";
 import { Theme } from "@/bindings/Theme";
 import { Timer } from "@/hooks/useTimer";
-import { Button } from "@/components";
+import { Button } from "@/ui";
 
 interface Props extends Timer {
   displayTimeLeft: boolean;
@@ -73,9 +73,7 @@ const CompactTimer: React.FC<Props> = (props) => {
 
           {props.isPlaying ? (
             <Button
-              transparent
-              highlight={false}
-              opacity={0.6}
+              variant="ghost"
               onClick={() => {
                 props.pause();
               }}
@@ -84,9 +82,7 @@ const CompactTimer: React.FC<Props> = (props) => {
             </Button>
           ) : (
             <Button
-              transparent
-              highlight={false}
-              opacity={0.8}
+              variant="ghost"
               onClick={() => {
                 props.resume();
               }}

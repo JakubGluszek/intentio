@@ -1,7 +1,6 @@
+import { Button } from "@/ui";
 import React from "react";
 import { MdPlayCircle } from "react-icons/md";
-
-import { Button } from "@/components";
 
 interface Props {
   name: string;
@@ -22,9 +21,8 @@ const TrackView: React.FC<Props> = (props) => {
       <div className="flex flex-row items-center justify-between">
         {props.name}
         <Button
+          variant="ghost"
           onClick={() => props.onTrackPreview(props.name)}
-          transparent
-          highlight={false}
         >
           <MdPlayCircle size={24} />
         </Button>

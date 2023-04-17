@@ -2,8 +2,8 @@ import React from "react";
 import { MdClose } from "react-icons/md";
 import { motion } from "framer-motion";
 
-import { Button } from "@/components";
 import motions from "@/motions";
+import { Button } from "@/ui";
 
 interface FilterNotesViewProps {
   query: string;
@@ -26,11 +26,11 @@ const FilterNotes: React.FC<FilterNotesViewProps> = (props) => {
       />
       <motion.div className="window" {...motions.scaleIn}>
         <Button
+          variant="ghost"
           onClick={() => {
             props.setQuery("");
             props.hide();
           }}
-          transparent
         >
           <MdClose size={24} />
         </Button>

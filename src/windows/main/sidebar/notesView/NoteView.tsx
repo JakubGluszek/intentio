@@ -8,9 +8,10 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
 import { useConfirmDelete, useContextMenu } from "@/hooks";
-import { Button, ContextMenu } from "@/components";
+import { ContextMenu } from "@/components";
 import { Note } from "@/bindings/Note";
 import ipc from "@/ipc";
+import { Button } from "@/ui";
 
 interface NoteViewProps {
   data: Note;
@@ -58,6 +59,7 @@ const NoteView: React.FC<NoteViewProps> = (props) => {
       <ContextMenu {...menu}>
         <div className="w-28 flex flex-col gap-0.5">
           <Button
+            variant="base"
             onClick={() => {
               props.setEdit(props.data);
               menu.hide();
@@ -69,19 +71,19 @@ const NoteView: React.FC<NoteViewProps> = (props) => {
             <div className="w-full">Edit</div>
           </Button>
           <Button
+            variant="base"
             onClick={async () => {
               await writeText(props.data.body);
               toast("Copied to clipboard");
               menu.hide();
             }}
-            rounded={false}
           >
             <div className="w-fit">
               <IoMdClipboard size={20} />
             </div>
             <div className="w-full">Copy</div>
           </Button>
-          <Button onClick={() => onDelete()} rounded={false} color="danger">
+          <Button variant="base" onClick={() => onDelete()}>
             <div className="w-fit">
               <MdDelete size={20} />
             </div>

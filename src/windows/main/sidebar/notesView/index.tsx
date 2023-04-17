@@ -6,13 +6,13 @@ import { motion } from "framer-motion";
 import useStore from "@/store";
 import ipc from "@/ipc";
 import { useConfirmDelete, useEvents } from "@/hooks";
-import { Button } from "@/components";
 import { Note } from "@/bindings/Note";
 import motions from "@/motions";
 import CreateNote from "./CreateNote";
 import FilterNotes from "./FilterNotes";
 import NoteView from "./NoteView";
 import EditNote from "./EditNote";
+import { Button } from "@/ui";
 
 const NotesView: React.FC = () => {
   const [viewCreate, setViewCreate] = React.useState(false);
@@ -86,16 +86,16 @@ const Top: React.FC<TopProps> = (props) => {
         <React.Fragment>
           <motion.div className="w-full window" {...motions.scaleIn}>
             <Button
+              variant="ghost"
               onClick={() => props.toggleViewCreate()}
               style={{ width: "100%" }}
-              transparent
             >
               <MdAddCircle size={20} />
               <span>Add note</span>
             </Button>
           </motion.div>
           <motion.div className="window" {...motions.scaleIn}>
-            <Button onClick={() => setViewFilter(true)} transparent>
+            <Button variant="ghost" onClick={() => setViewFilter(true)}>
               <MdSearch size={24} />
             </Button>
           </motion.div>
@@ -243,7 +243,7 @@ const DeleteMultiButton: React.FC<DeleteMultiButtonProps> = (props) => {
 
   return (
     <div className="window">
-      <Button onClick={() => onDelete()} transparent color="danger">
+      <Button variant="ghost" onClick={() => onDelete()}>
         {!viewConfirmDelete && <MdDelete size={20} />}
         <div>
           {viewConfirmDelete ? "Confirm" : props.selectedNotesIds.length}

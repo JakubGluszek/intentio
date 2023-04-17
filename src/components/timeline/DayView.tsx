@@ -2,10 +2,10 @@ import React from "react";
 import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
 
 import { DayDetail } from "@/types";
-import { Button } from "@/components";
 import SessionsView from "./SessionsView";
 import TasksView from "./TasksView";
 import NotesView from "./NotesView";
+import { Button } from "@/ui";
 
 interface Props {
   intentId?: string;
@@ -33,7 +33,7 @@ const DayView: React.FC<Props> = (props) => {
     >
       <div className="h-5 w-full flex flex-row items-center justify-between">
         <span className="text-text/60">{data.date}</span>
-        <Button transparent onClick={() => setViewMore((v) => !v)}>
+        <Button variant="ghost" onClick={() => setViewMore((v) => !v)}>
           {viewMore ? (
             <MdKeyboardArrowUp size={28} />
           ) : (
@@ -45,32 +45,29 @@ const DayView: React.FC<Props> = (props) => {
         <div className="flex flex-col bg-window/80 rounded overflow-clip">
           <div className="h-6 flex flex-row gap-0.5 text-sm">
             <Button
+              onClick={() => setTab("sessions")}
+              variant="base"
               style={{
                 width: tab === "sessions" ? "100%" : "fit-content",
               }}
-              isSelected={tab === "sessions"}
-              rounded={false}
-              onClick={() => setTab("sessions")}
             >
               Sessions
             </Button>
             <Button
+              onClick={() => setTab("tasks")}
+              variant="base"
               style={{
                 width: tab === "tasks" ? "100%" : "fit-content",
               }}
-              isSelected={tab === "tasks"}
-              rounded={false}
-              onClick={() => setTab("tasks")}
             >
               Tasks
             </Button>
             <Button
+              onClick={() => setTab("notes")}
+              variant="base"
               style={{
                 width: tab === "notes" ? "100%" : "fit-content",
               }}
-              isSelected={tab === "notes"}
-              rounded={false}
-              onClick={() => setTab("notes")}
             >
               Notes
             </Button>

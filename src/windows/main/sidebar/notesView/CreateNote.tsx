@@ -5,9 +5,9 @@ import { motion } from "framer-motion";
 
 import useStore from "@/store";
 import ipc from "@/ipc";
-import { Button } from "@/components";
 import NoteInput from "./NoteInput";
 import motions from "@/motions";
+import { Button } from "@/ui";
 
 interface Props {
   hide: () => void;
@@ -41,15 +41,15 @@ const CreateNote: React.FC<Props> = (props) => {
       <div className="h-9 flex flex-row gap-0.5">
         <div className="w-full window">
           <Button
+            variant="base"
             onClick={() => saveNote()}
-            transparent
             style={{ width: "100%" }}
           >
             Save note
           </Button>
         </div>
         <div className="window">
-          <Button onClick={() => props.hide()} transparent>
+          <Button variant="ghost" onClick={() => props.hide()}>
             <MdCancel size={24} />
           </Button>
         </div>

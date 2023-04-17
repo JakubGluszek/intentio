@@ -8,7 +8,7 @@ import ipc from "@/ipc";
 import { Intent } from "@/bindings/Intent";
 import ModalContainer from "../ModalContainer";
 import TagButton from "../TagButton";
-import Button from "../Button";
+import { Button } from "@/ui";
 
 interface Props {
   data: Intent;
@@ -72,6 +72,7 @@ export const TagsModal: React.FC<Props> = (props) => {
                   <div className="flex flex-row items-center gap-1">
                     <div className="px-1 py-0.5">{tag}</div>
                     <Button
+                      variant="ghost"
                       onClick={() =>
                         ipc
                           .updateIntent(props.data.id, {
@@ -79,8 +80,6 @@ export const TagsModal: React.FC<Props> = (props) => {
                           })
                           .then(() => toast("Tag removed"))
                       }
-                      transparent
-                      color="danger"
                     >
                       <MdClose size={16} />
                     </Button>

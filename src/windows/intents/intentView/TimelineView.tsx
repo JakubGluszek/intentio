@@ -3,8 +3,9 @@ import { BsArrowsCollapse, BsArrowsExpand } from "react-icons/bs";
 import { MdClose } from "react-icons/md";
 
 import { DayDetail } from "@/types";
-import { Button, DayView } from "@/components";
+import { DayView } from "@/components";
 import { Session } from "@/bindings/Session";
+import { Button } from "@/ui";
 
 interface Props {
   intentId: string;
@@ -77,7 +78,7 @@ const TimelineView: React.FC<Props> = (props) => {
           {props.filter.length > 0 && (
             <div className="absolute bottom-1.5 right-1 opacity-60">
               <Button
-                transparent
+                variant="ghost"
                 onClick={() => {
                   props.setFilter("");
                 }}
@@ -88,7 +89,10 @@ const TimelineView: React.FC<Props> = (props) => {
           )}
         </div>
         <div className="flex flex-row items-center gap-2 px-2">
-          <Button transparent onClick={() => setCollapseAll((prev) => !prev)}>
+          <Button
+            variant="ghost"
+            onClick={() => setCollapseAll((prev) => !prev)}
+          >
             {collapseAll ? (
               <BsArrowsCollapse size={24} />
             ) : (

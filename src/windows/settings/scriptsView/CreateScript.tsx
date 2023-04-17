@@ -4,9 +4,10 @@ import { toast } from "react-hot-toast";
 
 import useStore from "@/store";
 import ipc from "@/ipc";
-import { Button, Editor } from "@/components";
+import { Editor } from "@/components";
 import utils from "@/utils";
 import { ScriptForCreate } from "@/bindings/ScriptForCreate";
+import { Button } from "@/ui";
 
 interface CreateScriptViewProps {
   onExit: () => void;
@@ -52,7 +53,7 @@ const CreateScript: React.FC<CreateScriptViewProps> = (props) => {
           >
             Test
           </button>
-          <Button type="submit" style={{ width: "fit-content" }}>
+          <Button type="submit" variant="base">
             Create
           </Button>
         </div>

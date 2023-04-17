@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { motion } from "framer-motion";
 
-import { Button } from "@/components";
+import { Button } from "@/ui";
 import ipc from "@/ipc";
 import motions from "@/motions";
 
@@ -31,17 +31,14 @@ const CreateIntent: React.FC = () => {
 
   if (!viewCreate)
     return (
-      <motion.div className="w-full window rounded-none" {...motions.scaleIn}>
-        <Button
-          onClick={() => setViewCreate(true)}
-          style={{ width: "100%" }}
-          transparent
-          rounded={false}
-        >
-          <MdAddCircle size={20} />
-          <span>Add Intent</span>
-        </Button>
-      </motion.div>
+      <Button
+        onClick={() => setViewCreate(true)}
+        variant="base"
+        style={{ width: "100%" }}
+      >
+        <MdAddCircle size={20} />
+        <span>Add Intent</span>
+      </Button>
     );
 
   return (

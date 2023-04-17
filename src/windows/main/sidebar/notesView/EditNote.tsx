@@ -4,9 +4,10 @@ import { toast } from "react-hot-toast";
 import { motion } from "framer-motion";
 
 import ipc from "@/ipc";
-import { Button, Editor } from "@/components";
+import { Editor } from "@/components";
 import { Note } from "@/bindings/Note";
 import motions from "@/motions";
+import { Button } from "@/ui";
 
 interface Props {
   note: Note;
@@ -36,15 +37,15 @@ const EditNote: React.FC<Props> = (props) => {
       <div className="h-9 flex flex-row gap-0.5">
         <div className="w-full window">
           <Button
+            variant="base"
             onClick={() => updateNote()}
-            transparent
             style={{ width: "100%" }}
           >
             Update note
           </Button>
         </div>
         <div className="window">
-          <Button onClick={() => props.hide()} transparent>
+          <Button variant="ghost" onClick={() => props.hide()}>
             <MdCancel size={24} />
           </Button>
         </div>

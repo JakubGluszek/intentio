@@ -53,24 +53,7 @@
   }
 
   body {
-    @apply w-screen h-screen flex flex-col bg-transparent transition-colors duration-300;
-  }
-
-  h1 {
-    @apply text-xl;
-  }
-
-  button {
-    outline: none;
-    @apply font-bold transition-colors transition-opacity duration-300;
-  }
-
-  button > * {
-    cursor: pointer;
-  }
-
-  button:disabled > * {
-    cursor: not-allowed;
+    @apply w-screen h-screen flex flex-col bg-transparent;
   }
 
   /* Hides controls in input of type "number" */
@@ -93,21 +76,6 @@
 @layer components {
   .card {
     @apply bg-base/20 hover:bg-base/30 p-1.5 rounded-sm border-2 border-base/80 hover:border-base shadow shadow-black/30;
-  }
-
-  .circle {
-    position: relative;
-    overflow: hidden;
-  }
-
-  .circle::before {
-    content: "";
-    position: absolute;
-    bottom: 50%;
-    width: 100%;
-    height: 100%;
-    border-radius: 100%;
-    box-shadow: 0px 300px 0px 300px #448ccb;
   }
 
   .window {

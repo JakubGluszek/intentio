@@ -12,9 +12,10 @@ import { Tooltip } from "@mantine/core";
 
 import useStore from "@/store";
 import ipc from "@/ipc";
-import { Button, IntentsList } from "@/components";
+import { IntentsList } from "@/components";
 import { IntentsSort } from "@/types";
 import { IntentForCreate } from "@/bindings/IntentForCreate";
+import { Button } from "@/ui";
 
 interface Props {
   selectedId?: string;
@@ -38,8 +39,7 @@ const Sidebar: React.FC<Props> = (props) => {
         <div className="h-fit flex flex-row items-center gap-1">
           {/* Toggle create intent view */}
           <Button
-            color="primary"
-            style={{ width: "100%" }}
+            variant="base"
             onClick={() => setViewCreate((visible) => !visible)}
           >
             <MdAddCircle size={22} />
@@ -48,7 +48,7 @@ const Sidebar: React.FC<Props> = (props) => {
 
           {/* Sort by intent label */}
           <Button
-            transparent
+            variant="ghost"
             onClick={() => setSort((sort) => (sort === "asc" ? "desc" : "asc"))}
           >
             {sort === "asc" ? (
@@ -65,8 +65,7 @@ const Sidebar: React.FC<Props> = (props) => {
           >
             <div>
               <Button
-                opacity={viewArchived ? 1.0 : 0.5}
-                transparent
+                variant="ghost"
                 onClick={() => setViewArchived((view) => !view)}
               >
                 <BiArchive size={28} />
@@ -129,14 +128,10 @@ const CreateIntentView: React.FC<CreateIntentViewProps> = (props) => {
           />
         </div>
         <div className="h-7 flex flex-row items-center justify-between text-sm">
-          <Button transparent type="button" onClick={() => props.hide()}>
+          <Button onClick={() => props.hide()} variant="ghost">
             Cancel
           </Button>
-          <Button
-            color="primary"
-            style={{ width: "fit-content" }}
-            type="submit"
-          >
+          <Button variant="base" type="submit">
             Create
           </Button>
         </div>

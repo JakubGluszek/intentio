@@ -9,9 +9,9 @@ import ipc from "@/ipc";
 import { useContextMenu } from "@/hooks";
 import { Intent } from "@/bindings/Intent";
 import ContextMenu from "../ContextMenu";
-import Button from "../Button";
 import TagButton from "../TagButton";
 import { TagsModal } from "./TagsModal";
+import { Button } from "@/ui";
 
 interface Props {
   data: Intent;
@@ -97,6 +97,7 @@ const IntentListItem: React.FC<Props> = (props) => {
       <ContextMenu {...menu}>
         <React.Fragment>
           <Button
+            variant="base"
             onClick={() =>
               ipc
                 .updateIntent(props.data.id, { pinned: !props.data.pinned })
@@ -105,7 +106,6 @@ const IntentListItem: React.FC<Props> = (props) => {
                   toast(data.pinned ? "Pinned to top" : "Unpinned");
                 })
             }
-            rounded={false}
           >
             <div className="w-fit">
               {props.data.pinned ? (
@@ -117,11 +117,11 @@ const IntentListItem: React.FC<Props> = (props) => {
             <div className="w-full">{props.data.pinned ? "Unpin" : "Pin"}</div>
           </Button>
           <Button
+            variant="base"
             onClick={() => {
               setViewTagsModal(true);
               menu.hide();
             }}
-            rounded={false}
           >
             <div className="w-fit">
               <TbTags size={20} />

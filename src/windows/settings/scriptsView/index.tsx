@@ -1,7 +1,6 @@
 import React from "react";
 import { MdAddCircle } from "react-icons/md";
 
-import { Button } from "@/components";
 import ipc from "@/ipc";
 import useStore from "@/store";
 import { Script } from "@/bindings/Script";
@@ -9,6 +8,7 @@ import ScriptView from "./ScriptView";
 import CreateScript from "./CreateScript";
 import EditScript from "./EditScript";
 import EditScriptEvents from "./EditScriptEvents";
+import { Button } from "@/ui";
 
 const ScriptsView: React.FC = () => {
   const [viewCreate, setViewCreate] = React.useState(false);
@@ -38,9 +38,7 @@ const ScriptsView: React.FC = () => {
     <div className="grow flex flex-col gap-0.5">
       <div className="flx flex-row window bg-window p-1.5">
         <Button
-          transparent
-          highlight={false}
-          style={{ padding: 0 }}
+          variant="ghost"
           onClick={() => setViewCreate(true)}
         >
           <MdAddCircle size={20} />

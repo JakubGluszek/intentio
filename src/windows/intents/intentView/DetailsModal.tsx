@@ -6,9 +6,10 @@ import { useClickOutside } from "@mantine/hooks";
 import useStore from "@/store";
 import utils from "@/utils";
 import ipc from "@/ipc";
-import { ModalContainer, Button } from "@/components";
+import { ModalContainer } from "@/components";
 import { useConfirmDelete } from "@/hooks";
 import { Intent } from "@/bindings/Intent";
+import { Button } from "@/ui";
 
 interface Props {
   data: Intent;
@@ -66,28 +67,17 @@ const DetailsModal: React.FC<Props> = (props) => {
         {/* Intent Operations */}
         <div className="flex flex-row items-center justify-between h-7 gap-2 text-sm">
           {data.archived_at ? (
-            <Button
-              style={{ width: "fit-content" }}
-              onClick={() => ipc.unarchiveIntent(data.id)}
-            >
+            <Button variant="base" onClick={() => ipc.unarchiveIntent(data.id)}>
               <BiArchiveOut size={20} />
               <span>Unarchive</span>
             </Button>
           ) : (
-            <Button
-              style={{ width: "fit-content" }}
-              onClick={() => ipc.archiveIntent(data.id)}
-            >
+            <Button variant="base" onClick={() => ipc.archiveIntent(data.id)}>
               <BiArchiveIn size={20} />
               <span>Archive</span>
             </Button>
           )}
-          <Button
-            transparent={!viewConfirmDelete}
-            color="danger"
-            style={{ width: "fit-content" }}
-            onClick={() => onDelete()}
-          >
+          <Button variant="base" onClick={() => onDelete()}>
             <MdDelete size={viewConfirmDelete ? 24 : 28} />
             {viewConfirmDelete && "Confirm"}
           </Button>

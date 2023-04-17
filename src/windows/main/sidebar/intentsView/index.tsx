@@ -5,7 +5,8 @@ import { WebviewWindow } from "@tauri-apps/api/window";
 
 import useStore from "@/store";
 import ipc from "@/ipc";
-import { Button, IntentsList } from "@/components";
+import { IntentsList } from "@/components";
+import { Button } from "@/ui";
 import config from "@/config";
 import { useEvents } from "@/hooks";
 import { Intent } from "@/bindings/Intent";
@@ -52,9 +53,8 @@ const IntentsView: React.FC = () => {
         <CreateIntent />
         <motion.div className="window rounded-none" {...motions.scaleIn}>
           <Button
+            variant="ghost"
             onClick={() => new WebviewWindow("intents", config.windows.intents)}
-            transparent
-            rounded={false}
           >
             <MdAnalytics size={24} />
           </Button>

@@ -1,10 +1,10 @@
 import React from "react";
 
-import { Button } from "@/components";
 import { Session } from "@/bindings/Session";
 import { Intent } from "@/bindings/Intent";
 import ActivityView from "./ActivityView";
 import TimelineView from "./TimelineView";
+import { Button } from "@/ui";
 
 type Tab = "activity" | "timeline";
 
@@ -79,19 +79,14 @@ const Tabs: React.FC<TabsProps> = (props) => {
   return (
     <div className="w-full h-full flex flex-row gap-0.5 rounded overflow-clip">
       <Button
-        isSelected={props.value === "activity"}
-        rounded={false}
+        variant="base"
         onClick={() => {
           props.setValue("activity");
         }}
       >
         Activity
       </Button>
-      <Button
-        isSelected={props.value === "timeline"}
-        rounded={false}
-        onClick={() => props.setValue("timeline")}
-      >
+      <Button variant="base" onClick={() => props.setValue("timeline")}>
         Timeline
       </Button>
     </div>

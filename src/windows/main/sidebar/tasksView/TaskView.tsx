@@ -7,9 +7,10 @@ import { clsx } from "@mantine/core";
 
 import ipc from "@/ipc";
 import { useConfirmDelete, useContextMenu } from "@/hooks";
-import { Button, ContextMenu } from "@/components";
+import { ContextMenu } from "@/components";
 import { Task } from "@/bindings/Task";
 import { MenuPosition } from "@/hooks/useContextMenu";
+import { Button } from "@/ui";
 
 interface TaskViewProps {
   data: Task;
@@ -74,11 +75,7 @@ const TaskView: React.FC<TaskViewProps> = (props) => {
       >
         {!viewEdit ? (
           <div className="flex flex-row items-center gap-1">
-            <Button
-              onMouseDown={() => handleCheck()}
-              style={{ padding: 2 }}
-              transparent
-            >
+            <Button variant="ghost" onMouseDown={() => handleCheck()}>
               {!data.done ? (
                 <MdCheckBoxOutlineBlank size={24} />
               ) : (
@@ -134,7 +131,7 @@ const TaskContextMenu: React.FC<TaskContextMenuProps> = (props) => {
       hide={() => props.hide()}
     >
       <React.Fragment>
-        <Button onClick={() => onDelete()} rounded={false} color="danger">
+        <Button variant="base" onClick={() => onDelete()}>
           <div className="w-fit">
             <MdDelete size={20} />
           </div>

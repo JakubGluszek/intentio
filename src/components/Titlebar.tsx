@@ -1,8 +1,7 @@
 import React from "react";
 import { MdClose } from "react-icons/md";
 import { appWindow } from "@tauri-apps/api/window";
-
-import Button from "./Button";
+import { Button } from "@/ui";
 
 interface Props {
   icon: React.ReactNode;
@@ -17,7 +16,7 @@ const Titlebar: React.FC<Props> = (props) => {
           {props.icon}
           <span className="text-lg">{props.title}</span>
         </div>
-        <Button transparent rounded={false} onClick={() => appWindow.close()}>
+        <Button variant="ghost" onClick={() => appWindow.close()}>
           <MdClose size={24} />
         </Button>
       </div>

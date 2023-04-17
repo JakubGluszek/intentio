@@ -3,17 +3,18 @@ import { MdRemove, MdClose, MdSettings } from "react-icons/md";
 import { TbLayoutSidebarRightCollapse } from "react-icons/tb";
 import { WebviewWindow } from "@tauri-apps/api/window";
 import { motion } from "framer-motion";
+import { toast } from "react-hot-toast";
 
 import ipc from "@/ipc";
 import useStore from "@/store";
 import config from "@/config";
-import { Button, WindowContainer } from "@/components";
+import { WindowContainer } from "@/components";
 import { MainWindowContext, MainWindowProvider } from "@/contexts";
 import TimerView from "./TimerView";
 import Sidebar from "./sidebar";
 import { useEvents, useTimer } from "@/hooks";
-import { toast } from "react-hot-toast";
 import utils from "@/utils";
+import { Button } from "@/ui";
 
 const MainWindow: React.FC = () => {
   const store = useStore();
@@ -110,33 +111,24 @@ const Titlebar: React.FC = () => {
   return (
     <div className="z-[1000] w-full flex flex-row items-center justify-between window rounded rounded-b-none overflow-clip">
       <div className="flex flex-row">
-        <Button onClick={toggleDisplay} transparent rounded={false}>
+        <Button variant="ghost" onClick={toggleDisplay}>
           <motion.div animate={{ rotateZ: display === "sidebar" ? 180 : 0 }}>
             <TbLayoutSidebarRightCollapse size={isCompact ? 20 : 28} />
           </motion.div>
         </Button>
         <Button
-          transparent
+          variant="ghost"
           onClick={() => new WebviewWindow("settings", config.windows.settings)}
-          rounded={false}
         >
           <MdSettings size={isCompact ? 20 : 28} />
         </Button>
       </div>
       <h2 className="text-text/80 font-bold">Intentio</h2>
       <div className="flex flex-row">
-        <Button
-          transparent
-          onClick={() => ipc.hideMainWindow()}
-          rounded={false}
-        >
+        <Button variant="ghost" onClick={() => ipc.hideMainWindow()}>
           <MdRemove size={isCompact ? 20 : 28} />
         </Button>
-        <Button
-          transparent
-          onClick={() => ipc.exitMainWindow()}
-          rounded={false}
-        >
+        <Button variant="ghost" onClick={() => ipc.exitMainWindow()}>
           <MdClose size={isCompact ? 20 : 28} />
         </Button>
       </div>

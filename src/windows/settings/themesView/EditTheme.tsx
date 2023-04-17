@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { RiEyeCloseFill, RiEyeFill } from "react-icons/ri";
 import { emit } from "@tauri-apps/api/event";
 
-import { Button, ColorInput, ModalContainer } from "@/components";
+import { ColorInput, ModalContainer } from "@/components";
 import { Theme } from "@/bindings/Theme";
 import ipc from "@/ipc";
 import useStore from "@/store";
@@ -14,6 +14,7 @@ import { ColorType } from "..";
 import { useClickOutside } from "@mantine/hooks";
 import { ChromePicker } from "react-color";
 import { useConfirmDelete } from "@/hooks";
+import { Button } from "@/ui";
 
 interface Props {
   data: Theme;
@@ -71,7 +72,7 @@ const EditTheme: React.FC<Props> = (props) => {
     <div className="grow flex flex-col gap-0.5">
       <div className="h-fit flex flex-row gap-0.5">
         <div className="window bg-window">
-          <Button onClick={() => props.onExit()} transparent rounded={false}>
+          <Button onClick={() => props.onExit()} variant="ghost">
             <MdArrowBack size={24} />
           </Button>
         </div>
@@ -159,13 +160,7 @@ const EditTheme: React.FC<Props> = (props) => {
           <div className="flex flex-row items-center justify-between">
             <div className="flex flex-row items-center gap-2">
               {!props.data.default && (
-                <Button
-                  onClick={() => onDelete()}
-                  transparent
-                  color="danger"
-                  highlight={false}
-                  style={{ padding: 0 }}
-                >
+                <Button onClick={() => onDelete()} variant="ghost">
                   <MdDelete size={24} />
                   {viewConfirmDelete && <div>Confirm</div>}
                 </Button>
@@ -190,7 +185,7 @@ const EditTheme: React.FC<Props> = (props) => {
                 </div>
               )}
             </div>
-            <Button type="submit" style={{ width: "fit-content" }}>
+            <Button variant="base" type="submit">
               Update theme
             </Button>
           </div>

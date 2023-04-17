@@ -7,11 +7,11 @@ import { motion } from "framer-motion";
 import useStore from "@/store";
 import ipc from "@/ipc";
 import { useConfirmDelete, useEvents } from "@/hooks";
-import { Button } from "@/components";
 import motions from "@/motions";
 import { Task } from "@/bindings/Task";
 import CreateTask from "./CreateTask";
 import TaskView from "./TaskView";
+import { Button } from "@/ui";
 
 const TasksView: React.FC = () => {
   const [viewCompletedTasks, setViewCompletedTasks] = React.useState(false);
@@ -191,7 +191,7 @@ const ToggleTasksView: React.FC<ToggleTasksViewProps> = (props) => {
       classNames={{ tooltip: "tooltip" }}
     >
       <motion.div className="window" {...motions.scaleIn}>
-        <Button onClick={() => props.toggleTasks()} transparent>
+        <Button variant="ghost" onClick={() => props.toggleTasks()}>
           {props.viewCompleted ? (
             <MdCheckBox size={24} />
           ) : (
@@ -220,7 +220,7 @@ const DeleteMultiTasksButton: React.FC<DeleteMultiTasksButtonProps> = (
 
   return (
     <motion.div className="window" {...motions.scaleIn}>
-      <Button onClick={() => onDelete()} transparent color="danger">
+      <Button variant="ghost" onClick={() => onDelete()}>
         {!viewConfirmDelete && <MdDelete size={20} />}
         <div>
           {viewConfirmDelete ? "Confirm" : props.selectedTasksIds.length}

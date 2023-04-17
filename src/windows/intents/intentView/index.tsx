@@ -5,12 +5,12 @@ import { useClickOutside } from "@mantine/hooks";
 import { useForm } from "react-hook-form";
 
 import ipc from "@/ipc";
-import { Button } from "@/components";
 import { Session } from "@/bindings/Session";
 import { Intent } from "@/bindings/Intent";
 import DetailsModal from "./DetailsModal";
 import ActivityView from "./ActivityView";
 import TimelineView from "./TimelineView";
+import { Button } from "@/ui";
 
 interface Props {
   data: Intent;
@@ -52,7 +52,7 @@ const IntentView: React.FC<Props> = (props) => {
             isPinned={data.pinned}
             onClick={() => ipc.updateIntent(data.id, { pinned: !data.pinned })}
           />
-          <Button transparent onClick={() => setViewDetails(!viewDetails)}>
+          <Button onClick={() => setViewDetails(!viewDetails)} variant="ghost">
             <MdInfo size={28} />
           </Button>
         </div>
@@ -84,22 +84,20 @@ const IntentView: React.FC<Props> = (props) => {
       {/* Tab navigation */}
       <div className="w-full h-7 flex flex-row gap-0.5 rounded-sm overflow-clip text-sm">
         <Button
+          onClick={() => switchTab("activity")}
+          variant="ghost"
           style={{
             width: tab === "activity" ? "100%" : "fit-content",
           }}
-          isSelected={tab === "activity"}
-          rounded={false}
-          onClick={() => switchTab("activity")}
         >
           Activity
         </Button>
         <Button
+          onClick={() => switchTab("timeline")}
           style={{
             width: tab === "timeline" ? "100%" : "fit-content",
           }}
-          isSelected={tab === "timeline"}
-          rounded={false}
-          onClick={() => switchTab("timeline")}
+          variant="ghost"
         >
           Timeline
         </Button>
@@ -130,11 +128,11 @@ const PinButton: React.FC<PinButtonProps> = (props) => {
 
   return (
     <Button
-      transparent
       onClick={(e) => {
         props.onClick(e);
         setIsAnimation(true);
       }}
+      variant="ghost"
       animate={
         isAnimation
           ? {
