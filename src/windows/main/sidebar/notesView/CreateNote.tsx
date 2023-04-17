@@ -1,13 +1,11 @@
 import React from "react";
 import { toast } from "react-hot-toast";
 import { MdCancel } from "react-icons/md";
-import { motion } from "framer-motion";
 
 import useStore from "@/store";
 import ipc from "@/ipc";
-import NoteInput from "./NoteInput";
-import motions from "@/motions";
 import { Button } from "@/ui";
+import { Editor } from "@/components";
 
 interface Props {
   hide: () => void;
@@ -31,30 +29,20 @@ const CreateNote: React.FC<Props> = (props) => {
   };
 
   return (
-    <motion.div className="grow flex flex-col gap-0.5" {...motions.scaleIn}>
-      <NoteInput
-        value={body}
-        onChange={(value) => setBody(value)}
-        onCtrlEnter={() => saveNote()}
-      />
+    <div className="grow flex flex-col gap-1">
+      <Editor lang="md" value={body} onChange={(value) => setBody(value)} />
 
-      <div className="h-9 flex flex-row gap-0.5">
-        <div className="w-full window">
-          <Button
-            variant="base"
-            onClick={() => saveNote()}
-            style={{ width: "100%" }}
-          >
-            Save note
-          </Button>
-        </div>
-        <div className="window">
-          <Button variant="ghost" onClick={() => props.hide()}>
-            <MdCancel size={24} />
-          </Button>
-        </div>
+      <div className="flex flex-row justify-between">
+        <Button variant="ghost" onClick={() => props.hide()}>
+          <MdCancel size={20} />
+          <div>Exit</div>
+        </Button>
+
+        <Button variant="base" onClick={() => saveNote()}>
+          Save note
+        </Button>
       </div>
-    </motion.div>
+    </div>
   );
 };
 

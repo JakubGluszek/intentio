@@ -31,11 +31,7 @@ const CreateIntent: React.FC = () => {
 
   if (!viewCreate)
     return (
-      <Button
-        onClick={() => setViewCreate(true)}
-        variant="base"
-        style={{ width: "100%" }}
-      >
+      <Button onClick={() => setViewCreate(true)} variant="base">
         <MdAddCircle size={20} />
         <span>Add Intent</span>
       </Button>

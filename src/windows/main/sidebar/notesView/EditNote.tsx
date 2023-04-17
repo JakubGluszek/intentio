@@ -1,12 +1,10 @@
 import React from "react";
 import { MdCancel } from "react-icons/md";
 import { toast } from "react-hot-toast";
-import { motion } from "framer-motion";
 
 import ipc from "@/ipc";
 import { Editor } from "@/components";
 import { Note } from "@/bindings/Note";
-import motions from "@/motions";
 import { Button } from "@/ui";
 
 interface Props {
@@ -31,26 +29,20 @@ const EditNote: React.FC<Props> = (props) => {
   }, [props.note]);
 
   return (
-    <motion.div className="grow flex flex-col gap-0.5" {...motions.scaleIn}>
+    <div className="grow flex flex-col gap-1">
       <Editor lang="md" value={body} onChange={(value) => setBody(value)} />
 
-      <div className="h-9 flex flex-row gap-0.5">
-        <div className="w-full window">
-          <Button
-            variant="base"
-            onClick={() => updateNote()}
-            style={{ width: "100%" }}
-          >
-            Update note
-          </Button>
-        </div>
-        <div className="window">
-          <Button variant="ghost" onClick={() => props.hide()}>
-            <MdCancel size={24} />
-          </Button>
-        </div>
+      <div className="flex flex-row items-center justify-between">
+        <Button variant="ghost" onClick={() => props.hide()}>
+          <MdCancel size={20} />
+          <div>Exit</div>
+        </Button>
+
+        <Button variant="base" onClick={() => updateNote()}>
+          Update note
+        </Button>
       </div>
-    </motion.div>
+    </div>
   );
 };
 

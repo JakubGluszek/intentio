@@ -16,7 +16,7 @@ export const Tabs: React.FC<TabsProps> & TabsComposition = (props) => {
 
   return (
     <TabsProvider {...values}>
-      <div className="w-full flex flex-row p-1 gap-0.5">{children}</div>
+      <div className="w-full flex flex-row p-1 gap-1">{children}</div>
     </TabsProvider>
   );
 };

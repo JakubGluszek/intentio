@@ -34,7 +34,7 @@ export const Button: React.FC<ButtonProps> = (props) => {
 
     style.backgroundColor = isActive
       ? "rgb(var(--primary-color))"
-      : "rgb(var(--base-color))";
+      : "rgb(var(--primary-color) / 0.1)";
 
     style.color = isActive
       ? "rgb(var(--window-color))"

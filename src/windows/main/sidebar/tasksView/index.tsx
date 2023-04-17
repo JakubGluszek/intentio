@@ -2,20 +2,19 @@ import React from "react";
 import { MdCheckBox, MdCheckBoxOutlineBlank, MdDelete } from "react-icons/md";
 import { toast } from "react-hot-toast";
 import { Tooltip } from "@mantine/core";
-import { motion } from "framer-motion";
 
 import useStore from "@/store";
 import ipc from "@/ipc";
+import { Button } from "@/ui";
 import { useConfirmDelete, useEvents } from "@/hooks";
-import motions from "@/motions";
 import { Task } from "@/bindings/Task";
 import CreateTask from "./CreateTask";
 import TaskView from "./TaskView";
-import { Button } from "@/ui";
 
 const TasksView: React.FC = () => {
   const [viewCompletedTasks, setViewCompletedTasks] = React.useState(false);
   const [selectedTasksIds, setSelectedTasksIds] = React.useState<string[]>([]);
+  const [viewCreate, setViewCreate] = React.useState(false);
 
   const store = useStore();
   const tasksContainer = React.useRef<HTMLDivElement>(null);
@@ -41,13 +40,26 @@ const TasksView: React.FC = () => {
   tasks = tasks.filter((task) => task.intent_id === store.currentIntent?.id);
 
   return (
-    <div className="grow flex flex-col gap-0.5">
-      <Top
-        viewCompletedTasks={viewCompletedTasks}
-        setViewCompletedTasks={setViewCompletedTasks}
-        selectedTasksIds={selectedTasksIds}
-        setSelectedTasksIds={setSelectedTasksIds}
-      />
+    <div className="grow flex flex-col window p-1 gap-2">
+      <div className="flex flex-row items-center justify-between gap-1">
+        <CreateTask viewCreate={viewCreate} setViewCreate={setViewCreate} />
+
+        {/* Toggle finished tasks */}
+        {!viewCreate && (
+          <ToggleTasksView
+            viewCompleted={viewCompletedTasks}
+            toggleTasks={() => setViewCompletedTasks((view) => !view)}
+          />
+        )}
+
+        {!viewCreate && selectedTasksIds.length > 0 && (
+          <DeleteMultiTasksButton
+            selectedTasksIds={selectedTasksIds}
+            setSelectedTasksIds={setSelectedTasksIds}
+          />
+        )}
+      </div>
+
       <TasksList
         innerRef={tasksContainer}
         tasks={tasks}
@@ -55,38 +67,6 @@ const TasksView: React.FC = () => {
         selectedTasksIds={selectedTasksIds}
         setSelectedTasksIds={setSelectedTasksIds}
       />
-    </div>
-  );
-};
-
-interface TopProps {
-  viewCompletedTasks: boolean;
-  setViewCompletedTasks: React.Dispatch<React.SetStateAction<boolean>>;
-  selectedTasksIds: string[];
-  setSelectedTasksIds: React.Dispatch<React.SetStateAction<string[]>>;
-}
-
-const Top: React.FC<TopProps> = (props) => {
-  const [viewCreate, setViewCreate] = React.useState(false);
-
-  return (
-    <div className="flex flex-row gap-0.5">
-      <CreateTask viewCreate={viewCreate} setViewCreate={setViewCreate} />
-
-      {/* Toggle finished tasks */}
-      {!viewCreate && (
-        <ToggleTasksView
-          viewCompleted={props.viewCompletedTasks}
-          toggleTasks={() => props.setViewCompletedTasks((view) => !view)}
-        />
-      )}
-
-      {!viewCreate && props.selectedTasksIds.length > 0 && (
-        <DeleteMultiTasksButton
-          selectedTasksIds={props.selectedTasksIds}
-          setSelectedTasksIds={props.setSelectedTasksIds}
-        />
-      )}
     </div>
   );
 };
@@ -127,55 +107,44 @@ const TasksList: React.FC<TasksListProps> = (props) => {
 
   if (props.tasks.length === 0) {
     return (
-      <motion.div
-        className="grow flex flex-col items-center justify-center text-center text-sm text-text/40 gap-2 p-1.5 window"
-        {...motions.scaleIn}
-      >
+      <div className="grow flex flex-col items-center justify-center text-center text-sm text-text/40 gap-2 p-1.5">
         {emptyFiller}
-      </motion.div>
+      </div>
     );
   }
   return (
-    <motion.div
-      className="grow flex flex-col window p-1.5"
-      {...motions.scaleIn}
-    >
-      <div className="grow flex flex-col overflow-y-auto gap-1 pb-2">
-        <div
-          ref={props.innerRef}
-          className="w-full max-h-0 flex flex-col gap-1"
-        >
-          {props.tasks.map((task) => {
-            if (task.done === props.viewCompletedTasks) {
-              let isSelected = props.selectedTasksIds.includes(task.id);
+    <div className="grow flex flex-col overflow-y-auto gap-1 pb-2">
+      <div ref={props.innerRef} className="w-full max-h-0 flex flex-col gap-1">
+        {props.tasks.map((task) => {
+          if (task.done === props.viewCompletedTasks) {
+            let isSelected = props.selectedTasksIds.includes(task.id);
 
-              return (
-                <TaskView
-                  key={task.id}
-                  data={task}
-                  isSelected={isSelected}
-                  onMouseDown={(e) => {
-                    if (e.ctrlKey) {
-                      if (isSelected) {
-                        props.setSelectedTasksIds((ids) =>
-                          ids.filter((id) => id !== task.id)
-                        );
-                      } else {
-                        props.setSelectedTasksIds((ids) => [task.id, ...ids]);
-                      }
-                      return;
+            return (
+              <TaskView
+                key={task.id}
+                data={task}
+                isSelected={isSelected}
+                onMouseDown={(e) => {
+                  if (e.ctrlKey) {
+                    if (isSelected) {
+                      props.setSelectedTasksIds((ids) =>
+                        ids.filter((id) => id !== task.id)
+                      );
+                    } else {
+                      props.setSelectedTasksIds((ids) => [task.id, ...ids]);
                     }
+                    return;
+                  }
 
-                    props.setSelectedTasksIds([]);
-                  }}
-                  onContextMenu={() => props.setSelectedTasksIds([])}
-                />
-              );
-            }
-          })}
-        </div>
+                  props.setSelectedTasksIds([]);
+                }}
+                onContextMenu={() => props.setSelectedTasksIds([])}
+              />
+            );
+          }
+        })}
       </div>
-    </motion.div>
+    </div>
   );
 };
 
@@ -189,16 +158,17 @@ const ToggleTasksView: React.FC<ToggleTasksViewProps> = (props) => {
     <Tooltip
       label={props.viewCompleted ? "View incomplete" : "View completed"}
       classNames={{ tooltip: "tooltip" }}
+      position="left"
     >
-      <motion.div className="window" {...motions.scaleIn}>
+      <div>
         <Button variant="ghost" onClick={() => props.toggleTasks()}>
           {props.viewCompleted ? (
-            <MdCheckBox size={24} />
+            <MdCheckBox size={28} />
           ) : (
-            <MdCheckBoxOutlineBlank size={24} />
+            <MdCheckBoxOutlineBlank size={28} />
           )}
         </Button>
-      </motion.div>
+      </div>
     </Tooltip>
   );
 };
@@ -219,14 +189,10 @@ const DeleteMultiTasksButton: React.FC<DeleteMultiTasksButtonProps> = (
   );
 
   return (
-    <motion.div className="window" {...motions.scaleIn}>
-      <Button variant="ghost" onClick={() => onDelete()}>
-        {!viewConfirmDelete && <MdDelete size={20} />}
-        <div>
-          {viewConfirmDelete ? "Confirm" : props.selectedTasksIds.length}
-        </div>
-      </Button>
-    </motion.div>
+    <Button variant="ghost" onClick={() => onDelete()}>
+      {!viewConfirmDelete && <MdDelete size={20} />}
+      <div>{viewConfirmDelete ? "Confirm" : props.selectedTasksIds.length}</div>
+    </Button>
   );
 };
 

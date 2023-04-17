@@ -3,11 +3,9 @@ import { MdAddCircle } from "react-icons/md";
 import { useClickOutside } from "@mantine/hooks";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
-import { motion } from "framer-motion";
 
 import useStore from "@/store";
 import ipc from "@/ipc";
-import motions from "@/motions";
 import { Button, Input } from "@/ui";
 
 interface CreateTaskViewProps {
@@ -34,21 +32,14 @@ const CreateTask: React.FC<CreateTaskViewProps> = (props) => {
 
   if (!props.viewCreate)
     return (
-      <motion.div className="w-full window" {...motions.scaleIn}>
-        <Button variant="base" onClick={() => props.setViewCreate(true)}>
-          <MdAddCircle size={20} />
-          <div>Add task</div>
-        </Button>
-      </motion.div>
+      <Button variant="base" onClick={() => props.setViewCreate(true)}>
+        <MdAddCircle size={20} />
+        <div>Add task</div>
+      </Button>
     );
 
   return (
-    <motion.form
-      ref={ref}
-      onSubmit={onSubmit}
-      className="w-full"
-      {...motions.scaleIn}
-    >
+    <form ref={ref} onSubmit={onSubmit} className="w-full">
       <Input
         {...register("body")}
         onKeyDown={(e) => {
@@ -61,7 +52,7 @@ const CreateTask: React.FC<CreateTaskViewProps> = (props) => {
         minLength={1}
         maxLength={96}
       />
-    </motion.form>
+    </form>
   );
 };
 

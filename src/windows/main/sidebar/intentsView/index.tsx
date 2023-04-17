@@ -1,6 +1,5 @@
 import React from "react";
 import { MdAnalytics } from "react-icons/md";
-import { motion } from "framer-motion";
 import { WebviewWindow } from "@tauri-apps/api/window";
 
 import useStore from "@/store";
@@ -11,7 +10,6 @@ import config from "@/config";
 import { useEvents } from "@/hooks";
 import { Intent } from "@/bindings/Intent";
 import CreateIntent from "./CreateIntent";
-import motions from "@/motions";
 
 const IntentsView: React.FC = () => {
   const [selectedIntentTags, setSelectedIntentTags] = React.useState<string[]>(
@@ -48,31 +46,24 @@ const IntentsView: React.FC = () => {
   }, []);
 
   return (
-    <div className="grow flex flex-col gap-0.5">
-      <div className="w-full flex flex-row gap-0.5">
+    <div className="grow flex flex-col p-1 gap-2 window rounded-t-none rounded-l-none">
+      <div className="w-full flex flex-row items-center justify-between gap-1">
         <CreateIntent />
-        <motion.div className="window rounded-none" {...motions.scaleIn}>
-          <Button
-            variant="ghost"
-            onClick={() => new WebviewWindow("intents", config.windows.intents)}
-          >
-            <MdAnalytics size={24} />
-          </Button>
-        </motion.div>
+        <Button
+          variant="ghost"
+          onClick={() => new WebviewWindow("intents", config.windows.intents)}
+        >
+          <MdAnalytics size={24} />
+        </Button>
       </div>
 
-      <motion.div
-        className="grow flex flex-col p-1.5 window rounded-t-none rounded-l-none"
-        {...motions.scaleIn}
-      >
-        <IntentsList
-          data={store.intents.filter((intent) => !intent.archived_at)}
-          selectedIntentId={store.currentIntent?.id}
-          selectedTags={selectedIntentTags}
-          onSelected={onIntentChange}
-          onTagSelected={(data) => setSelectedIntentTags(data)}
-        />
-      </motion.div>
+      <IntentsList
+        data={store.intents.filter((intent) => !intent.archived_at)}
+        selectedIntentId={store.currentIntent?.id}
+        selectedTags={selectedIntentTags}
+        onSelected={onIntentChange}
+        onTagSelected={(data) => setSelectedIntentTags(data)}
+      />
     </div>
   );
 };

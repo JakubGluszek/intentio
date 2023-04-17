@@ -27,6 +27,7 @@ const Editor: React.FC<Props> = (props) => {
   return (
     <div ref={containerRef} className="grow window bg-window text-sm">
       <CodeMirror
+        autoFocus
         value={props.value}
         onChange={(value) => props.onChange(value)}
         extensions={props.lang === "md" ? [langs.markdown()] : [langs.shell()]}

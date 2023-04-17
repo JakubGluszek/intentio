@@ -19,6 +19,7 @@ const NotesView: React.FC = () => {
   const [editNote, setEditNote] = React.useState<Note | null>(null);
   const [filterQuery, setFilterQuery] = React.useState("");
   const [selectedNotesIds, setSelectedNotesIds] = React.useState<string[]>([]);
+  const [viewFilter, setViewFilter] = React.useState(false);
 
   const store = useStore();
   const notesRef = React.useRef<HTMLDivElement>(null);
@@ -38,15 +39,35 @@ const NotesView: React.FC = () => {
   }, []);
 
   return (
-    <motion.div className="grow flex flex-col gap-0.5">
-      <Top
-        display={!viewCreate && !editNote}
-        toggleViewCreate={() => setViewCreate(true)}
-        filterQuery={filterQuery}
-        setFilterQuery={setFilterQuery}
-        selectedNotesIds={selectedNotesIds}
-        setSelectedNotesIds={setSelectedNotesIds}
-      />
+    <motion.div className="grow flex flex-col window p-1 gap-2">
+      {!viewCreate && !editNote && (
+        <div className="flex flex-row gap-1 items-center justify-between">
+          {!viewFilter ? (
+            <React.Fragment>
+              <Button variant="base" onClick={() => setViewCreate(true)}>
+                <MdAddCircle size={20} />
+                <span>Add note</span>
+              </Button>
+
+              <Button variant="ghost" onClick={() => setViewFilter(true)}>
+                <MdSearch size={24} />
+              </Button>
+            </React.Fragment>
+          ) : (
+            <FilterNotes
+              query={filterQuery}
+              setQuery={setFilterQuery}
+              hide={() => setViewFilter(false)}
+            />
+          )}
+
+          <DeleteMultiButton
+            display={!viewFilter && selectedNotesIds.length > 0}
+            selectedNotesIds={selectedNotesIds}
+            setSelectedNotesIds={setSelectedNotesIds}
+          />
+        </div>
+      )}
 
       {viewCreate && !editNote && (
         <CreateNote hide={() => setViewCreate(false)} />
@@ -63,57 +84,6 @@ const NotesView: React.FC = () => {
         setSelectedNotesIds={setSelectedNotesIds}
       />
     </motion.div>
-  );
-};
-
-interface TopProps {
-  display: boolean;
-  toggleViewCreate: () => void;
-  filterQuery: string;
-  setFilterQuery: React.Dispatch<React.SetStateAction<string>>;
-  selectedNotesIds: string[];
-  setSelectedNotesIds: React.Dispatch<React.SetStateAction<string[]>>;
-}
-
-const Top: React.FC<TopProps> = (props) => {
-  const [viewFilter, setViewFilter] = React.useState(false);
-
-  if (!props.display) return null;
-
-  return (
-    <div className="flex flex-row gap-0.5">
-      {!viewFilter ? (
-        <React.Fragment>
-          <motion.div className="w-full window" {...motions.scaleIn}>
-            <Button
-              variant="ghost"
-              onClick={() => props.toggleViewCreate()}
-              style={{ width: "100%" }}
-            >
-              <MdAddCircle size={20} />
-              <span>Add note</span>
-            </Button>
-          </motion.div>
-          <motion.div className="window" {...motions.scaleIn}>
-            <Button variant="ghost" onClick={() => setViewFilter(true)}>
-              <MdSearch size={24} />
-            </Button>
-          </motion.div>
-        </React.Fragment>
-      ) : (
-        <FilterNotes
-          query={props.filterQuery}
-          setQuery={props.setFilterQuery}
-          hide={() => setViewFilter(false)}
-        />
-      )}
-
-      <DeleteMultiButton
-        display={!viewFilter && props.selectedNotesIds.length > 0}
-        selectedNotesIds={props.selectedNotesIds}
-        setSelectedNotesIds={props.setSelectedNotesIds}
-      />
-    </div>
   );
 };
 
@@ -171,7 +141,7 @@ const NotesList: React.FC<NotesListProps> = (props) => {
   if (notes.length === 0)
     return (
       <motion.div
-        className="grow flex flex-col items-center justify-center text-center text-sm text-text/40 gap-2 p-1.5 window"
+        className="grow flex flex-col items-center justify-center text-center text-sm text-text/40 gap-2 p-1.5"
         {...motions.scaleIn}
       >
         {emptyFiller}
@@ -179,49 +149,44 @@ const NotesList: React.FC<NotesListProps> = (props) => {
     );
 
   return (
-    <motion.div
-      className="grow flex flex-col p-1.5 window"
-      {...motions.scaleIn}
-    >
-      <div className="grow flex flex-col overflow-y-auto gap-1 pb-2">
-        <div
-          ref={props.innerRef}
-          className="w-full max-h-0 flex flex-col gap-1 pb-0.5"
-        >
-          {notes.map((note) => {
-            let isSelected = props.selectedNotesIds.includes(note.id);
+    <div className="grow flex flex-col overflow-y-auto gap-1 pb-2">
+      <div
+        ref={props.innerRef}
+        className="w-full max-h-0 flex flex-col gap-1 pb-0.5"
+      >
+        {notes.map((note) => {
+          let isSelected = props.selectedNotesIds.includes(note.id);
 
-            return (
-              <NoteView
-                key={note.id}
-                data={note}
-                isSelected={isSelected}
-                onMouseDown={(e) => {
-                  if (e.ctrlKey) {
-                    if (isSelected) {
-                      props.setSelectedNotesIds &&
-                        props.setSelectedNotesIds((ids) =>
-                          ids.filter((id) => id !== note.id)
-                        );
-                    } else {
-                      props.setSelectedNotesIds &&
-                        props.setSelectedNotesIds((ids) => [note.id, ...ids]);
-                    }
-                    return;
+          return (
+            <NoteView
+              key={note.id}
+              data={note}
+              isSelected={isSelected}
+              onMouseDown={(e) => {
+                if (e.ctrlKey) {
+                  if (isSelected) {
+                    props.setSelectedNotesIds &&
+                      props.setSelectedNotesIds((ids) =>
+                        ids.filter((id) => id !== note.id)
+                      );
+                  } else {
+                    props.setSelectedNotesIds &&
+                      props.setSelectedNotesIds((ids) => [note.id, ...ids]);
                   }
-
-                  props.setSelectedNotesIds && props.setSelectedNotesIds([]);
-                }}
-                onContextMenu={() =>
-                  props.setSelectedNotesIds && props.setSelectedNotesIds([])
+                  return;
                 }
-                setEdit={props.setEditNote}
-              />
-            );
-          })}
-        </div>
+
+                props.setSelectedNotesIds && props.setSelectedNotesIds([]);
+              }}
+              onContextMenu={() =>
+                props.setSelectedNotesIds && props.setSelectedNotesIds([])
+              }
+              setEdit={props.setEditNote}
+            />
+          );
+        })}
       </div>
-    </motion.div>
+    </div>
   );
 };
 
