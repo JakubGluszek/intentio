@@ -15,7 +15,7 @@ import ipc from "@/ipc";
 import { IntentsList } from "@/components";
 import { IntentsSort } from "@/types";
 import { IntentForCreate } from "@/bindings/IntentForCreate";
-import { Button } from "@/ui";
+import { Button, Input } from "@/ui";
 
 interface Props {
   selectedId?: string;
@@ -114,8 +114,7 @@ const CreateIntentView: React.FC<CreateIntentViewProps> = (props) => {
     <div className="flex flex-col p-2 bg-darker/20 shadow-inner rounded animate-in fade-in-0 zoom-in-90">
       <form onSubmit={onSubmit} className="flex flex-col gap-2">
         <div className="flex flex-col gap-1 focus-within:text-primary/60">
-          <input
-            autoComplete="off"
+          <Input
             autoFocus
             minLength={1}
             maxLength={20}

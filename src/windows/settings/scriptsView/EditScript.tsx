@@ -8,7 +8,7 @@ import { Editor } from "@/components";
 import utils from "@/utils";
 import { Script } from "@/bindings/Script";
 import { ScriptForUpdate } from "@/bindings/ScriptForUpdate";
-import { Button } from "@/ui";
+import { Button, Input } from "@/ui";
 
 interface Props {
   data: Script;
@@ -38,10 +38,8 @@ const EditScript: React.FC<Props> = (props) => {
 
   return (
     <form onSubmit={onSubmit} className="grow flex flex-col gap-0.5">
-      <input
+      <Input
         placeholder="Script label"
-        className="window bg-window"
-        autoComplete="off"
         maxLength={24}
         {...register("label", { required: true, minLength: 1, maxLength: 24 })}
       />

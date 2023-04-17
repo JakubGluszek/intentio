@@ -8,7 +8,7 @@ import { motion } from "framer-motion";
 import useStore from "@/store";
 import ipc from "@/ipc";
 import motions from "@/motions";
-import { Button } from "@/ui";
+import { Button, Input } from "@/ui";
 
 interface CreateTaskViewProps {
   viewCreate: boolean;
@@ -49,10 +49,8 @@ const CreateTask: React.FC<CreateTaskViewProps> = (props) => {
       className="w-full"
       {...motions.scaleIn}
     >
-      <input
-        tabIndex={-3}
+      <Input
         {...register("body")}
-        className="bg-window/90"
         onKeyDown={(e) => {
           if (e.key !== "Escape") return;
           props.setViewCreate(false);
@@ -61,7 +59,6 @@ const CreateTask: React.FC<CreateTaskViewProps> = (props) => {
         placeholder="Describe your task"
         autoFocus
         minLength={1}
-        autoComplete="off"
         maxLength={96}
       />
     </motion.form>

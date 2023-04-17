@@ -10,7 +10,7 @@ import { Intent } from "@/bindings/Intent";
 import DetailsModal from "./DetailsModal";
 import ActivityView from "./ActivityView";
 import TimelineView from "./TimelineView";
-import { Button } from "@/ui";
+import { Button, Input } from "@/ui";
 
 interface Props {
   data: Intent;
@@ -178,9 +178,7 @@ const IntentLabelView: React.FC<IntentLabelViewProps> = (props) => {
       }}
       ref={ref}
     >
-      <input
-        autoComplete="off"
-        tabIndex={-3}
+      <Input
         autoFocus
         maxLength={24}
         {...register("label", { required: true, minLength: 1, maxLength: 24 })}

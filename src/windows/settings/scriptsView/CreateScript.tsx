@@ -7,7 +7,7 @@ import ipc from "@/ipc";
 import { Editor } from "@/components";
 import utils from "@/utils";
 import { ScriptForCreate } from "@/bindings/ScriptForCreate";
-import { Button } from "@/ui";
+import { Button, Input } from "@/ui";
 
 interface CreateScriptViewProps {
   onExit: () => void;
@@ -29,10 +29,8 @@ const CreateScript: React.FC<CreateScriptViewProps> = (props) => {
 
   return (
     <form onSubmit={onSubmit} className="grow flex flex-col gap-0.5">
-      <input
+      <Input
         placeholder="Script label"
-        className="window bg-window"
-        autoComplete="off"
         maxLength={24}
         {...register("label", { required: true, minLength: 1, maxLength: 24 })}
       />

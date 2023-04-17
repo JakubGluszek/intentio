@@ -2,6 +2,7 @@ import React from "react";
 import { UseFormRegister, UseFormWatch } from "react-hook-form";
 
 import { ThemeForCreate } from "@/bindings/ThemeForCreate";
+import { Input } from "@/ui";
 
 interface Props {
   label: string;
@@ -17,16 +18,12 @@ const ColorInput: React.FC<Props> = (props) => {
       <label className="min-w-[64px] text-text/80" htmlFor={props.type}>
         {props.label}
       </label>
-      <input
+      <Input
         {...props.register(props.type, {
           required: true,
           pattern: /^#([0-9a-f]{3}){1,2}$/i,
         })}
-        className="border-base/60 text-sm"
         id="text-hex"
-        autoComplete="off"
-        tabIndex={-2}
-        type="text"
       />
       <div
         data-tauri-disable-drag

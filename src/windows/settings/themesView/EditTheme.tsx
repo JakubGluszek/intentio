@@ -14,7 +14,7 @@ import { ColorType } from "..";
 import { useClickOutside } from "@mantine/hooks";
 import { ChromePicker } from "react-color";
 import { useConfirmDelete } from "@/hooks";
-import { Button } from "@/ui";
+import { Button, Input } from "@/ui";
 
 interface Props {
   data: Theme;
@@ -106,13 +106,9 @@ const EditTheme: React.FC<Props> = (props) => {
             >
               Name
             </label>
-            <input
+            <Input
               {...register("name", { required: true, maxLength: 16 })}
               id="color-scheme-name"
-              className="border-base/60 text-sm"
-              autoComplete="off"
-              type="text"
-              tabIndex={-2}
             />
           </div>
 

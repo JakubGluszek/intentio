@@ -86,7 +86,7 @@ const CircleTimer: React.FC<Props> = (props) => {
           )}
         </div>
 
-        <div className="absolute bottom-6 translate-x-1 w-full flex flex-col items-center gap-1 transition-opacity duration-300">
+        <div className="absolute bottom-8 translate-x-1 w-full flex flex-col items-center gap-1 transition-opacity duration-300">
           <div className="group flex flex-row items-center justify-center">
             <button
               tabIndex={-2}

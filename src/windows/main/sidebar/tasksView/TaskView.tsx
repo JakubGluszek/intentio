@@ -10,7 +10,7 @@ import { useConfirmDelete, useContextMenu } from "@/hooks";
 import { ContextMenu } from "@/components";
 import { Task } from "@/bindings/Task";
 import { MenuPosition } from "@/hooks/useContextMenu";
-import { Button } from "@/ui";
+import { Button, Input } from "@/ui";
 
 interface TaskViewProps {
   data: Task;
@@ -86,7 +86,7 @@ const TaskView: React.FC<TaskViewProps> = (props) => {
           </div>
         ) : (
           <form onSubmit={onEditSubmit}>
-            <input
+            <Input
               onKeyDown={(e) => {
                 if (e.key !== "Escape") return;
                 setViewEdit(false);
@@ -94,7 +94,6 @@ const TaskView: React.FC<TaskViewProps> = (props) => {
               }}
               defaultValue={data.body}
               autoFocus
-              autoComplete="off"
               minLength={1}
               maxLength={96}
               {...register("body", { onBlur: () => setViewEdit(false) })}

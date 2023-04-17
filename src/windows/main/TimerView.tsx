@@ -76,7 +76,7 @@ const TimerDetails: React.FC<TimerDetailsProps> = (props) => {
       <span
         className={clsx(
           "text-primary/80 font-bold text-center",
-          props.isCompact ? "p-0.5 text-sm" : "p-1.5"
+          props.isCompact ? "p-0.5 text-sm" : "p-1"
         )}
       >
         #{props.iterations}
@@ -86,7 +86,7 @@ const TimerDetails: React.FC<TimerDetailsProps> = (props) => {
         <motion.div
           className={clsx(
             "w-full flex flex-row items-center justify-center gap-1 text-text/80",
-            props.isCompact ? "p-0.5 text-sm" : "p-1.5"
+            props.isCompact ? "p-0.5 text-sm" : "p-1"
           )}
           transition={{ delay: 0.2, duration: 0.2 }}
           initial={{ opacity: 0, display: "none" }}

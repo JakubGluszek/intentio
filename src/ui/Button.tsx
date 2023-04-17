@@ -29,7 +29,7 @@ export const Button: React.FC<ButtonProps> = (props) => {
       paddingRight: "0.75rem",
       borderWidth: 2,
       borderColor: "rgb(var(--primary-color) / 0.6)",
-      borderRadius: 2,
+      borderRadius: 1,
     };
 
     style.backgroundColor = isActive
@@ -54,7 +54,7 @@ export const Button: React.FC<ButtonProps> = (props) => {
 
   const getStyle = (): MotionStyle => {
     let style: MotionStyle = {
-      minHeight: "2rem",
+      height: "2rem",
       display: "flex",
       flexDirection: "row",
       alignItems: "center",

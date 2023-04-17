@@ -67,10 +67,6 @@
   input[type="number"] {
     -moz-appearance: textfield;
   }
-
-  input > * {
-    user-select: all;
-  }
 }
 
 @layer components {

@@ -5,7 +5,7 @@ import { MdClose } from "react-icons/md";
 import { DayDetail } from "@/types";
 import { DayView } from "@/components";
 import { Session } from "@/bindings/Session";
-import { Button } from "@/ui";
+import { Button, Input } from "@/ui";
 
 interface Props {
   intentId: string;
@@ -66,14 +66,10 @@ const TimelineView: React.FC<Props> = (props) => {
       {/* Header */}
       <div className="h-8 flex flex-row items-center gap-1">
         <div className="relative w-full flex flex-row items-center gap-1">
-          <input
-            tabIndex={-3}
-            autoComplete="off"
+          <Input
             value={props.filter}
             onChange={(e) => props.setFilter(e.currentTarget.value)}
-            className="pr-8"
             placeholder="Filter by date, e.g. 2022-11-*"
-            type="text"
           />
           {props.filter.length > 0 && (
             <div className="absolute bottom-1.5 right-1 opacity-60">

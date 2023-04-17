@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { motion } from "framer-motion";
 
-import { Button } from "@/ui";
+import { Button, Input } from "@/ui";
 import ipc from "@/ipc";
 import motions from "@/motions";
 
@@ -48,17 +48,14 @@ const CreateIntent: React.FC = () => {
       className="w-full"
       {...motions.scaleIn}
     >
-      <input
-        className="bg-window/90 rounded-none"
+      <Input
         onKeyDown={(e) => {
           if (e.key !== "Escape") return;
           setViewCreate(false);
           setValue("label", "");
         }}
         placeholder="Define your intent"
-        tabIndex={-3}
         autoFocus
-        autoComplete="off"
         minLength={1}
         maxLength={20}
         {...register("label", {

@@ -8,7 +8,7 @@ import ipc from "@/ipc";
 import { Intent } from "@/bindings/Intent";
 import ModalContainer from "../ModalContainer";
 import TagButton from "../TagButton";
-import { Button } from "@/ui";
+import { Button, Input } from "@/ui";
 
 interface Props {
   data: Intent;
@@ -38,8 +38,7 @@ export const TagsModal: React.FC<Props> = (props) => {
   return (
     <ModalContainer display={props.display} hide={props.hide}>
       <div ref={ref} className="max-w-sm flex flex-col gap-2 overflow-y-auto">
-        <input
-          className="border-base"
+        <Input
           value={newTag}
           maxLength={24}
           onChange={(e) => setNewTag(e.currentTarget.value)}

@@ -12,7 +12,7 @@ import useStore from "@/store";
 import ipc from "@/ipc";
 import { ThemeForCreate } from "@/bindings/ThemeForCreate";
 import { ColorType } from "..";
-import { Button } from "@/ui";
+import { Button, Input } from "@/ui";
 
 interface Props {
   onExit: () => void;
@@ -99,13 +99,9 @@ const CreateTheme: React.FC<Props> = (props) => {
             >
               Name
             </label>
-            <input
+            <Input
               {...register("name", { required: true, maxLength: 16 })}
               id="color-scheme-name"
-              className="border-base/60 text-sm"
-              autoComplete="off"
-              type="text"
-              tabIndex={-2}
             />
           </div>
           <ColorInput
