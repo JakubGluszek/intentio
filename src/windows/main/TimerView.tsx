@@ -75,7 +75,7 @@ const TimerDetails: React.FC<TimerDetailsProps> = (props) => {
       {/* --- Total timer iterations --- */}
       <span
         className={clsx(
-          "text-primary/80 font-bold text-center",
+          "text-base/80 font-bold text-center",
           props.isCompact ? "p-0.5 text-sm" : "p-1"
         )}
       >

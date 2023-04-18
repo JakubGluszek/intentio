@@ -1,5 +1,5 @@
 import React from "react";
-import { MdArrowBack } from "react-icons/md";
+import { MdArrowBack, MdCancel } from "react-icons/md";
 import { toast } from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import { ChromePicker } from "react-color";
@@ -55,25 +55,14 @@ const CreateTheme: React.FC<Props> = (props) => {
 
   React.useEffect(() => {
     setValue("name", "");
-    setValue("window_hex", "#000000");
-    setValue("base_hex", "#000000");
-    setValue("primary_hex", "#000000");
-    setValue("text_hex", "#000000");
+    setValue("window_hex", store.currentTheme!.window_hex);
+    setValue("base_hex", store.currentTheme!.base_hex);
+    setValue("primary_hex", store.currentTheme!.primary_hex);
+    setValue("text_hex", store.currentTheme!.text_hex);
   }, []);
 
   return (
     <div className="grow flex flex-col gap-0.5">
-      <div className="h-fit flex flex-row gap-0.5">
-        <div className="window bg-window">
-          <Button onClick={() => props.onExit()} variant="ghost">
-            <MdArrowBack size={24} />
-          </Button>
-        </div>
-        <div className="grow window bg-window flex flex-row items-center px-2">
-          Create a theme
-        </div>
-      </div>
-
       <div className="grow flex flex-col window bg-window p-1.5">
         <ModalContainer
           display={!!viewColorPicker}
@@ -145,26 +134,33 @@ const CreateTheme: React.FC<Props> = (props) => {
             }}
           />
           <div className="flex flex-row items-center justify-between">
-            <div
-              className="flex flex-row items-center text-primary/80 gap-2"
-              onMouseOver={() => {
-                emit("preview_theme", getValues());
-                setViewThemePreview(true);
-              }}
-              onMouseLeave={() => {
-                emit("preview_theme", store.currentTheme);
-                setViewThemePreview(false);
-              }}
-            >
-              {viewThemePreview ? (
-                <RiEyeFill size={24} />
-              ) : (
-                <RiEyeCloseFill size={24} />
-              )}
-            </div>
-            <Button variant="base" type="submit">
-              Create theme
+            <Button variant="ghost" onClick={() => props.onExit()}>
+              <MdCancel size={20} />
+              <div>Exit</div>
             </Button>
+
+            <div className="flex flex-row items-center gap-2">
+              <div
+                className="flex flex-row items-center text-primary/80 gap-2"
+                onMouseOver={() => {
+                  emit("preview_theme", getValues());
+                  setViewThemePreview(true);
+                }}
+                onMouseLeave={() => {
+                  emit("preview_theme", store.currentTheme);
+                  setViewThemePreview(false);
+                }}
+              >
+                {viewThemePreview ? (
+                  <RiEyeFill size={24} />
+                ) : (
+                  <RiEyeCloseFill size={24} />
+                )}
+              </div>
+              <Button variant="base" type="submit">
+                Create theme
+              </Button>
+            </div>
           </div>
         </form>
       </div>

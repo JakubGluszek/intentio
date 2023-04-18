@@ -4,12 +4,14 @@ import { HTMLMotionProps, motion, MotionStyle } from "framer-motion";
 export interface ButtonProps extends HTMLMotionProps<"button"> {
   children: React.ReactNode;
   variant: "base" | "ghost";
+  active?: boolean;
 }
 
 export const Button: React.FC<ButtonProps> = (props) => {
   const {
     children,
     variant,
+    active = false,
     type = "button",
     tabIndex = -3,
     style: customStyle,
@@ -29,7 +31,7 @@ export const Button: React.FC<ButtonProps> = (props) => {
       paddingRight: "0.75rem",
       borderWidth: 2,
       borderColor: "rgb(var(--primary-color) / 0.6)",
-      borderRadius: 1,
+      borderRadius: 2,
     };
 
     style.backgroundColor = isActive
@@ -46,7 +48,7 @@ export const Button: React.FC<ButtonProps> = (props) => {
   const getGhostStyle = (): MotionStyle => {
     let style: MotionStyle = {
       backgroundColor: "transparent",
-      color: "rgb(var(--primary-color))",
+      color: (isHover || active) ? "rgb(var(--primary-color))" : "rgb(var(--base-color))",
     };
 
     return style;
@@ -61,9 +63,8 @@ export const Button: React.FC<ButtonProps> = (props) => {
       justifyContent: "center",
       gap: "0.25rem",
       padding: "0.25rem",
-      fontSize: "1.1rem",
-      fontWeight: 900,
-      fontFamily: "monospace",
+      fontSize: "1rem",
+      fontWeight: "bold",
       textTransform: "uppercase",
     };
 

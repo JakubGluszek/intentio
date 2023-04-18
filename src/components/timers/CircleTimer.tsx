@@ -90,7 +90,7 @@ const CircleTimer: React.FC<Props> = (props) => {
           <div className="group flex flex-row items-center justify-center">
             <button
               tabIndex={-2}
-              className="opacity-0 group-hover:opacity-100 transition-opacity duration-500 text-primary/80 hover:text-primary"
+              className="opacity-0 group-hover:opacity-100 transition-opacity duration-500 text-text/80 group-hover:text-primary"
               onClick={() => {
                 props.restart();
               }}
@@ -119,7 +119,7 @@ const CircleTimer: React.FC<Props> = (props) => {
             )}
             <button
               tabIndex={-2}
-              className="opacity-0 group-hover:opacity-100 transition-opacity duration-500 text-primary/80 hover:text-primary -translate-x-0.5"
+              className="opacity-0 group-hover:opacity-100 transition-opacity duration-500 text-text/80 group-hover:text-primary -translate-x-0.5"
               onClick={() => {
                 props.skip(true);
               }}

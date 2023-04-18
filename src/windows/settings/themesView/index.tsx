@@ -42,9 +42,9 @@ const ThemesView: React.FC = () => {
   return (
     <div className="grow flex flex-col gap-0.5">
       <div className="flex flex-col window bg-window">
-        <div className="flex flex-row justify-between p-0.5">
+        <div className="flex flex-row justify-between p-1.5">
           {/* Prompt create theme view */}
-          <Button variant="ghost" onClick={() => setDisplay("create")}>
+          <Button variant="base" onClick={() => setDisplay("create")}>
             <MdAddCircle size={20} />
             <div>Add theme</div>
           </Button>

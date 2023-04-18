@@ -15,6 +15,7 @@ import Sidebar from "./sidebar";
 import { useEvents, useTimer } from "@/hooks";
 import utils from "@/utils";
 import { Button } from "@/ui";
+import { clsx } from "@mantine/core";
 
 const MainWindow: React.FC = () => {
   const store = useStore();
@@ -93,7 +94,7 @@ const MainWindow: React.FC = () => {
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
         >
-          <Titlebar />
+          <Titlebar timerIsPlaying={timer.isPlaying} />
           <div className="grow flex flex-row">
             <Sidebar />
             <TimerView data={timer} />
@@ -104,7 +105,11 @@ const MainWindow: React.FC = () => {
   );
 };
 
-const Titlebar: React.FC = () => {
+interface TitlebarProps {
+  timerIsPlaying: boolean;
+}
+
+const Titlebar: React.FC<TitlebarProps> = (props) => {
   const { display, isCompact, toggleDisplay } =
     React.useContext(MainWindowContext)!;
 
@@ -123,7 +128,7 @@ const Titlebar: React.FC = () => {
           <MdSettings size={isCompact ? 20 : 28} />
         </Button>
       </div>
-      <h2 className="text-text/80 font-bold">Intentio</h2>
+      <h2 className={clsx("font-bold", props.timerIsPlaying ? "text-primary": "text-text")}>Intentio</h2>
       <div className="flex flex-row">
         <Button variant="ghost" onClick={() => ipc.hideMainWindow()}>
           <MdRemove size={isCompact ? 20 : 28} />

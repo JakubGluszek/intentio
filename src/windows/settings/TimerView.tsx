@@ -23,7 +23,7 @@ const TimerView: React.FC = () => {
   return (
     <div className="grow flex flex-col window bg-window overflow-y-auto">
       <div className="max-h-0 overflow-y">
-        <div className="flex flex-col gap-2 p-2">
+        <div className="flex flex-col gap-1 p-1">
           <BooleanView
             label="Auto Start Focus"
             checked={config.auto_start_focus}
