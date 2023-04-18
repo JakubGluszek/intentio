@@ -127,7 +127,7 @@ impl ThemeBmc {
                     default: true,
                     favorite: false,
                     window_hex: '#222831',
-                    base_hex: '#393E46',
+                    base_hex: '#77CED2',
                     primary_hex: '#00ADB5',
                     text_hex: '#EEEEEE',
                 };
@@ -136,7 +136,7 @@ impl ThemeBmc {
                     default: true,
                     favorite: false,
                     window_hex: '#002a37',
-                    base_hex: '#09494e',
+                    base_hex: '#65c3b1',
                     primary_hex: '#0feda2',
                     text_hex: '#bbbbbb',
                 };
@@ -145,7 +145,7 @@ impl ThemeBmc {
                     default: true,
                     window_hex: '#282a36',
                     favorite: false,
-                    base_hex: '#383a59',
+                    base_hex: '#d1bdf1',
                     primary_hex: '#bd93f9',
                     text_hex: '#f8f8f2',
                 };
@@ -154,7 +154,7 @@ impl ThemeBmc {
                     default: true,
                     favorite: false,
                     window_hex: '#161853',
-                    base_hex: '#292C6D',
+                    base_hex: '#f7a1b8',
                     primary_hex: '#EC255A',
                     text_hex: '#FAEDF0',
                 };
@@ -163,7 +163,7 @@ impl ThemeBmc {
                     default: true,
                     favorite: false,
                     window_hex: '#112B3C',
-                    base_hex: '#205375',
+                    base_hex: '#f79385',
                     primary_hex: '#F66B0E',
                     text_hex: '#EFEFEF',
                 };
