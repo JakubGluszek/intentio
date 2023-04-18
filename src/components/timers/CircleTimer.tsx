@@ -8,7 +8,7 @@ import utils from "@/utils";
 import { Timer } from "@/hooks/useTimer";
 import CircleTimerBase, { ColorFormat } from "@/components/CircleTimerBase";
 import { Theme } from "@/bindings/Theme";
-import { Button } from "@/ui";
+import { Button, Pane } from "@/ui";
 
 interface Props extends Timer {
   displayTimeLeft: boolean;
@@ -38,7 +38,7 @@ const CircleTimer: React.FC<Props> = (props) => {
     : props.theme.text_hex;
 
   return (
-    <div className="grow flex flex-col window rounded-none overflow-clip">
+    <Pane className="grow flex flex-col">
       <CircleTimerBase
         isPlaying={props.isPlaying}
         duration={props.duration}
@@ -129,7 +129,7 @@ const CircleTimer: React.FC<Props> = (props) => {
           </div>
         </div>
       </CircleTimerBase>
-    </div>
+    </Pane>
   );
 };
 

@@ -5,7 +5,7 @@ import { WebviewWindow } from "@tauri-apps/api/window";
 import useStore from "@/store";
 import ipc from "@/ipc";
 import { IntentsList } from "@/components";
-import { Button } from "@/ui";
+import { Button, Pane } from "@/ui";
 import config from "@/config";
 import { useEvents } from "@/hooks";
 import { Intent } from "@/bindings/Intent";
@@ -46,7 +46,7 @@ const IntentsView: React.FC = () => {
   }, []);
 
   return (
-    <div className="grow flex flex-col p-1 gap-2 window rounded-t-none rounded-l-none">
+    <Pane className="grow flex flex-col gap-2">
       <div className="w-full flex flex-row items-center justify-between gap-1">
         <CreateIntent />
         <Button
@@ -64,7 +64,7 @@ const IntentsView: React.FC = () => {
         onSelected={onIntentChange}
         onTagSelected={(data) => setSelectedIntentTags(data)}
       />
-    </div>
+    </Pane>
   );
 };
 

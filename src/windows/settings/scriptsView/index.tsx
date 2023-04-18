@@ -8,7 +8,7 @@ import ScriptView from "./ScriptView";
 import CreateScript from "./CreateScript";
 import EditScript from "./EditScript";
 import EditScriptEvents from "./EditScriptEvents";
-import { Button } from "@/ui";
+import { Button, Pane } from "@/ui";
 
 const ScriptsView: React.FC = () => {
   const [viewCreate, setViewCreate] = React.useState(false);
@@ -35,31 +35,24 @@ const ScriptsView: React.FC = () => {
     );
 
   return (
-    <div className="grow flex flex-col gap-0.5">
-      <div className="flx flex-row window bg-window p-1.5">
-        <Button
-          variant="ghost"
-          onClick={() => setViewCreate(true)}
-        >
-          <MdAddCircle size={20} />
-          <span>Create script</span>
-        </Button>
-      </div>
-      <div className="grow flex flex-col overflow-y-auto window bg-window">
-        <div className="max-h-0 overflow-y">
-          <div className="flex flex-col gap-1.5 p-1.5">
-            {store.scripts.map((script) => (
-              <ScriptView
-                key={script.id}
-                data={script}
-                onEdit={() => setEditScript(script)}
-                onEditEvents={() => setEditScriptEvents(script)}
-              />
-            ))}
-          </div>
+    <Pane className="grow flex flex-col gap-2 overflow-y-auto">
+      <Button variant="base" onClick={() => setViewCreate(true)}>
+        <MdAddCircle size={20} />
+        <span>Create script</span>
+      </Button>
+      <div className="max-h-0 overflow-y">
+        <div className="flex flex-col gap-1.5 pb-1.5">
+          {store.scripts.map((script) => (
+            <ScriptView
+              key={script.id}
+              data={script}
+              onEdit={() => setEditScript(script)}
+              onEditEvents={() => setEditScriptEvents(script)}
+            />
+          ))}
         </div>
       </div>
-    </div>
+    </Pane>
   );
 };
 

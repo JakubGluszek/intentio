@@ -6,7 +6,7 @@ import ipc from "@/ipc";
 import useStore from "@/store";
 import { Script } from "@/bindings/Script";
 import { ScriptForUpdate } from "@/bindings/ScriptForUpdate";
-import { Button } from "@/ui";
+import { Button, Pane } from "@/ui";
 
 interface Props {
   data: Script;
@@ -22,7 +22,7 @@ const EditScriptEvents: React.FC<Props> = (props) => {
     });
 
   return (
-    <div className="grow flex flex-col justify-between gap-2 p-1.5 window bg-window rounded-b">
+    <Pane className="grow flex flex-col justify-between gap-2">
       <div className="text-lg font-black text-primary/80">
         {props.data.label}
       </div>
@@ -33,7 +33,7 @@ const EditScriptEvents: React.FC<Props> = (props) => {
           .map(([key, value]: [string, boolean]) => (
             <div
               key={key}
-              className="flex flex-row items-center justify-between bg-base/50 border-2 border-base rounded-sm shadow p-0.5 px-1.5"
+              className="flex flex-row items-center justify-between card p-0.5 px-1.5"
             >
               <label className="w-full" htmlFor={key}>
                 {utils.capitalize(key.replaceAll("_", " "))}
@@ -63,7 +63,7 @@ const EditScriptEvents: React.FC<Props> = (props) => {
       <Button variant="base" onClick={() => props.onExit()}>
         Exit
       </Button>
-    </div>
+    </Pane>
   );
 };
 

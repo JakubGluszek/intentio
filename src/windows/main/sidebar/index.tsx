@@ -8,7 +8,7 @@ import { MainWindowContext } from "@/contexts";
 import IntentsView from "./intentsView";
 import TasksView from "./tasksView";
 import NotesView from "./notesView";
-import { Button } from "@/ui";
+import { Button, Pane } from "@/ui";
 
 type Tab = "intents" | "notes" | "tasks";
 
@@ -36,7 +36,7 @@ const Sidebar: React.FC = () => {
     <AnimatePresence>
       {display === "sidebar" && (
         <motion.aside
-          className="h-[278px] flex flex-row gap-0.5 rounded-b overflow-clip"
+          className="h-[282px] flex flex-row gap-0.5"
           transition={{ duration: 0.3 }}
           initial={{ width: "0%", opacity: 0 }}
           animate={{ width: "100%", opacity: 1 }}
@@ -82,7 +82,7 @@ const TabsView: React.FC<TabsViewProps> = (props) => {
           animate={{ width: 40, opacity: 1 }}
           exit={{ width: 0 }}
         >
-          <div className="h-full window">
+          <Pane className="h-full" withPadding={false}>
             <Button
               variant="ghost"
               onClick={() => props.setTab("intents")}
@@ -97,8 +97,8 @@ const TabsView: React.FC<TabsViewProps> = (props) => {
             >
               <BiTargetLock size={28} />
             </Button>
-          </div>
-          <div className="h-full window">
+          </Pane>
+          <Pane className="h-full" withPadding={false}>
             <Button
               variant="ghost"
               active={props.tab === "tasks"}
@@ -113,8 +113,8 @@ const TabsView: React.FC<TabsViewProps> = (props) => {
             >
               <MdCheckBox size={28} />
             </Button>
-          </div>
-          <div className="h-full window">
+          </Pane>
+          <Pane className="h-full" withPadding={false}>
             <Button
               variant="ghost"
               active={props.tab === "notes"}
@@ -129,7 +129,7 @@ const TabsView: React.FC<TabsViewProps> = (props) => {
             >
               <MdStickyNote2 size={28} />
             </Button>
-          </div>
+          </Pane>
         </motion.div>
       )}
     </AnimatePresence>

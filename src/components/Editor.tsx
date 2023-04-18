@@ -25,7 +25,7 @@ const Editor: React.FC<Props> = (props) => {
   }, []);
 
   return (
-    <div ref={containerRef} className="grow window bg-window text-sm">
+    <div ref={containerRef} className="grow text-sm rounded-sm overflow-clip">
       <CodeMirror
         autoFocus
         value={props.value}
@@ -33,7 +33,7 @@ const Editor: React.FC<Props> = (props) => {
         extensions={props.lang === "md" ? [langs.markdown()] : [langs.shell()]}
         height={`${height}px`}
         theme={makeCustomTheme(store.currentTheme!)}
-        basicSetup={{ lineNumbers: false, foldGutter: false }}
+        basicSetup={{ lineNumbers: false, foldGutter: false, autocompletion: false }}
         data-tauri-disable-drag
       />
     </div>
@@ -42,14 +42,14 @@ const Editor: React.FC<Props> = (props) => {
 
 const makeCustomTheme = (data: Theme) =>
   createTheme({
-    theme: "light",
+    theme: "dark",
     settings: {
-      background: data.window_hex,
+      background: "rgb(0,0,0,0.2)",
       foreground: data.text_hex,
       caret: data.primary_hex,
-      selection: "#036dd626",
-      selectionMatch: "#036dd626",
-      lineHighlight: "#8a91991a",
+      selection: "rgb(var(--primary-color) / 0.1)",
+      selectionMatch: "rgb(var(--primary-color) / 0.3)",
+      lineHighlight: "rgb(var(--base-color) / 0.05)",
     },
     styles: [
       { tag: t.comment, color: Color(data.base_hex).lighten(0.6).hex() },

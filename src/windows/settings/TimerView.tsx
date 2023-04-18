@@ -5,6 +5,7 @@ import { BooleanView, Slider } from "@/components";
 import useStore from "@/store";
 import ipc from "@/ipc";
 import { TimerConfigForUpdate } from "@/bindings/TimerConfigForUpdate";
+import { Pane } from "@/ui";
 
 const TimerView: React.FC = () => {
   const store = useStore();
@@ -21,9 +22,9 @@ const TimerView: React.FC = () => {
   if (!config) return null;
 
   return (
-    <div className="grow flex flex-col window bg-window overflow-y-auto">
+    <Pane className="grow flex flex-col overflow-y-auto">
       <div className="max-h-0 overflow-y">
-        <div className="flex flex-col gap-1 p-1">
+        <div className="flex flex-col gap-1 pb-1.5">
           <BooleanView
             label="Auto Start Focus"
             checked={config.auto_start_focus}
@@ -80,7 +81,7 @@ const TimerView: React.FC = () => {
           />
         </div>
       </div>
-    </div>
+    </Pane>
   );
 };
 

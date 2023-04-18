@@ -29,7 +29,7 @@ export const Tab: React.FC<TabProps> = (props) => {
       variant="ghost"
       style={{
         flex: 1,
-        backgroundColor: "rgb(var(--primary-color) / 0.15)",
+        backgroundColor: "rgb(var(--primary-color) / 0.2)",
         borderRadius: 2,
         ...selectedStyle,
         ...customStyle,

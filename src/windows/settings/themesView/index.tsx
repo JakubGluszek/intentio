@@ -13,7 +13,7 @@ import { Theme } from "@/bindings/Theme";
 import EditTheme from "./EditTheme";
 import CreateTheme from "./CreateTheme";
 import ThemesList from "./ThemesList";
-import { Button } from "@/ui";
+import { Button, Pane } from "@/ui";
 
 type ThemeState = "idle" | "focus" | "break" | "long break";
 type Display = "themes" | "create" | "edit";
@@ -41,8 +41,8 @@ const ThemesView: React.FC = () => {
 
   return (
     <div className="grow flex flex-col gap-0.5">
-      <div className="flex flex-col window bg-window">
-        <div className="flex flex-row justify-between p-1.5">
+      <Pane className="flex flex-col gap-1.5">
+        <div className="flex flex-row justify-between">
           {/* Prompt create theme view */}
           <Button variant="base" onClick={() => setDisplay("create")}>
             <MdAddCircle size={20} />
@@ -66,9 +66,9 @@ const ThemesView: React.FC = () => {
           selectedState={themeState}
           setSelectedState={setThemeState}
         />
-      </div>
+      </Pane>
 
-      <div className="grow flex flex-col window bg-window overflow-y-auto">
+      <Pane className="grow flex flex-col overflow-y-auto">
         <div className="max-h-0 overflow-y">
           {themeState && (
             <div className="flex flex-row items-center gap-1 p-1.5 text-text/80">
@@ -103,7 +103,7 @@ const ThemesView: React.FC = () => {
             }}
           />
         </div>
-      </div>
+      </Pane>
     </div>
   );
 };
@@ -122,7 +122,7 @@ const CurrentThemes: React.FC<CurrentThemesProps> = (props) => {
   const longBreakTheme = store.getLongBreakTheme()!;
 
   return (
-    <div className="flex flex-row justify-between font-bold py-1 px-2">
+    <div className="flex flex-row justify-between font-bold">
       <CurrentThemeButton
         onClick={() =>
           props.setSelectedState((prev) => (prev !== "idle" ? "idle" : null))

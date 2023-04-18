@@ -14,7 +14,7 @@ import TimerView from "./TimerView";
 import Sidebar from "./sidebar";
 import { useEvents, useTimer } from "@/hooks";
 import utils from "@/utils";
-import { Button } from "@/ui";
+import { Button, Pane } from "@/ui";
 import { clsx } from "@mantine/core";
 
 const MainWindow: React.FC = () => {
@@ -89,7 +89,7 @@ const MainWindow: React.FC = () => {
     <MainWindowProvider>
       <WindowContainer>
         <motion.div
-          className="grow flex flex-col gap-0.5"
+          className="grow flex flex-col gap-0.5 rounded-sm overflow-clip"
           transition={{ duration: 0.2 }}
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -114,7 +114,10 @@ const Titlebar: React.FC<TitlebarProps> = (props) => {
     React.useContext(MainWindowContext)!;
 
   return (
-    <div className="z-[1000] w-full flex flex-row items-center justify-between window rounded rounded-b-none overflow-clip">
+    <Pane
+      className="flex flex-row items-center justify-between"
+      withPadding={false}
+    >
       <div className="flex flex-row">
         <Button variant="ghost" onClick={toggleDisplay}>
           <motion.div animate={{ rotateZ: display === "sidebar" ? 180 : 0 }}>
@@ -128,7 +131,14 @@ const Titlebar: React.FC<TitlebarProps> = (props) => {
           <MdSettings size={isCompact ? 20 : 28} />
         </Button>
       </div>
-      <h2 className={clsx("font-bold", props.timerIsPlaying ? "text-primary": "text-text")}>Intentio</h2>
+      <h2
+        className={clsx(
+          "font-bold",
+          props.timerIsPlaying ? "text-primary" : "text-text"
+        )}
+      >
+        Intentio
+      </h2>
       <div className="flex flex-row">
         <Button variant="ghost" onClick={() => ipc.hideMainWindow()}>
           <MdRemove size={isCompact ? 20 : 28} />
@@ -137,7 +147,7 @@ const Titlebar: React.FC<TitlebarProps> = (props) => {
           <MdClose size={isCompact ? 20 : 28} />
         </Button>
       </div>
-    </div>
+    </Pane>
   );
 };
 

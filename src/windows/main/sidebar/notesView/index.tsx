@@ -12,7 +12,7 @@ import CreateNote from "./CreateNote";
 import FilterNotes from "./FilterNotes";
 import NoteView from "./NoteView";
 import EditNote from "./EditNote";
-import { Button } from "@/ui";
+import { Button, Pane } from "@/ui";
 
 const NotesView: React.FC = () => {
   const [viewCreate, setViewCreate] = React.useState(false);
@@ -39,7 +39,7 @@ const NotesView: React.FC = () => {
   }, []);
 
   return (
-    <motion.div className="grow flex flex-col window p-1 gap-2">
+    <Pane className="grow flex flex-col gap-2">
       {!viewCreate && !editNote && (
         <div className="flex flex-row gap-1 items-center justify-between">
           {!viewFilter ? (
@@ -83,7 +83,7 @@ const NotesView: React.FC = () => {
         selectedNotesIds={selectedNotesIds}
         setSelectedNotesIds={setSelectedNotesIds}
       />
-    </motion.div>
+    </Pane>
   );
 };
 

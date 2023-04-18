@@ -7,7 +7,7 @@ import ipc from "@/ipc";
 import { Editor } from "@/components";
 import utils from "@/utils";
 import { ScriptForCreate } from "@/bindings/ScriptForCreate";
-import { Button, Input } from "@/ui";
+import { Button, Input, Pane } from "@/ui";
 
 interface CreateScriptViewProps {
   onExit: () => void;
@@ -28,35 +28,33 @@ const CreateScript: React.FC<CreateScriptViewProps> = (props) => {
   });
 
   return (
-    <form onSubmit={onSubmit} className="grow flex flex-col gap-0.5">
-      <Input
-        placeholder="Script label"
-        maxLength={24}
-        {...register("label", { required: true, minLength: 1, maxLength: 24 })}
-      />
-      <Editor lang="shell" value={body} onChange={setBody} />
-      <div className="h-10 flex flex-row items-center justify-between window bg-window p-1">
-        <button
-          className="text-text/80 hover:text-primary/80 px-1"
-          onClick={() => props.onExit()}
-          type="button"
-        >
-          Exit
-        </button>
-        <div className="h-full flex flex-row items-center gap-2">
-          <button
-            type="button"
-            className="text-text/80 hover:text-primary/80"
-            onClick={() => utils.executeScript(body)}
-          >
-            Test
-          </button>
-          <Button type="submit" variant="base">
-            Create
+    <Pane className="grow flex flex-col">
+      <form onSubmit={onSubmit} className="grow flex flex-col gap-1">
+        <Input
+          placeholder="Script label"
+          maxLength={24}
+          {...register("label", {
+            required: true,
+            minLength: 1,
+            maxLength: 24,
+          })}
+        />
+        <Editor lang="shell" value={body} onChange={setBody} />
+        <div className="flex flex-row items-center justify-between">
+          <Button variant="ghost" onClick={() => props.onExit()}>
+            Exit
           </Button>
+          <div className="h-full flex flex-row items-center gap-2">
+            <Button variant="ghost" onClick={() => utils.executeScript(body)}>
+              Test
+            </Button>
+            <Button type="submit" variant="base">
+              Create
+            </Button>
+          </div>
         </div>
-      </div>
-    </form>
+      </form>
+    </Pane>
   );
 };
 

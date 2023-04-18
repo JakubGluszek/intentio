@@ -7,7 +7,7 @@ import useStore from "@/store";
 import { AudioConfigForUpdate } from "@/bindings/AudioConfigForUpdate";
 import SelectedTrack from "./SelectedTrack";
 import TrackView from "./TrackView";
-import { Button } from "@/ui";
+import { Button, Pane } from "@/ui";
 
 const AUDIO_FORMATS = [".mp3", ".ogg"];
 
@@ -54,12 +54,10 @@ const AudioView: React.FC = () => {
         onRepeatChange={(repeats) => updateConfig({ alert_repeat: repeats })}
         onTrackPreview={() => ipc.playAudio(config.alert_file)}
       />
-      <div className="grow flex flex-col overflow-y-auto window bg-window">
-        <div className="flex flex-row gap-1 items-center p-1">
-          <OpenFileExplorerButton />
-        </div>
+      <Pane className="grow flex flex-col gap-2 overflow-y-auto">
+        <OpenFileExplorerButton />
         <div className="max-h-0 overflow-y">
-          <div className="flex flex-col p-2 gap-1">
+          <div className="flex flex-col pb-1.5 gap-1">
             {tracks.map((track, idx) => (
               <TrackView
                 key={idx}
@@ -70,7 +68,7 @@ const AudioView: React.FC = () => {
             ))}
           </div>
         </div>
-      </div>
+      </Pane>
     </div>
   );
 };

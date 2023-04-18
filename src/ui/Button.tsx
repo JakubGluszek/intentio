@@ -48,7 +48,10 @@ export const Button: React.FC<ButtonProps> = (props) => {
   const getGhostStyle = (): MotionStyle => {
     let style: MotionStyle = {
       backgroundColor: "transparent",
-      color: (isHover || active) ? "rgb(var(--primary-color))" : "rgb(var(--base-color))",
+      color:
+        isHover || active
+          ? "rgb(var(--primary-color))"
+          : "rgb(var(--base-color))",
     };
 
     return style;
@@ -57,6 +60,7 @@ export const Button: React.FC<ButtonProps> = (props) => {
   const getStyle = (): MotionStyle => {
     let style: MotionStyle = {
       height: "2rem",
+      width: "fit-content",
       display: "flex",
       flexDirection: "row",
       alignItems: "center",

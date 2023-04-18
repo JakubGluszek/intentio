@@ -5,7 +5,7 @@ import { Tooltip } from "@mantine/core";
 
 import useStore from "@/store";
 import ipc from "@/ipc";
-import { Button } from "@/ui";
+import { Button, Pane } from "@/ui";
 import { useConfirmDelete, useEvents } from "@/hooks";
 import { Task } from "@/bindings/Task";
 import CreateTask from "./CreateTask";
@@ -40,7 +40,7 @@ const TasksView: React.FC = () => {
   tasks = tasks.filter((task) => task.intent_id === store.currentIntent?.id);
 
   return (
-    <div className="grow flex flex-col window p-1 gap-2">
+    <Pane className="grow flex flex-col gap-2">
       <div className="flex flex-row items-center justify-between gap-1">
         <CreateTask viewCreate={viewCreate} setViewCreate={setViewCreate} />
 
@@ -67,7 +67,7 @@ const TasksView: React.FC = () => {
         selectedTasksIds={selectedTasksIds}
         setSelectedTasksIds={setSelectedTasksIds}
       />
-    </div>
+    </Pane>
   );
 };
 

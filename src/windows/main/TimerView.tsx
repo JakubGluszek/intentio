@@ -8,7 +8,7 @@ import useStore from "@/store";
 import { MainWindowContext } from "@/contexts";
 import { Intent } from "@/bindings/Intent";
 import { Timer } from "@/hooks/useTimer";
-import { Button } from "@/ui";
+import { Button, Pane } from "@/ui";
 
 interface Props {
   data: Timer;
@@ -71,16 +71,16 @@ interface TimerDetailsProps {
 
 const TimerDetails: React.FC<TimerDetailsProps> = (props) => {
   return (
-    <div className="w-full flex flex-row items-center justify-between gap-0.5 window rounded rounded-t-none overflow-clip">
+    <Pane className="flex flex-row justify-between" withPadding={false}>
       {/* --- Total timer iterations --- */}
-      <span
+      <div
         className={clsx(
           "text-base/80 font-bold text-center",
           props.isCompact ? "p-0.5 text-sm" : "p-1"
         )}
       >
         #{props.iterations}
-      </span>
+      </div>
       {/* --- Current intent label --- */}
       {props.intent ? (
         <motion.div
@@ -101,7 +101,7 @@ const TimerDetails: React.FC<TimerDetailsProps> = (props) => {
           <TbMinimize size={props.isCompact ? 20 : 28} />
         </Button>
       </div>
-    </div>
+    </Pane>
   );
 };
 

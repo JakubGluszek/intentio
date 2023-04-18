@@ -5,11 +5,11 @@ import { IntentioLogo } from "@/components";
 import { Tooltip } from "@mantine/core";
 import { SiDiscord } from "react-icons/si";
 import { IoIosBug, IoIosGlobe, IoLogoGithub } from "react-icons/io";
-import { Button } from "@/ui";
+import { Button, Pane } from "@/ui";
 
 const AboutView: React.FC = () => {
   return (
-    <div className="grow flex flex-col justify-between text-text/80 window bg-window">
+    <Pane className="grow flex flex-col justify-between">
       <div className="flex-1 text-primary">
         <IntentioLogo />
         <div className="text-center text-sm -translate-y-3 text-text/80">
@@ -106,7 +106,7 @@ const AboutView: React.FC = () => {
           </Tooltip>
         </div>
       </div>
-    </div>
+    </Pane>
   );
 };
 

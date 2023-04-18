@@ -21,7 +21,7 @@ const ThemesList: React.FC<Props> = (props) => {
   themes = themes.sort((a, b) => (b.favorite ? 1 : 0) - (a.favorite ? 1 : 0));
 
   return (
-    <div className="flex flex-col gap-1.5 p-1.5">
+    <div className="flex flex-col gap-1.5 pb-1.5">
       {themes.map((theme) => (
         <ThemeView
           key={theme.id}

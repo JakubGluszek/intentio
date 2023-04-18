@@ -9,7 +9,7 @@ import {
 } from "react-icons/md";
 
 import { Slider } from "@/components";
-import { Button } from "@/ui";
+import { Button, Pane } from "@/ui";
 
 interface Props {
   name: string;
@@ -22,7 +22,7 @@ interface Props {
 
 const SelectedTrack: React.FC<Props> = (props) => {
   return (
-    <div className="flex flex-col window bg-window rounded-none p-2 gap-2">
+    <Pane className="flex flex-col gap-2">
       {/* Selected audio file with volume and repeat control */}
       <div className="flex flex-row items-center justify-between">
         <div className="text-text/80 uppercase font-bold">{props.name}</div>
@@ -77,7 +77,7 @@ const SelectedTrack: React.FC<Props> = (props) => {
           </div>
         </div>
       </div>
-    </div>
+    </Pane>
   );
 };
 

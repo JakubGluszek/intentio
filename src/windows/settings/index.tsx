@@ -6,7 +6,6 @@ import {
   MdInfo,
   MdSettings,
   MdTimer,
-  MdWindow,
 } from "react-icons/md";
 import { FiCommand } from "react-icons/fi";
 import { OsType, type } from "@tauri-apps/api/os";
@@ -24,7 +23,7 @@ import {
   SettingsWindowProvider,
 } from "@/contexts/settingsWindowContext";
 import { VscTerminalBash } from "react-icons/vsc";
-import { Tabs } from "@/ui";
+import { Pane, Tabs } from "@/ui";
 
 export type ColorType = "window" | "base" | "primary" | "text";
 
@@ -61,7 +60,7 @@ const Content: React.FC = () => {
   const { panel } = React.useContext(SettingsWindowContext)!;
 
   return (
-    <div className="relative grow flex flex-col overflow-clip rounded-b">
+    <div className="grow flex flex-col">
       {panel === "Timer" ? <TimerView /> : null}
       {panel === "Audio" ? <AudioView /> : null}
       {panel === "Themes" ? <ThemesView /> : null}
@@ -80,7 +79,7 @@ const Navbar: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex flex-col justify-between window bg-window overflow-y-auto">
+    <Pane withPadding={false}>
       <Tabs value={panel} onChange={(value) => setPanel(value)}>
         <Tabs.Tab value="Timer">
           <MdTimer size={24} />
@@ -90,9 +89,6 @@ const Navbar: React.FC = () => {
         </Tabs.Tab>
         <Tabs.Tab value="Themes">
           <MdColorLens size={24} />
-        </Tabs.Tab>
-        <Tabs.Tab value="Windows">
-          <MdWindow size={24} />
         </Tabs.Tab>
         <Tabs.Tab value="Hotkeys">
           <FiCommand size={24} />
@@ -109,7 +105,7 @@ const Navbar: React.FC = () => {
           <MdInfo size={24} />
         </Tabs.Tab>
       </Tabs>
-    </div>
+    </Pane>
   );
 };
 

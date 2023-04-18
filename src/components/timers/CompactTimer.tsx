@@ -6,7 +6,7 @@ import ipc from "@/ipc";
 import utils from "@/utils";
 import { Theme } from "@/bindings/Theme";
 import { Timer } from "@/hooks/useTimer";
-import { Button } from "@/ui";
+import { Button, Pane } from "@/ui";
 
 interface Props extends Timer {
   displayTimeLeft: boolean;
@@ -31,7 +31,7 @@ const CompactTimer: React.FC<Props> = (props) => {
         : "Long break";
 
   return (
-    <div className="relative grow flex flex-col items-center justify-evenly window rounded-none overflow-clip">
+    <Pane className="relative grow flex flex-col items-center justify-evenly overflow-clip">
       <div className="z-10 flex flex-col items-center">
         {props.displayTimeLeft ? (
           <React.Fragment>
@@ -107,7 +107,7 @@ const CompactTimer: React.FC<Props> = (props) => {
           width: utils.scale(props.elapsedTime, 0, props.duration, 0, 296),
         }}
       ></div>
-    </div>
+    </Pane>
   );
 };
 

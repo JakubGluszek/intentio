@@ -1,5 +1,4 @@
 import React from "react";
-import { MdCancel } from "react-icons/md";
 import { toast } from "react-hot-toast";
 
 import ipc from "@/ipc";
@@ -34,7 +33,6 @@ const EditNote: React.FC<Props> = (props) => {
 
       <div className="flex flex-row items-center justify-between">
         <Button variant="ghost" onClick={() => props.hide()}>
-          <MdCancel size={20} />
           <div>Exit</div>
         </Button>
 
