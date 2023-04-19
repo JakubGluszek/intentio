@@ -38,7 +38,7 @@ const SettingsWindow: React.FC = () => {
   return (
     <SettingsWindowProvider>
       <WindowContainer>
-        <div className="grow flex flex-col gap-0.5 rounded-sm overflow-clip">
+        <div className="grow flex flex-col gap-0.5 rounded overflow-clip">
           <SettingsTitlebar />
           <div className="grow flex flex-col gap-0.5">
             <Navbar />

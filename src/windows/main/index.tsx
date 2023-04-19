@@ -89,7 +89,7 @@ const MainWindow: React.FC = () => {
     <MainWindowProvider>
       <WindowContainer>
         <motion.div
-          className="grow flex flex-col gap-0.5 rounded-sm overflow-clip"
+          className="grow flex flex-col gap-0.5 rounded overflow-clip"
           transition={{ duration: 0.2 }}
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
