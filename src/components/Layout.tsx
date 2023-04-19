@@ -27,18 +27,18 @@ const Layout: React.FC<Props> = (props) => {
       {props.children}
       <Toaster
         position="top-center"
-        containerStyle={{ top: 8, zIndex: 9999999 }}
+        containerStyle={{ top: 8, zIndex: 999999999 }}
         toastOptions={{
           duration: 1400,
           style: {
             padding: 1,
             paddingInline: 2,
             backgroundColor: "rgb(var(--window-color))",
-            border: 2,
-            borderColor: "rgb(var(--base-color))",
+            borderWidth: 2,
+            borderColor: "rgb(var(--primary-color))",
             borderRadius: 2,
-            fontSize: 14,
-            color: "rgb(var(--text-color))",
+            fontSize: "0.9rem",
+            color: "rgb(var(--primary-color))",
             textAlign: "center",
           },
         }}
