@@ -1,3 +1,4 @@
+import { Card } from "@/ui";
 import { Checkbox } from "@mantine/core";
 
 interface Props {
@@ -8,7 +9,7 @@ interface Props {
 
 const BooleanView: React.FC<Props> = (props) => {
   return (
-    <div className="flex flex-row items-center card p-1.5">
+    <Card className="flex flex-row items-center">
       <label className="w-full text-sm" htmlFor={props.label}>
         {props.label}
       </label>
@@ -27,7 +28,7 @@ const BooleanView: React.FC<Props> = (props) => {
         }}
         tabIndex={-2}
       />
-    </div>
+    </Card>
   );
 };
 

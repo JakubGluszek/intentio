@@ -2,7 +2,6 @@ import React from "react";
 import { MdDelete, MdEdit } from "react-icons/md";
 import { IoMdClipboard } from "react-icons/io";
 import { toast } from "react-hot-toast";
-import { clsx } from "@mantine/core";
 import { writeText } from "@tauri-apps/api/clipboard";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -11,7 +10,7 @@ import { useConfirmDelete, useContextMenu } from "@/hooks";
 import { ContextMenu } from "@/components";
 import { Note } from "@/bindings/Note";
 import ipc from "@/ipc";
-import { Button } from "@/ui";
+import { Button, Card } from "@/ui";
 
 interface NoteViewProps {
   data: Note;
@@ -29,16 +28,12 @@ const NoteView: React.FC<NoteViewProps> = (props) => {
 
   return (
     <React.Fragment>
-      <div
-        className={clsx(
-          "min-h-fit flex flex-col gap-1.5 card rounded-sm text-sm p-0.5 bg-base/20 hover:bg-base/40",
-          props.isSelected &&
-          "border-2 border-primary/50 hover:border-primary/60"
-        )}
+      <Card
         onContextMenu={(e) => {
           onContextMenuHandler(e);
           props.onContextMenu();
         }}
+        active={menu.display}
         data-tauri-disable-drag
       >
         <ReactMarkdown
@@ -54,11 +49,12 @@ const NoteView: React.FC<NoteViewProps> = (props) => {
             ),
           }}
         />
-      </div>
+      </Card>
 
       <ContextMenu {...menu}>
         <div className="w-28 flex flex-col gap-0.5">
           <Button
+            style={{ width: "100%" }}
             variant="base"
             onClick={() => {
               props.setEdit(props.data);
@@ -77,13 +73,18 @@ const NoteView: React.FC<NoteViewProps> = (props) => {
               toast("Copied to clipboard");
               menu.hide();
             }}
+            style={{ width: "100%" }}
           >
             <div className="w-fit">
               <IoMdClipboard size={20} />
             </div>
             <div className="w-full">Copy</div>
           </Button>
-          <Button variant="base" onClick={() => onDelete()}>
+          <Button
+            variant="base"
+            onClick={() => onDelete()}
+            style={{ width: "100%" }}
+          >
             <div className="w-fit">
               <MdDelete size={20} />
             </div>

@@ -33,9 +33,9 @@ const Layout: React.FC<Props> = (props) => {
           style: {
             padding: 1,
             paddingInline: 2,
-            backgroundColor: "rgb(var(--base-color))",
+            backgroundColor: "rgb(var(--window-color))",
             border: 2,
-            borderColor: "rgb(var(--text-color))",
+            borderColor: "rgb(var(--base-color))",
             borderRadius: 2,
             fontSize: 14,
             color: "rgb(var(--text-color))",

@@ -3,14 +3,13 @@ import { MdCheckBox, MdCheckBoxOutlineBlank, MdDelete } from "react-icons/md";
 import { useClickOutside } from "@mantine/hooks";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
-import { clsx } from "@mantine/core";
 
 import ipc from "@/ipc";
 import { useConfirmDelete, useContextMenu } from "@/hooks";
 import { ContextMenu } from "@/components";
 import { Task } from "@/bindings/Task";
 import { MenuPosition } from "@/hooks/useContextMenu";
-import { Button, Input } from "@/ui";
+import { Button, Card, Input } from "@/ui";
 
 interface TaskViewProps {
   data: Task;
@@ -52,14 +51,10 @@ const TaskView: React.FC<TaskViewProps> = (props) => {
 
   return (
     <React.Fragment>
-      <div
+      <Card
         ref={containerRef}
-        className={clsx(
-          "min-h-fit flex flex-col gap-1.5 card border-transparent text-sm p-0 bg-base/80 hover:bg-base rounded-sm",
-          props.isSelected &&
-          "border-2 border-primary/50 hover:border-primary/60",
-          viewEdit && "border-0"
-        )}
+        active={props.isSelected}
+        className="p-0"
         onMouseDown={(e) => {
           // @ts-ignore
           if (e.target.closest("button") || e.button === 2) return;
@@ -100,7 +95,7 @@ const TaskView: React.FC<TaskViewProps> = (props) => {
             />
           </form>
         )}
-      </div>
+      </Card>
       <TaskContextMenu
         {...menu}
         data={data}

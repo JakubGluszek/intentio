@@ -6,7 +6,7 @@ import ipc from "@/ipc";
 import useStore from "@/store";
 import { Script } from "@/bindings/Script";
 import { ScriptForUpdate } from "@/bindings/ScriptForUpdate";
-import { Button, Pane } from "@/ui";
+import { Button, Card, Pane } from "@/ui";
 
 interface Props {
   data: Script;
@@ -22,18 +22,18 @@ const EditScriptEvents: React.FC<Props> = (props) => {
     });
 
   return (
-    <Pane className="grow flex flex-col justify-between gap-2">
+    <Pane className="grow flex flex-col justify-between gap-1">
       <div className="text-lg font-black text-primary/80">
         {props.data.label}
       </div>
-      <div className="flex flex-col gap-1.5">
+      <div className="flex flex-col gap-1">
         {Object.entries(props.data)
           .slice(4, 10)
           .reverse()
           .map(([key, value]: [string, boolean]) => (
-            <div
+            <Card
               key={key}
-              className="flex flex-row items-center justify-between card p-0.5 px-1.5"
+              className="flex flex-row items-center justify-between py-1"
             >
               <label className="w-full" htmlFor={key}>
                 {utils.capitalize(key.replaceAll("_", " "))}
@@ -57,7 +57,7 @@ const EditScriptEvents: React.FC<Props> = (props) => {
                     "border-primary checked:border-primary bg-transparent checked:bg-transparent border-2",
                 }}
               />
-            </div>
+            </Card>
           ))}
       </div>
       <Button variant="base" onClick={() => props.onExit()}>

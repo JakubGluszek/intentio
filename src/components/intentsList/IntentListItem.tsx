@@ -11,7 +11,7 @@ import { Intent } from "@/bindings/Intent";
 import ContextMenu from "../ContextMenu";
 import TagButton from "../TagButton";
 import { TagsModal } from "./TagsModal";
-import { Button } from "@/ui";
+import { Button, Card } from "@/ui";
 
 interface Props {
   data: Intent;
@@ -45,20 +45,15 @@ const IntentListItem: React.FC<Props> = (props) => {
 
   return (
     <React.Fragment>
-      <div
-        ref={container}
-        data-tauri-disable-drag
-        className={clsx(
-          "w-full h-fit flex flex-col p-1 rounded-sm card transition-all",
-          props.selected
-            ? "border-primary/60 hover:border-primary/80 text-primary/80 shadow-lg shadow-black/30"
-            : "shadow shadow-black/30 text-text/80"
-        )}
+      <Card
         onClick={(e) => props.onSelected(e, data)}
         onContextMenu={onContextMenuHandler}
+        ref={container}
+        active={props.selected}
+        data-tauri-disable-drag
       >
         {/* Label */}
-        <div className="h-6 w-full flex flex-row items-center gap-1">
+        <div className="w-full flex flex-row items-center gap-1">
           <BiTargetLock size={20} className="min-w-[20px]" />
           <div className="w-full text-left whitespace-nowrap overflow-ellipsis overflow-hidden font-black">
             {data.label}
@@ -92,7 +87,7 @@ const IntentListItem: React.FC<Props> = (props) => {
             </div>
           </div>
         ) : null}
-      </div>
+      </Card>
 
       <ContextMenu {...menu}>
         <React.Fragment>

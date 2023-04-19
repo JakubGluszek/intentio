@@ -75,6 +75,6 @@
   }
 
   .tooltip {
-    @apply bg-base rounded border-2 shadow-lg border-window text-sm text-text p-0.5 px-2 pt-1;
+    @apply bg-window rounded border-2 shadow-lg border-base text-sm text-text p-0.5 px-2 pt-1;
   }
 }

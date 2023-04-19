@@ -1,6 +1,7 @@
 import React, { ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
+import { Card } from "@/ui";
 
 interface Props {
   children: ReactNode;
@@ -34,8 +35,8 @@ const ModalContainer: React.FC<Props> = (props) => {
               transition: { duration: 0.2 },
             }}
           ></motion.div>
-          <motion.div
-            className="m-auto card bg-window hover:bg-window shadow-2xl"
+          <Card
+            className="m-auto bg-window hover:bg-window shadow-2xl"
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{
               scale: 1.0,
@@ -49,7 +50,7 @@ const ModalContainer: React.FC<Props> = (props) => {
             }}
           >
             {props.children}
-          </motion.div>
+          </Card>
         </div>
       )}
     </AnimatePresence>,

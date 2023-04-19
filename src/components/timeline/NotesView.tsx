@@ -36,7 +36,7 @@ const NoteView: React.FC<NoteViewProps> = (props) => {
 
   return (
     <div
-      className="min-h-fit flex flex-col gap-1.5 p-1 text-sm card"
+      className="min-h-fit flex flex-col gap-1.5 p-1 text-sm"
       onMouseDown={() => setViewExpand((prev) => !prev)}
     >
       <div className="flex flex-row items-start gap-1">

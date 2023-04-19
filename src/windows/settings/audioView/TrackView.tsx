@@ -1,4 +1,4 @@
-import { Button } from "@/ui";
+import { Button, Card } from "@/ui";
 import React from "react";
 import { MdPlayCircle } from "react-icons/md";
 
@@ -10,8 +10,7 @@ interface Props {
 
 const TrackView: React.FC<Props> = (props) => {
   return (
-    <div
-      className="card p-0 pl-2 text-text/70 hover:text-text/80"
+    <Card
       onClick={(e) =>
         // @ts-ignore
         !e.target.closest("button") && props.onSelected(props.name)
@@ -27,7 +26,7 @@ const TrackView: React.FC<Props> = (props) => {
           <MdPlayCircle size={24} />
         </Button>
       </div>
-    </div>
+    </Card>
   );
 };
 

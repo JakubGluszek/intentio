@@ -5,7 +5,7 @@ import { BooleanView, Slider } from "@/components";
 import useStore from "@/store";
 import ipc from "@/ipc";
 import { TimerConfigForUpdate } from "@/bindings/TimerConfigForUpdate";
-import { Pane } from "@/ui";
+import { Card, Pane } from "@/ui";
 
 const TimerView: React.FC = () => {
   const store = useStore();
@@ -99,10 +99,10 @@ const SliderView: React.FC<SliderViewProps> = (props) => {
     props.type === "duration" ? formatTimeTimer(props.digit * 60) : props.digit;
 
   return (
-    <div className="flex flex-col gap-2 card p-1.5">
+    <Card className="flex flex-col gap-2">
       <div className="flex flex-row items-center justify-between">
         <span className="font-medium">{props.label}</span>
-        <div className="w-16 bg-window border-2 border-base rounded-sm py-0.5">
+        <div className="w-16 bg-window border-2 border-base/40 rounded-sm py-0.5">
           <div className="text-sm text-center">{content}</div>
         </div>
       </div>
@@ -112,7 +112,7 @@ const SliderView: React.FC<SliderViewProps> = (props) => {
         defaultValue={props.digit}
         onChangeEnd={(value) => props.onChange(value)}
       />
-    </div>
+    </Card>
   );
 };
 

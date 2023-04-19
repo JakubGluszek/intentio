@@ -9,6 +9,7 @@ import { useContextMenu } from "@/hooks";
 import { Script } from "@/bindings/Script";
 import { ScriptForUpdate } from "@/bindings/ScriptForUpdate";
 import ScriptContextMenu from "./ScriptContextMenu";
+import { Card } from "@/ui";
 
 interface ScriptView {
   data: Script;
@@ -27,10 +28,7 @@ const ScriptView: React.FC<ScriptView> = (props) => {
       .then((data) => store.patchScript(props.data.id, data));
 
   return (
-    <div
-      className="flex flex-col gap-1 card p-1"
-      onContextMenu={onContextMenuHandler}
-    >
+    <Card onContextMenu={onContextMenuHandler}>
       <div className="w-full flex flex-row items-center gap-2">
         <Tooltip
           label={props.data.active ? "Active" : "Disabled"}
@@ -57,7 +55,7 @@ const ScriptView: React.FC<ScriptView> = (props) => {
         viewEvents={() => props.onEditEvents()}
         runScript={() => utils.executeScript(props.data.body)}
       />
-    </div>
+    </Card>
   );
 };
 
