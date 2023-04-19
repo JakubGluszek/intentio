@@ -11,7 +11,7 @@ export interface CheckboxCardProps {
 export const CheckboxCard: React.FC<CheckboxCardProps> = (props) => {
   return (
     <Card className="flex flex-row items-center">
-      <label className="w-full text-sm" htmlFor={props.label}>
+      <label className="w-full" htmlFor={props.label}>
         {props.label}
       </label>
       <Checkbox
