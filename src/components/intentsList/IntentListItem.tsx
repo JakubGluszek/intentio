@@ -8,10 +8,9 @@ import { clsx } from "@mantine/core";
 import ipc from "@/ipc";
 import { useContextMenu } from "@/hooks";
 import { Intent } from "@/bindings/Intent";
-import ContextMenu from "../ContextMenu";
 import TagButton from "../TagButton";
 import { TagsModal } from "./TagsModal";
-import { Button, Card } from "@/ui";
+import { Button, Card, ContextMenu } from "@/ui";
 
 interface Props {
   data: Intent;

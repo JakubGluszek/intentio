@@ -6,10 +6,9 @@ import { toast } from "react-hot-toast";
 
 import ipc from "@/ipc";
 import { useConfirmDelete, useContextMenu } from "@/hooks";
-import { ContextMenu } from "@/components";
 import { Task } from "@/bindings/Task";
 import { MenuPosition } from "@/hooks/useContextMenu";
-import { Button, Card, Input } from "@/ui";
+import { Button, Card, Input, ContextMenu } from "@/ui";
 
 interface TaskViewProps {
   data: Task;

@@ -5,11 +5,10 @@ import { MdDelete } from "react-icons/md";
 
 import ipc from "@/ipc";
 import useStore from "@/store";
-import { ContextMenu } from "@/components";
 import { Script } from "@/bindings/Script";
 import { useConfirmDelete } from "@/hooks";
 import { MenuPosition } from "@/hooks/useContextMenu";
-import { Button } from "@/ui";
+import { Button, ContextMenu } from "@/ui";
 
 interface ScriptContextMenuProps {
   display: boolean;

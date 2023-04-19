@@ -1,23 +1,33 @@
 import React from "react";
 import { useClickOutside } from "@mantine/hooks";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, HTMLMotionProps, motion } from "framer-motion";
+import { twMerge } from "tailwind-merge";
 
 import { MenuPosition } from "@/hooks/useContextMenu";
 
-interface Props {
+export interface ContextMenuProps extends HTMLMotionProps<"div"> {
+  children: React.ReactNode;
   display: boolean;
   position?: MenuPosition;
   hide: () => void;
-  children: React.ReactNode;
 }
 
-const ContextMenu: React.FC<Props> = (props) => {
+export const ContextMenu: React.FC<ContextMenuProps> = (props) => {
   const [position, setPosition] = React.useState<MenuPosition>({
     left: props.position?.left ?? -9999,
     top: props.position?.top ?? -9999,
   });
 
+  const { className: customClassName, ...restProps } = props;
+
   const ref = useClickOutside<HTMLDivElement>(() => props.hide());
+
+  let className =
+    "flex flex-col gap-0.5 border-2 border-window rounded-sm text-sm bg-window overflow-clip shadow-xl shadow-black/60";
+
+  if (customClassName) {
+    className = twMerge(className, customClassName);
+  }
 
   React.useEffect(() => {
     if (!props.display) return;
@@ -46,7 +56,7 @@ const ContextMenu: React.FC<Props> = (props) => {
     <AnimatePresence>
       {props.display && (
         <motion.div
-          className="flex flex-col gap-0.5 border-2 border-window rounded-sm text-sm bg-window overflow-clip"
+          className={className}
           ref={ref}
           style={{
             zIndex: 9999,
@@ -58,6 +68,7 @@ const ContextMenu: React.FC<Props> = (props) => {
           initial={{ opacity: 0, scale: 0.8, translateY: 16 }}
           animate={{ opacity: 1, scale: 1, translateY: 0 }}
           exit={{ opacity: 0, scale: 0, translateY: 16 }}
+          {...restProps}
         >
           {props.children}
         </motion.div>
@@ -65,5 +76,3 @@ const ContextMenu: React.FC<Props> = (props) => {
     </AnimatePresence>
   );
 };
-
-export default ContextMenu;

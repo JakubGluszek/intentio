@@ -7,10 +7,9 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
 import { useConfirmDelete, useContextMenu } from "@/hooks";
-import { ContextMenu } from "@/components";
 import { Note } from "@/bindings/Note";
 import ipc from "@/ipc";
-import { Button, Card } from "@/ui";
+import { Button, Card, ContextMenu } from "@/ui";
 
 interface NoteViewProps {
   data: Note;

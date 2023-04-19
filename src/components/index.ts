@@ -1,7 +1,6 @@
 export { default as ModalContainer } from "./ModalContainer";
 export { default as Layout } from "./Layout";
 export { default as Editor } from "./Editor";
-export { default as ContextMenu } from "./ContextMenu";
 export { default as Titlebar } from "./Titlebar";
 export { default as TagButton } from "./TagButton";
 export { default as IntentioLogo } from "./IntentioLogo";
