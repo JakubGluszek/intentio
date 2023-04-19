@@ -8,8 +8,7 @@ import {
   MdVolumeUp,
 } from "react-icons/md";
 
-import { Slider } from "@/components";
-import { Button, Pane } from "@/ui";
+import { Button, Pane, Slider } from "@/ui";
 
 interface Props {
   name: string;

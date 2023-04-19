@@ -1,4 +1,3 @@
-export { default as Slider } from "./Slider";
 export { default as ModalContainer } from "./ModalContainer";
 export { default as Layout } from "./Layout";
 export { default as Editor } from "./Editor";
@@ -11,5 +10,6 @@ export { default as WindowContainer } from "./WindowContainer";
 export { default as CircleTimerBase } from "./CircleTimerBase";
 export { default as ColorInput } from "./ColorInput";
 export * from "./CheckboxCard";
+export * from "./SliderCard";
 export * from "./timers";
 export * from "./timeline";
