@@ -1,8 +1,8 @@
 import React from "react";
-import { Tooltip } from "@mantine/core";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 import useStore from "@/store";
+import { Tooltip } from "@/ui";
 import { Session } from "@/bindings/Session";
 
 interface Props {

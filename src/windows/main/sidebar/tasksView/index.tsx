@@ -1,11 +1,10 @@
 import React from "react";
 import { MdCheckBox, MdCheckBoxOutlineBlank, MdDelete } from "react-icons/md";
 import { toast } from "react-hot-toast";
-import { Tooltip } from "@mantine/core";
 
 import useStore from "@/store";
 import ipc from "@/ipc";
-import { Button, Pane } from "@/ui";
+import { Button, Pane, Tooltip } from "@/ui";
 import { useConfirmDelete, useEvents } from "@/hooks";
 import { Task } from "@/bindings/Task";
 import CreateTask from "./CreateTask";
@@ -157,7 +156,6 @@ const ToggleTasksView: React.FC<ToggleTasksViewProps> = (props) => {
   return (
     <Tooltip
       label={props.viewCompleted ? "View incomplete" : "View completed"}
-      classNames={{ tooltip: "tooltip" }}
       position="left"
     >
       <div>

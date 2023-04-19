@@ -2,10 +2,9 @@ import React from "react";
 
 import config from "@/config";
 import { IntentioLogo } from "@/components";
-import { Tooltip } from "@mantine/core";
 import { SiDiscord } from "react-icons/si";
 import { IoIosBug, IoIosGlobe, IoLogoGithub } from "react-icons/io";
-import { Button, Pane } from "@/ui";
+import { Button, Pane, Tooltip } from "@/ui";
 
 const AboutView: React.FC = () => {
   return (
@@ -52,11 +51,7 @@ const AboutView: React.FC = () => {
               </Button>
             </a>
           </Tooltip>
-          <Tooltip
-            withArrow
-            label="Discord server"
-            classNames={{ tooltip: "tooltip" }}
-          >
+          <Tooltip label="Discord server" classNames={{ tooltip: "tooltip" }}>
             <a
               className="mr-auto"
               tabIndex={-2}
@@ -72,11 +67,7 @@ const AboutView: React.FC = () => {
         </div>
 
         <div className="flex flex-row gap-1">
-          <Tooltip
-            withArrow
-            label="Source code"
-            classNames={{ tooltip: "tooltip" }}
-          >
+          <Tooltip label="Source code" classNames={{ tooltip: "tooltip" }}>
             <a
               tabIndex={-2}
               href={config.about.sourceCode}
@@ -88,11 +79,7 @@ const AboutView: React.FC = () => {
               </Button>
             </a>
           </Tooltip>
-          <Tooltip
-            withArrow
-            label="Report a bug"
-            classNames={{ tooltip: "tooltip" }}
-          >
+          <Tooltip label="Report a bug" classNames={{ tooltip: "tooltip" }}>
             <a
               tabIndex={-2}
               href={config.about.sourceCode + "/issues"}

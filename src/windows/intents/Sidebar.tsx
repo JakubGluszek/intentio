@@ -8,14 +8,13 @@ import { BiArchive } from "react-icons/bi";
 import { MdAddCircle } from "react-icons/md";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
-import { Tooltip } from "@mantine/core";
 
 import useStore from "@/store";
 import ipc from "@/ipc";
 import { IntentsList } from "@/components";
 import { IntentsSort } from "@/types";
 import { IntentForCreate } from "@/bindings/IntentForCreate";
-import { Button, Input } from "@/ui";
+import { Button, Input, Tooltip } from "@/ui";
 
 interface Props {
   selectedId?: string;
@@ -58,11 +57,7 @@ const Sidebar: React.FC<Props> = (props) => {
             )}
           </Button>
           {/* Filter by archived_at property */}
-          <Tooltip
-            classNames={{ tooltip: "tooltip" }}
-            withArrow
-            label={viewArchived ? "Hide Archived" : "View Archived"}
-          >
+          <Tooltip label={viewArchived ? "Hide Archived" : "View Archived"}>
             <div>
               <Button
                 variant="ghost"

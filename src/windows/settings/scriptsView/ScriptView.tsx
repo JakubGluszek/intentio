@@ -1,6 +1,6 @@
 import React from "react";
 import { MdCircle } from "react-icons/md";
-import { clsx, Tooltip } from "@mantine/core";
+import { clsx } from "@mantine/core";
 
 import ipc from "@/ipc";
 import useStore from "@/store";
@@ -9,7 +9,7 @@ import { useContextMenu } from "@/hooks";
 import { Script } from "@/bindings/Script";
 import { ScriptForUpdate } from "@/bindings/ScriptForUpdate";
 import ScriptContextMenu from "./ScriptContextMenu";
-import { Card } from "@/ui";
+import { Card, Tooltip } from "@/ui";
 
 interface ScriptView {
   data: Script;
@@ -30,10 +30,7 @@ const ScriptView: React.FC<ScriptView> = (props) => {
   return (
     <Card onContextMenu={onContextMenuHandler}>
       <div className="w-full flex flex-row items-center gap-2">
-        <Tooltip
-          label={props.data.active ? "Active" : "Disabled"}
-          classNames={{ tooltip: "tooltip" }}
-        >
+        <Tooltip label={props.data.active ? "Active" : "Disabled"}>
           <button
             className={clsx(
               "pt-0.5",
