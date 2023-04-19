@@ -18,10 +18,10 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
     } = props;
 
     let className = clsx(
-      "bg-darker/20 hover:bg-darker/10 p-1.5 border-2 rounded-sm",
+      "bg-darker/20 hover:bg-darker/[15%] p-1.5 border-2 rounded-sm",
       active
         ? "border-primary/60 hover:border-primary/80 text-primary/80 shadow-lg shadow-black/30"
-        : "border-base/20 hover:border-base/30"
+        : "border-base/40 hover:border-base/50"
     );
 
     if (customClassName) {

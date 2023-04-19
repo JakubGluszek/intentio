@@ -1,61 +1,35 @@
 import React from "react";
+import { twMerge } from "tailwind-merge";
 
 export interface InputProps extends React.HTMLProps<HTMLInputElement> { }
 
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
   (props, ref) => {
     const {
-      style: customStyle,
+      className: customClassName,
       tabIndex = -3,
       autoComplete = "off",
       autoFocus = false,
       type = "text",
-      onFocus,
-      onBlur,
       ...restProps
     } = props;
 
-    const [isFocus, setIsFocus] = React.useState(autoFocus);
+    let className =
+      "w-full h-8 py-1 px-2 bg-darker/20 rounded-sm border-2 outline-none border-primary/40 focus:border-primary/80 placeholder:text-text/60";
 
-    const getStyle = (): React.CSSProperties => {
-      let style: React.CSSProperties = {
-        width: "100%",
-        height: "2rem",
-        padding: "0.25rem",
-        paddingLeft: "0.5rem",
-        paddingRight: "0.5rem",
-        backgroundColor: "rgb(0, 0, 0, 0.2)",
-        borderRadius: 1,
-        borderWidth: 2,
-        outline: "none",
-      };
-
-      style.borderColor = isFocus
-        ? "rgb(var(--primary-color) / 0.8)"
-        : "rgb(var(--primary-color) / 0.4)";
-
-      return style;
-    };
-
-    const style = getStyle();
+    if (customClassName) {
+      className = twMerge(className, customClassName);
+    }
 
     return (
       <input
         {...restProps}
+        className={className}
         ref={ref}
-        style={{ ...style, ...customStyle }}
         tabIndex={tabIndex}
         autoComplete={autoComplete}
         autoFocus={autoFocus}
         type={type}
-        onFocus={(e) => {
-          setIsFocus(true);
-          onFocus?.(e);
-        }}
-        onBlur={(e) => {
-          setIsFocus(false);
-          onBlur?.(e);
-        }}
       />
     );
   }

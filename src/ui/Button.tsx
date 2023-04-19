@@ -1,5 +1,6 @@
 import React from "react";
-import { HTMLMotionProps, motion, MotionStyle } from "framer-motion";
+import { HTMLMotionProps, motion } from "framer-motion";
+import { twMerge } from "tailwind-merge";
 
 export interface ButtonProps extends HTMLMotionProps<"button"> {
   children: React.ReactNode;
@@ -10,104 +11,39 @@ export interface ButtonProps extends HTMLMotionProps<"button"> {
 export const Button: React.FC<ButtonProps> = (props) => {
   const {
     children,
+    className: customClassName,
     variant,
     active = false,
     type = "button",
     tabIndex = -3,
-    style: customStyle,
-    onMouseOver,
-    onMouseLeave,
-    onMouseDown,
-    onMouseUp,
     ...restProps
   } = props;
 
-  const [isHover, setIsHover] = React.useState(false);
-  const [isActive, setIsActive] = React.useState(false);
+  let className =
+    "h-8 w-fit flex flex-row items-center justify-center gap-1 p-1 font-bold uppercase";
 
-  const getBaseStyle = (): MotionStyle => {
-    let style: MotionStyle = {
-      paddingLeft: "0.75rem",
-      paddingRight: "0.75rem",
-      borderWidth: 2,
-      borderColor: "rgb(var(--primary-color) / 0.6)",
-      borderRadius: 2,
-    };
+  if (variant === "base") {
+    className = twMerge(
+      className,
+      "text-primary/80 hover:text-primary active:text-window bg-primary/10 active:bg-primary px-3 border-2 border-primary/40 hover:border-primary/60 rounded-sm"
+    );
+  } else if (variant === "ghost") {
+    className = twMerge(
+      className,
+      "bg-transparent text-base hover:text-primary active:text-primary"
+    );
+  }
 
-    style.backgroundColor = isActive
-      ? "rgb(var(--primary-color))"
-      : "rgb(var(--primary-color) / 0.1)";
-
-    style.color = isActive
-      ? "rgb(var(--window-color))"
-      : "rgb(var(--primary-color))";
-
-    return style;
-  };
-
-  const getGhostStyle = (): MotionStyle => {
-    let style: MotionStyle = {
-      backgroundColor: "transparent",
-      color:
-        isHover || active
-          ? "rgb(var(--primary-color))"
-          : "rgb(var(--base-color))",
-    };
-
-    return style;
-  };
-
-  const getStyle = (): MotionStyle => {
-    let style: MotionStyle = {
-      height: "2rem",
-      width: "fit-content",
-      display: "flex",
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "center",
-      gap: "0.25rem",
-      padding: "0.25rem",
-      fontSize: "1rem",
-      fontWeight: "bold",
-      textTransform: "uppercase",
-    };
-
-    if (variant === "base") {
-      style = { ...style, ...getBaseStyle() };
-    } else if (variant === "ghost") {
-      style = { ...style, ...getGhostStyle() };
-    }
-
-    style.opacity = isHover ? 1.0 : 0.8;
-
-    return style;
-  };
-
-  const style = getStyle();
+  if (customClassName) {
+    className = twMerge(className, customClassName);
+  }
 
   return (
     <motion.button
       {...restProps}
+      className={className}
       type={type}
       tabIndex={tabIndex}
-      style={{ ...style, ...customStyle }}
-      onMouseOver={(e) => {
-        setIsHover(true);
-        onMouseOver?.(e);
-      }}
-      onMouseLeave={(e) => {
-        setIsHover(false);
-        setIsActive(false);
-        onMouseLeave?.(e);
-      }}
-      onMouseDown={(e) => {
-        setIsActive(true);
-        onMouseDown?.(e);
-      }}
-      onMouseUp={(e) => {
-        setIsActive(false);
-        onMouseUp?.(e);
-      }}
     >
       {children}
     </motion.button>

@@ -1,5 +1,7 @@
 import React from "react";
 import { motion, HTMLMotionProps } from "framer-motion";
+import { twMerge } from "tailwind-merge";
+import { clsx } from "@mantine/core";
 
 export interface PaneProps extends HTMLMotionProps<"div"> {
   withPadding?: boolean;
@@ -8,23 +10,22 @@ export interface PaneProps extends HTMLMotionProps<"div"> {
 export const Pane: React.FC<PaneProps> = (props) => {
   const {
     children,
-    style: customStyle,
+    className: customClassName,
     withPadding = true,
     ...restProps
   } = props;
 
+  let className = clsx(
+    "flex bg-window/95 border-2 border-base/20",
+    withPadding && "p-1.5"
+  );
+
+  if (customClassName) {
+    className = twMerge(className, customClassName);
+  }
+
   return (
-    <motion.div
-      style={{
-        display: "flex",
-        backgroundColor: "rgb(var(--window-color) / 0.95)",
-        borderWidth: 2,
-        borderColor: "rgb(var(--base-color) / 0.1)",
-        padding: withPadding ? 6 : undefined,
-        ...customStyle,
-      }}
-      {...restProps}
-    >
+    <motion.div className={className} {...restProps}>
       {children}
     </motion.div>
   );

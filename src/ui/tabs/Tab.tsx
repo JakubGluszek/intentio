@@ -13,28 +13,24 @@ export const Tab: React.FC<TabProps> = (props) => {
   const { children, value, style: customStyle, ...restProps } = props;
 
   const cx = React.useContext(TabsContext);
-
   const isSelected = cx?.value === props.value;
-
-  const selectedStyle: React.CSSProperties | undefined = isSelected
-    ? {
-      backgroundColor: "rgb(var(--primary-color))",
-      color: "rgb(var(--window-color))",
-    }
-    : undefined;
 
   return (
     <Button
-      onClick={() => cx?.onChange(props.value)}
+      {...restProps}
       variant="ghost"
+      onClick={() => cx?.onChange(props.value)}
       style={{
         flex: 1,
-        backgroundColor: "rgb(var(--primary-color) / 0.2)",
+        backgroundColor: isSelected
+          ? "rgb(var(--primary-color))"
+          : "rgb(var(--primary-color) / 0.15)",
+        color: isSelected
+          ? "rgb(var(--window-color))"
+          : "rgb(var(--primary-color))",
         borderRadius: 2,
-        ...selectedStyle,
         ...customStyle,
       }}
-      {...restProps}
     >
       {props.children}
     </Button>
