@@ -33,7 +33,7 @@ const ThemeView: React.FC<Props> = (props) => {
       style={{
         color: props.data.text_hex,
         borderColor: props.data.base_hex,
-        borderWidth: 2,
+        borderWidth: 1,
         backgroundColor: props.data.window_hex,
         cursor: props.selectable ? "pointer" : "default",
       }}

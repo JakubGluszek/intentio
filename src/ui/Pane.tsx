@@ -16,7 +16,7 @@ export const Pane: React.FC<PaneProps> = (props) => {
   } = props;
 
   let className = clsx(
-    "flex bg-window/95 border-2 border-base/20",
+    "flex bg-window/95 border-2 border-base/30",
     withPadding && "p-1.5"
   );
 

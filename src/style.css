@@ -56,6 +56,14 @@
     @apply w-screen h-screen flex flex-col bg-transparent;
   }
 
+  button > * {
+    cursor: pointer;
+  }
+
+  button:disabled > * {
+    cursor: not-allowed;
+  }
+
   /* Hides controls in input of type "number" */
   /* Chrome, Safari, Edge, Opera */
   input::-webkit-outer-spin-button,
@@ -70,10 +78,6 @@
 }
 
 @layer components {
-  .card {
-    @apply bg-darker/20 hover:bg-darker/10 p-1.5 rounded-sm border-2 border-base/20 hover:border-base/30 shadow shadow-black/30;
-  }
-
   .tooltip {
     @apply bg-window rounded border-2 shadow-lg border-base text-sm text-text p-0.5 px-2 pt-1;
   }

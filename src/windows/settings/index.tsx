@@ -9,8 +9,14 @@ import {
 } from "react-icons/md";
 import { FiCommand } from "react-icons/fi";
 import { OsType, type } from "@tauri-apps/api/os";
+import {
+  SettingsWindowContext,
+  SettingsWindowProvider,
+} from "@/contexts/settingsWindowContext";
+import { VscTerminalBash } from "react-icons/vsc";
 
 import useStore from "@/store";
+import { Pane, Tabs } from "@/ui";
 import { useEvents } from "@/hooks";
 import { Titlebar, WindowContainer } from "@/components";
 import TimerView from "./TimerView";
@@ -18,12 +24,6 @@ import AudioView from "./audioView";
 import ThemesView from "./themesView";
 import ScriptsView from "./scriptsView";
 import AboutView from "./AboutView";
-import {
-  SettingsWindowContext,
-  SettingsWindowProvider,
-} from "@/contexts/settingsWindowContext";
-import { VscTerminalBash } from "react-icons/vsc";
-import { Pane, Tabs } from "@/ui";
 
 export type ColorType = "window" | "base" | "primary" | "text";
 
@@ -38,7 +38,7 @@ const SettingsWindow: React.FC = () => {
   return (
     <SettingsWindowProvider>
       <WindowContainer>
-        <div className="grow flex flex-col gap-0.5">
+        <div className="grow flex flex-col gap-0.5 rounded-sm overflow-clip">
           <SettingsTitlebar />
           <div className="grow flex flex-col gap-0.5">
             <Navbar />
