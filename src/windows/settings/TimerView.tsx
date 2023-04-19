@@ -1,11 +1,12 @@
 import React from "react";
 
 import { formatTimeTimer } from "@/utils";
-import { BooleanView, Slider } from "@/components";
+import { Slider } from "@/components";
 import useStore from "@/store";
 import ipc from "@/ipc";
-import { TimerConfigForUpdate } from "@/bindings/TimerConfigForUpdate";
 import { Card, Pane } from "@/ui";
+import { CheckboxCard } from "@/components";
+import { TimerConfigForUpdate } from "@/bindings/TimerConfigForUpdate";
 
 const TimerView: React.FC = () => {
   const store = useStore();
@@ -25,18 +26,18 @@ const TimerView: React.FC = () => {
     <Pane className="grow flex flex-col overflow-y-auto">
       <div className="max-h-0 overflow-y">
         <div className="flex flex-col gap-1 pb-1.5">
-          <BooleanView
+          <CheckboxCard
             label="Auto Start Focus"
-            checked={config.auto_start_focus}
+            value={config.auto_start_focus}
             onChange={(value) =>
               updateConfig({
                 auto_start_focus: value,
               })
             }
           />
-          <BooleanView
+          <CheckboxCard
             label="Auto Start Breaks"
-            checked={config.auto_start_breaks}
+            value={config.auto_start_breaks}
             onChange={(value) =>
               updateConfig({
                 auto_start_breaks: value,
