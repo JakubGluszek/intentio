@@ -3,6 +3,7 @@ import { HTMLMotionProps } from "framer-motion";
 
 import { Button } from "@/ui";
 import { TabsContext } from "./TabsProvider";
+import { clsx } from "@mantine/core";
 
 export interface TabProps extends HTMLMotionProps<"button"> {
   children: React.ReactNode;
@@ -20,6 +21,9 @@ export const Tab: React.FC<TabProps> = (props) => {
       {...restProps}
       variant="ghost"
       onClick={() => cx?.onChange(props.value)}
+      className={clsx(
+        isSelected ? "shadow-lg shadow-black/40" : "shadow shadow-black/40"
+      )}
       style={{
         flex: 1,
         backgroundColor: isSelected

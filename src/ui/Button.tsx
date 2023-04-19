@@ -20,12 +20,15 @@ export const Button: React.FC<ButtonProps> = (props) => {
   } = props;
 
   let className =
-    "h-8 w-fit flex flex-row items-center justify-center gap-1 p-1 font-bold uppercase";
+    "h-8 w-fit flex flex-row items-center justify-center gap-1 p-1 font-bold uppercase transition-all";
 
   if (variant === "base") {
     className = twMerge(
       className,
-      "text-primary/80 hover:text-primary active:text-window bg-primary/10 active:bg-primary px-3 border-2 border-primary/40 hover:border-primary/60 rounded-sm"
+      "text-primary/80 hover:text-primary active:text-window \
+      bg-primary/10 active:bg-primary border-primary/40 hover:border-primary/60 \
+      px-3 border-2 rounded-sm active:-translate-y-[1px] \
+      hover:shadow hover:shadow-black/40 active:shadow-lg active:shadow-black/60"
     );
   } else if (variant === "ghost") {
     className = twMerge(
