@@ -12,7 +12,7 @@ import useStore from "@/store";
 import ipc from "@/ipc";
 import { ThemeForCreate } from "@/bindings/ThemeForCreate";
 import { ColorType } from "..";
-import { Button, Input } from "@/ui";
+import { Button, Input, Pane } from "@/ui";
 
 interface Props {
   onExit: () => void;
@@ -63,7 +63,7 @@ const CreateTheme: React.FC<Props> = (props) => {
 
   return (
     <div className="grow flex flex-col gap-0.5">
-      <div className="grow flex flex-col window bg-window p-1.5">
+      <Pane className="grow flex flex-col">
         <ModalContainer
           display={!!viewColorPicker}
           hide={() => setViewColorPicker(undefined)}
@@ -83,7 +83,7 @@ const CreateTheme: React.FC<Props> = (props) => {
         >
           <div className="flex flex-row items-center gap-2">
             <label
-              className="min-w-[64px] text-text/80"
+              className="min-w-[64px] text-text/80 font-semibold"
               htmlFor="color-scheme-name"
             >
               Name
@@ -163,7 +163,7 @@ const CreateTheme: React.FC<Props> = (props) => {
             </div>
           </div>
         </form>
-      </div>
+      </Pane>
     </div>
   );
 };

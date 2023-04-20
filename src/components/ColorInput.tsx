@@ -15,7 +15,10 @@ interface Props {
 const ColorInput: React.FC<Props> = (props) => {
   return (
     <div className="flex flex-row items-center gap-2">
-      <label className="min-w-[64px] text-text/80" htmlFor={props.type}>
+      <label
+        className="min-w-[64px] text-text/80 font-semibold"
+        htmlFor={props.type}
+      >
         {props.label}
       </label>
       <Input
