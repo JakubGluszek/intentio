@@ -14,7 +14,7 @@ import { ColorType } from "..";
 import { useClickOutside } from "@mantine/hooks";
 import { ChromePicker } from "react-color";
 import { useConfirmDelete } from "@/hooks";
-import { Button, Input } from "@/ui";
+import { Button, Input, Pane } from "@/ui";
 
 interface Props {
   data: Theme;
@@ -30,7 +30,10 @@ const EditTheme: React.FC<Props> = (props) => {
   const { register, handleSubmit, setValue, getValues, watch } =
     useForm<ThemeForCreate>();
   const { viewConfirmDelete, onDelete } = useConfirmDelete(() =>
-    ipc.deleteTheme(props.data.id).then(() => props.onExit())
+    ipc.deleteTheme(props.data.id).then(() => {
+      props.onExit();
+      toast("Theme deleted");
+    })
   );
 
   const modalRef = useClickOutside(() => {
@@ -69,125 +72,103 @@ const EditTheme: React.FC<Props> = (props) => {
   }, []);
 
   return (
-    <div className="grow flex flex-col gap-0.5">
-      <div className="h-fit flex flex-row gap-0.5">
-        <div className="window bg-window">
-          <Button onClick={() => props.onExit()} variant="ghost">
-            <MdArrowBack size={24} />
-          </Button>
+    <Pane className="grow flex flex-col">
+      <ModalContainer
+        display={!!viewColorPicker}
+        hide={() => setViewColorPicker(undefined)}
+      >
+        <div ref={modalRef} data-tauri-disable-drag>
+          <ChromePicker
+            color={colorPickerHex}
+            onChange={(data) => setColorPickerHex(data.hex)}
+            disableAlpha
+          />
         </div>
-        <div className="grow window bg-window flex flex-row items-center px-2">
-          Edit theme
-        </div>
-      </div>
+      </ModalContainer>
 
-      <div className="grow flex flex-col window bg-window p-1.5">
-        <ModalContainer
-          display={!!viewColorPicker}
-          hide={() => setViewColorPicker(undefined)}
-        >
-          <div ref={modalRef} data-tauri-disable-drag>
-            <ChromePicker
-              color={colorPickerHex}
-              onChange={(data) => setColorPickerHex(data.hex)}
-              disableAlpha
-            />
+      <form onSubmit={onSubmit} className="grow flex flex-col justify-between">
+        <div className="flex flex-row items-center gap-2">
+          <Input
+            {...register("name", { required: true, maxLength: 16 })}
+            id="color-scheme-name"
+            placeholder="Name"
+          />
+        </div>
+
+        <ColorInput
+          label="Window"
+          type="window_hex"
+          watch={watch}
+          register={register}
+          onViewColorPicker={() => {
+            setColorPickerHex(watch("window_hex"));
+            setViewColorPicker("window");
+          }}
+        />
+        <ColorInput
+          label="Base"
+          type="base_hex"
+          watch={watch}
+          register={register}
+          onViewColorPicker={() => {
+            setColorPickerHex(watch("base_hex"));
+            setViewColorPicker("base");
+          }}
+        />
+        <ColorInput
+          label="Primary"
+          type="primary_hex"
+          watch={watch}
+          register={register}
+          onViewColorPicker={() => {
+            setColorPickerHex(watch("primary_hex"));
+            setViewColorPicker("primary");
+          }}
+        />
+        <ColorInput
+          label="Text"
+          type="text_hex"
+          watch={watch}
+          register={register}
+          onViewColorPicker={() => {
+            setColorPickerHex(watch("text_hex"));
+            setViewColorPicker("text");
+          }}
+        />
+
+        <div className="w-full h-[2px] rounded bg-base/20"></div>
+
+        <div className="flex flex-row items-center justify-between">
+          <div className="flex flex-row items-center ">
+            <Button onClick={() => props.onExit()} variant="ghost">
+              Exit
+            </Button>
           </div>
-        </ModalContainer>
-
-        <form
-          onSubmit={onSubmit}
-          className="grow flex flex-col justify-between"
-        >
-          <div className="flex flex-row items-center gap-2">
-            <label
-              className="min-w-[64px] text-text/80"
-              htmlFor="color-scheme-name"
+          <div className="flex flex-row gap-3">
+            <div
+              className="flex flex-row items-center text-primary/80"
+              onMouseOver={() => {
+                emit("preview_theme", getValues());
+                setViewThemePreview(true);
+              }}
+              onMouseLeave={() => {
+                emit("preview_theme", store.currentTheme);
+                setViewThemePreview(false);
+              }}
             >
-              Name
-            </label>
-            <Input
-              {...register("name", { required: true, maxLength: 16 })}
-              id="color-scheme-name"
-            />
-          </div>
-
-          <ColorInput
-            label="Window"
-            type="window_hex"
-            watch={watch}
-            register={register}
-            onViewColorPicker={() => {
-              setColorPickerHex(watch("window_hex"));
-              setViewColorPicker("window");
-            }}
-          />
-          <ColorInput
-            label="Base"
-            type="base_hex"
-            watch={watch}
-            register={register}
-            onViewColorPicker={() => {
-              setColorPickerHex(watch("base_hex"));
-              setViewColorPicker("base");
-            }}
-          />
-          <ColorInput
-            label="Primary"
-            type="primary_hex"
-            watch={watch}
-            register={register}
-            onViewColorPicker={() => {
-              setColorPickerHex(watch("primary_hex"));
-              setViewColorPicker("primary");
-            }}
-          />
-          <ColorInput
-            label="Text"
-            type="text_hex"
-            watch={watch}
-            register={register}
-            onViewColorPicker={() => {
-              setColorPickerHex(watch("text_hex"));
-              setViewColorPicker("text");
-            }}
-          />
-
-          <div className="flex flex-row items-center justify-between">
-            <div className="flex flex-row items-center gap-2">
-              {!props.data.default && (
-                <Button onClick={() => onDelete()} variant="ghost">
-                  <MdDelete size={24} />
-                  {viewConfirmDelete && <div>Confirm</div>}
-                </Button>
-              )}
-              {!viewConfirmDelete && (
-                <div
-                  className="flex flex-row items-center text-primary/80"
-                  onMouseOver={() => {
-                    emit("preview_theme", getValues());
-                    setViewThemePreview(true);
-                  }}
-                  onMouseLeave={() => {
-                    emit("preview_theme", store.currentTheme);
-                    setViewThemePreview(false);
-                  }}
-                >
-                  {viewThemePreview ? (
-                    <RiEyeFill size={24} />
-                  ) : (
-                    <RiEyeCloseFill size={24} />
-                  )}
-                </div>
+              {viewThemePreview ? (
+                <RiEyeFill size={24} />
+              ) : (
+                <RiEyeCloseFill size={24} />
               )}
             </div>
             <Button variant="base" type="submit">
               Update theme
             </Button>
           </div>
-        </form>
-      </div>
-    </div>
+        </div>
+      </form>
+    </Pane>
   );
 };
 

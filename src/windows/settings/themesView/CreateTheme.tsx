@@ -1,5 +1,5 @@
 import React from "react";
-import { MdArrowBack, MdCancel } from "react-icons/md";
+import { MdCancel } from "react-icons/md";
 import { toast } from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import { ChromePicker } from "react-color";
@@ -82,15 +82,10 @@ const CreateTheme: React.FC<Props> = (props) => {
           className="grow flex flex-col justify-between"
         >
           <div className="flex flex-row items-center gap-2">
-            <label
-              className="min-w-[64px] text-text/80 font-semibold"
-              htmlFor="color-scheme-name"
-            >
-              Name
-            </label>
             <Input
               {...register("name", { required: true, maxLength: 16 })}
               id="color-scheme-name"
+              placeholder="Name"
             />
           </div>
           <ColorInput
@@ -133,9 +128,11 @@ const CreateTheme: React.FC<Props> = (props) => {
               setViewColorPicker("text");
             }}
           />
+
+          <div className="w-full h-[2px] rounded bg-base/20"></div>
+
           <div className="flex flex-row items-center justify-between">
             <Button variant="ghost" onClick={() => props.onExit()}>
-              <MdCancel size={20} />
               <div>Exit</div>
             </Button>
 
