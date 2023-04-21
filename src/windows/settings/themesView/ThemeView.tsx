@@ -29,11 +29,9 @@ const ThemeView: React.FC<Props> = (props) => {
         // @ts-ignore
         !e.target.closest("button") && props.selectable && props.onSelected()
       }
-      className="group flex flex-row h-9 font-black overflow-clip shadow-lg rounded-sm"
+      className="group flex flex-row h-9 font-black overflow-clip shadow-lg rounded-sm border-2 border-base/30"
       style={{
         color: props.data.text_hex,
-        borderColor: props.data.base_hex,
-        borderWidth: 1,
         backgroundColor: props.data.window_hex,
         cursor: props.selectable ? "pointer" : "default",
       }}
