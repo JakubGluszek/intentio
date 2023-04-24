@@ -23,7 +23,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = (props) => {
   const ref = useClickOutside<HTMLDivElement>(() => props.hide());
 
   let className =
-    "flex flex-col gap-0.5 border-2 border-window rounded-sm text-sm bg-window overflow-clip shadow-xl shadow-black/60";
+    "w-28 flex flex-col gap-0.5 border-2 border-window rounded-sm text-sm bg-window shadow-xl shadow-black/60";
 
   if (customClassName) {
     className = twMerge(className, customClassName);

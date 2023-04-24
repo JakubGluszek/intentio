@@ -4,6 +4,7 @@ import { TbLayoutSidebarRightCollapse } from "react-icons/tb";
 import { WebviewWindow } from "@tauri-apps/api/window";
 import { motion } from "framer-motion";
 import { toast } from "react-hot-toast";
+import { clsx } from "@mantine/core";
 
 import ipc from "@/ipc";
 import useStore from "@/store";
@@ -15,7 +16,6 @@ import Sidebar from "./sidebar";
 import { useEvents, useTimer } from "@/hooks";
 import utils from "@/utils";
 import { Button, Pane } from "@/ui";
-import { clsx } from "@mantine/core";
 
 const MainWindow: React.FC = () => {
   const store = useStore();

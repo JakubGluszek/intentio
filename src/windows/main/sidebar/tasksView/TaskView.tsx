@@ -38,14 +38,7 @@ const TaskView: React.FC<TaskViewProps> = (props) => {
 
   const handleCheck = () =>
     ipc.updateTask(data.id, { done: !data.done }).then((task) => {
-      const icon = ["🎉", "🎊", "😁", "😀", "🥳", "💪", "✅"][
-        Math.floor(Math.random() * 7)
-      ];
-
-      task.done &&
-        toast(`${icon} Task completed ${icon}`, {
-          style: { whiteSpace: "nowrap" },
-        });
+      task.done && toast("Task completed");
     });
 
   return (
@@ -123,16 +116,12 @@ const TaskContextMenu: React.FC<TaskContextMenuProps> = (props) => {
       position={props.position}
       hide={() => props.hide()}
     >
-      <React.Fragment>
-        <Button variant="base" onClick={() => onDelete()}>
-          <div className="w-fit">
-            <MdDelete size={20} />
-          </div>
-          <div className="w-full">
-            {viewConfirmDelete ? "Confirm" : "Delete"}
-          </div>
-        </Button>
-      </React.Fragment>
+      <Button variant="base" onClick={() => onDelete()} className="w-full">
+        <div className="w-fit">
+          <MdDelete size={20} />
+        </div>
+        <div className="w-full">{viewConfirmDelete ? "Confirm" : "Delete"}</div>
+      </Button>
     </ContextMenu>
   );
 };

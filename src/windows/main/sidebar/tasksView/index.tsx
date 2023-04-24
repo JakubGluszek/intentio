@@ -106,7 +106,7 @@ const TasksList: React.FC<TasksListProps> = (props) => {
 
   if (props.tasks.length === 0) {
     return (
-      <div className="grow flex flex-col items-center justify-center text-center text-sm text-text/40 gap-2 p-1.5">
+      <div className="grow flex flex-col items-center justify-center text-center text-sm text-text/60 gap-2 p-1.5">
         {emptyFiller}
       </div>
     );

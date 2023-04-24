@@ -141,7 +141,7 @@ const NotesList: React.FC<NotesListProps> = (props) => {
   if (notes.length === 0)
     return (
       <motion.div
-        className="grow flex flex-col items-center justify-center text-center text-sm text-text/40 gap-2 p-1.5"
+        className="grow flex flex-col items-center justify-center text-center text-sm text-text/60 gap-2 p-1.5"
         {...motions.scaleIn}
       >
         {emptyFiller}

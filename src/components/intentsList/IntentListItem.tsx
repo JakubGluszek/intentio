@@ -60,7 +60,7 @@ const IntentListItem: React.FC<Props> = (props) => {
           <div
             className={clsx(
               "flex flex-row items-center gap-1",
-              !props.selected ? "text-text/60" : "text-window"
+              props.selected ? "text-primary/80" : "text-text/80"
             )}
           >
             {data.pinned ? <TiPin size={24} className="min-w-[24px]" /> : null}
@@ -89,40 +89,40 @@ const IntentListItem: React.FC<Props> = (props) => {
       </Card>
 
       <ContextMenu {...menu}>
-        <React.Fragment>
-          <Button
-            variant="base"
-            onClick={() =>
-              ipc
-                .updateIntent(props.data.id, { pinned: !props.data.pinned })
-                .then((data) => {
-                  menu.hide();
-                  toast(data.pinned ? "Pinned to top" : "Unpinned");
-                })
-            }
-          >
-            <div className="w-fit">
-              {props.data.pinned ? (
-                <TiPin size={20} />
-              ) : (
-                <TiPinOutline size={20} />
-              )}
-            </div>
-            <div className="w-full">{props.data.pinned ? "Unpin" : "Pin"}</div>
-          </Button>
-          <Button
-            variant="base"
-            onClick={() => {
-              setViewTagsModal(true);
-              menu.hide();
-            }}
-          >
-            <div className="w-fit">
-              <TbTags size={20} />
-            </div>
-            <div className="w-full">Tags</div>
-          </Button>
-        </React.Fragment>
+        <Button
+          variant="base"
+          className="w-full"
+          onClick={() =>
+            ipc
+              .updateIntent(props.data.id, { pinned: !props.data.pinned })
+              .then((data) => {
+                menu.hide();
+                toast(data.pinned ? "Pinned to top" : "Unpinned");
+              })
+          }
+        >
+          <div className="w-fit">
+            {props.data.pinned ? (
+              <TiPin size={20} />
+            ) : (
+              <TiPinOutline size={20} />
+            )}
+          </div>
+          <div className="w-full">{props.data.pinned ? "Unpin" : "Pin"}</div>
+        </Button>
+        <Button
+          variant="base"
+          className="w-full"
+          onClick={() => {
+            setViewTagsModal(true);
+            menu.hide();
+          }}
+        >
+          <div className="w-fit">
+            <TbTags size={20} />
+          </div>
+          <div className="w-full">Tags</div>
+        </Button>
       </ContextMenu>
 
       <TagsModal

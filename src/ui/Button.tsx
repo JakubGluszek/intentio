@@ -25,7 +25,7 @@ export const Button: React.FC<ButtonProps> = (props) => {
   if (variant === "base") {
     className = twMerge(
       className,
-      "text-primary/80 hover:text-primary active:text-window \
+      "text-primary/90 hover:text-primary active:text-window \
       bg-primary/10 active:bg-primary border-primary/40 hover:border-primary/60 \
       px-3 border-2 rounded-sm active:-translate-y-[1px] \
       hover:shadow hover:shadow-black/40 active:shadow-lg active:shadow-black/60"

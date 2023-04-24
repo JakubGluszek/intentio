@@ -51,47 +51,41 @@ const NoteView: React.FC<NoteViewProps> = (props) => {
       </Card>
 
       <ContextMenu {...menu}>
-        <div className="w-28 flex flex-col gap-0.5">
-          <Button
-            style={{ width: "100%" }}
-            variant="base"
-            onClick={() => {
-              props.setEdit(props.data);
-              menu.hide();
-            }}
-          >
-            <div className="w-fit">
-              <MdEdit size={20} />
-            </div>
-            <div className="w-full">Edit</div>
-          </Button>
-          <Button
-            variant="base"
-            onClick={async () => {
-              await writeText(props.data.body);
-              toast("Copied to clipboard");
-              menu.hide();
-            }}
-            style={{ width: "100%" }}
-          >
-            <div className="w-fit">
-              <IoMdClipboard size={20} />
-            </div>
-            <div className="w-full">Copy</div>
-          </Button>
-          <Button
-            variant="base"
-            onClick={() => onDelete()}
-            style={{ width: "100%" }}
-          >
-            <div className="w-fit">
-              <MdDelete size={20} />
-            </div>
-            <div className="w-full">
-              {viewConfirmDelete ? "Confirm" : "Delete"}
-            </div>
-          </Button>
-        </div>
+        <Button
+          className="w-full"
+          variant="base"
+          onClick={() => {
+            props.setEdit(props.data);
+            menu.hide();
+          }}
+        >
+          <div className="w-fit">
+            <MdEdit size={20} />
+          </div>
+          <div className="w-full">Edit</div>
+        </Button>
+        <Button
+          variant="base"
+          className="w-full"
+          onClick={async () => {
+            await writeText(props.data.body);
+            toast("Copied to clipboard");
+            menu.hide();
+          }}
+        >
+          <div className="w-fit">
+            <IoMdClipboard size={20} />
+          </div>
+          <div className="w-full">Copy</div>
+        </Button>
+        <Button variant="base" className="w-full" onClick={() => onDelete()}>
+          <div className="w-fit">
+            <MdDelete size={20} />
+          </div>
+          <div className="w-full">
+            {viewConfirmDelete ? "Confirm" : "Delete"}
+          </div>
+        </Button>
       </ContextMenu>
     </React.Fragment>
   );
