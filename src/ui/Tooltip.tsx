@@ -14,6 +14,7 @@ export const Tooltip: React.FC<TooltipProps> = (props) => {
 
   return (
     <TooltipMantine
+      openDelay={200}
       {...restProps}
       classNames={{ tooltip: className }}
       style={{ paddingBottom: 0, ...style }}

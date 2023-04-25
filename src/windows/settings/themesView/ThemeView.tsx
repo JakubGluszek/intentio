@@ -6,6 +6,7 @@ import ipc from "@/ipc";
 import useStore from "@/store";
 import { useContextMenu } from "@/hooks";
 import { Theme } from "@/bindings/Theme";
+import { Tooltip } from "@/ui";
 
 interface Props {
   data: Theme;
@@ -38,19 +39,21 @@ const ThemeView: React.FC<Props> = (props) => {
       onContextMenu={onContextMenuHandler}
       data-tauri-disable-drag
     >
-      <button
-        className="min-w-[32px] h-full cursor-pointer"
-        style={{ backgroundColor: props.data.primary_hex }}
-        onMouseDown={() => {
-          if (props.selectable) {
-            props.onSelected();
-            return;
-          }
-          emit("preview_theme", props.data);
-        }}
-        onMouseUp={() => emit("preview_theme", store.currentTheme)}
-        onMouseOut={() => emit("preview_theme", store.currentTheme)}
-      ></button>
+      <Tooltip label="Press to preview">
+        <button
+          className="min-w-[32px] h-full cursor-pointer"
+          style={{ backgroundColor: props.data.primary_hex }}
+          onMouseDown={() => {
+            if (props.selectable) {
+              props.onSelected();
+              return;
+            }
+            emit("preview_theme", props.data);
+          }}
+          onMouseUp={() => emit("preview_theme", store.currentTheme)}
+          onMouseOut={() => emit("preview_theme", store.currentTheme)}
+        ></button>
+      </Tooltip>
 
       <div className="w-full h-full flex flex-row justify-between">
         <div

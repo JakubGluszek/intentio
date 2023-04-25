@@ -85,6 +85,7 @@ const CreateTheme: React.FC<Props> = (props) => {
             <Input
               {...register("name", { required: true, maxLength: 16 })}
               id="color-scheme-name"
+              maxLength={16}
               placeholder="Name"
             />
           </div>

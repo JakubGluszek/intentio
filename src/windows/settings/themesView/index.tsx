@@ -23,6 +23,7 @@ const ThemesView: React.FC = () => {
   const [themeState, setThemeState] = React.useState<ThemeState | null>(null);
   const [display, setDisplay] = React.useState<Display>("themes");
   const [viewFavoriteOnly, setViewFavoriteOnly] = React.useState(false);
+  const [viewChangeThemes, setViewChangeThemes] = React.useState(false);
 
   const store = useStore();
 
@@ -40,71 +41,73 @@ const ThemesView: React.FC = () => {
   if (store.themes.length === 0) return null;
 
   return (
-    <div className="grow flex flex-col gap-0.5">
-      <Pane className="flex flex-col gap-1.5">
-        <div className="flex flex-row justify-between">
-          {/* Prompt create theme view */}
-          <Button variant="base" onClick={() => setDisplay("create")}>
-            <MdAddCircle size={20} />
-            <div>Add theme</div>
+    <Pane className="grow flex flex-col overflow-y-auto gap-2">
+      <div className="flex flex-row justify-between">
+        {/* Prompt create theme view */}
+        <Button variant="base" onClick={() => setDisplay("create")}>
+          <MdAddCircle size={20} />
+          <div>Add theme</div>
+        </Button>
+        <div className="flex flex-row">
+          {/* Toggle view only favorite themes */}
+          <Button
+            onClick={() => setViewFavoriteOnly((prev) => !prev)}
+            variant="ghost"
+          >
+            {viewFavoriteOnly ? (
+              <MdFavorite size={24} />
+            ) : (
+              <MdFavoriteBorder size={24} />
+            )}
           </Button>
-          <div className="flex flex-row">
-            {/* Toggle view only favorite themes */}
-            <Button
-              onClick={() => setViewFavoriteOnly((prev) => !prev)}
-              variant="ghost"
-            >
-              {viewFavoriteOnly ? (
-                <MdFavorite size={24} />
-              ) : (
-                <MdFavoriteBorder size={24} />
-              )}
-            </Button>
-          </div>
         </div>
+      </div>
+      {viewChangeThemes ? (
         <CurrentThemes
           selectedState={themeState}
           setSelectedState={setThemeState}
         />
-      </Pane>
+      ) : (
+        <Button variant="ghost" onClick={() => setViewChangeThemes(true)}>
+          Change themes
+        </Button>
+      )}
 
-      <Pane className="grow flex flex-col overflow-y-auto">
-        <div className="max-h-0 overflow-y">
-          {themeState && (
-            <div className="flex flex-row items-center gap-1 p-1.5 text-text/80">
-              <MdInfoOutline size={20} />
-              <span>Select a new theme</span>
-            </div>
-          )}
-          <ThemesList
-            themes={store.themes}
-            selectable={!!themeState}
-            viewFavoriteOnly={viewFavoriteOnly}
-            onThemeViewEdit={(theme) => {
-              setDisplay("edit");
-              setTheme(theme);
-            }}
-            onThemeSelected={(theme) => {
-              switch (themeState) {
-                case "idle":
-                  ipc.setIdleTheme(theme);
-                  break;
-                case "focus":
-                  ipc.setFocusTheme(theme);
-                  break;
-                case "break":
-                  ipc.setBreakTheme(theme);
-                  break;
-                case "long break":
-                  ipc.setLongBreakTheme(theme);
-                  break;
-              }
-              setThemeState(null);
-            }}
-          />
+      {themeState && (
+        <div className="flex flex-row items-center gap-1 text-text/80">
+          <MdInfoOutline size={20} />
+          <span>Select a new theme</span>
         </div>
-      </Pane>
-    </div>
+      )}
+      <div className="max-h-0 overflow-y">
+        <ThemesList
+          themes={store.themes}
+          selectable={!!themeState}
+          viewFavoriteOnly={viewFavoriteOnly}
+          onThemeViewEdit={(theme) => {
+            setDisplay("edit");
+            setTheme(theme);
+          }}
+          onThemeSelected={(theme) => {
+            switch (themeState) {
+              case "idle":
+                ipc.setIdleTheme(theme);
+                break;
+              case "focus":
+                ipc.setFocusTheme(theme);
+                break;
+              case "break":
+                ipc.setBreakTheme(theme);
+                break;
+              case "long break":
+                ipc.setLongBreakTheme(theme);
+                break;
+            }
+            setThemeState(null);
+          }}
+        />
+      </div>
+    </Pane>
   );
 };
 
@@ -153,7 +156,7 @@ const CurrentThemes: React.FC<CurrentThemesProps> = (props) => {
             prev !== "long break" ? "long break" : null
           )
         }
-        label="Long Break"
+        label="L. Break"
         color={longBreakTheme.primary_hex}
         selected={props.selectedState === "long break"}
       />

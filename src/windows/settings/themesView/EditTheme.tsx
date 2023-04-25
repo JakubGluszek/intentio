@@ -92,6 +92,7 @@ const EditTheme: React.FC<Props> = (props) => {
             {...register("name", { required: true, maxLength: 16 })}
             id="color-scheme-name"
             placeholder="Name"
+            maxLength={16}
           />
         </div>
 
@@ -139,32 +140,40 @@ const EditTheme: React.FC<Props> = (props) => {
         <div className="w-full h-[2px] rounded bg-base/20"></div>
 
         <div className="flex flex-row items-center justify-between">
-          <div className="flex flex-row items-center ">
+          {!viewConfirmDelete && (
             <Button onClick={() => props.onExit()} variant="ghost">
               Exit
             </Button>
-          </div>
-          <div className="flex flex-row gap-3">
-            <div
-              className="flex flex-row items-center text-primary/80"
-              onMouseOver={() => {
-                emit("preview_theme", getValues());
-                setViewThemePreview(true);
-              }}
-              onMouseLeave={() => {
-                emit("preview_theme", store.currentTheme);
-                setViewThemePreview(false);
-              }}
-            >
-              {viewThemePreview ? (
-                <RiEyeFill size={24} />
-              ) : (
-                <RiEyeCloseFill size={24} />
-              )}
-            </div>
-            <Button variant="base" type="submit">
-              Update theme
+          )}
+          <div className="flex flex-row gap-2">
+            <Button variant="ghost" onClick={() => onDelete()}>
+              <MdDelete size={24} />
+              {viewConfirmDelete && "Confirm"}
             </Button>
+            {!viewConfirmDelete && (
+              <div
+                className="flex flex-row items-center text-primary/80"
+                onMouseOver={() => {
+                  emit("preview_theme", getValues());
+                  setViewThemePreview(true);
+                }}
+                onMouseLeave={() => {
+                  emit("preview_theme", store.currentTheme);
+                  setViewThemePreview(false);
+                }}
+              >
+                {viewThemePreview ? (
+                  <RiEyeFill size={24} />
+                ) : (
+                  <RiEyeCloseFill size={24} />
+                )}
+              </div>
+            )}
+            {!viewConfirmDelete && (
+              <Button variant="base" type="submit">
+                Update theme
+              </Button>
+            )}
           </div>
         </div>
       </form>

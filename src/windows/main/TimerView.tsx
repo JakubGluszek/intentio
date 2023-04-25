@@ -71,7 +71,7 @@ interface TimerDetailsProps {
 
 const TimerDetails: React.FC<TimerDetailsProps> = (props) => {
   return (
-    <Pane className="flex flex-row justify-between" withPadding={false}>
+    <Pane className="flex flex-row justify-between items-center" withPadding={false}>
       {/* --- Total timer iterations --- */}
       <div
         className={clsx(
