@@ -75,6 +75,10 @@
   input[type="number"] {
     -moz-appearance: textfield;
   }
+
+  h2 {
+    @apply font-semibold text-lg;
+  }
 }
 
 @layer components {
