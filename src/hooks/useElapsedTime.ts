@@ -145,6 +145,7 @@ export const useElapsedTime = ({
           (Date.now() - startedTimerRef.current) / 1000
         );
         // based on visibility state, applies that duration
+        elapsedTimeRef.current = tempTimerRef.current;
         setElapsedTime(tempTimerRef.current);
       }, 250);
     });
