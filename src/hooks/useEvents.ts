@@ -41,6 +41,8 @@ type Events = {
   interface_config_updated: InterfaceConfig;
   theme_updated: Theme;
   theme_deleted: ModelDeleteResultData;
+  timer_play: undefined;
+  timer_skip: undefined;
 };
 
 type Callback<T extends keyof Events> = (data: Events[T]) => void;

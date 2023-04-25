@@ -1,6 +1,7 @@
 use std::{fs, path::Path};
 
 use tauri::{App, AppHandle, Manager};
+use tauri_hotkey::{Hotkey, HotkeyManager, Key, Modifier};
 
 use crate::{
     cfg::{AudioCfg, BehaviorCfg, InterfaceCfg, TimerCfg},
@@ -18,8 +19,37 @@ pub async fn init_setup(app: &mut App) {
     BehaviorCfg::setup();
     InterfaceCfg::setup();
 
+    setup_hotkeys_manager(app);
     setup_state(app).await;
     build_main_window(&app.app_handle());
+}
+
+fn setup_hotkeys_manager(app: &mut App) {
+    if let Ok(ctx) = Ctx::from_app(app.app_handle()) {
+        let mut hm = HotkeyManager::new();
+
+        let ctx_clone = ctx.clone();
+
+        hm.register(
+            Hotkey {
+                modifiers: vec![Modifier::CTRL],
+                keys: vec![Key::F1],
+            },
+            move || ctx_clone.emit_event("timer_play", ()),
+        )
+        .expect("CTRL + F1 failed to register");
+
+        hm.register(
+            Hotkey {
+                modifiers: vec![Modifier::CTRL],
+                keys: vec![Key::F2],
+            },
+            move || ctx.emit_event("timer_skip", ()),
+        )
+        .expect("CTRL + F2 failed to register");
+
+        app.manage(hm);
+    };
 }
 
 fn setup_config_dir() {

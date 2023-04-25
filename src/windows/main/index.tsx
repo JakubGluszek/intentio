@@ -5,6 +5,7 @@ import { WebviewWindow } from "@tauri-apps/api/window";
 import { motion } from "framer-motion";
 import { toast } from "react-hot-toast";
 import { clsx } from "@mantine/core";
+import { register } from "@tauri-apps/api/globalShortcut";
 
 import ipc from "@/ipc";
 import useStore from "@/store";
@@ -81,7 +82,11 @@ const MainWindow: React.FC = () => {
     ipc.getScripts().then((data) => store.setScripts(data));
   }, []);
 
-  useEvents({ script_updated: (data) => store.patchScript(data.id, data) });
+  useEvents({
+    script_updated: (data) => store.patchScript(data.id, data),
+    timer_play: () => (timer.isPlaying ? timer.pause() : timer.resume()),
+    timer_skip: () => timer.skip(),
+  });
 
   if (!store.timerConfig) return null;
 
