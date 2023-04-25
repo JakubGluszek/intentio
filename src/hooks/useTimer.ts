@@ -43,21 +43,27 @@ export const useTimer = (
   const [iterations, setIterations] = React.useState(0);
   const [elapsedTime, setElapsedTime] = React.useState(0);
 
-  const resume = React.useCallback(() => {
-    if (!startedAt) setStartedAt(new Date().getTime().toString());
-    setIsPlaying(true);
-    callbacks.onResumed?.({ type: sessionType });
-    callbacks.onStateUpdate?.({ isPlaying: true });
-  }, [sessionType, callbacks, startedAt]);
+  const resume = React.useCallback(
+    (withCallback: boolean = true) => {
+      if (!startedAt) setStartedAt(new Date().getTime().toString());
+      setIsPlaying(true);
+      withCallback && callbacks.onResumed?.({ type: sessionType });
+      callbacks.onStateUpdate?.({ isPlaying: true });
+    },
+    [sessionType, callbacks, startedAt]
+  );
 
-  const pause = React.useCallback(() => {
-    setIsPlaying(false);
-    callbacks.onPaused?.({ type: sessionType });
-    callbacks.onStateUpdate?.({ isPlaying: false });
-  }, [sessionType, callbacks]);
+  const pause = React.useCallback(
+    (withCallback: boolean = true) => {
+      setIsPlaying(false);
+      withCallback && callbacks.onPaused?.({ type: sessionType });
+      callbacks.onStateUpdate?.({ isPlaying: false });
+    },
+    [sessionType, callbacks]
+  );
 
   const restart = () => {
-    pause();
+    pause(false);
     saveSession();
     reset();
     setStartedAt(undefined);
@@ -103,8 +109,9 @@ export const useTimer = (
       callbacks.onStateUpdate?.({ type: newSessionType, isPlaying: false });
 
       if (!manual) {
-        if (newSessionType === "Focus" && config.auto_start_focus) resume();
-        else if (config.auto_start_breaks) resume();
+        if (newSessionType === "Focus" && config.auto_start_focus)
+          resume(false);
+        else if (config.auto_start_breaks) resume(false);
       }
     },
     [sessionType, config, isPlaying, startedAt]

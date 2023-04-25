@@ -91,6 +91,21 @@ const MainWindow: React.FC = () => {
             : script.run_on_break_start) &&
           utils.executeScript(script.body)
       );
+
+      if (!store.behaviorConfig?.system_notifications) return;
+      if (document.hasFocus()) return;
+
+      switch (session.type) {
+        case "Focus":
+          sendNotification("Focus session has been resumed.");
+          break;
+        case "Break":
+          sendNotification("Break has been resumed.");
+          break;
+        case "LongBreak":
+          sendNotification("Long break has been resumed.");
+          break;
+      }
     },
     onPaused: (session) => {
       store.scripts.forEach(
@@ -101,6 +116,21 @@ const MainWindow: React.FC = () => {
             : script.run_on_break_pause) &&
           utils.executeScript(script.body)
       );
+
+      if (!store.behaviorConfig?.system_notifications) return;
+      if (document.hasFocus()) return;
+
+      switch (session.type) {
+        case "Focus":
+          sendNotification("Focus session has been paused.");
+          break;
+        case "Break":
+          sendNotification("Break has been paused.");
+          break;
+        case "LongBreak":
+          sendNotification("Long break has been paused.");
+          break;
+      }
     },
   });
 
