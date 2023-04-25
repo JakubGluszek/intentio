@@ -1,6 +1,13 @@
 import React from "react";
 
-type Panel = "Timer" | "Audio" | "Themes" | "Scripts" | "About";
+type Panel =
+  | "General"
+  | "Timer"
+  | "Audio"
+  | "Themes"
+  | "Scripts"
+  | "About"
+  | "Account";
 
 export type SettingsWindowContextType = {
   panel: Panel;

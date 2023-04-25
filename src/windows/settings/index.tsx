@@ -13,7 +13,7 @@ import {
   SettingsWindowContext,
   SettingsWindowProvider,
 } from "@/contexts/settingsWindowContext";
-import { VscTerminalBash } from "react-icons/vsc";
+import { VscSettings, VscTerminalBash } from "react-icons/vsc";
 
 import useStore from "@/store";
 import { Pane, Tabs } from "@/ui";
@@ -24,6 +24,8 @@ import AudioView from "./audioView";
 import ThemesView from "./themesView";
 import ScriptsView from "./scriptsView";
 import AboutView from "./AboutView";
+import GeneralView from "./GeneralView";
+import AccountView from "./AccountView";
 
 export type ColorType = "window" | "base" | "primary" | "text";
 
@@ -66,6 +68,8 @@ const Content: React.FC = () => {
       {panel === "Themes" ? <ThemesView /> : null}
       {panel === "Scripts" ? <ScriptsView /> : null}
       {panel === "About" ? <AboutView /> : null}
+      {panel === "General" ? <GeneralView /> : null}
+      {panel === "Account" ? <AccountView /> : null}
     </div>
   );
 };
@@ -90,8 +94,8 @@ const Navbar: React.FC = () => {
         <Tabs.Tab value="Themes">
           <MdColorLens size={24} />
         </Tabs.Tab>
-        <Tabs.Tab value="Hotkeys">
-          <FiCommand size={24} />
+        <Tabs.Tab value="General">
+          <VscSettings size={24} />
         </Tabs.Tab>
         {osType !== "Windows_NT" && (
           <Tabs.Tab value="Scripts">
