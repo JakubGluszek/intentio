@@ -77,7 +77,7 @@
   }
 
   h2 {
-    @apply font-semibold text-lg;
+    @apply font-medium text-lg;
   }
 }
 

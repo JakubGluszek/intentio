@@ -7,7 +7,6 @@ import {
   MdSettings,
   MdTimer,
 } from "react-icons/md";
-import { FiCommand } from "react-icons/fi";
 import { OsType, type } from "@tauri-apps/api/os";
 import {
   SettingsWindowContext,

@@ -2,4 +2,5 @@
 
 export interface BehaviorConfigForUpdate {
   main_minimize_to_tray?: boolean;
+  system_notifications?: boolean;
 }

@@ -5,7 +5,7 @@ import { WebviewWindow } from "@tauri-apps/api/window";
 import { motion } from "framer-motion";
 import { toast } from "react-hot-toast";
 import { clsx } from "@mantine/core";
-import { register } from "@tauri-apps/api/globalShortcut";
+import { sendNotification } from "@tauri-apps/api/notification";
 
 import ipc from "@/ipc";
 import useStore from "@/store";
@@ -54,6 +54,33 @@ const MainWindow: React.FC = () => {
             : script.run_on_break_end) &&
           utils.executeScript(script.body)
       );
+
+      if (!store.behaviorConfig?.system_notifications) return;
+
+      switch (session.type) {
+        case "Focus":
+          sendNotification(
+            `Focus session has completed.\n${store.timerConfig?.auto_start_breaks ? "Starting a break!" : ""
+            }`
+          );
+          break;
+        case "Break":
+          sendNotification(
+            `Break has completed.\n${store.timerConfig?.auto_start_focus
+              ? "Starting a focus session!"
+              : ""
+            }`
+          );
+          break;
+        case "LongBreak":
+          sendNotification(
+            `Long break has completed.\n${store.timerConfig?.auto_start_focus
+              ? "Starting a focus session!"
+              : ""
+            }`
+          );
+          break;
+      }
     },
     onResumed: (session) => {
       store.scripts.forEach(
@@ -80,6 +107,7 @@ const MainWindow: React.FC = () => {
   React.useEffect(() => {
     ipc.getTimerConfig().then((data) => store.setTimerConfig(data));
     ipc.getScripts().then((data) => store.setScripts(data));
+    ipc.getBehaviorConfig().then((data) => store.setBehaviorConfig(data));
   }, []);
 
   useEvents({

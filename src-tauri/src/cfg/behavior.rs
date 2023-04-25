@@ -9,12 +9,14 @@ use ts_rs::TS;
 #[ts(export, export_to = "../src/bindings/")]
 pub struct BehaviorConfig {
     pub main_minimize_to_tray: bool,
+    pub system_notifications: bool,
 }
 
 impl Default for BehaviorConfig {
     fn default() -> Self {
         Self {
             main_minimize_to_tray: false,
+            system_notifications: true,
         }
     }
 }
@@ -24,6 +26,7 @@ impl Default for BehaviorConfig {
 #[ts(export, export_to = "../src/bindings/")]
 pub struct BehaviorConfigForUpdate {
     pub main_minimize_to_tray: Option<bool>,
+    pub system_notifications: Option<bool>,
 }
 
 pub struct BehaviorCfg;
@@ -66,6 +69,9 @@ impl BehaviorCfg {
 
         if let Some(main_minimize_to_tray) = data.main_minimize_to_tray {
             config.main_minimize_to_tray = main_minimize_to_tray;
+        }
+        if let Some(system_notifications) = data.system_notifications {
+            config.system_notifications = system_notifications;
         }
 
         Self::save(&config);
