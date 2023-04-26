@@ -39,9 +39,11 @@ export const useElapsedTime = ({
   const stoppedTimerRef = React.useRef(Date.now());
   const windowActiveRef = React.useRef(windowActive);
   const isPlayingRef = React.useRef(isPlaying);
+  const durationRef = React.useRef(duration);
 
   isPlayingRef.current = isPlaying;
   windowActiveRef.current = windowActive;
+  durationRef.current = duration;
 
   const loop = (time: number) => {
     const timeSec = time / 1000;
@@ -64,9 +66,9 @@ export const useElapsedTime = ({
     const currentDisplayTime = startAtRef.current + currentElapsedTime;
 
     const totalTime = startAtRef.current + currentElapsedTime;
-    const isCompleted = typeof duration === "number" && totalTime >= duration;
+    const isCompleted = typeof durationRef.current === "number" && totalTime >= durationRef.current;
 
-    setElapsedTime(isCompleted ? duration : currentDisplayTime);
+    setElapsedTime(isCompleted ? durationRef.current! : currentDisplayTime);
 
     // repeat animation if not completed
     if (!isCompleted) {
@@ -90,13 +92,6 @@ export const useElapsedTime = ({
     clearInterval(bgInterval);
     setBgInterval(undefined);
   }, [bgInterval]);
-
-  React.useEffect(() => {
-    startedTimerRef.current =
-      stoppedTimerRef.current +
-      startedTimerRef.current -
-      stoppedTimerRef.current;
-  }, [duration]);
 
   const reset = React.useCallback(() => {
     cleanup();
