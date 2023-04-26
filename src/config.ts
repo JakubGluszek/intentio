@@ -39,6 +39,15 @@ const config = {
       maxHeight: 480,
       ...WebviewConfig,
     },
+    analytics: {
+      url: "/analytics",
+      title: "Analytics",
+      width: 420,
+      height: 480,
+      maxWidth: 420,
+      maxHeight: 480,
+      ...WebviewConfig,
+    },
   },
 };
 
