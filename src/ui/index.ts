@@ -7,3 +7,4 @@ export * from "./Checkbox";
 export * from "./Slider";
 export * from "./Tooltip";
 export * from "./ContextMenu";
+export * from "./CircleTimer";

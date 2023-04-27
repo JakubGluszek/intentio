@@ -6,7 +6,7 @@ type ColorURL = `url(#${string})`;
 type ColorRGB = `rgb(${string})`;
 export type ColorFormat = ColorHex | ColorRGB | ColorRGBA | ColorURL;
 
-interface Props {
+export interface CircleTimerProps {
   children: React.ReactNode;
   isPlaying: boolean;
   duration: number;
@@ -17,7 +17,10 @@ interface Props {
   trailColor: ColorFormat;
 }
 
-const CircleTimerBase: React.FC<Props> = ({ children, ...props }) => {
+export const CircleTimer: React.FC<CircleTimerProps> = ({
+  children,
+  ...props
+}) => {
   const { path, pathLength } = getPathProps(
     props.size,
     props.strokeWidth,
@@ -64,14 +67,25 @@ const CircleTimerBase: React.FC<Props> = ({ children, ...props }) => {
           strokeDashoffset={strokeDashoffset}
         />
       </svg>
-      <div style={timeStyle}>{children}</div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          position: "absolute",
+          left: 0,
+          top: 0,
+          width: "100%",
+          height: "100%",
+        }}
+      >
+        {children}
+      </div>
     </div>
   );
 };
 
-CircleTimerBase.displayName = "CircleTimerBase";
-
-export const linearEase = (
+const linearEase = (
   time: number,
   start: number,
   goal: number,
@@ -95,7 +109,7 @@ const getRGB = (color: string) =>
     .match(/.{2}/g)
     ?.map((x) => parseInt(x, 16)) ?? [];
 
-export const getStroke = (
+const getStroke = (
   color: ColorFormat,
   duration: number,
   elapsedTime: number
@@ -122,7 +136,7 @@ export const getStroke = (
     .join(",")})`;
 };
 
-export const getPathProps = (
+const getPathProps = (
   size: number,
   strokeWidth: number,
   rotation: "clockwise" | "counterclockwise"
@@ -138,55 +152,3 @@ export const getPathProps = (
 
   return { path, pathLength };
 };
-
-export const getStartAt = (duration: number, initialRemainingTime?: number) => {
-  if (duration === 0 || duration === initialRemainingTime) {
-    return 0;
-  }
-
-  return typeof initialRemainingTime === "number"
-    ? duration - initialRemainingTime
-    : 0;
-};
-
-export const getWrapperStyle = (size: number): React.CSSProperties => ({
-  position: "relative",
-  width: size,
-  height: size,
-});
-
-export const timeStyle: React.CSSProperties = {
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  position: "absolute",
-  left: 0,
-  top: 0,
-  width: "100%",
-  height: "100%",
-};
-
-export const getIsColorBetweenColors = (
-  color: ColorRGB,
-  start: ColorRGB,
-  end: ColorRGB
-) => {
-  const getIsInRange = (x: number, min: number, max: number) =>
-    (x - min) * (x - max) <= 0;
-
-  const getRGB = (color: ColorRGB): number[] =>
-    color
-      .match(/(\d+),(\d+),(\d+)/)!
-      .splice(1, 4)
-      .map((c: string) => parseInt(c, 10));
-
-  const colorRGB = getRGB(color);
-  const startRGB = getRGB(start);
-  const endRGB = getRGB(end);
-
-  return colorRGB.every((c, index) =>
-    getIsInRange(c, startRGB[index], endRGB[index])
-  );
-};
-
-export default CircleTimerBase;

@@ -23,7 +23,7 @@ export const executeScript = async (content: string) => {
   return output;
 };
 
-export const formatTimeTimer = (sec: number): string => {
+export const formatTimer = (sec: number): string => {
   const seconds = sec % 60;
   const minutes = ((sec - seconds) / 60).toFixed();
   return `

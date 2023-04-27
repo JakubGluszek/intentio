@@ -3,151 +3,16 @@ import { MdRemove, MdClose, MdSettings } from "react-icons/md";
 import { TbLayoutSidebarRightCollapse } from "react-icons/tb";
 import { WebviewWindow } from "@tauri-apps/api/window";
 import { motion } from "framer-motion";
-import { toast } from "react-hot-toast";
-import { clsx } from "@mantine/core";
-import { sendNotification } from "@tauri-apps/api/notification";
 
 import ipc from "@/ipc";
-import useStore from "@/store";
 import config from "@/config";
 import { WindowContainer } from "@/components";
 import { MainWindowContext, MainWindowProvider } from "@/contexts";
-import TimerView from "./TimerView";
-import Sidebar from "./sidebar";
-import { useEvents, useTimer } from "@/hooks";
-import utils from "@/utils";
 import { Button, Pane } from "@/ui";
+import Sidebar from "./sidebar";
+import Timer from "./timer";
 
 const MainWindow: React.FC = () => {
-  const store = useStore();
-
-  const timer = useTimer(store.timerConfig, {
-    onStateUpdate: (state) =>
-      ipc.updateTimerState({
-        session_type: state.type,
-        is_playing: state.isPlaying,
-      }),
-    onSaveSession: (session) => {
-      if (
-        session.type === "Focus" &&
-        session.elapsedTime &&
-        session.elapsedTime >= 60 &&
-        session.startedAt
-      ) {
-        ipc
-          .createSession({
-            duration: ~~(session.elapsedTime! / 60),
-            started_at: session.startedAt,
-            intent_id: store.currentIntent?.id!,
-          })
-          .then(() => toast("Session saved"));
-      }
-    },
-    onCompleted: (session) => {
-      ipc.playAudio();
-
-      store.scripts.forEach(
-        (script) =>
-          script.active &&
-          (session.type === "Focus"
-            ? script.run_on_session_end
-            : script.run_on_break_end) &&
-          utils.executeScript(script.body)
-      );
-
-      if (!store.behaviorConfig?.system_notifications) return;
-
-      switch (session.type) {
-        case "Focus":
-          sendNotification(
-            `Focus session has completed.\n${store.timerConfig?.auto_start_breaks ? "Starting a break!" : ""
-            }`
-          );
-          break;
-        case "Break":
-          sendNotification(
-            `Break has completed.\n${store.timerConfig?.auto_start_focus
-              ? "Starting a focus session!"
-              : ""
-            }`
-          );
-          break;
-        case "LongBreak":
-          sendNotification(
-            `Long break has completed.\n${store.timerConfig?.auto_start_focus
-              ? "Starting a focus session!"
-              : ""
-            }`
-          );
-          break;
-      }
-    },
-    onResumed: (session) => {
-      store.scripts.forEach(
-        (script) =>
-          script.active &&
-          (session.type === "Focus"
-            ? script.run_on_session_start
-            : script.run_on_break_start) &&
-          utils.executeScript(script.body)
-      );
-
-      if (!store.behaviorConfig?.system_notifications) return;
-      if (document.hasFocus()) return;
-
-      switch (session.type) {
-        case "Focus":
-          sendNotification("Focus session has been resumed.");
-          break;
-        case "Break":
-          sendNotification("Break has been resumed.");
-          break;
-        case "LongBreak":
-          sendNotification("Long break has been resumed.");
-          break;
-      }
-    },
-    onPaused: (session) => {
-      store.scripts.forEach(
-        (script) =>
-          script.active &&
-          (session.type === "Focus"
-            ? script.run_on_session_pause
-            : script.run_on_break_pause) &&
-          utils.executeScript(script.body)
-      );
-
-      if (!store.behaviorConfig?.system_notifications) return;
-      if (document.hasFocus()) return;
-
-      switch (session.type) {
-        case "Focus":
-          sendNotification("Focus session has been paused.");
-          break;
-        case "Break":
-          sendNotification("Break has been paused.");
-          break;
-        case "LongBreak":
-          sendNotification("Long break has been paused.");
-          break;
-      }
-    },
-  });
-
-  React.useEffect(() => {
-    ipc.getTimerConfig().then((data) => store.setTimerConfig(data));
-    ipc.getScripts().then((data) => store.setScripts(data));
-    ipc.getBehaviorConfig().then((data) => store.setBehaviorConfig(data));
-  }, []);
-
-  useEvents({
-    script_updated: (data) => store.patchScript(data.id, data),
-    timer_play: () => (timer.isPlaying ? timer.pause() : timer.resume()),
-    timer_skip: () => timer.skip(),
-  });
-
-  if (!store.timerConfig) return null;
-
   return (
     <MainWindowProvider>
       <WindowContainer>
@@ -157,10 +22,10 @@ const MainWindow: React.FC = () => {
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
         >
-          <Titlebar timerIsPlaying={timer.isPlaying} />
+          <Titlebar />
           <div className="grow flex flex-row">
             <Sidebar />
-            <TimerView data={timer} />
+            <Timer />
           </div>
         </motion.div>
       </WindowContainer>
@@ -168,13 +33,8 @@ const MainWindow: React.FC = () => {
   );
 };
 
-interface TitlebarProps {
-  timerIsPlaying: boolean;
-}
-
-const Titlebar: React.FC<TitlebarProps> = (props) => {
-  const { display, isCompact, toggleDisplay } =
-    React.useContext(MainWindowContext)!;
+const Titlebar: React.FC = () => {
+  const { display, toggleDisplay } = React.useContext(MainWindowContext)!;
 
   return (
     <Pane
@@ -184,30 +44,23 @@ const Titlebar: React.FC<TitlebarProps> = (props) => {
       <div className="flex flex-row">
         <Button variant="ghost" onClick={toggleDisplay}>
           <motion.div animate={{ rotateZ: display === "sidebar" ? 180 : 0 }}>
-            <TbLayoutSidebarRightCollapse size={isCompact ? 20 : 28} />
+            <TbLayoutSidebarRightCollapse size={28} />
           </motion.div>
         </Button>
         <Button
           variant="ghost"
           onClick={() => new WebviewWindow("settings", config.windows.settings)}
         >
-          <MdSettings size={isCompact ? 20 : 28} />
+          <MdSettings size={28} />
         </Button>
       </div>
-      <h2
-        className={clsx(
-          "font-bold",
-          props.timerIsPlaying ? "text-primary" : "text-text"
-        )}
-      >
-        Intentio
-      </h2>
+      <h2 className="font-bold">Intentio</h2>
       <div className="flex flex-row">
         <Button variant="ghost" onClick={() => ipc.hideMainWindow()}>
-          <MdRemove size={isCompact ? 20 : 28} />
+          <MdRemove size={28} />
         </Button>
         <Button variant="ghost" onClick={() => ipc.exitMainWindow()}>
-          <MdClose size={isCompact ? 20 : 28} />
+          <MdClose size={28} />
         </Button>
       </div>
     </Pane>

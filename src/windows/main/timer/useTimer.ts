@@ -12,11 +12,11 @@ export interface TimerCallbacks {
   onSkipped?: (session: { type: SessionType }) => void;
   onRestarted?: () => void;
   onCompleted?: (session: { type: SessionType }) => void;
-  onSaveSession: (session: Partial<TimerSession>) => void;
+  onSaveSession?: (session: Partial<TimerSession>) => void;
   onStateUpdate?: (state: Partial<TimerSession>) => void;
 }
 
-export interface Timer extends TimerSession {
+export interface useTimerReturnValues extends TimerSession {
   resume: () => void;
   pause: () => void;
   restart: () => void;
@@ -35,7 +35,7 @@ export const useTimer = (
     auto_start_breaks: true,
   },
   callbacks: TimerCallbacks
-): Timer => {
+): useTimerReturnValues => {
   const [sessionType, setSessionType] = React.useState<SessionType>("Focus");
   const [isPlaying, setIsPlaying] = React.useState(false);
   const [duration, setDuration] = React.useState(config.focus_duration * 60);
@@ -135,7 +135,7 @@ export const useTimer = (
       startedAt,
       type: sessionType,
     };
-    callbacks.onSaveSession(session);
+    callbacks.onSaveSession?.(session);
   }, [elapsedTime, startedAt, sessionType]);
 
   React.useEffect(() => {
