@@ -53,6 +53,14 @@ const IntentsView: React.FC = () => {
           variant="ghost"
           onClick={() => new WebviewWindow("intents", config.windows.intents)}
         >
+          old
+        </Button>
+        <Button
+          variant="ghost"
+          onClick={() =>
+            new WebviewWindow("analytics", config.windows.analytics)
+          }
+        >
           <MdAnalytics size={24} />
         </Button>
       </div>

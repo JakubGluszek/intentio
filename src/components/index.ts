@@ -12,3 +12,4 @@ export * from "./CheckboxCard";
 export * from "./SliderCard";
 export * from "./timers";
 export * from "./timeline";
+export * from "./Calendar";
