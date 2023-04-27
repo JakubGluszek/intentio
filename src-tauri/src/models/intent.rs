@@ -23,7 +23,6 @@ pub struct Intent {
     id: String,
     label: String,
     pinned: bool,
-    tags: Vec<String>,
     created_at: String,
     archived_at: Option<String>,
 }
@@ -35,11 +34,6 @@ impl TryFrom<Object> for Intent {
             id: val.x_take_val("id")?,
             label: val.x_take_val("label")?,
             pinned: val.x_take_val("pinned")?,
-            tags: val
-                .x_take_val::<Array>("tags")?
-                .into_iter()
-                .map(|v| W(v).try_into())
-                .collect::<Result<Vec<_>>>()?,
             created_at: val.x_take_val("created_at")?,
             archived_at: val.x_take("archived_at")?,
         };
@@ -57,14 +51,11 @@ pub struct IntentForCreate {
 impl From<IntentForCreate> for Value {
     fn from(val: IntentForCreate) -> Value {
         let now = Datetime::default().timestamp_millis().to_string();
-        let tags: Vec<String> = vec![];
-        let tags = tags.into_iter().map(Value::from).collect::<Vec<Value>>();
 
         let data: BTreeMap<_, Value> = map![
             "label".into() => val.label.into(),
             "created_at".into() => now.into(),
             "pinned".into() => false.into(),
-            "tags".into() => tags.into(),
         ];
 
         Value::Object(data.into())
@@ -78,7 +69,6 @@ impl Creatable for IntentForCreate {}
 pub struct IntentForUpdate {
     label: Option<String>,
     pinned: Option<bool>,
-    tags: Option<Vec<String>>,
 }
 
 impl From<IntentForUpdate> for Value {
@@ -89,11 +79,6 @@ impl From<IntentForUpdate> for Value {
         }
         if let Some(pinned) = val.pinned {
             data.insert("pinned".into(), pinned.into());
-        }
-        if let Some(tags) = val.tags {
-            let tags = tags.into_iter().map(Value::from).collect::<Vec<Value>>();
-
-            data.insert("tags".into(), tags.into());
         }
 
         Value::Object(data.into())

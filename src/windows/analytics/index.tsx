@@ -34,9 +34,7 @@ const AnalyticsWindow: React.FC = () => {
             <IntentsList
               data={store.intents}
               selectedIntentId={selectedIntent?.id}
-              selectedTags={[]}
               onSelected={(intent) => setSelectedIntent(intent)}
-              onTagSelected={() => null}
             />
           </Pane>
           <Pane className="grow flex flex-col">

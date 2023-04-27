@@ -3,5 +3,4 @@
 export interface IntentForUpdate {
   label: string | null;
   pinned: boolean | null;
-  tags: Array<string> | null;
 }

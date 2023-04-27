@@ -4,7 +4,6 @@ export interface Intent {
   id: string;
   label: string;
   pinned: boolean;
-  tags: Array<string>;
   created_at: string;
   archived_at: string | null;
 }

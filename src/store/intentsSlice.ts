@@ -10,7 +10,6 @@ export interface IntentsSlice {
   patchIntent: (id: string, data: Intent) => void;
   removeIntent: (id: string) => void;
   getIntentById: (id?: string | null) => Intent | undefined;
-  getAllTags: () => string[];
   setCurrentIntent: (data: Intent | undefined) => void;
 }
 
@@ -38,16 +37,6 @@ export const createIntentsSlice: StateCreator<
     set((state) => ({ intents: state.intents.filter((i) => i.id !== id) })),
 
   getIntentById: (id) => get().intents.find((intent) => intent.id === id),
-
-  getAllTags: () => {
-    let allTags: string[] = [];
-
-    get().intents.forEach((intent) => {
-      allTags = allTags.concat(intent.tags);
-    });
-
-    return allTags;
-  },
 
   setCurrentIntent: (currentIntent) =>
     set((state) => ({ ...state, currentIntent })),

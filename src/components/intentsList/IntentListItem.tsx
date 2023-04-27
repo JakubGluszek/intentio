@@ -1,22 +1,17 @@
 import React from "react";
 import { TiPin, TiPinOutline } from "react-icons/ti";
 import { BiArchive, BiTargetLock } from "react-icons/bi";
-import { TbTags } from "react-icons/tb";
 import { toast } from "react-hot-toast";
 import { clsx } from "@mantine/core";
 
 import ipc from "@/ipc";
 import { useContextMenu } from "@/hooks";
 import { Intent } from "@/bindings/Intent";
-import TagButton from "../TagButton";
-import { TagsModal } from "./TagsModal";
 import { Button, Card, ContextMenu } from "@/ui";
 
 interface Props {
   data: Intent;
   selected: boolean;
-  selectedTags: string[];
-  onTagSelect: (tag: string) => void;
   onSelected: (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>,
     data: Intent
@@ -26,7 +21,6 @@ interface Props {
 const IntentListItem: React.FC<Props> = (props) => {
   const { data } = props;
 
-  const [viewTagsModal, setViewTagsModal] = React.useState(false);
   const [menu, onContextMenuHandler] = useContextMenu();
 
   const container = React.useRef<HTMLDivElement | null>(null);
@@ -36,11 +30,6 @@ const IntentListItem: React.FC<Props> = (props) => {
       container.current &&
       container.current.scrollIntoView({ block: "center" });
   }, []);
-
-  // sorts tags alphabeticaly
-  let sortedTags = props.data.tags.sort((a, b) =>
-    a.toLowerCase().localeCompare(b.toLowerCase())
-  );
 
   return (
     <React.Fragment>
@@ -69,23 +58,6 @@ const IntentListItem: React.FC<Props> = (props) => {
             ) : null}
           </div>
         </div>
-
-        {/* Tags */}
-        {sortedTags.length > 0 ? (
-          <div className="p-1 rounded shadow-inner shadow-black/20 bg-window">
-            <div className="flex flex-row gap-1 overflow-x-auto rounded-sm">
-              {sortedTags.map((tag, i) => (
-                <TagButton
-                  key={i}
-                  isSelected={props.selectedTags.includes(tag)}
-                  onClick={() => props.onTagSelect(tag)}
-                >
-                  <div className="px-1 py-0.5">{tag}</div>
-                </TagButton>
-              ))}
-            </div>
-          </div>
-        ) : null}
       </Card>
 
       <ContextMenu {...menu}>
@@ -110,26 +82,7 @@ const IntentListItem: React.FC<Props> = (props) => {
           </div>
           <div className="w-full">{props.data.pinned ? "Unpin" : "Pin"}</div>
         </Button>
-        <Button
-          variant="base"
-          className="w-full"
-          onClick={() => {
-            setViewTagsModal(true);
-            menu.hide();
-          }}
-        >
-          <div className="w-fit">
-            <TbTags size={20} />
-          </div>
-          <div className="w-full">Tags</div>
-        </Button>
       </ContextMenu>
-
-      <TagsModal
-        display={viewTagsModal}
-        data={props.data}
-        hide={() => setViewTagsModal(false)}
-      />
     </React.Fragment>
   );
 };

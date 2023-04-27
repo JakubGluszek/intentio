@@ -12,9 +12,6 @@ import { Intent } from "@/bindings/Intent";
 import CreateIntent from "./CreateIntent";
 
 const IntentsView: React.FC = () => {
-  const [selectedIntentTags, setSelectedIntentTags] = React.useState<string[]>(
-    []
-  );
   const store = useStore();
 
   const onIntentChange = async (data: Intent | undefined) => {
@@ -51,12 +48,6 @@ const IntentsView: React.FC = () => {
         <CreateIntent />
         <Button
           variant="ghost"
-          onClick={() => new WebviewWindow("intents", config.windows.intents)}
-        >
-          old
-        </Button>
-        <Button
-          variant="ghost"
           onClick={() =>
             new WebviewWindow("analytics", config.windows.analytics)
           }
@@ -68,9 +59,7 @@ const IntentsView: React.FC = () => {
       <IntentsList
         data={store.intents.filter((intent) => !intent.archived_at)}
         selectedIntentId={store.currentIntent?.id}
-        selectedTags={selectedIntentTags}
         onSelected={onIntentChange}
-        onTagSelected={(data) => setSelectedIntentTags(data)}
       />
     </Pane>
   );
