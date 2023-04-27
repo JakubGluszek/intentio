@@ -6,41 +6,28 @@ import { clsx } from "@mantine/core";
 
 import ipc from "@/ipc";
 import { useContextMenu } from "@/hooks";
-import { Intent } from "@/bindings/Intent";
 import { Button, Card, ContextMenu } from "@/ui";
+import { Intent } from "@/bindings/Intent";
 
-interface Props {
+export interface IntentViewProps {
   data: Intent;
-  selected: boolean;
-  onSelected: (
-    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
-    data: Intent
-  ) => void;
+  active?: boolean;
+  onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 }
 
-const IntentListItem: React.FC<Props> = (props) => {
+export const IntentView: React.FC<IntentViewProps> = (props) => {
   const { data } = props;
 
   const [menu, onContextMenuHandler] = useContextMenu();
 
-  const container = React.useRef<HTMLDivElement | null>(null);
-
-  React.useEffect(() => {
-    props.selected &&
-      container.current &&
-      container.current.scrollIntoView({ block: "center" });
-  }, []);
-
   return (
     <React.Fragment>
       <Card
-        onClick={(e) => props.onSelected(e, data)}
+        onClick={(e) => props.onClick?.(e)}
         onContextMenu={onContextMenuHandler}
-        ref={container}
-        active={props.selected}
+        active={props.active}
         data-tauri-disable-drag
       >
-        {/* Label */}
         <div className="w-full flex flex-row items-center gap-1">
           <BiTargetLock size={20} className="min-w-[20px]" />
           <div className="w-full text-left whitespace-nowrap overflow-ellipsis overflow-hidden font-black">
@@ -49,7 +36,7 @@ const IntentListItem: React.FC<Props> = (props) => {
           <div
             className={clsx(
               "flex flex-row items-center gap-1",
-              props.selected ? "text-primary/80" : "text-text/80"
+              props.active ? "text-primary/80" : "text-text/80"
             )}
           >
             {data.pinned ? <TiPin size={24} className="min-w-[24px]" /> : null}
@@ -86,5 +73,3 @@ const IntentListItem: React.FC<Props> = (props) => {
     </React.Fragment>
   );
 };
-
-export default IntentListItem;

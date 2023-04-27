@@ -4,19 +4,14 @@ import { WebviewWindow } from "@tauri-apps/api/window";
 
 import useStore from "@/store";
 import ipc from "@/ipc";
-import { IntentsList } from "@/components";
+import { IntentList } from "@/components";
 import { Button, Pane } from "@/ui";
 import config from "@/config";
 import { useEvents } from "@/hooks";
-import { Intent } from "@/bindings/Intent";
 import CreateIntent from "./CreateIntent";
 
 const IntentsView: React.FC = () => {
   const store = useStore();
-
-  const onIntentChange = async (data: Intent | undefined) => {
-    store.setCurrentIntent(data);
-  };
 
   useEvents({
     intent_created: (data) => store.addIntent(data),
@@ -56,10 +51,10 @@ const IntentsView: React.FC = () => {
         </Button>
       </div>
 
-      <IntentsList
+      <IntentList
         data={store.intents.filter((intent) => !intent.archived_at)}
-        selectedIntentId={store.currentIntent?.id}
-        onSelected={onIntentChange}
+        selectedIntent={store.currentIntent}
+        onIntentSelected={(data) => store.setCurrentIntent(data)}
       />
     </Pane>
   );

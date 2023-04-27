@@ -64,9 +64,9 @@ export const ContextMenu: React.FC<ContextMenuProps> = (props) => {
             left: position.left,
             top: position.top,
           }}
-          transition={{ duration: 0.1 }}
-          initial={{ opacity: 0, scale: 0.8, translateY: 16 }}
-          animate={{ opacity: 1, scale: 1, translateY: 0 }}
+          transition={{ duration: 0.15 }}
+          initial={{ opacity: 0, translateX: 16 }}
+          animate={{ opacity: 1, translateX: 0 }}
           exit={{ opacity: 0, scale: 0, translateY: 16 }}
           {...restProps}
         >

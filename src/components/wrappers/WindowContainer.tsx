@@ -1,17 +1,20 @@
 import React from "react";
+import { Toaster } from "react-hot-toast";
 
-import { useEvents } from "@/hooks";
+import { useDragWindow, useEvents, usePreventContextMenu } from "@/hooks";
 import ipc from "@/ipc";
 import useStore from "@/store";
 import utils from "@/utils";
-import Layout from "./Layout";
 
-interface Props {
+export interface WindowContainerProps {
   children: React.ReactNode;
 }
 
-const WindowContainer: React.FC<Props> = (props) => {
+export const WindowContainer: React.FC<WindowContainerProps> = (props) => {
   const store = useStore();
+
+  useDragWindow();
+  usePreventContextMenu();
 
   useEvents({
     preview_theme: (data) => {
@@ -50,7 +53,29 @@ const WindowContainer: React.FC<Props> = (props) => {
     });
   }, []);
 
-  return <Layout>{props.children}</Layout>;
-};
+  if (!store.currentTheme) return null;
 
-export default WindowContainer;
+  return (
+    <div className="w-screen h-screen flex flex-col">
+      {props.children}
+      <Toaster
+        position="top-center"
+        containerStyle={{ top: 8, zIndex: 999999999 }}
+        toastOptions={{
+          duration: 1400,
+          style: {
+            padding: 1,
+            paddingInline: 2,
+            backgroundColor: "rgb(var(--window-color))",
+            borderWidth: 2,
+            borderColor: "rgb(var(--primary-color))",
+            borderRadius: 2,
+            fontSize: "0.9rem",
+            color: "rgb(var(--primary-color))",
+            textAlign: "center",
+          },
+        }}
+      />
+    </div>
+  );
+};

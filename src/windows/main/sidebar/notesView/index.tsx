@@ -1,13 +1,11 @@
 import React from "react";
 import { MdAddCircle, MdDelete, MdSearch } from "react-icons/md";
 import { toast } from "react-hot-toast";
-import { motion } from "framer-motion";
 
 import useStore from "@/store";
 import ipc from "@/ipc";
 import { useConfirmDelete, useEvents } from "@/hooks";
 import { Note } from "@/bindings/Note";
-import motions from "@/motions";
 import CreateNote from "./CreateNote";
 import FilterNotes from "./FilterNotes";
 import NoteView from "./NoteView";
@@ -140,12 +138,9 @@ const NotesList: React.FC<NotesListProps> = (props) => {
 
   if (notes.length === 0)
     return (
-      <motion.div
-        className="grow flex flex-col items-center justify-center text-center text-sm text-text/60 gap-2 p-1.5"
-        {...motions.scaleIn}
-      >
+      <div className="grow flex flex-col items-center justify-center text-center text-sm text-text/60 gap-2 p-1.5">
         {emptyFiller}
-      </motion.div>
+      </div>
     );
 
   return (
