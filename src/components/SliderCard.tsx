@@ -15,7 +15,7 @@ export interface SliderCardProps {
 export const SliderCard: React.FC<SliderCardProps> = (props) => {
   const content =
     props.type === "duration"
-      ? utils.formatTimeTimer(props.digit * 60)
+      ? utils.formatTimer(props.digit * 60)
       : props.digit;
 
   return (
