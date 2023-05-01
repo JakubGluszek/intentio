@@ -92,6 +92,8 @@ async fn setup_state(app: &mut App) {
 }
 
 fn build_main_window(handle: &AppHandle) {
+    let cfg = BehaviorCfg::get();
+
     tauri::WindowBuilder::new(handle, "main", tauri::WindowUrl::App("/".into()))
         .title("Intentio")
         .inner_size(300f64, 320f64)
@@ -100,7 +102,7 @@ fn build_main_window(handle: &AppHandle) {
         .fullscreen(false)
         .resizable(false)
         .decorations(false)
-        .always_on_top(true)
+        .always_on_top(cfg.main_always_on_top)
         .center()
         .transparent(true)
         .build()

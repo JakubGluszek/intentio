@@ -10,6 +10,7 @@ use ts_rs::TS;
 pub struct BehaviorConfig {
     pub main_minimize_to_tray: bool,
     pub system_notifications: bool,
+    pub main_always_on_top: bool,
 }
 
 impl Default for BehaviorConfig {
@@ -17,6 +18,7 @@ impl Default for BehaviorConfig {
         Self {
             main_minimize_to_tray: false,
             system_notifications: true,
+            main_always_on_top: false,
         }
     }
 }
@@ -27,6 +29,7 @@ impl Default for BehaviorConfig {
 pub struct BehaviorConfigForUpdate {
     pub main_minimize_to_tray: Option<bool>,
     pub system_notifications: Option<bool>,
+    pub main_always_on_top: Option<bool>,
 }
 
 pub struct BehaviorCfg;
@@ -72,6 +75,9 @@ impl BehaviorCfg {
         }
         if let Some(system_notifications) = data.system_notifications {
             config.system_notifications = system_notifications;
+        }
+        if let Some(main_always_on_top) = data.main_always_on_top {
+            config.main_always_on_top = main_always_on_top;
         }
 
         Self::save(&config);

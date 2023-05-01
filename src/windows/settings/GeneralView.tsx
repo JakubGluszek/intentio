@@ -1,5 +1,6 @@
 import React from "react";
 import { enable, isEnabled, disable } from "tauri-plugin-autostart-api";
+import { toast } from "react-hot-toast";
 
 import { Card, Pane } from "@/ui";
 import { CheckboxCard } from "@/components";
@@ -49,6 +50,17 @@ const GeneralView: React.FC = () => {
           </div>
           <div className="flex flex-col gap-1">
             <h2>Main window</h2>
+            <CheckboxCard
+              label="Always on top"
+              value={store.behaviorConfig.main_always_on_top}
+              onChange={(main_always_on_top) =>
+                ipc
+                  .updateBehaviorConfig({ main_always_on_top })
+                  .then(() =>
+                    toast("Restart app to apply change", { duration: 2000 })
+                  )
+              }
+            />
             <CheckboxCard
               label="Minimize to tray"
               value={store.behaviorConfig.main_minimize_to_tray}

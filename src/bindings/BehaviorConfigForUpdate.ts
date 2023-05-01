@@ -3,4 +3,5 @@
 export interface BehaviorConfigForUpdate {
   main_minimize_to_tray?: boolean;
   system_notifications?: boolean;
+  main_always_on_top?: boolean;
 }
