@@ -37,6 +37,7 @@ surrealdb = { version = "1.0.0-beta.8", default-features = false, features = [
 ts-rs = { version = "6", features = ["format", "chrono-impl"] }
 toml = "0.5.9"
 tauri-hotkey = "0.1.2"
+tauri-plugin-autostart = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "dev" }
 
 [features]
 # by default Tauri runs in production mode

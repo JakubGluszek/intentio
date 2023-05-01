@@ -22,6 +22,7 @@ use setup::init_setup;
 use std::sync::Arc;
 use tauri::Manager;
 use tauri::{CustomMenuItem, SystemTray, SystemTrayEvent, SystemTrayMenu, SystemTrayMenuItem};
+use tauri_plugin_autostart::MacosLauncher;
 use tokio::runtime::Builder;
 
 fn main() -> Result<()> {
@@ -103,6 +104,10 @@ fn main() -> Result<()> {
             delete_script
         ])
         .setup(move |app| Ok(runtime.block_on(init_setup(app))))
+        .plugin(tauri_plugin_autostart::init(
+            MacosLauncher::LaunchAgent,
+            Some(vec![]),
+        ))
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
     Ok(())

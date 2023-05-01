@@ -32,7 +32,21 @@ impl Database {
 
         let path = format!("file://{}/intentio.db", path);
 
-        let ds = Datastore::new(&path).await?;
+        let mut ds = None;
+
+        for _ in 0..60 {
+            match Datastore::new(&path).await {
+                Ok(datastore) => {
+                    ds = Some(datastore);
+                    break;
+                }
+                Err(_) => {
+                    tokio::time::sleep(tokio::time::Duration::from_secs(1)).await;
+                }
+            }
+        }
+
+        let ds = ds.expect("Failed to connect to database");
         let ses = Session::for_db("appns", APP_VERSION);
 
         Ok(Self { ds, ses })
