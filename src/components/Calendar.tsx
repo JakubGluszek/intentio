@@ -23,8 +23,8 @@ export const Calendar: React.FC<CalendarProps> = (props) => {
       style={{
         marginLeft: "auto",
         marginRight: "auto",
-        marginTop: 16,
-        marginBottom: 16,
+        marginTop: 8,
+        marginBottom: 8,
       }}
       theme={{
         level0: Color(props.theme.primary_hex).alpha(0.1).string(),

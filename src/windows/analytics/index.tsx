@@ -2,9 +2,10 @@ import React from "react";
 import { MdAnalytics } from "react-icons/md";
 
 import { Calendar, Titlebar, useCalendar, WindowContainer } from "@/components";
-import { Pane } from "@/ui";
+import { Card, Pane } from "@/ui";
 import useStore from "@/store";
 import ipc from "@/ipc";
+import { Statistics } from "./Statistics";
 
 const AnalyticsWindow: React.FC = () => {
   const store = useStore();
@@ -20,7 +21,10 @@ const AnalyticsWindow: React.FC = () => {
         <Titlebar title="Analytics" icon={<MdAnalytics size={24} />} />
 
         <Pane className="grow flex flex-col">
-          <Calendar days={calendar.days} theme={store.currentTheme!} />
+          <Statistics intents={store.intents} sessions={store.sessions} />
+          <Card>
+            <Calendar days={calendar.days} theme={store.currentTheme!} />
+          </Card>
         </Pane>
       </div>
     </WindowContainer>

@@ -42,8 +42,8 @@ const config = {
     analytics: {
       url: "/analytics",
       title: "Analytics",
-      width: 600,
-      height: 380,
+      width: 420,
+      height: 320,
       maxWidth: 600,
       maxHeight: 380,
       ...WebviewConfig,
