@@ -3,12 +3,13 @@ import { TiPin, TiPinOutline } from "react-icons/ti";
 import { BiArchive, BiTargetLock } from "react-icons/bi";
 import { toast } from "react-hot-toast";
 import { clsx } from "@mantine/core";
+import { MdDelete, MdEdit } from "react-icons/md";
+import { HiArchive } from "react-icons/hi";
 
 import ipc from "@/ipc";
 import { useContextMenu } from "@/hooks";
 import { Button, Card, ContextMenu, DangerButton, Tooltip } from "@/ui";
 import { Intent } from "@/bindings/Intent";
-import { MdArchive, MdDelete, MdEdit } from "react-icons/md";
 import { EditIntent } from "./EditIntent";
 import { DeleteIntentModal } from "./DeleteIntentModal";
 
@@ -117,7 +118,7 @@ export const IntentView: React.FC<IntentViewProps> = (props) => {
               menu.hide();
             }}
           >
-            <MdArchive size={20} />
+            <HiArchive size={20} />
           </Button>
         </Tooltip>
         <Tooltip label="Delete">
