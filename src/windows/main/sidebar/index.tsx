@@ -7,7 +7,7 @@ import { clsx } from "@mantine/core";
 
 import useStore from "@/store";
 import { MainWindowContext } from "@/contexts";
-import { Button, Pane } from "@/ui";
+import { Button, Pane, Tooltip } from "@/ui";
 import IntentsView from "./intentsView";
 import TasksView from "./tasksView";
 import NotesView from "./notesView";
@@ -98,11 +98,18 @@ interface TabPaneProps {
 const TabPane: React.FC<TabPaneProps> = (props) => {
   return (
     <Pane
-      className={clsx("h-full hover:border-primary/50", props.active && "border-primary/50 hover:border-primary/60")}
+      className={clsx(
+        "h-full hover:border-primary/50",
+        props.active && "border-primary/50 hover:border-primary/60"
+      )}
       withPadding={false}
     >
       <Button
-        className={clsx("h-full", props.active && "bg-primary/10 hover:bg-primary/20 text-primary/80 hover:text-primary")}
+        className={clsx(
+          "h-full",
+          props.active &&
+          "bg-primary/10 hover:bg-primary/20 text-primary/80 hover:text-primary"
+        )}
         variant="ghost"
         onClick={() => props.onClick()}
       >

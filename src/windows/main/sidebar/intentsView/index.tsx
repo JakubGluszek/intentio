@@ -5,7 +5,7 @@ import { WebviewWindow } from "@tauri-apps/api/window";
 import useStore from "@/store";
 import ipc from "@/ipc";
 import { IntentList } from "@/components";
-import { Button, Pane } from "@/ui";
+import { Button, Pane, Tooltip } from "@/ui";
 import config from "@/config";
 import { useEvents } from "@/hooks";
 import CreateIntent from "./CreateIntent";
@@ -41,14 +41,16 @@ const IntentsView: React.FC = () => {
     <Pane className="grow flex flex-col gap-2">
       <div className="w-full flex flex-row items-center justify-between gap-1">
         <CreateIntent />
-        <Button
-          variant="ghost"
-          onClick={() =>
-            new WebviewWindow("analytics", config.windows.analytics)
-          }
-        >
-          <MdAnalytics size={24} />
-        </Button>
+        <Tooltip label="Open Analytics">
+          <Button
+            variant="ghost"
+            onClick={() =>
+              new WebviewWindow("analytics", config.windows.analytics)
+            }
+          >
+            <MdAnalytics size={24} />
+          </Button>
+        </Tooltip>
       </div>
 
       <IntentList
