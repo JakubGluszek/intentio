@@ -1,5 +1,6 @@
 import React from "react";
 import { MdAnalytics } from "react-icons/md";
+import { RiArchiveDrawerFill, RiArchiveDrawerLine } from "react-icons/ri";
 import { WebviewWindow } from "@tauri-apps/api/window";
 
 import useStore from "@/store";
@@ -11,6 +12,8 @@ import { useEvents } from "@/hooks";
 import CreateIntent from "./CreateIntent";
 
 const IntentsView: React.FC = () => {
+  const [viewArchive, setViewArchive] = React.useState(false);
+
   const store = useStore();
 
   useEvents({
@@ -41,20 +44,35 @@ const IntentsView: React.FC = () => {
     <Pane className="grow flex flex-col gap-2">
       <div className="w-full flex flex-row items-center justify-between gap-1">
         <CreateIntent />
-        <Tooltip label="Open Analytics">
-          <Button
-            variant="ghost"
-            onClick={() =>
-              new WebviewWindow("analytics", config.windows.analytics)
-            }
-          >
-            <MdAnalytics size={24} />
-          </Button>
-        </Tooltip>
+        <div className="flex flex-row">
+          <Tooltip label={viewArchive ? "Hide Archive" : "View Archive"}>
+            <Button
+              variant="ghost"
+              onClick={() => setViewArchive((prev) => !prev)}
+            >
+              {viewArchive ? (
+                <RiArchiveDrawerFill size={22} />
+              ) : (
+                <RiArchiveDrawerLine size={22} />
+              )}
+            </Button>
+          </Tooltip>
+
+          <Tooltip label="Open Analytics">
+            <Button
+              variant="ghost"
+              onClick={() =>
+                new WebviewWindow("analytics", config.windows.analytics)
+              }
+            >
+              <MdAnalytics size={24} />
+            </Button>
+          </Tooltip>
+        </div>
       </div>
 
       <IntentList
-        data={store.intents.filter((intent) => !intent.archived_at)}
+        data={store.intents.filter((intent) => !!intent.archived_at === viewArchive)}
         selectedIntent={store.currentIntent}
         onIntentSelected={(data) => store.setCurrentIntent(data)}
       />

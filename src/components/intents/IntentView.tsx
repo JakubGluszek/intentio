@@ -64,7 +64,7 @@ export const IntentView: React.FC<IntentViewProps> = (props) => {
               <TiPin size={24} className="min-w-[24px]" />
             ) : null}
             {props.data.archived_at ? (
-              <BiArchive size={24} className="min-w-[24px]" />
+              <HiArchive size={24} className="min-w-[24px]" />
             ) : null}
           </div>
         </div>
@@ -111,10 +111,10 @@ export const IntentView: React.FC<IntentViewProps> = (props) => {
               props.data.archived_at
                 ? ipc
                   .unarchiveIntent(props.data.id)
-                  .then(() => toast("Intent removed from the archive"))
+                  .then(() => toast("Intent unarchived"))
                 : ipc
                   .archiveIntent(props.data.id)
-                  .then(() => toast("Intent saved to archive"));
+                  .then(() => toast("Intent archived"));
               menu.hide();
             }}
           >
