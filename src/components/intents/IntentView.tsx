@@ -40,10 +40,11 @@ export const IntentView: React.FC<IntentViewProps> = (props) => {
       <Card
         className={clsx(
           "p-1",
-          menu.display && "border-primary/50 hover:border-primary/50"
+          menu.display &&
+          "bg-primary/10 hover:bg-primary/10 hover:border-primary/60 text-base"
         )}
         onClick={(e) => props.onClick?.(e)}
-        onContextMenu={onContextMenuHandler}
+        onContextMenu={(e) => onContextMenuHandler(e)}
         active={props.active}
         data-tauri-disable-drag
       >
@@ -69,7 +70,7 @@ export const IntentView: React.FC<IntentViewProps> = (props) => {
       </Card>
 
       <ContextMenu
-        className="w-fit h-fit flex flex-row border-primary/50"
+        className="w-fit h-fit flex flex-row border-base/40 hover:border-primary/60"
         {...menu}
       >
         <Tooltip label={props.data.pinned ? "Unpin" : "Pin"}>

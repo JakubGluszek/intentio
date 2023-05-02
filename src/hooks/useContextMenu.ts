@@ -9,12 +9,15 @@ export const useContextMenu = () => {
   const [display, setDisplay] = React.useState(false);
   const [position, setPosition] = React.useState<MenuPosition>();
 
-  const onContextMenuHandler = (
-    e: React.MouseEvent<HTMLElement, MouseEvent>
-  ) => {
-    setPosition({ left: e.pageX, top: e.pageY });
-    show();
-  };
+  const onContextMenuHandler = React.useCallback(
+    (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+      console.log(display);
+      if (display) return;
+      setPosition({ left: e.pageX, top: e.pageY });
+      show();
+    },
+    [display]
+  );
 
   const show = () => setDisplay(true);
   const hide = () => setDisplay(false);
