@@ -6,8 +6,11 @@ import { clsx } from "@mantine/core";
 
 import ipc from "@/ipc";
 import { useContextMenu } from "@/hooks";
-import { Button, Card, ContextMenu } from "@/ui";
+import { Button, Card, ContextMenu, DangerButton, Tooltip } from "@/ui";
 import { Intent } from "@/bindings/Intent";
+import { MdArchive, MdDelete, MdEdit } from "react-icons/md";
+import { EditIntent } from "./EditIntent";
+import { DeleteIntentModal } from "./DeleteIntentModal";
 
 export interface IntentViewProps {
   data: Intent;
@@ -16,13 +19,29 @@ export interface IntentViewProps {
 }
 
 export const IntentView: React.FC<IntentViewProps> = (props) => {
-  const { data } = props;
+  const [viewEdit, setViewEdit] = React.useState(false);
+  const [viewDelete, setViewDelete] = React.useState(false);
 
   const [menu, onContextMenuHandler] = useContextMenu();
+
+  if (viewEdit)
+    return <EditIntent data={props.data} onExit={() => setViewEdit(false)} />;
+
+  if (viewDelete)
+    return (
+      <DeleteIntentModal
+        data={props.data}
+        onExit={() => setViewDelete(false)}
+      />
+    );
 
   return (
     <React.Fragment>
       <Card
+        className={clsx(
+          "p-1",
+          menu.display && "border-primary/50 hover:border-primary/50"
+        )}
         onClick={(e) => props.onClick?.(e)}
         onContextMenu={onContextMenuHandler}
         active={props.active}
@@ -31,7 +50,7 @@ export const IntentView: React.FC<IntentViewProps> = (props) => {
         <div className="w-full flex flex-row items-center gap-1">
           <BiTargetLock size={20} className="min-w-[20px]" />
           <div className="w-full text-left whitespace-nowrap overflow-ellipsis overflow-hidden font-black">
-            {data.label}
+            {props.data.label}
           </div>
           <div
             className={clsx(
@@ -39,36 +58,78 @@ export const IntentView: React.FC<IntentViewProps> = (props) => {
               props.active ? "text-primary/80" : "text-text/80"
             )}
           >
-            {data.pinned ? <TiPin size={24} className="min-w-[24px]" /> : null}
-            {data.archived_at ? (
+            {props.data.pinned ? (
+              <TiPin size={24} className="min-w-[24px]" />
+            ) : null}
+            {props.data.archived_at ? (
               <BiArchive size={24} className="min-w-[24px]" />
             ) : null}
           </div>
         </div>
       </Card>
 
-      <ContextMenu {...menu}>
-        <Button
-          variant="base"
-          className="w-full"
-          onClick={() =>
-            ipc
-              .updateIntent(props.data.id, { pinned: !props.data.pinned })
-              .then((data) => {
-                menu.hide();
-                toast(data.pinned ? "Pinned to top" : "Unpinned");
-              })
-          }
-        >
-          <div className="w-fit">
+      <ContextMenu
+        className="w-fit h-fit flex flex-row border-primary/50"
+        {...menu}
+      >
+        <Tooltip label={props.data.pinned ? "Unpin" : "Pin"}>
+          <Button
+            variant="ghost"
+            onClick={() => {
+              ipc
+                .updateIntent(props.data.id, { pinned: !props.data.pinned })
+                .then((data) => {
+                  toast(data.pinned ? "Pinned to top" : "Unpinned");
+                });
+              menu.hide();
+            }}
+          >
             {props.data.pinned ? (
               <TiPin size={20} />
             ) : (
               <TiPinOutline size={20} />
             )}
-          </div>
-          <div className="w-full">{props.data.pinned ? "Unpin" : "Pin"}</div>
-        </Button>
+          </Button>
+        </Tooltip>
+        <Tooltip label="Edit">
+          <Button
+            variant="ghost"
+            onClick={() => {
+              setViewEdit(true);
+              menu.hide();
+            }}
+          >
+            <MdEdit size={20} />
+          </Button>
+        </Tooltip>
+        <Tooltip label={props.data.archived_at ? "Unarchive" : "Archive"}>
+          <Button
+            variant="ghost"
+            onClick={() => {
+              props.data.archived_at
+                ? ipc
+                  .unarchiveIntent(props.data.id)
+                  .then(() => toast("Intent removed from the archive"))
+                : ipc
+                  .archiveIntent(props.data.id)
+                  .then(() => toast("Intent saved to archive"));
+              menu.hide();
+            }}
+          >
+            <MdArchive size={20} />
+          </Button>
+        </Tooltip>
+        <Tooltip label="Delete">
+          <DangerButton
+            variant="ghost"
+            onClick={() => {
+              setViewDelete(true);
+              menu.hide();
+            }}
+          >
+            <MdDelete size={20} />
+          </DangerButton>
+        </Tooltip>
       </ContextMenu>
     </React.Fragment>
   );

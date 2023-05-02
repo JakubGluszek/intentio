@@ -86,7 +86,6 @@ const TabsView: React.FC<TabsViewProps> = (props) => {
             <Button
               variant="ghost"
               onClick={() => props.setTab("intents")}
-              active={props.tab === "intents"}
               style={{
                 height: "100%",
                 backgroundColor:
@@ -101,7 +100,6 @@ const TabsView: React.FC<TabsViewProps> = (props) => {
           <Pane className="h-full" withPadding={false}>
             <Button
               variant="ghost"
-              active={props.tab === "tasks"}
               onClick={() => props.setTab("tasks")}
               style={{
                 height: "100%",
@@ -117,7 +115,6 @@ const TabsView: React.FC<TabsViewProps> = (props) => {
           <Pane className="h-full" withPadding={false}>
             <Button
               variant="ghost"
-              active={props.tab === "notes"}
               onClick={() => props.setTab("notes")}
               style={{
                 height: "100%",

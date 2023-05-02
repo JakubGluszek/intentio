@@ -18,7 +18,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = (props) => {
     top: props.position?.top ?? -9999,
   });
 
-  const { className: customClassName, ...restProps } = props;
+  const { className: customClassName, display, ...restProps } = props;
 
   const ref = useClickOutside<HTMLDivElement>(() => props.hide());
 
@@ -54,7 +54,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = (props) => {
 
   return (
     <AnimatePresence>
-      {props.display && (
+      {display && (
         <motion.div
           className={className}
           ref={ref}
@@ -65,9 +65,9 @@ export const ContextMenu: React.FC<ContextMenuProps> = (props) => {
             top: position.top,
           }}
           transition={{ duration: 0.15 }}
-          initial={{ opacity: 0, translateX: 16 }}
-          animate={{ opacity: 1, translateX: 0 }}
-          exit={{ opacity: 0, scale: 0, translateY: 16 }}
+          initial={{ opacity: 0, translateX: 16, translateY: 16, scale: 0.8 }}
+          animate={{ opacity: 1, translateX: 0, translateY: 0, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.4, translateY: 16 }}
           {...restProps}
         >
           {props.children}

@@ -6,7 +6,7 @@ export const Tooltip: React.FC<TooltipProps> = (props) => {
   const { children, className: customClassName, style, ...restProps } = props;
 
   let className =
-    "bg-window text-text rounded border-2 shadow-lg shadow-black/60 border-base px-2";
+    "bg-base font-medium text-window rounded-sm shadow-lg shadow-black/60 px-4";
 
   if (customClassName) {
     className = twMerge(className, customClassName);
@@ -14,12 +14,12 @@ export const Tooltip: React.FC<TooltipProps> = (props) => {
 
   return (
     <TooltipMantine
-      openDelay={200}
+      openDelay={100}
       {...restProps}
       classNames={{ tooltip: className }}
       style={{ paddingBottom: 0, ...style }}
     >
-      {children}
+      <div>{children}</div>
     </TooltipMantine>
   );
 };

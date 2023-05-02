@@ -1,4 +1,4 @@
-export * from "./Button";
+export * from "./buttons";
 export * from "./Input";
 export * from "./tabs";
 export * from "./Pane";
