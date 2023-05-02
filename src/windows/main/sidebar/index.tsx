@@ -2,13 +2,15 @@ import React from "react";
 import { BiTargetLock } from "react-icons/bi";
 import { MdCheckBox, MdStickyNote2 } from "react-icons/md";
 import { AnimatePresence, motion } from "framer-motion";
+import { IconType } from "react-icons";
+import { clsx } from "@mantine/core";
 
 import useStore from "@/store";
 import { MainWindowContext } from "@/contexts";
+import { Button, Pane } from "@/ui";
 import IntentsView from "./intentsView";
 import TasksView from "./tasksView";
 import NotesView from "./notesView";
-import { Button, Pane } from "@/ui";
 
 type Tab = "intents" | "notes" | "tasks";
 
@@ -46,11 +48,33 @@ const Sidebar: React.FC = () => {
             translateX: -128,
           }}
         >
-          <TabsView
-            display={store.currentIntent ? true : false}
-            tab={tab}
-            setTab={setTab}
-          />
+          <AnimatePresence>
+            {store.currentIntent && (
+              <motion.div
+                className="h-full flex flex-col gap-0.5 overflow-clip"
+                transition={{ duration: 0.075 }}
+                initial={{ width: 0, opacity: 0 }}
+                animate={{ width: 40, opacity: 1 }}
+                exit={{ width: 0 }}
+              >
+                <TabPane
+                  active={tab === "intents"}
+                  onClick={() => setTab("intents")}
+                  icon={BiTargetLock}
+                />
+                <TabPane
+                  active={tab === "tasks"}
+                  onClick={() => setTab("tasks")}
+                  icon={MdCheckBox}
+                />
+                <TabPane
+                  active={tab === "notes"}
+                  onClick={() => setTab("notes")}
+                  icon={MdStickyNote2}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
           <div
             className="grow flex flex-col"
             style={{ width: store.currentIntent ? 258 : undefined }} // needed to combat odd overflow caused by some children with 'w-full'
@@ -65,71 +89,26 @@ const Sidebar: React.FC = () => {
   );
 };
 
-interface TabsViewProps {
-  display: boolean;
-  tab: Tab;
-  setTab: (tab: Tab) => void;
+interface TabPaneProps {
+  active: boolean;
+  icon: IconType;
+  onClick: () => void;
 }
 
-const TabsView: React.FC<TabsViewProps> = (props) => {
+const TabPane: React.FC<TabPaneProps> = (props) => {
   return (
-    <AnimatePresence>
-      {props.display && (
-        <motion.div
-          className="h-full flex flex-col gap-0.5 overflow-clip"
-          transition={{ duration: 0.075 }}
-          initial={{ width: 0, opacity: 0 }}
-          animate={{ width: 40, opacity: 1 }}
-          exit={{ width: 0 }}
-        >
-          <Pane className="h-full" withPadding={false}>
-            <Button
-              variant="ghost"
-              onClick={() => props.setTab("intents")}
-              style={{
-                height: "100%",
-                backgroundColor:
-                  props.tab === "intents"
-                    ? "rgb(var(--primary-color) / 0.2)"
-                    : undefined,
-              }}
-            >
-              <BiTargetLock size={28} />
-            </Button>
-          </Pane>
-          <Pane className="h-full" withPadding={false}>
-            <Button
-              variant="ghost"
-              onClick={() => props.setTab("tasks")}
-              style={{
-                height: "100%",
-                backgroundColor:
-                  props.tab === "tasks"
-                    ? "rgb(var(--primary-color) / 0.2)"
-                    : undefined,
-              }}
-            >
-              <MdCheckBox size={28} />
-            </Button>
-          </Pane>
-          <Pane className="h-full" withPadding={false}>
-            <Button
-              variant="ghost"
-              onClick={() => props.setTab("notes")}
-              style={{
-                height: "100%",
-                backgroundColor:
-                  props.tab === "notes"
-                    ? "rgb(var(--primary-color) / 0.2)"
-                    : undefined,
-              }}
-            >
-              <MdStickyNote2 size={28} />
-            </Button>
-          </Pane>
-        </motion.div>
-      )}
-    </AnimatePresence>
+    <Pane
+      className={clsx("h-full hover:border-primary/50", props.active && "border-primary/50 hover:border-primary/60")}
+      withPadding={false}
+    >
+      <Button
+        className={clsx("h-full", props.active && "bg-primary/10 hover:bg-primary/20 text-primary/80 hover:text-primary")}
+        variant="ghost"
+        onClick={() => props.onClick()}
+      >
+        <props.icon size={28} />
+      </Button>
+    </Pane>
   );
 };
 
