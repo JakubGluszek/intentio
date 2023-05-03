@@ -18,6 +18,9 @@ module.exports = {
       fontFamily: {
         quicksand: ["Quicksand"],
       },
+      transitionProperty: {
+        lol: "left, right",
+      },
     },
   },
   plugins: [require("tailwindcss-animate")],

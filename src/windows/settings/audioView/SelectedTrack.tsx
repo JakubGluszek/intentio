@@ -28,6 +28,7 @@ const SelectedTrack: React.FC<Props> = (props) => {
         <Button
           onClick={() => props.onTrackPreview(props.name)}
           variant="ghost"
+          config={{ ghost: { highlight: false } }}
         >
           <MdPlayCircle size={24} />
         </Button>

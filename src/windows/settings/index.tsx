@@ -33,6 +33,7 @@ const SettingsWindow: React.FC = () => {
 
   useEvents({
     interface_config_updated: (data) => store.setInterfaceConfig(data),
+    behavior_config_updated: (data) => store.setBehaviorConfig(data),
     theme_deleted: (data) => store.removeTheme(data.id),
   });
 
@@ -82,7 +83,7 @@ const Navbar: React.FC = () => {
   }, []);
 
   return (
-    <Pane withPadding={false}>
+    <Pane>
       <Tabs value={panel} onChange={(value) => setPanel(value)}>
         <Tabs.Tab value="Timer">
           <MdTimer size={24} />

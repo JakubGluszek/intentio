@@ -5,6 +5,5 @@ export { default as IntentioLogo } from "./IntentioLogo";
 export { default as ColorInput } from "./ColorInput";
 export * from "./wrappers";
 export * from "./intents";
-export * from "./CheckboxCard";
 export * from "./SliderCard";
 export * from "./Calendar";

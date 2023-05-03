@@ -153,9 +153,9 @@ impl ThemeBmc {
                     name: 'space',
                     default: true,
                     favorite: false,
-                    window_hex: '#161853',
-                    base_hex: '#f7a1b8',
-                    primary_hex: '#EC255A',
+                    window_hex: '#120A2B',
+                    base_hex: '#78A2B3',
+                    primary_hex: '#01A8B5',
                     text_hex: '#FAEDF0',
                 };
                 CREATE theme:blaze CONTENT {

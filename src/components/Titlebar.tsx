@@ -10,13 +10,10 @@ interface Props {
 
 const Titlebar: React.FC<Props> = (props) => {
   return (
-    <Pane
-      className="flex flex-row items-center justify-between"
-      withPadding={false}
-    >
-      <div className="flex flex-row items-center gap-1 p-1 text-text/80">
+    <Pane className="flex flex-row items-center justify-between">
+      <div className="flex flex-row items-center gap-1 text-text">
         {props.icon}
-        <span className="text-xl">{props.title}</span>
+        <span className="text-xl font-semibold">{props.title}</span>
       </div>
       <Button variant="ghost" onClick={() => appWindow.close()}>
         <MdClose size={28} />

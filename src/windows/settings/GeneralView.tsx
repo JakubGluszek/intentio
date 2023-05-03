@@ -1,9 +1,9 @@
 import React from "react";
 import { enable, isEnabled, disable } from "tauri-plugin-autostart-api";
 import { toast } from "react-hot-toast";
+import { motion } from "framer-motion";
 
-import { Card, Pane } from "@/ui";
-import { CheckboxCard } from "@/components";
+import { Card, CheckBox, Pane, Section } from "@/ui";
 import ipc from "@/ipc";
 import useStore from "@/store";
 
@@ -25,79 +25,80 @@ const GeneralView: React.FC = () => {
   return (
     <Pane className="grow flex flex-col overflow-y-auto">
       <div className="max-h-0 overflow-y">
-        <div className="flex flex-col gap-2 pb-1.5">
-          <div className="flex flex-col gap-1">
-            <h2>App</h2>
-            <CheckboxCard
-              label="Auto run on start-up"
-              value={isAutoStart}
-              onChange={(autoStart) =>
-                autoStart
-                  ? enable().then(() => setIsAutoStart(true))
-                  : disable().then(() => setIsAutoStart(false))
-              }
-            />
-          </div>
-          <div className="flex flex-col gap-1">
-            <h2>Alerts</h2>
-            <CheckboxCard
-              label="System notifications"
-              value={store.behaviorConfig.system_notifications}
-              onChange={(system_notifications) =>
-                ipc.updateBehaviorConfig({ system_notifications })
-              }
-            />
-          </div>
-          <div className="flex flex-col gap-1">
-            <h2>Main window</h2>
-            <CheckboxCard
-              label="Always on top"
-              value={store.behaviorConfig.main_always_on_top}
-              onChange={(main_always_on_top) =>
-                ipc
-                  .updateBehaviorConfig({ main_always_on_top })
-                  .then(() =>
-                    toast("Restart app to apply change", { duration: 2000 })
-                  )
-              }
-            />
-            <CheckboxCard
-              label="Minimize to tray"
-              value={store.behaviorConfig.main_minimize_to_tray}
-              onChange={(main_minimize_to_tray) =>
-                ipc.updateBehaviorConfig({ main_minimize_to_tray })
-              }
-            />
-          </div>
-          <HotkeysSection />
-        </div>
+        <motion.div
+          className="flex flex-col gap-2 pb-1.5"
+          variants={{
+            visible: {
+              opacity: 1,
+              transition: {
+                staggerChildren: 0.2,
+                when: "beforeChildren",
+              },
+            },
+            hidden: {
+              opacity: 0,
+            },
+          }}
+          initial="hidden"
+          animate="visible"
+        >
+          <Section heading="App">
+            <Card className="flex flex-row items-center justify-between">
+              <div>Auto run on start-up</div>
+              <CheckBox
+                checked={isAutoStart}
+                onChange={(autoStart) =>
+                  autoStart
+                    ? enable().then(() => setIsAutoStart(true))
+                    : disable().then(() => setIsAutoStart(false))
+                }
+              />
+            </Card>
+          </Section>
+
+          <Section heading="Alerts">
+            <Card>
+              <div className="flex flex-row items-center justify-between">
+                <div>System notifications</div>
+                <CheckBox
+                  checked={store.behaviorConfig.system_notifications}
+                  onChange={(system_notifications) =>
+                    ipc.updateBehaviorConfig({ system_notifications })
+                  }
+                />
+              </div>
+            </Card>
+          </Section>
+
+          <Section heading="Main Window">
+            <Card className="flex flex-col gap-1">
+              <div className="flex flex-row items-center justify-between">
+                <div>Always on top</div>
+                <CheckBox
+                  checked={store.behaviorConfig.main_always_on_top}
+                  onChange={(main_always_on_top) =>
+                    ipc
+                      .updateBehaviorConfig({ main_always_on_top })
+                      .then(() =>
+                        toast("Restart app to apply change", { duration: 2000 })
+                      )
+                  }
+                />
+              </div>
+              <div className="flex flex-row items-center justify-between">
+                <div>Minimie to tray</div>
+                <CheckBox
+                  checked={store.behaviorConfig.main_minimize_to_tray}
+                  onChange={(main_minimize_to_tray) =>
+                    ipc.updateBehaviorConfig({ main_minimize_to_tray })
+                  }
+                />
+              </div>
+            </Card>
+          </Section>
+        </motion.div>
       </div>
     </Pane>
-  );
-};
-
-const HotkeysSection: React.FC = () => {
-  return (
-    <div className="flex flex-col gap-1">
-      <h2>Hotkeys</h2>
-      <Card className="flex flex-row items-center justify-between text-sm">
-        <div>
-          <span className="text-primary/80 font-semibold">Timer</span> -
-          Start/Resume
-        </div>
-        <div className="w-24 bg-primary/30 px-2 font-bold text-center rounded-sm shadow-inner shadow-black/20">
-          CTRL + F1
-        </div>
-      </Card>
-      <Card className="flex flex-row items-center justify-between text-sm">
-        <div>
-          <span className="text-primary/80 font-semibold">Timer</span> - Skip
-        </div>
-        <div className="w-24 bg-primary/30 px-2 font-bold text-center rounded-sm shadow-inner shadow-black/20">
-          CTRL + F2
-        </div>
-      </Card>
-    </div>
   );
 };
 

@@ -1,6 +1,6 @@
 import React from "react";
 import { TiPin, TiPinOutline } from "react-icons/ti";
-import { BiArchive, BiTargetLock } from "react-icons/bi";
+import { BiTargetLock } from "react-icons/bi";
 import { toast } from "react-hot-toast";
 import { clsx } from "@mantine/core";
 import { MdDelete, MdEdit } from "react-icons/md";
@@ -42,7 +42,7 @@ export const IntentView: React.FC<IntentViewProps> = (props) => {
         className={clsx(
           "p-1",
           menu.display &&
-          "bg-primary/10 hover:bg-primary/10 hover:border-primary/60 text-base"
+          "bg-base/10 hover:bg-primary/10 hover:border-primary/60 text-base"
         )}
         onClick={(e) => props.onClick?.(e)}
         onContextMenu={(e) => onContextMenuHandler(e)}
@@ -70,68 +70,69 @@ export const IntentView: React.FC<IntentViewProps> = (props) => {
         </div>
       </Card>
 
-      <ContextMenu
-        className="w-fit h-fit flex flex-row border-base/40 hover:border-primary/60"
-        {...menu}
-      >
-        <Tooltip label={props.data.pinned ? "Unpin" : "Pin"}>
-          <Button
-            variant="ghost"
-            onClick={() => {
-              ipc
-                .updateIntent(props.data.id, { pinned: !props.data.pinned })
-                .then((data) => {
-                  toast(data.pinned ? "Pinned to top" : "Unpinned");
-                });
-              menu.hide();
-            }}
-          >
-            {props.data.pinned ? (
-              <TiPin size={20} />
-            ) : (
-              <TiPinOutline size={20} />
-            )}
-          </Button>
-        </Tooltip>
-        <Tooltip label="Edit">
-          <Button
-            variant="ghost"
-            onClick={() => {
-              setViewEdit(true);
-              menu.hide();
-            }}
-          >
-            <MdEdit size={20} />
-          </Button>
-        </Tooltip>
-        <Tooltip label={props.data.archived_at ? "Unarchive" : "Archive"}>
-          <Button
-            variant="ghost"
-            onClick={() => {
-              props.data.archived_at
-                ? ipc
-                  .unarchiveIntent(props.data.id)
-                  .then(() => toast("Intent unarchived"))
-                : ipc
-                  .archiveIntent(props.data.id)
-                  .then(() => toast("Intent archived"));
-              menu.hide();
-            }}
-          >
-            <HiArchive size={20} />
-          </Button>
-        </Tooltip>
-        <Tooltip label="Delete">
-          <DangerButton
-            variant="ghost"
-            onClick={() => {
-              setViewDelete(true);
-              menu.hide();
-            }}
-          >
-            <MdDelete size={20} />
-          </DangerButton>
-        </Tooltip>
+      <ContextMenu className="w-fit border-none rounded-lg" {...menu}>
+        <div className="bg-lighter/20 flex flex-row gap-0.5 rounded-lg">
+          <Tooltip label={props.data.pinned ? "Unpin" : "Pin"}>
+            <Button
+              variant="ghost"
+              className="rounded-l-lg"
+              onClick={() => {
+                ipc
+                  .updateIntent(props.data.id, { pinned: !props.data.pinned })
+                  .then((data) => {
+                    toast(data.pinned ? "Pinned to top" : "Unpinned");
+                  });
+                menu.hide();
+              }}
+            >
+              {props.data.pinned ? (
+                <TiPin size={20} />
+              ) : (
+                <TiPinOutline size={20} />
+              )}
+            </Button>
+          </Tooltip>
+          <Tooltip label="Edit">
+            <Button
+              variant="ghost"
+              onClick={() => {
+                setViewEdit(true);
+                menu.hide();
+              }}
+            >
+              <MdEdit size={20} />
+            </Button>
+          </Tooltip>
+          <Tooltip label={props.data.archived_at ? "Unarchive" : "Archive"}>
+            <Button
+              variant="ghost"
+              onClick={() => {
+                props.data.archived_at
+                  ? ipc
+                    .unarchiveIntent(props.data.id)
+                    .then(() => toast("Intent unarchived"))
+                  : ipc
+                    .archiveIntent(props.data.id)
+                    .then(() => toast("Intent archived"));
+                menu.hide();
+              }}
+            >
+              <HiArchive size={20} />
+            </Button>
+          </Tooltip>
+          <Tooltip label="Delete">
+            <DangerButton
+              variant="ghost"
+              className="rounded-r-lg"
+              onClick={() => {
+                setViewDelete(true);
+                menu.hide();
+              }}
+            >
+              <MdDelete size={20} />
+            </DangerButton>
+          </Tooltip>
+        </div>
       </ContextMenu>
     </React.Fragment>
   );

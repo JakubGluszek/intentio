@@ -1,9 +1,9 @@
 import React from "react";
 import { HTMLMotionProps } from "framer-motion";
+import { clsx } from "@mantine/core";
 
 import { Button } from "@/ui";
 import { TabsContext } from "./TabsProvider";
-import { clsx } from "@mantine/core";
 
 export interface TabProps extends HTMLMotionProps<"button"> {
   children: React.ReactNode;

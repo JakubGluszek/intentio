@@ -2,15 +2,13 @@ import React from "react";
 import { BiTargetLock } from "react-icons/bi";
 import { MdCheckBox, MdStickyNote2 } from "react-icons/md";
 import { AnimatePresence, motion } from "framer-motion";
-import { IconType } from "react-icons";
-import { clsx } from "@mantine/core";
 
 import useStore from "@/store";
 import { MainWindowContext } from "@/contexts";
-import { Button, Pane, Tooltip } from "@/ui";
 import IntentsView from "./intentsView";
 import TasksView from "./tasksView";
 import NotesView from "./notesView";
+import { PaneButton } from "@/ui";
 
 type Tab = "intents" | "notes" | "tasks";
 
@@ -38,7 +36,7 @@ const Sidebar: React.FC = () => {
     <AnimatePresence>
       {display === "sidebar" && (
         <motion.aside
-          className="h-[282px] flex flex-row gap-0.5"
+          className="h-full flex flex-row gap-0.5"
           transition={{ duration: 0.3 }}
           initial={{ width: "0%", opacity: 0 }}
           animate={{ width: "100%", opacity: 1 }}
@@ -57,17 +55,17 @@ const Sidebar: React.FC = () => {
                 animate={{ width: 40, opacity: 1 }}
                 exit={{ width: 0 }}
               >
-                <TabPane
+                <PaneButton
                   active={tab === "intents"}
                   onClick={() => setTab("intents")}
                   icon={BiTargetLock}
                 />
-                <TabPane
+                <PaneButton
                   active={tab === "tasks"}
                   onClick={() => setTab("tasks")}
                   icon={MdCheckBox}
                 />
-                <TabPane
+                <PaneButton
                   active={tab === "notes"}
                   onClick={() => setTab("notes")}
                   icon={MdStickyNote2}
@@ -86,36 +84,6 @@ const Sidebar: React.FC = () => {
         </motion.aside>
       )}
     </AnimatePresence>
-  );
-};
-
-interface TabPaneProps {
-  active: boolean;
-  icon: IconType;
-  onClick: () => void;
-}
-
-const TabPane: React.FC<TabPaneProps> = (props) => {
-  return (
-    <Pane
-      className={clsx(
-        "h-full hover:border-primary/50",
-        props.active && "border-primary/50 hover:border-primary/60"
-      )}
-      withPadding={false}
-    >
-      <Button
-        className={clsx(
-          "h-full",
-          props.active &&
-          "bg-primary/10 hover:bg-primary/20 text-primary/80 hover:text-primary"
-        )}
-        variant="ghost"
-        onClick={() => props.onClick()}
-      >
-        <props.icon size={28} />
-      </Button>
-    </Pane>
   );
 };
 

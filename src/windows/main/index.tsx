@@ -37,11 +37,8 @@ const Titlebar: React.FC = () => {
   const { display, toggleDisplay } = React.useContext(MainWindowContext)!;
 
   return (
-    <Pane
-      className="flex flex-row items-center justify-between"
-      withPadding={false}
-    >
-      <div className="flex flex-row">
+    <Pane className="flex flex-row items-center justify-between p-1">
+      <div className="flex flex-row gap-0.5">
         <Button variant="ghost" onClick={toggleDisplay}>
           <motion.div animate={{ rotateZ: display === "sidebar" ? 180 : 0 }}>
             <TbLayoutSidebarRightCollapse size={28} />
@@ -54,8 +51,8 @@ const Titlebar: React.FC = () => {
           <MdSettings size={28} />
         </Button>
       </div>
-      <h2 className="font-bold">Intentio</h2>
-      <div className="flex flex-row">
+      <h2 className="font-bold text-text">Intentio</h2>
+      <div className="flex flex-row gap-0.5">
         <Button variant="ghost" onClick={() => ipc.hideMainWindow()}>
           <MdRemove size={28} />
         </Button>

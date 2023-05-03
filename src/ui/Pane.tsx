@@ -3,21 +3,22 @@ import { motion, HTMLMotionProps } from "framer-motion";
 import { twMerge } from "tailwind-merge";
 import { clsx } from "@mantine/core";
 
-export interface PaneProps extends HTMLMotionProps<"div"> {
-  withPadding?: boolean;
-}
+export interface PaneProps extends HTMLMotionProps<"div"> { }
 
 export const Pane: React.FC<PaneProps> = (props) => {
+  const [isHover, setIsHover] = React.useState(false);
+
   const {
     children,
     className: customClassName,
-    withPadding = true,
+    onHoverStart,
+    onHoverEnd,
     ...restProps
   } = props;
 
   let className = clsx(
-    "flex border-2 border-base/20 bg-window/95 bg-gradient-to-br from-primary/5 via-window/5 to-base/5 transition-colors",
-    withPadding && "p-1.5"
+    "flex p-1 rounded border-2 bg-window/95 bg-gradient-to-br from-primary/5 via-window/5 to-base/5 transition-colors duration-500",
+    isHover ? "border-base/40" : "border-base/30"
   );
 
   if (customClassName) {
@@ -25,7 +26,18 @@ export const Pane: React.FC<PaneProps> = (props) => {
   }
 
   return (
-    <motion.div className={className} {...restProps}>
+    <motion.div
+      className={className}
+      onHoverStart={(e, info) => {
+        onHoverStart?.(e, info);
+        setIsHover(true);
+      }}
+      onHoverEnd={(e, info) => {
+        onHoverEnd?.(e, info);
+        setIsHover(false);
+      }}
+      {...restProps}
+    >
       {children}
     </motion.div>
   );

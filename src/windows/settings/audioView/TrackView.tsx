@@ -22,6 +22,7 @@ const TrackView: React.FC<Props> = (props) => {
         <Button
           variant="ghost"
           onClick={() => props.onTrackPreview(props.name)}
+          config={{ ghost: { highlight: false } }}
         >
           <MdPlayCircle size={24} />
         </Button>

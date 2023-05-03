@@ -67,18 +67,7 @@ export const CircleTimer: React.FC<CircleTimerProps> = ({
           strokeDashoffset={strokeDashoffset}
         />
       </svg>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          position: "absolute",
-          left: 0,
-          top: 0,
-          width: "100%",
-          height: "100%",
-        }}
-      >
+      <div className="absolute left-0 top-0 w-full h-full flex flex-col items-center justify-center">
         {children}
       </div>
     </div>

@@ -56,6 +56,10 @@
     @apply w-screen h-screen flex flex-col bg-transparent;
   }
 
+  button {
+    @apply outline-none;
+  }
+
   button > * {
     cursor: pointer;
   }

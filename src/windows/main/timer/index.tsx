@@ -159,10 +159,6 @@ const Timer: React.FC = () => {
         ? "Break"
         : "Long break";
 
-  const textColor = timer.isPlaying
-    ? store.currentTheme?.primary_hex
-    : store.currentTheme?.text_hex;
-
   if (!store.currentTheme) return null;
 
   return (
@@ -195,80 +191,72 @@ const Timer: React.FC = () => {
                 Color(store.currentTheme.window_hex).hex() as ColorFormat
               }
             >
-              <div className="flex flex-col items-center gap-1 justify-center">
+              <div className="flex flex-col items-center gap-1">
                 {store.interfaceConfig?.display_timer_countdown ? (
-                  <React.Fragment>
-                    <span
-                      data-tauri-disable-drag
-                      className="translate-y-4 font-mono opacity-80"
+                  <div className="mt-12 flex flex-col items-center">
+                    <button
+                      className="font-mono text-text/80 hover:text-text transition-colors duration-150"
                       onClick={() => toggleDisplayCountdown()}
                       style={{
                         fontSize: 40,
-                        color: textColor,
                       }}
+                      tabIndex={-3}
                     >
                       {formattedTimeLeft}
-                    </span>
-                    <span className="text-lg text-text/60 whitespace-nowrap">
+                    </button>
+                    <span className="text-lg font-semibold text-text/70 whitespace-nowrap">
                       {sessionType}
                     </span>
-                  </React.Fragment>
+                  </div>
                 ) : (
-                  <span
+                  <button
                     onClick={() => toggleDisplayCountdown()}
-                    className="opacity-80 text-3xl font-bold whitespace-nowrap text-primary"
-                    style={{
-                      color: textColor,
-                    }}
-                    data-tauri-disable-drag
+                    className="mt-8 text-4xl font-bold whitespace-nowrap text-text/80 hover:text-text transition-colors duration-150"
+                    tabIndex={-3}
                   >
                     {sessionType}
-                  </span>
-                )}
-              </div>
-
-              <div className="absolute bottom-8 translate-x-1 w-full flex flex-col items-center gap-1 transition-opacity duration-300">
-                <div className="group flex flex-row items-center justify-center">
-                  <button
-                    tabIndex={-2}
-                    className="opacity-0 group-hover:opacity-100 transition-opacity duration-500 text-text/80 group-hover:text-primary"
-                    onClick={() => timer.restart()}
-                  >
-                    <VscDebugRestart size={21} />
                   </button>
+                )}
 
-                  {timer.isPlaying ? (
-                    <Button variant="ghost" onClick={() => timer.pause()}>
-                      <MdPauseCircle size={36} />
-                    </Button>
-                  ) : (
+                <div className="w-full flex flex-col items-center gap-1 transition-opacity duration-300">
+                  <div className="group flex flex-row items-center justify-center">
+                    <button
+                      tabIndex={-3}
+                      className="opacity-0 group-hover:opacity-100 transition-opacity duration-500 text-base/80 hover:text-primary"
+                      onClick={() => timer.restart()}
+                    >
+                      <VscDebugRestart size={21} />
+                    </button>
+
                     <Button
                       variant="ghost"
+                      onClick={() =>
+                        timer.isPlaying ? timer.pause() : timer.resume()
+                      }
+                      config={{ ghost: { highlight: false } }}
+                    >
+                      {timer.isPlaying ? (
+                        <MdPauseCircle size={36} />
+                      ) : (
+                        <MdPlayCircle size={36} />
+                      )}
+                    </Button>
+                    <button
+                      tabIndex={-3}
+                      className="opacity-0 group-hover:opacity-100 transition-opacity duration-500 text-base/80 hover:text-primary -translate-x-0.5"
                       onClick={() => {
-                        timer.resume();
+                        timer.skip(true);
                       }}
                     >
-                      <MdPlayCircle size={36} />
-                    </Button>
-                  )}
-                  <button
-                    tabIndex={-2}
-                    className="opacity-0 group-hover:opacity-100 transition-opacity duration-500 text-text/80 group-hover:text-primary -translate-x-0.5"
-                    onClick={() => {
-                      timer.skip(true);
-                    }}
-                  >
-                    <MdSkipNext size={26} />
-                  </button>
+                      <MdSkipNext size={26} />
+                    </button>
+                  </div>
                 </div>
               </div>
             </CircleTimer>
           </Pane>
 
-          <Pane
-            className="flex flex-row justify-between items-center"
-            withPadding={false}
-          >
+          <Pane className="flex flex-row justify-between items-center">
             <div className="text-base/80 font-bold text-center p-1">
               #{timer.iterations}
             </div>
