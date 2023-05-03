@@ -1,5 +1,6 @@
 import React from "react";
 import { Toaster } from "react-hot-toast";
+import { motion } from "framer-motion";
 
 import { useDragWindow, useEvents, usePreventContextMenu } from "@/hooks";
 import ipc from "@/ipc";
@@ -58,21 +59,43 @@ export const WindowContainer: React.FC<WindowContainerProps> = (props) => {
   return (
     <div className="w-screen h-screen flex flex-col">
       {props.children}
+
+      {/* Gradient Overlay */}
+      <motion.div
+        animate={{
+          scale: [1.1, 1.5, 1.7, 1.2, 1.1],
+          top: [-100, -64, -32, -8, -100],
+          left: [-100, -32, -64, -32, -100],
+          opacity: [0, 0.2, 0.6, 0.4, 1, 0],
+          transition: {
+            duration: 12,
+            repeat: Infinity,
+          },
+        }}
+        exit={{ opacity: 0 }}
+        className="fixed w-full h-full"
+        style={{
+          pointerEvents: "none",
+          backgroundImage:
+            "radial-gradient(circle at center, rgba(var(--primary-color) / 0.2), rgba(var(--window-color) / 0.1) 75%",
+        }}
+      ></motion.div>
+
       <Toaster
         position="top-center"
-        containerStyle={{ top: 8, zIndex: 999999999 }}
+        containerStyle={{ top: 16, zIndex: 999999999 }}
         toastOptions={{
           duration: 1400,
           style: {
             padding: 1,
             paddingInline: 2,
-            backgroundColor: "rgb(var(--window-color))",
+            backgroundColor: "rgb(var(--base-color))",
             borderWidth: 2,
-            borderColor: "rgb(var(--base-color) / 0.6)",
+            borderColor: "rgb(var(--window-color) / 0.6)",
             borderRadius: 2,
             fontSize: "0.9rem",
             fontWeight: 700,
-            color: "rgb(var(--primary-color))",
+            color: "rgb(var(--window-color))",
             textAlign: "center",
           },
         }}

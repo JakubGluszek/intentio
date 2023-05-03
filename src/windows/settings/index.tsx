@@ -55,7 +55,7 @@ const SettingsWindow: React.FC = () => {
 const SettingsTitlebar: React.FC = () => {
   const { panel } = React.useContext(SettingsWindowContext)!;
 
-  return <Titlebar icon={<MdSettings size={24} />} title={`${panel}`} />;
+  return <Titlebar icon={MdSettings} title={`${panel}`} />;
 };
 
 const Content: React.FC = () => {

@@ -39,11 +39,7 @@ export const IntentView: React.FC<IntentViewProps> = (props) => {
   return (
     <React.Fragment>
       <Card
-        className={clsx(
-          "p-1",
-          menu.display &&
-          "bg-base/10 hover:bg-primary/10 hover:border-primary/60 text-base"
-        )}
+        className="p-1"
         onClick={(e) => props.onClick?.(e)}
         onContextMenu={(e) => onContextMenuHandler(e)}
         active={props.active}
@@ -71,7 +67,7 @@ export const IntentView: React.FC<IntentViewProps> = (props) => {
       </Card>
 
       <ContextMenu className="w-fit border-none rounded" {...menu}>
-        <div className="bg-darker/20 flex flex-row gap-0.5 rounded">
+        <div className="bg-lighter/10 flex flex-row gap-0.5 rounded">
           <Tooltip label={props.data.pinned ? "Unpin" : "Pin"}>
             <Button
               variant="ghost"
@@ -120,7 +116,7 @@ export const IntentView: React.FC<IntentViewProps> = (props) => {
               <HiArchive size={20} />
             </Button>
           </Tooltip>
-          <Tooltip label="Delete">
+          <Tooltip label="Delete" className="text-danger">
             <DangerButton
               variant="ghost"
               className="rounded-r"

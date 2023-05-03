@@ -6,6 +6,8 @@ import { appWindow } from "@tauri-apps/api/window";
  * - the target element (or it's child element of a fixed depth) was of a certain type (button, input etc.)
  * - the tauriDragEnabled state property was exclusively disabled */
 export const useDragWindow = () => {
+  const [isDragging, setIsDragging] = React.useState(false);
+
   React.useEffect(() => {
     const handleMouseDown = async (e: MouseEvent) => {
       if (
@@ -16,7 +18,8 @@ export const useDragWindow = () => {
         )
       )
         return; // a non-draggable element either in target or its ancestors
-      await appWindow.startDragging();
+      setIsDragging(true);
+      await appWindow.startDragging().then(() => setIsDragging(false));
     };
 
     document.addEventListener("mousedown", handleMouseDown);
@@ -45,4 +48,6 @@ export const useDragWindow = () => {
 
     return checkAllowDragging(attribute, parent, iterations - 1);
   };
+
+  return { isDragging } as const;
 };

@@ -18,11 +18,11 @@ const AnalyticsWindow: React.FC = () => {
   return (
     <WindowContainer>
       <div className="grow flex flex-col gap-0.5">
-        <Titlebar title="Analytics" icon={<MdAnalytics size={24} />} />
+        <Titlebar title="Analytics" icon={MdAnalytics} />
 
         <Pane className="grow flex flex-col" padding="lg">
           <Statistics intents={store.intents} sessions={store.sessions} />
-          <Card>
+          <Card className="border-base/60 hover:border-primary/60">
             <Calendar days={calendar.days} theme={store.currentTheme!} />
           </Card>
         </Pane>

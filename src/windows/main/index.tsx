@@ -41,23 +41,23 @@ const Titlebar: React.FC = () => {
       <div className="flex flex-row gap-0.5">
         <Button variant="ghost" onClick={toggleDisplay}>
           <motion.div animate={{ rotateZ: display === "sidebar" ? 180 : 0 }}>
-            <TbLayoutSidebarRightCollapse size={28} />
+            <TbLayoutSidebarRightCollapse size={24} />
           </motion.div>
         </Button>
         <Button
           variant="ghost"
           onClick={() => new WebviewWindow("settings", config.windows.settings)}
         >
-          <MdSettings size={28} />
+          <MdSettings size={24} />
         </Button>
       </div>
       <h2 className="font-bold text-text">Intentio</h2>
       <div className="flex flex-row gap-0.5">
         <Button variant="ghost" onClick={() => ipc.hideMainWindow()}>
-          <MdRemove size={28} />
+          <MdRemove size={24} />
         </Button>
         <Button variant="ghost" onClick={() => ipc.exitMainWindow()}>
-          <MdClose size={28} />
+          <MdClose size={24} />
         </Button>
       </div>
     </Pane>
