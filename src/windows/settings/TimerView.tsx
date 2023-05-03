@@ -21,7 +21,7 @@ const TimerView: React.FC = () => {
   if (!config) return null;
 
   return (
-    <Pane className="grow flex flex-col overflow-y-auto">
+    <Pane className="grow flex flex-col overflow-y-auto" padding="lg">
       <div className="max-h-0 overflow-y">
         <div className="flex flex-col gap-1 pb-1.5">
           <Section heading="Duration">

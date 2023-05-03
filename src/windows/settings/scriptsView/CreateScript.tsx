@@ -28,7 +28,7 @@ const CreateScript: React.FC<CreateScriptViewProps> = (props) => {
   });
 
   return (
-    <Pane className="grow flex flex-col">
+    <Pane className="grow flex flex-col" padding="lg">
       <form onSubmit={onSubmit} className="grow flex flex-col gap-1">
         <Input
           placeholder="Script label"

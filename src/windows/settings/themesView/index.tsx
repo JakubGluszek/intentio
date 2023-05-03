@@ -41,7 +41,7 @@ const ThemesView: React.FC = () => {
   if (store.themes.length === 0) return null;
 
   return (
-    <Pane className="grow flex flex-col overflow-y-auto gap-2">
+    <Pane className="grow flex flex-col overflow-y-auto gap-2" padding="lg">
       <div className="flex flex-row justify-between">
         {/* Prompt create theme view */}
         <Button variant="base" onClick={() => setDisplay("create")}>

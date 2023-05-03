@@ -54,7 +54,7 @@ const AudioView: React.FC = () => {
         onRepeatChange={(repeats) => updateConfig({ alert_repeat: repeats })}
         onTrackPreview={() => ipc.playAudio(config.alert_file)}
       />
-      <Pane className="grow flex flex-col gap-2 overflow-y-auto">
+      <Pane className="grow flex flex-col gap-2 overflow-y-auto" padding="lg">
         <OpenFileExplorerButton />
         <div className="max-h-0 overflow-y">
           <div className="flex flex-col pb-1.5 gap-1">

@@ -27,7 +27,7 @@ export const Section: React.FC<SectionProps> = (props) => {
           </div>
         </div>
       )}
-      <div className="flex flex-col">{children}</div>
+      <div className="flex flex-col gap-1.5">{children}</div>
     </motion.section>
   );
 };

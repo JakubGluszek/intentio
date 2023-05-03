@@ -8,7 +8,7 @@ import useStore from "@/store";
 import { Script } from "@/bindings/Script";
 import { useConfirmDelete } from "@/hooks";
 import { MenuPosition } from "@/hooks/useContextMenu";
-import { Button, ContextMenu } from "@/ui";
+import { Button, ContextMenu, DangerButton } from "@/ui";
 
 interface ScriptContextMenuProps {
   display: boolean;
@@ -56,14 +56,14 @@ const ScriptContextMenu: React.FC<ScriptContextMenuProps> = (props) => {
           </div>
           <div className="w-full">Events</div>
         </Button>
-        <Button onClick={() => onDelete()} variant="base">
+        <DangerButton onClick={() => onDelete()} variant="base">
           <div className="w-fit">
             <MdDelete size={20} />
           </div>
           <div className="w-full">
             {viewConfirmDelete ? "Confirm" : "Delete"}
           </div>
-        </Button>
+        </DangerButton>
       </div>
     </ContextMenu>
   );

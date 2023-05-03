@@ -21,7 +21,7 @@ interface Props {
 
 const SelectedTrack: React.FC<Props> = (props) => {
   return (
-    <Pane className="flex flex-col gap-2">
+    <Pane className="flex flex-col gap-2" padding="lg">
       {/* Selected audio file with volume and repeat control */}
       <div className="flex flex-row items-center justify-between">
         <div className="text-text/80 uppercase font-bold">{props.name}</div>

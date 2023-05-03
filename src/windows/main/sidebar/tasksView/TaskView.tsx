@@ -8,7 +8,7 @@ import ipc from "@/ipc";
 import { useConfirmDelete, useContextMenu } from "@/hooks";
 import { Task } from "@/bindings/Task";
 import { MenuPosition } from "@/hooks/useContextMenu";
-import { Button, Card, Input, ContextMenu } from "@/ui";
+import { Button, Card, Input, ContextMenu, DangerButton } from "@/ui";
 
 interface TaskViewProps {
   data: Task;
@@ -116,12 +116,12 @@ const TaskContextMenu: React.FC<TaskContextMenuProps> = (props) => {
       position={props.position}
       hide={() => props.hide()}
     >
-      <Button variant="base" onClick={() => onDelete()} className="w-full">
+      <DangerButton variant="base" onClick={() => onDelete()} className="w-full">
         <div className="w-fit">
           <MdDelete size={20} />
         </div>
         <div className="w-full">{viewConfirmDelete ? "Confirm" : "Delete"}</div>
-      </Button>
+      </DangerButton>
     </ContextMenu>
   );
 };

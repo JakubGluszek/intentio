@@ -40,7 +40,7 @@ const SettingsWindow: React.FC = () => {
   return (
     <SettingsWindowProvider>
       <WindowContainer>
-        <div className="grow flex flex-col gap-0.5 rounded overflow-clip">
+        <div className="grow flex flex-col gap-0.5">
           <SettingsTitlebar />
           <div className="grow flex flex-col gap-0.5">
             <Navbar />
@@ -66,10 +66,10 @@ const Content: React.FC = () => {
       {panel === "Timer" ? <TimerView /> : null}
       {panel === "Audio" ? <AudioView /> : null}
       {panel === "Themes" ? <ThemesView /> : null}
-      {panel === "Scripts" ? <ScriptsView /> : null}
-      {panel === "About" ? <AboutView /> : null}
       {panel === "General" ? <GeneralView /> : null}
+      {panel === "Scripts" ? <ScriptsView /> : null}
       {panel === "Account" ? <AccountView /> : null}
+      {panel === "About" ? <AboutView /> : null}
     </div>
   );
 };

@@ -10,7 +10,7 @@ import CreateNote from "./CreateNote";
 import FilterNotes from "./FilterNotes";
 import NoteView from "./NoteView";
 import EditNote from "./EditNote";
-import { Button, Pane } from "@/ui";
+import { Button, DangerButton, Pane } from "@/ui";
 
 const NotesView: React.FC = () => {
   const [viewCreate, setViewCreate] = React.useState(false);
@@ -37,7 +37,7 @@ const NotesView: React.FC = () => {
   }, []);
 
   return (
-    <Pane className="grow flex flex-col gap-2">
+    <Pane className="grow flex flex-col gap-2" padding="lg">
       {!viewCreate && !editNote && (
         <div className="flex flex-row gap-1 items-center justify-between">
           {!viewFilter ? (
@@ -47,9 +47,16 @@ const NotesView: React.FC = () => {
                 <span>Add note</span>
               </Button>
 
-              <Button variant="ghost" onClick={() => setViewFilter(true)}>
-                <MdSearch size={24} />
-              </Button>
+              <div className="flex flex-row items-center gap-1">
+                <DeleteMultiButton
+                  display={selectedNotesIds.length > 0}
+                  selectedNotesIds={selectedNotesIds}
+                  setSelectedNotesIds={setSelectedNotesIds}
+                />
+                <Button variant="ghost" onClick={() => setViewFilter(true)}>
+                  <MdSearch size={24} />
+                </Button>
+              </div>
             </React.Fragment>
           ) : (
             <FilterNotes
@@ -58,12 +65,6 @@ const NotesView: React.FC = () => {
               hide={() => setViewFilter(false)}
             />
           )}
-
-          <DeleteMultiButton
-            display={!viewFilter && selectedNotesIds.length > 0}
-            selectedNotesIds={selectedNotesIds}
-            setSelectedNotesIds={setSelectedNotesIds}
-          />
         </div>
       )}
 
@@ -202,14 +203,10 @@ const DeleteMultiButton: React.FC<DeleteMultiButtonProps> = (props) => {
   if (!props.display) return null;
 
   return (
-    <div className="window">
-      <Button variant="ghost" onClick={() => onDelete()}>
-        {!viewConfirmDelete && <MdDelete size={20} />}
-        <div>
-          {viewConfirmDelete ? "Confirm" : props.selectedNotesIds.length}
-        </div>
-      </Button>
-    </div>
+    <DangerButton variant="ghost" onClick={() => onDelete()}>
+      {!viewConfirmDelete && <MdDelete size={20} />}
+      <div>{viewConfirmDelete ? "Confirm" : props.selectedNotesIds.length}</div>
+    </DangerButton>
   );
 };
 

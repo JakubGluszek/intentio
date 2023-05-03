@@ -41,10 +41,10 @@ const IntentsView: React.FC = () => {
   }, []);
 
   return (
-    <Pane className="grow flex flex-col gap-2">
+    <Pane className="grow flex flex-col gap-2" padding="lg">
       <div className="w-full flex flex-row items-center justify-between gap-1">
         <CreateIntent />
-        <div className="flex flex-row">
+        <div className="flex flex-row gap-0.5">
           <Tooltip label={viewArchive ? "Hide Archive" : "View Archive"}>
             <Button
               variant="ghost"
@@ -72,7 +72,9 @@ const IntentsView: React.FC = () => {
       </div>
 
       <IntentList
-        data={store.intents.filter((intent) => !!intent.archived_at === viewArchive)}
+        data={store.intents.filter(
+          (intent) => !!intent.archived_at === viewArchive
+        )}
         selectedIntent={store.currentIntent}
         onIntentSelected={(data) => store.setCurrentIntent(data)}
       />

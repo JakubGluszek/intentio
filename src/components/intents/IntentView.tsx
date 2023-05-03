@@ -70,12 +70,12 @@ export const IntentView: React.FC<IntentViewProps> = (props) => {
         </div>
       </Card>
 
-      <ContextMenu className="w-fit border-none rounded-lg" {...menu}>
-        <div className="bg-lighter/20 flex flex-row gap-0.5 rounded-lg">
+      <ContextMenu className="w-fit border-none rounded" {...menu}>
+        <div className="bg-darker/20 flex flex-row gap-0.5 rounded">
           <Tooltip label={props.data.pinned ? "Unpin" : "Pin"}>
             <Button
               variant="ghost"
-              className="rounded-l-lg"
+              className="rounded-l"
               onClick={() => {
                 ipc
                   .updateIntent(props.data.id, { pinned: !props.data.pinned })
@@ -123,7 +123,7 @@ export const IntentView: React.FC<IntentViewProps> = (props) => {
           <Tooltip label="Delete">
             <DangerButton
               variant="ghost"
-              className="rounded-r-lg"
+              className="rounded-r"
               onClick={() => {
                 setViewDelete(true);
                 menu.hide();

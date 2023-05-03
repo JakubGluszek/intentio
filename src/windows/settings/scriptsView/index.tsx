@@ -35,21 +35,23 @@ const ScriptsView: React.FC = () => {
     );
 
   return (
-    <Pane className="grow flex flex-col gap-2 overflow-y-auto">
+    <Pane className="grow flex flex-col gap-2" padding="lg">
       <Button variant="base" onClick={() => setViewCreate(true)}>
         <MdAddCircle size={20} />
         <span>Create script</span>
       </Button>
-      <div className="max-h-0 overflow-y">
-        <div className="flex flex-col gap-1.5 pb-1.5">
-          {store.scripts.map((script) => (
-            <ScriptView
-              key={script.id}
-              data={script}
-              onEdit={() => setEditScript(script)}
-              onEditEvents={() => setEditScriptEvents(script)}
-            />
-          ))}
+      <div className="grow flex flex-col overflow-y-auto">
+        <div className="max-h-0 overflow-y">
+          <div className="flex flex-col gap-1.5 pb-1.5">
+            {store.scripts.map((script) => (
+              <ScriptView
+                key={script.id}
+                data={script}
+                onEdit={() => setEditScript(script)}
+                onEditEvents={() => setEditScriptEvents(script)}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </Pane>

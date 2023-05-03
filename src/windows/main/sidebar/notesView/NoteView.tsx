@@ -9,7 +9,8 @@ import remarkGfm from "remark-gfm";
 import { useConfirmDelete, useContextMenu } from "@/hooks";
 import { Note } from "@/bindings/Note";
 import ipc from "@/ipc";
-import { Button, Card, ContextMenu } from "@/ui";
+import { Button, Card, ContextMenu, DangerButton } from "@/ui";
+import { clsx } from "@mantine/core";
 
 interface NoteViewProps {
   data: Note;
@@ -28,6 +29,8 @@ const NoteView: React.FC<NoteViewProps> = (props) => {
   return (
     <React.Fragment>
       <Card
+        className={clsx(props.isSelected && "border-primary/50 hover:border-primary/60")}
+        onMouseDown={props.onMouseDown}
         onContextMenu={(e) => {
           onContextMenuHandler(e);
           props.onContextMenu();
@@ -78,14 +81,14 @@ const NoteView: React.FC<NoteViewProps> = (props) => {
           </div>
           <div className="w-full">Copy</div>
         </Button>
-        <Button variant="base" className="w-full" onClick={() => onDelete()}>
+        <DangerButton variant="base" className="w-full" onClick={() => onDelete()}>
           <div className="w-fit">
             <MdDelete size={20} />
           </div>
           <div className="w-full">
             {viewConfirmDelete ? "Confirm" : "Delete"}
           </div>
-        </Button>
+        </DangerButton>
       </ContextMenu>
     </React.Fragment>
   );

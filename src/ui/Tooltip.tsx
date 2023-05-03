@@ -6,7 +6,7 @@ export const Tooltip: React.FC<TooltipProps> = (props) => {
   const { children, className: customClassName, style, ...restProps } = props;
 
   let className =
-    "bg-window font-semibold text-primary rounded-sm shadow-lg shadow-black/30 px-2";
+    "bg-window font-semibold text-sm text-primary/80 rounded-sm shadow-lg shadow-black/30 px-2 uppercase";
 
   if (customClassName) {
     className = twMerge(className, customClassName);

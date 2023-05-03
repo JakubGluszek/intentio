@@ -17,10 +17,10 @@ const AnalyticsWindow: React.FC = () => {
 
   return (
     <WindowContainer>
-      <div className="grow flex flex-col gap-0.5 rounded overflow-clip">
+      <div className="grow flex flex-col gap-0.5">
         <Titlebar title="Analytics" icon={<MdAnalytics size={24} />} />
 
-        <Pane className="grow flex flex-col">
+        <Pane className="grow flex flex-col" padding="lg">
           <Statistics intents={store.intents} sessions={store.sessions} />
           <Card>
             <Calendar days={calendar.days} theme={store.currentTheme!} />

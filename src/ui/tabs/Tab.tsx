@@ -1,6 +1,7 @@
 import React from "react";
 import { HTMLMotionProps } from "framer-motion";
 import { clsx } from "@mantine/core";
+import { twMerge } from "tailwind-merge";
 
 import { Button } from "@/ui";
 import { TabsContext } from "./TabsProvider";
@@ -11,30 +12,28 @@ export interface TabProps extends HTMLMotionProps<"button"> {
 }
 
 export const Tab: React.FC<TabProps> = (props) => {
-  const { children, value, style: customStyle, ...restProps } = props;
+  const { children, value, className: customClassName, ...restProps } = props;
 
   const cx = React.useContext(TabsContext);
   const isSelected = cx?.value === props.value;
 
+  let className = clsx(
+    "grow duration-150 active:bg-primary active:text-window",
+    isSelected
+      ? "bg-primary/80 hover:bg-primary/90 text-window hover:text-window shadow-lg shadow-black/40"
+      : "bg-primary/20 hover:bg-primary/30 text-primary hover:text-primary shadow shadow-black/40"
+  );
+
+  if (customClassName) {
+    className = twMerge(className, customClassName);
+  }
+
   return (
     <Button
-      {...restProps}
       variant="ghost"
       onClick={() => cx?.onChange(props.value)}
-      className={clsx(
-        isSelected ? "shadow-lg shadow-black/40" : "shadow shadow-black/40"
-      )}
-      style={{
-        flex: 1,
-        backgroundColor: isSelected
-          ? "rgb(var(--primary-color))"
-          : "rgb(var(--primary-color) / 0.15)",
-        color: isSelected
-          ? "rgb(var(--window-color))"
-          : "rgb(var(--primary-color))",
-        borderRadius: 2,
-        ...customStyle,
-      }}
+      className={className}
+      {...restProps}
     >
       {props.children}
     </Button>

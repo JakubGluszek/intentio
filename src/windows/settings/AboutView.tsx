@@ -8,35 +8,18 @@ import { Button, Pane, Tooltip } from "@/ui";
 
 const AboutView: React.FC = () => {
   return (
-    <Pane className="grow flex flex-col justify-between">
-      <div className="flex-1 text-primary">
+    <Pane className="grow flex flex-col justify-between" padding="lg">
+      <div className="text-primary text-center translate-y-12">
         <IntentioLogo />
-        <div className="text-center text-sm -translate-y-3 text-text/80">
-          A pomodoro app for&nbsp;
-          <span className="text-primary/80 font-bold">your</span> needs.
+        <div className="-translate-y-3 text-text/80">
+          A pomodoro app for your needs.
+        </div>
+        <div className="text-text/80 font-semibold">
+          Version: <span className="text-primary/80">2.0.0 (BETA)</span>
         </div>
       </div>
-      <div className="flex flex-col gap-1.5 text-center p-2">
-        <div>
-          <span>Version: </span>
-          <span className="text-primary/80 font-bold">
-            {config.about.version}
-          </span>
-        </div>
-        <div>
-          <span>Author: </span>
-          <a
-            className="text-primary/80 font-bold"
-            tabIndex={-2}
-            href={config.about.authorHomepage}
-            target="_blank"
-            rel="noreferrer"
-          >
-            {config.about.author}
-          </a>
-        </div>
-      </div>
-      <div className="flex flex-row items-center justify-between p-2">
+
+      <div className="flex flex-row items-center justify-between">
         <div className="flex flex-row gap-1">
           <Tooltip classNames={{ tooltip: "tooltip" }} label="Home page">
             <a

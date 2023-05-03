@@ -4,7 +4,7 @@ import { toast } from "react-hot-toast";
 
 import useStore from "@/store";
 import ipc from "@/ipc";
-import { Button, Pane, Tooltip } from "@/ui";
+import { Button, DangerButton, Pane, Tooltip } from "@/ui";
 import { useConfirmDelete, useEvents } from "@/hooks";
 import { Task } from "@/bindings/Task";
 import CreateTask from "./CreateTask";
@@ -39,24 +39,25 @@ const TasksView: React.FC = () => {
   tasks = tasks.filter((task) => task.intent_id === store.currentIntent?.id);
 
   return (
-    <Pane className="grow flex flex-col gap-2">
+    <Pane className="grow flex flex-col gap-2" padding="lg">
       <div className="flex flex-row items-center justify-between gap-1">
         <CreateTask viewCreate={viewCreate} setViewCreate={setViewCreate} />
 
-        {/* Toggle finished tasks */}
-        {!viewCreate && (
-          <ToggleTasksView
-            viewCompleted={viewCompletedTasks}
-            toggleTasks={() => setViewCompletedTasks((view) => !view)}
-          />
-        )}
+        <div className="flex flex-row items-center gap-1">
+          {!viewCreate && selectedTasksIds.length > 0 && (
+            <DeleteMultiTasksButton
+              selectedTasksIds={selectedTasksIds}
+              setSelectedTasksIds={setSelectedTasksIds}
+            />
+          )}
 
-        {!viewCreate && selectedTasksIds.length > 0 && (
-          <DeleteMultiTasksButton
-            selectedTasksIds={selectedTasksIds}
-            setSelectedTasksIds={setSelectedTasksIds}
-          />
-        )}
+          {!viewCreate && (
+            <ToggleTasksView
+              viewCompleted={viewCompletedTasks}
+              toggleTasks={() => setViewCompletedTasks((view) => !view)}
+            />
+          )}
+        </div>
       </div>
 
       <TasksList
@@ -187,10 +188,10 @@ const DeleteMultiTasksButton: React.FC<DeleteMultiTasksButtonProps> = (
   );
 
   return (
-    <Button variant="ghost" onClick={() => onDelete()}>
+    <DangerButton variant="ghost" onClick={() => onDelete()}>
       {!viewConfirmDelete && <MdDelete size={20} />}
       <div>{viewConfirmDelete ? "Confirm" : props.selectedTasksIds.length}</div>
-    </Button>
+    </DangerButton>
   );
 };
 
