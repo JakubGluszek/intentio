@@ -33,17 +33,16 @@ const Sidebar: React.FC = () => {
   }, [store.currentIntent]);
 
   return (
-    <AnimatePresence>
+    <AnimatePresence mode="popLayout">
       {display === "sidebar" && (
         <motion.aside
-          className="h-full flex flex-row gap-0.5"
-          transition={{ duration: 0.3 }}
-          initial={{ width: "0%", opacity: 0 }}
-          animate={{ width: "100%", opacity: 1 }}
+          className="w-full h-full flex flex-row gap-0.5"
+          transition={{ duration: 0.3, ease: "linear" }}
+          initial={{ translateX: -300 }}
+          animate={{ translateX: 0 }}
           exit={{
             width: "0%",
-            opacity: 0,
-            translateX: -128,
+            translateX: -300,
           }}
         >
           <AnimatePresence>

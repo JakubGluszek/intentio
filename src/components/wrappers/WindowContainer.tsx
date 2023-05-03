@@ -63,12 +63,12 @@ export const WindowContainer: React.FC<WindowContainerProps> = (props) => {
       {/* Gradient Overlay */}
       <motion.div
         animate={{
-          scale: [1.1, 1.5, 1.7, 1.2, 1.1],
+          scale: [1.2, 1, 1.2, 1.4, 1.8, 1.4, 1],
           top: [-100, -64, -32, -8, -100],
           left: [-100, -32, -64, -32, -100],
           opacity: [0, 0.2, 0.6, 0.4, 1, 0],
           transition: {
-            duration: 12,
+            duration: 18,
             repeat: Infinity,
           },
         }}

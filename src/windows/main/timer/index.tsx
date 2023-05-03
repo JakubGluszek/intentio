@@ -162,14 +162,14 @@ const Timer: React.FC = () => {
   if (!store.currentTheme) return null;
 
   return (
-    <AnimatePresence initial={false}>
+    <AnimatePresence initial={false} mode="popLayout">
       {display === "timer" && (
         <motion.div
           className="grow flex flex-col gap-0.5"
-          transition={{ duration: 0.3 }}
-          initial={{ width: "0%", opacity: 0, translateX: 128 }}
-          animate={{ width: "100%", opacity: 1, translateX: 0 }}
-          exit={{ width: "0%", opacity: 0, translateX: 128 }}
+          transition={{ duration: 0.3, ease: "linear" }}
+          initial={{ translateX: 300 }}
+          animate={{ translateX: 0 }}
+          exit={{ translateX: 300 }}
         >
           <Pane className="grow flex flex-col">
             <CircleTimer
@@ -261,14 +261,9 @@ const Timer: React.FC = () => {
               #{timer.iterations}
             </div>
             {store.currentIntent && (
-              <motion.div
-                className="w-full flex flex-row items-center justify-center gap-1 text-text/80 text-medium p-1"
-                transition={{ delay: 0.2, duration: 0.2 }}
-                initial={{ opacity: 0, display: "none" }}
-                animate={{ opacity: 1, display: "flex" }}
-              >
+              <div className="w-full flex flex-row items-center justify-center gap-1 text-text/80 text-medium p-1">
                 <span>{store.currentIntent.label}</span>
-              </motion.div>
+              </div>
             )}
             <div className="w-8"></div>
           </Pane>

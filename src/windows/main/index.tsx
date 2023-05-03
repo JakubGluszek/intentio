@@ -40,7 +40,12 @@ const Titlebar: React.FC = () => {
     <Pane className="flex flex-row items-center justify-between">
       <div className="flex flex-row gap-0.5">
         <Button variant="ghost" onClick={toggleDisplay}>
-          <motion.div animate={{ rotateZ: display === "sidebar" ? 180 : 0 }}>
+          <motion.div
+            animate={{
+              rotateZ: display === "sidebar" ? 180 : 0,
+              transition: { duration: 0.3 },
+            }}
+          >
             <TbLayoutSidebarRightCollapse size={24} />
           </motion.div>
         </Button>
