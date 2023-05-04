@@ -39,7 +39,12 @@ export const IntentView: React.FC<IntentViewProps> = (props) => {
   return (
     <React.Fragment>
       <Card
-        className="p-1"
+        className={clsx(
+          "p-1",
+          props.active
+            ? "bg-primary/50 hover:bg-primary/60 text-window"
+            : "active:bg-primary/20"
+        )}
         onClick={(e) => props.onClick?.(e)}
         onContextMenu={(e) => onContextMenuHandler(e)}
         active={props.active}
@@ -53,7 +58,7 @@ export const IntentView: React.FC<IntentViewProps> = (props) => {
           <div
             className={clsx(
               "flex flex-row items-center gap-1",
-              props.active ? "text-primary/80" : "text-text/80"
+              props.active ? "text-window" : "text-text/60"
             )}
           >
             {props.data.pinned ? (

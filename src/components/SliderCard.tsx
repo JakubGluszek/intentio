@@ -21,9 +21,9 @@ export const SliderCard: React.FC<SliderCardProps> = (props) => {
   return (
     <Card className="flex flex-col gap-2">
       <div className="flex flex-row items-center justify-between">
-        <div>{props.label}</div>
-        <div className="w-16 bg-window border-2 border-base/40 rounded-sm py-0.5">
-          <div className="text-center text-sm">{content}</div>
+        <div className="text-text">{props.label}</div>
+        <div className="w-16 border-2 border-primary/20 rounded-sm py-0.5">
+          <div className="text-center text-text/60 text-sm">{content}</div>
         </div>
       </div>
       <Slider

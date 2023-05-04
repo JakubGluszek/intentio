@@ -8,13 +8,14 @@ import Color from "color";
 import useStore from "@/store";
 import { Theme } from "@/bindings/Theme";
 
-interface Props {
+export interface EditorProps {
+  children?: React.ReactNode;
   value: string;
   lang: "shell" | "md";
   onChange: (code: string) => void;
 }
 
-const Editor: React.FC<Props> = (props) => {
+const Editor: React.FC<EditorProps> = (props) => {
   const [height, setHeight] = React.useState(0);
 
   const store = useStore();
@@ -25,7 +26,10 @@ const Editor: React.FC<Props> = (props) => {
   }, []);
 
   return (
-    <div ref={containerRef} className="grow text-sm rounded-sm overflow-clip">
+    <div
+      ref={containerRef}
+      className="relative grow text-sm rounded-sm overflow-clip border-2 border-base/40 hover:border-primary/40 shadow-lg shadow-black/30"
+    >
       <CodeMirror
         autoFocus
         value={props.value}
@@ -33,9 +37,14 @@ const Editor: React.FC<Props> = (props) => {
         extensions={props.lang === "md" ? [langs.markdown()] : [langs.shell()]}
         height={`${height}px`}
         theme={makeCustomTheme(store.currentTheme!)}
-        basicSetup={{ lineNumbers: false, foldGutter: false, autocompletion: false }}
+        basicSetup={{
+          lineNumbers: false,
+          foldGutter: false,
+          autocompletion: false,
+        }}
         data-tauri-disable-drag
       />
+      {props.children}
     </div>
   );
 };
@@ -44,7 +53,7 @@ const makeCustomTheme = (data: Theme) =>
   createTheme({
     theme: "dark",
     settings: {
-      background: "rgb(0,0,0,0.2)",
+      background: "rgba(var(--base-color) / 0.2)",
       foreground: data.text_hex,
       caret: data.primary_hex,
       selection: "rgb(var(--primary-color) / 0.1)",

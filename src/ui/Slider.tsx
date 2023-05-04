@@ -22,11 +22,11 @@ export const Slider: React.FC<SliderProps> = (props) => {
       disabled={props.disabled}
       classNames={{
         root: "w-full",
-        bar: "bg-primary",
+        bar: "bg-primary/60",
         thumb: "bg-primary border-primary",
         track: "before:bg-primary/20",
         label:
-          "bg-window text-primary font-bold shadow-lg shadow-black/30 border-2 px-3 -translate-y-2 border-primary",
+          "bg-window text-primary/80 font-bold shadow-lg shadow-black/30 border-2 px-3 -translate-y-2 border-base/60",
       }}
       showLabelOnHover={false}
       onChangeEnd={props.onChangeEnd}

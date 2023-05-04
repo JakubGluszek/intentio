@@ -21,10 +21,8 @@ export const Section: React.FC<SectionProps> = (props) => {
       {...restProps}
     >
       {heading && (
-        <div className="w-fit bg-window rounded-sm overflow-clip shadow shadow-black/80">
-          <div className="bg-lighter/10 text-text/80 font-semibold border-2 border-base/30 uppercase px-2">
-            {heading}
-          </div>
+        <div className="w-fit text-center text-base/80 px-1 font-bold uppercase tracking-widest">
+          {heading}
         </div>
       )}
       <div className="flex flex-col gap-1.5">{children}</div>

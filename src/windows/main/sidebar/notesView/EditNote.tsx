@@ -5,6 +5,7 @@ import ipc from "@/ipc";
 import { Editor } from "@/components";
 import { Note } from "@/bindings/Note";
 import { Button } from "@/ui";
+import { MdCancel, MdSave } from "react-icons/md";
 
 interface Props {
   note: Note;
@@ -28,19 +29,25 @@ const EditNote: React.FC<Props> = (props) => {
   }, [props.note]);
 
   return (
-    <div className="grow flex flex-col gap-1">
-      <Editor lang="md" value={body} onChange={(value) => setBody(value)} />
-
-      <div className="flex flex-row items-center justify-between">
-        <Button variant="ghost" onClick={() => props.hide()}>
-          <div>Exit</div>
+    <Editor lang="md" value={body} onChange={(value) => setBody(value)}>
+      <div className="absolute bottom-1 right-1 flex flex-row items-center justify-between">
+        <Button
+          variant="ghost"
+          config={{ ghost: { highlight: false } }}
+          onClick={() => props.hide()}
+        >
+          <MdCancel size={24} />
         </Button>
 
-        <Button variant="base" onClick={() => updateNote()}>
-          Update note
+        <Button
+          variant="ghost"
+          config={{ ghost: { highlight: false } }}
+          onClick={() => updateNote()}
+        >
+          <MdSave size={24} />
         </Button>
       </div>
-    </div>
+    </Editor>
   );
 };
 

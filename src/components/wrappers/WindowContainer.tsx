@@ -64,20 +64,19 @@ export const WindowContainer: React.FC<WindowContainerProps> = (props) => {
       <motion.div
         animate={{
           scale: [1, 1.2, 1.4, 1.2, 1],
-          top: [-100, -64, 100, -32, -100],
-          left: [-100, -32, 100, -32, -100],
           opacity: [0, 0.2, 0.6, 0.4, 1, 0],
           transition: {
             duration: 15,
             repeat: Infinity,
           },
         }}
-        exit={{ opacity: 0 }}
         className="fixed w-full h-full"
         style={{
+          left: -32,
+          top: -64,
           pointerEvents: "none",
           backgroundImage:
-            "radial-gradient(circle at center, rgba(var(--base-color) / 0.1), transparent 100%",
+            "radial-gradient(circle at center, rgba(var(--base-color) / 0.2), transparent 100%",
         }}
       ></motion.div>
 
