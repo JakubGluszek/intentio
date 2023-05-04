@@ -1,9 +1,10 @@
 [package]
 name = "intentio"
 version = "2.0.0"
-description = "A pomodoro timer desktop app."
+description = "A customizable and feature rich pomodoro timer."
+keywords = ["productivity", "timer", "pomodoro"]
 authors = ["Jacob <jacobgluszek03@gmail.com>"]
-license = "GPL-3.0-or-later"
+license-file = "LICENSE"
 repository = "https://github.com/JakubGluszek/intentio"
 edition = "2021"
 rust-version = "1.57"

@@ -66,7 +66,7 @@
     },
     "bundle": {
       "active": true,
-      "category": "DeveloperTool",
+      "category": "Productivity",
       "copyright": "",
       "deb": {
         "depends": []
@@ -79,8 +79,8 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "intentio.app",
-      "longDescription": "A pomodoro timer.",
+      "identifier": "app.intentio",
+      "longDescription": "",
       "macOS": {
         "entitlements": null,
         "exceptionDomain": "",
@@ -91,7 +91,7 @@
       "resources": [
         "./audio/*"
       ],
-      "shortDescription": "A pomodoro timer.",
+      "shortDescription": "A customizable and feature rich pomodoro timer.",
       "targets": "all",
       "windows": {
         "certificateThumbprint": null,
