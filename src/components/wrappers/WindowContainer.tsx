@@ -68,7 +68,7 @@ export const WindowContainer: React.FC<WindowContainerProps> = (props) => {
           left: [-100, -32, -64, -32, -100],
           opacity: [0, 0.2, 0.6, 0.4, 1, 0],
           transition: {
-            duration: 18,
+            duration: 60,
             repeat: Infinity,
           },
         }}
@@ -77,7 +77,7 @@ export const WindowContainer: React.FC<WindowContainerProps> = (props) => {
         style={{
           pointerEvents: "none",
           backgroundImage:
-            "radial-gradient(circle at center, rgba(var(--primary-color) / 0.2), rgba(var(--window-color) / 0.1) 75%",
+            "radial-gradient(circle at center, rgba(var(--primary-color) / 0.1), rgba(var(--window-color) / 0.1) 75%",
         }}
       ></motion.div>
 

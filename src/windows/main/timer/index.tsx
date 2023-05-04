@@ -13,6 +13,7 @@ import ipc from "@/ipc";
 import { useEvents } from "@/hooks";
 import utils from "@/utils";
 import { useTimer } from "./useTimer";
+import { TimerDetails } from "./TimerDetails";
 
 const Timer: React.FC = () => {
   const { display } = React.useContext(MainWindowContext)!;
@@ -131,11 +132,6 @@ const Timer: React.FC = () => {
     },
   });
 
-  const toggleDisplayCountdown = () =>
-    ipc.updateInterfaceConfig({
-      display_timer_countdown: !store.interfaceConfig?.display_timer_countdown,
-    });
-
   React.useEffect(() => {
     ipc.getTimerConfig().then((data) => store.setTimerConfig(data));
     ipc.getScripts().then((data) => store.setScripts(data));
@@ -147,17 +143,6 @@ const Timer: React.FC = () => {
     timer_play: () => (timer.isPlaying ? timer.pause() : timer.resume()),
     timer_skip: () => timer.skip(),
   });
-
-  const formattedTimeLeft = utils.formatTimer(
-    timer.duration - timer.elapsedTime
-  );
-
-  const sessionType =
-    timer.type === "Focus"
-      ? "Focus"
-      : timer.type === "Break"
-        ? "Break"
-        : "Long break";
 
   if (!store.currentTheme) return null;
 
@@ -171,102 +156,91 @@ const Timer: React.FC = () => {
           animate={{ translateX: 0 }}
           exit={{ translateX: 300 }}
         >
-          <Pane className="grow flex flex-col">
+          <Pane className="group relative grow flex flex-col">
             <CircleTimer
               isPlaying={timer.isPlaying}
               duration={timer.duration}
               elapsedTime={timer.elapsedTimeDetailed}
-              strokeWidth={6}
+              strokeWidth={4}
               size={210}
               color={
                 Color(
                   timer.isPlaying
-                    ? store.currentTheme.primary_hex
+                    ? store.currentTheme.base_hex
                     : store.currentTheme.base_hex
                 )
-                  .alpha(0.8)
+                  .alpha(0.6)
                   .hex() as ColorFormat
               }
               trailColor={
                 Color(store.currentTheme.window_hex).hex() as ColorFormat
               }
             >
-              <div className="flex flex-col items-center gap-1">
-                {store.interfaceConfig?.display_timer_countdown ? (
-                  <div className="mt-12 flex flex-col items-center">
-                    <button
-                      className="font-mono text-text/80 hover:text-text transition-colors duration-150"
-                      onClick={() => toggleDisplayCountdown()}
-                      style={{
-                        fontSize: 40,
-                      }}
-                      tabIndex={-3}
-                    >
-                      {formattedTimeLeft}
-                    </button>
-                    <span className="text-lg font-semibold text-text/70 whitespace-nowrap">
-                      {sessionType}
-                    </span>
-                  </div>
-                ) : (
+              <div className="absolute m-auto">
+                <TimerDetails
+                  config={{
+                    display: true,
+                    hideCountdown:
+                      store.interfaceConfig?.display_timer_countdown ?? false,
+                  }}
+                  onHideCountdownChange={() => {
+                    ipc.updateInterfaceConfig({
+                      display_timer_countdown:
+                        !store.interfaceConfig?.display_timer_countdown,
+                    });
+                  }}
+                  {...timer}
+                />
+              </div>
+
+              <div className="absolute m-auto translate-y-[4.5rem] opacity-0 group-hover:opacity-100 w-full flex flex-col items-center gap-1 transition-opacity duration-150">
+                <div className="group flex flex-row items-center justify-center">
                   <button
-                    onClick={() => toggleDisplayCountdown()}
-                    className="mt-8 text-4xl font-bold whitespace-nowrap text-text/80 hover:text-text transition-colors duration-150"
                     tabIndex={-3}
+                    className="opacity-0 group-hover:opacity-100 transition-opacity duration-500 text-base/80 hover:text-primary"
+                    onClick={() => timer.restart()}
                   >
-                    {sessionType}
+                    <VscDebugRestart size={21} />
                   </button>
-                )}
 
-                <div className="w-full flex flex-col items-center gap-1 transition-opacity duration-300">
-                  <div className="group flex flex-row items-center justify-center">
-                    <button
-                      tabIndex={-3}
-                      className="opacity-0 group-hover:opacity-100 transition-opacity duration-500 text-base/80 hover:text-primary"
-                      onClick={() => timer.restart()}
-                    >
-                      <VscDebugRestart size={21} />
-                    </button>
-
-                    <Button
-                      variant="ghost"
-                      onClick={() =>
-                        timer.isPlaying ? timer.pause() : timer.resume()
-                      }
-                      config={{ ghost: { highlight: false } }}
-                    >
-                      {timer.isPlaying ? (
-                        <MdPauseCircle size={36} />
-                      ) : (
-                        <MdPlayCircle size={36} />
-                      )}
-                    </Button>
-                    <button
-                      tabIndex={-3}
-                      className="opacity-0 group-hover:opacity-100 transition-opacity duration-500 text-base/80 hover:text-primary -translate-x-0.5"
-                      onClick={() => {
-                        timer.skip(true);
-                      }}
-                    >
-                      <MdSkipNext size={26} />
-                    </button>
-                  </div>
+                  <Button
+                    variant="ghost"
+                    onClick={() =>
+                      timer.isPlaying ? timer.pause() : timer.resume()
+                    }
+                    config={{ ghost: { highlight: false } }}
+                  >
+                    {timer.isPlaying ? (
+                      <MdPauseCircle size={36} />
+                    ) : (
+                      <MdPlayCircle size={36} />
+                    )}
+                  </Button>
+                  <button
+                    tabIndex={-3}
+                    className="opacity-0 group-hover:opacity-100 transition-opacity duration-500 text-base/80 hover:text-primary -translate-x-0.5"
+                    onClick={() => {
+                      timer.skip(true);
+                    }}
+                  >
+                    <MdSkipNext size={26} />
+                  </button>
                 </div>
               </div>
             </CircleTimer>
-          </Pane>
 
-          <Pane className="flex flex-row justify-between items-center">
-            <div className="text-base/80 font-bold text-center p-1">
+            <div className="absolute bottom-1 left-1 opacity-0 group-hover:opacity-100 transition-opacity duration-150 text-base/80 font-bold text-center p-1">
               #{timer.iterations}
             </div>
-            {store.currentIntent && (
+          </Pane>
+
+          {store.currentIntent && (
+            <Pane className="flex flex-row justify-between items-center">
               <div className="w-full flex flex-row items-center justify-center gap-1 text-text/80 text-medium p-1">
                 <span>{store.currentIntent.label}</span>
               </div>
-            )}
-            <div className="w-8"></div>
-          </Pane>
+            </Pane>
+          )}
         </motion.div>
       )}
     </AnimatePresence>

@@ -14,11 +14,11 @@ const Titlebar: React.FC<Props> = (props) => {
   return (
     <Pane className="flex flex-row items-center justify-between">
       <div className="flex flex-row items-center gap-1 text-text">
-        <props.icon size={20} />
-        <span className="font-semibold">{props.title}</span>
+        <props.icon size={24} />
+        <span className="text-lg font-semibold">{props.title}</span>
       </div>
       <Button variant="ghost" onClick={() => appWindow.close()}>
-        <MdClose size={24} />
+        <MdClose size={28} />
       </Button>
     </Pane>
   );

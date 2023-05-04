@@ -46,23 +46,23 @@ const Titlebar: React.FC = () => {
               transition: { duration: 0.3 },
             }}
           >
-            <TbLayoutSidebarRightCollapse size={24} />
+            <TbLayoutSidebarRightCollapse size={28} />
           </motion.div>
         </Button>
         <Button
           variant="ghost"
           onClick={() => new WebviewWindow("settings", config.windows.settings)}
         >
-          <MdSettings size={24} />
+          <MdSettings size={28} />
         </Button>
       </div>
       <h2 className="font-bold text-text">Intentio</h2>
       <div className="flex flex-row gap-0.5">
         <Button variant="ghost" onClick={() => ipc.hideMainWindow()}>
-          <MdRemove size={24} />
+          <MdRemove size={28} />
         </Button>
         <Button variant="ghost" onClick={() => ipc.exitMainWindow()}>
-          <MdClose size={24} />
+          <MdClose size={28} />
         </Button>
       </div>
     </Pane>
