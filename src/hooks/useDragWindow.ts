@@ -31,7 +31,7 @@ export const useDragWindow = () => {
     element: HTMLElement,
     iterations: number
   ): boolean => {
-    const noDragSelector = "input, a, button, label, textarea"; // CSS selectors
+    const noDragSelector = "input, a, button, label, textarea, scrollbar"; // CSS selectors
 
     if (
       iterations > 0 &&

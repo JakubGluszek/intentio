@@ -34,7 +34,7 @@ export const TimerDetails: React.FC<TimerDetails> = (props) => {
       <button
         onClick={() => props.onHideCountdownChange()}
         className={clsx(
-          "text-3xl font-bold whitespace-nowrap transition-colors duration-150",
+          "text-4xl font-bold whitespace-nowrap transition-colors duration-150",
           timer.isPlaying
             ? "text-primary/80 hover:text-primary"
             : "text-base/80 hover:text-[rgb(var(--base-color))]"
@@ -49,7 +49,7 @@ export const TimerDetails: React.FC<TimerDetails> = (props) => {
     <div className="translate-y-2 flex flex-col items-center">
       <button
         className={clsx(
-          "text-3xl font-semibold font-mono transition-colors duration-150",
+          "text-4xl font-semibold font-mono transition-colors duration-150",
           timer.isPlaying
             ? "text-primary/80 hover:text-primary"
             : "text-base/80 hover:text-[rgb(var(--base-color))]"

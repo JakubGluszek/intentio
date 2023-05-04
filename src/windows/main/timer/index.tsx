@@ -194,7 +194,7 @@ const Timer: React.FC = () => {
                 />
               </div>
 
-              <div className="absolute m-auto translate-y-[4.5rem] opacity-0 group-hover:opacity-100 w-full flex flex-col items-center gap-1 transition-opacity duration-150">
+              <div className="absolute m-auto translate-y-[4.5rem]  w-full flex flex-col items-center gap-1 transition-opacity duration-150">
                 <div className="group flex flex-row items-center justify-center">
                   <button
                     tabIndex={-3}
@@ -229,10 +229,6 @@ const Timer: React.FC = () => {
                 </div>
               </div>
             </CircleTimer>
-
-            <div className="absolute bottom-1 left-1 opacity-0 group-hover:opacity-100 transition-opacity duration-150 text-base/80 font-bold text-center p-1">
-              #{timer.iterations}
-            </div>
           </Pane>
 
           <TimerIntent data={store.currentIntent} />
