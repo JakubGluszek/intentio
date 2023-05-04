@@ -17,6 +17,7 @@ export const EditIntent: React.FC<EditIntentProps> = (props) => {
   return (
     <div className="relative">
       <Input
+        className="h-9"
         value={label}
         onChange={(e) => setLabel(e.currentTarget.value)}
         onKeyDown={(e) => {
@@ -36,7 +37,7 @@ export const EditIntent: React.FC<EditIntentProps> = (props) => {
 
       <Button
         variant="ghost"
-        className="absolute right-0 top-0"
+        className="absolute right-0.5 top-0.5 rounded-none"
         onClick={() => props.onExit()}
       >
         <MdClose size={20} />

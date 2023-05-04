@@ -38,11 +38,12 @@ const Sidebar: React.FC = () => {
         <motion.aside
           className="w-full h-full flex flex-row gap-0.5"
           transition={{ duration: 0.3, ease: "linear" }}
-          initial={{ translateX: -300 }}
-          animate={{ translateX: 0 }}
+          initial={{ translateX: -300, opacity: 0.6 }}
+          animate={{ translateX: 0, opacity: 1 }}
           exit={{
             width: "0%",
             translateX: -300,
+            opacity: 0.3,
           }}
         >
           <AnimatePresence>

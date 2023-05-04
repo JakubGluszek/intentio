@@ -14,6 +14,7 @@ import { useEvents } from "@/hooks";
 import utils from "@/utils";
 import { useTimer } from "./useTimer";
 import { TimerDetails } from "./TimerDetails";
+import { TimerIntent } from "./TimerIntent";
 
 const Timer: React.FC = () => {
   const { display } = React.useContext(MainWindowContext)!;
@@ -152,9 +153,9 @@ const Timer: React.FC = () => {
         <motion.div
           className="grow flex flex-col gap-0.5"
           transition={{ duration: 0.3, ease: "linear" }}
-          initial={{ translateX: 300 }}
-          animate={{ translateX: 0 }}
-          exit={{ translateX: 300 }}
+          initial={{ translateX: 300, opacity: 0.6 }}
+          animate={{ translateX: 0, opacity: 1 }}
+          exit={{ translateX: 300, opacity: 0.3 }}
         >
           <Pane className="group relative grow flex flex-col">
             <CircleTimer
@@ -166,7 +167,7 @@ const Timer: React.FC = () => {
               color={
                 Color(
                   timer.isPlaying
-                    ? store.currentTheme.base_hex
+                    ? store.currentTheme.primary_hex
                     : store.currentTheme.base_hex
                 )
                   .alpha(0.6)
@@ -178,6 +179,7 @@ const Timer: React.FC = () => {
             >
               <div className="absolute m-auto">
                 <TimerDetails
+                  timer={timer}
                   config={{
                     display: true,
                     hideCountdown:
@@ -189,7 +191,6 @@ const Timer: React.FC = () => {
                         !store.interfaceConfig?.display_timer_countdown,
                     });
                   }}
-                  {...timer}
                 />
               </div>
 
@@ -234,13 +235,7 @@ const Timer: React.FC = () => {
             </div>
           </Pane>
 
-          {store.currentIntent && (
-            <Pane className="flex flex-row justify-between items-center">
-              <div className="w-full flex flex-row items-center justify-center gap-1 text-text/80 text-medium p-1">
-                <span>{store.currentIntent.label}</span>
-              </div>
-            </Pane>
-          )}
+          <TimerIntent data={store.currentIntent} />
         </motion.div>
       )}
     </AnimatePresence>

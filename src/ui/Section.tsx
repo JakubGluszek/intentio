@@ -21,8 +21,8 @@ export const Section: React.FC<SectionProps> = (props) => {
       {...restProps}
     >
       {heading && (
-        <div className="w-fit bg-window/10 text-base/90 font-semibold rounded-sm overflow-clip uppercase shadow shadow-black/80">
-          <div className="bg-base/5 border-2 border-base/40 px-4">
+        <div className="w-fit bg-window rounded-sm overflow-clip shadow shadow-black/80">
+          <div className="bg-lighter/10 text-text/80 font-semibold border-2 border-base/30 uppercase px-2">
             {heading}
           </div>
         </div>

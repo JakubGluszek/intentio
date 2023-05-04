@@ -4,7 +4,8 @@ import { clsx } from "@mantine/core";
 
 import { useTimerReturnValues } from "./useTimer";
 
-export interface TimerDetails extends useTimerReturnValues {
+export interface TimerDetails {
+  timer: useTimerReturnValues;
   config: {
     display: boolean;
     hideCountdown: boolean;
@@ -13,16 +14,16 @@ export interface TimerDetails extends useTimerReturnValues {
 }
 
 export const TimerDetails: React.FC<TimerDetails> = (props) => {
-  const { config } = props;
+  const { config, timer } = props;
 
   const formattedTimeLeft = utils.formatTimer(
-    props.duration - props.elapsedTime
+    timer.duration - timer.elapsedTime
   );
 
   const sessionType =
-    props.type === "Focus"
+    timer.type === "Focus"
       ? "Focus"
-      : props.type === "Break"
+      : timer.type === "Break"
         ? "Break"
         : "Long break";
 
@@ -34,7 +35,7 @@ export const TimerDetails: React.FC<TimerDetails> = (props) => {
         onClick={() => props.onHideCountdownChange()}
         className={clsx(
           "text-3xl font-bold whitespace-nowrap transition-colors duration-150",
-          props.isPlaying
+          timer.isPlaying
             ? "text-primary/80 hover:text-primary"
             : "text-base/80 hover:text-[rgb(var(--base-color))]"
         )}
@@ -49,7 +50,7 @@ export const TimerDetails: React.FC<TimerDetails> = (props) => {
       <button
         className={clsx(
           "text-3xl font-semibold font-mono transition-colors duration-150",
-          props.isPlaying
+          timer.isPlaying
             ? "text-primary/80 hover:text-primary"
             : "text-base/80 hover:text-[rgb(var(--base-color))]"
         )}
