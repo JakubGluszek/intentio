@@ -21,7 +21,7 @@ export const Section: React.FC<SectionProps> = (props) => {
       {...restProps}
     >
       {heading && (
-        <div className="w-fit text-center text-base/80 px-1 font-bold uppercase tracking-widest">
+        <div className="w-fit text-center text-primary/80 font-bold uppercase tracking-widest">
           {heading}
         </div>
       )}

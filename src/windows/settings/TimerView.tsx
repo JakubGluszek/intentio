@@ -64,7 +64,7 @@ const TimerView: React.FC = () => {
           </Section>
 
           <Section heading="Repeat">
-            <Card className="flex flex-col gap-1">
+            <Card className="flex flex-col gap-1" withBorder>
               <div className="flex flex-row items-center justify-between">
                 <div>Auto start focus</div>
                 <CheckBox
@@ -87,13 +87,13 @@ const TimerView: React.FC = () => {
           </Section>
 
           <Section heading="Hotkeys">
-            <Card className="flex flex-row items-center justify-between">
+            <Card className="flex flex-row items-center justify-between" withBorder>
               <div>Start/Resume</div>
               <div className="w-24 bg-primary/30 py-1 text-sm font-bold text-center rounded-sm shadow-inner shadow-black/20">
                 CTRL + F1
               </div>
             </Card>
-            <Card className="flex flex-row items-center justify-between">
+            <Card className="flex flex-row items-center justify-between" withBorder>
               <div>Skip</div>
               <div className="w-24 bg-primary/30 p-1 text-sm font-bold text-center rounded-sm shadow-inner shadow-black/20">
                 CTRL + F2

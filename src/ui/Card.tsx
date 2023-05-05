@@ -6,6 +6,7 @@ import { clsx } from "@mantine/core";
 export interface CardProps extends HTMLMotionProps<"div"> {
   children: React.ReactNode;
   active?: boolean;
+  withBorder?: boolean;
 }
 
 export const Card = React.forwardRef<HTMLDivElement, CardProps>(
@@ -13,15 +14,17 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
     const {
       children,
       active,
+      withBorder = false,
       className: customClassName,
       ...restProps
     } = props;
 
     let className = clsx(
-      "bg-base/20 hover:bg-base/[25%] backdrop-blur-sm p-1 rounded-sm transition-all duration-150",
+      "group bg-base/20 hover:bg-base/[25%] backdrop-blur-sm p-1 rounded-sm transition-all duration-150",
       active
         ? "border-primary/60 hover:border-primary/80 text-primary/80"
-        : "border-base/30 hover:border-base/40 shadow shadow-black/20"
+        : "border-base/30 hover:border-base/40 shadow shadow-black/20",
+      withBorder && "border-2 border-base/30 hover:border-base/40"
     );
 
     if (customClassName) {

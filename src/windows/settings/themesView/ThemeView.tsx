@@ -79,7 +79,7 @@ const ThemeView: React.FC<Props> = (props) => {
             )}
             <button
               onClick={() => handleToggleFavorite()}
-              className="opacity-60 hover:opacity-100"
+              className="opacity-80 hover:opacity-100"
               style={{
                 color: props.data.primary_hex,
               }}

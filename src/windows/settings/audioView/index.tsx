@@ -58,14 +58,16 @@ const AudioView: React.FC = () => {
         <OpenFileExplorerButton />
         <div className="max-h-0 overflow-y">
           <div className="flex flex-col pb-1.5 gap-1">
-            {tracks.map((track, idx) => (
-              <TrackView
-                key={idx}
-                name={track.name!}
-                onSelected={() => updateConfig({ alert_audio: track.name })}
-                onTrackPreview={() => ipc.playAudio(track.name)}
-              />
-            ))}
+            {tracks
+              .filter((track) => track.name !== config.alert_file)
+              .map((track, idx) => (
+                <TrackView
+                  key={idx}
+                  name={track.name!}
+                  onSelected={() => updateConfig({ alert_audio: track.name })}
+                  onTrackPreview={() => ipc.playAudio(track.name)}
+                />
+              ))}
           </div>
         </div>
       </Pane>

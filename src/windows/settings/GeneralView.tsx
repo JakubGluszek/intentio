@@ -44,8 +44,13 @@ const GeneralView: React.FC = () => {
             animate="visible"
           >
             <Section heading="App">
-              <Card className="flex flex-row items-center justify-between">
-                <div>Auto run on start-up</div>
+              <Card
+                className="flex flex-row items-center justify-between"
+                withBorder
+              >
+                <div className="text-text/90 group-hover:text-text">
+                  Auto run on start-up
+                </div>
                 <CheckBox
                   checked={isAutoStart}
                   onChange={(autoStart) =>
@@ -58,9 +63,11 @@ const GeneralView: React.FC = () => {
             </Section>
 
             <Section heading="Alerts">
-              <Card>
+              <Card withBorder>
                 <div className="flex flex-row items-center justify-between">
-                  <div>System notifications</div>
+                  <div className="text-text/90 group-hover:text-text">
+                    System notifications
+                  </div>
                   <CheckBox
                     checked={store.behaviorConfig.system_notifications}
                     onChange={(system_notifications) =>
@@ -72,9 +79,11 @@ const GeneralView: React.FC = () => {
             </Section>
 
             <Section heading="Main Window">
-              <Card className="flex flex-col gap-1">
+              <Card className="flex flex-col gap-1" withBorder>
                 <div className="flex flex-row items-center justify-between">
-                  <div>Always on top</div>
+                  <div className="text-text/90 group-hover:text-text">
+                    Always on top
+                  </div>
                   <CheckBox
                     checked={store.behaviorConfig.main_always_on_top}
                     onChange={(main_always_on_top) =>
@@ -89,7 +98,9 @@ const GeneralView: React.FC = () => {
                   />
                 </div>
                 <div className="flex flex-row items-center justify-between">
-                  <div>Minimize to tray</div>
+                  <div className="text-text/90 group-hover:text-text">
+                    Minimize to tray
+                  </div>
                   <CheckBox
                     checked={store.behaviorConfig.main_minimize_to_tray}
                     onChange={(main_minimize_to_tray) =>
