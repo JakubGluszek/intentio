@@ -50,6 +50,7 @@
 
   html {
     @apply w-screen h-screen flex flex-col font-quicksand font-medium tracking-wider text-text cursor-default;
+    font-weight: 600;
   }
 
   body {

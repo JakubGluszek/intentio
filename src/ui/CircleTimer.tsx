@@ -45,21 +45,14 @@ export const CircleTimer: React.FC<CircleTimerProps> = ({
       >
         <path
           d={path}
-          stroke={props.trailColor}
-          strokeWidth={props.strokeWidth}
-          fill="transparent"
-        />
-        <path
-          style={{ opacity: 0.2 }}
-          d={path}
-          stroke={"#000"}
+          stroke="rgba(var(--base-color) / 0.3)"
           strokeWidth={props.strokeWidth}
           fill="transparent"
         />
 
         <path
           d={path}
-          fill="transparent"
+          fill="rgba(var(--primary-color) / 0.1)"
           stroke={stroke}
           strokeLinecap={"round"}
           strokeWidth={props.strokeWidth}

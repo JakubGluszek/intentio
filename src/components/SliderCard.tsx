@@ -23,7 +23,7 @@ export const SliderCard: React.FC<SliderCardProps> = (props) => {
       <div className="flex flex-row items-center justify-between">
         <div className="text-text">{props.label}</div>
         <div className="w-16 border-2 border-primary/20 rounded-sm py-0.5">
-          <div className="text-center text-text/60 text-sm">{content}</div>
+          <div className="text-center text-text/80 text-sm">{content}</div>
         </div>
       </div>
       <Slider

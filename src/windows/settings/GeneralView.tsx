@@ -89,7 +89,7 @@ const GeneralView: React.FC = () => {
                   />
                 </div>
                 <div className="flex flex-row items-center justify-between">
-                  <div>Minimie to tray</div>
+                  <div>Minimize to tray</div>
                   <CheckBox
                     checked={store.behaviorConfig.main_minimize_to_tray}
                     onChange={(main_minimize_to_tray) =>

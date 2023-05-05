@@ -40,7 +40,6 @@ export const IntentView: React.FC<IntentViewProps> = (props) => {
     <React.Fragment>
       <Card
         className={clsx(
-          "p-1",
           props.active
             ? "bg-primary/50 hover:bg-primary/60 text-window"
             : "active:bg-primary/20"

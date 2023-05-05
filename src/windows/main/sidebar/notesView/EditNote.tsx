@@ -29,8 +29,9 @@ const EditNote: React.FC<Props> = (props) => {
   }, [props.note]);
 
   return (
-    <Editor lang="md" value={body} onChange={(value) => setBody(value)}>
-      <div className="absolute bottom-1 right-1 flex flex-row items-center justify-between">
+    <div className="grow flex flex-col">
+      <Editor lang="md" value={body} onChange={(value) => setBody(value)} />
+      <div className="flex flex-row items-center justify-between">
         <Button
           variant="ghost"
           config={{ ghost: { highlight: false } }}
@@ -47,7 +48,7 @@ const EditNote: React.FC<Props> = (props) => {
           <MdSave size={24} />
         </Button>
       </div>
-    </Editor>
+    </div>
   );
 };
 

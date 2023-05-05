@@ -22,7 +22,7 @@ const AnalyticsWindow: React.FC = () => {
 
         <Pane className="grow flex flex-col" padding="lg">
           <Statistics intents={store.intents} sessions={store.sessions} />
-          <Card className="border-2 border-primary/30 hover:border-primary/60">
+          <Card className="border-2 bg-darker/10 hover:bg-darker/20 border-primary/60 hover:border-primary/80">
             <Calendar days={calendar.days} theme={store.currentTheme!} />
           </Card>
         </Pane>

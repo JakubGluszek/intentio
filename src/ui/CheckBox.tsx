@@ -29,14 +29,14 @@ export const CheckBox: React.FC<CheckBoxProps> = (props) => {
       <div className="relative w-full h-full">
         <motion.div
           className={clsx(
-            "rounded-sm shadow shadow-black/60 transition-[lol]",
+            "rounded-sm",
             props.checked
-              ? "bg-primary/80 group-hover:bg-primary"
+              ? "bg-primary/80 group-hover:bg-primary shadow shadow-black/60"
               : "bg-base/80 group-hover:bg-base"
           )}
           style={{ position: "absolute", width: width / 2, height: "100%" }}
           transition={{ duration: init ? 0.6 : 0.15, delay: init ? 0.3 : 0 }}
-          initial={{ scale: 0.8, opacity: 0 }}
+          initial={{ opacity: 0 }}
           animate={{
             scale: 1,
             opacity: 1,
