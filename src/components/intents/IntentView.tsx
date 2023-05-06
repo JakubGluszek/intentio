@@ -3,7 +3,7 @@ import { TiPin, TiPinOutline } from "react-icons/ti";
 import { BiTargetLock } from "react-icons/bi";
 import { toast } from "react-hot-toast";
 import { clsx } from "@mantine/core";
-import { MdDelete, MdEdit } from "react-icons/md";
+import { MdDelete, MdEdit, MdTimer } from "react-icons/md";
 import { HiArchive } from "react-icons/hi";
 
 import ipc from "@/ipc";
@@ -72,6 +72,11 @@ export const IntentView: React.FC<IntentViewProps> = (props) => {
 
       <ContextMenu className="w-fit border-none rounded" {...menu}>
         <div className="bg-lighter/10 flex flex-row gap-0.5 rounded">
+          <Tooltip label="Start session">
+            <Button variant="ghost" className="rounded-l">
+              <MdTimer size={20} />
+            </Button>
+          </Tooltip>
           <Tooltip label={props.data.pinned ? "Unpin" : "Pin"}>
             <Button
               variant="ghost"

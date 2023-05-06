@@ -2,21 +2,16 @@ import React from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { sendNotification } from "@tauri-apps/api/notification";
 import { toast } from "react-hot-toast";
-import { VscDebugRestart } from "react-icons/vsc";
-import { MdPauseCircle, MdPlayCircle, MdSkipNext } from "react-icons/md";
-import Color from "color";
 
 import useStore from "@/store";
 import { MainWindowContext } from "@/contexts";
-import { Button, CircleTimer, ColorFormat, Pane } from "@/ui";
+import { Pane } from "@/ui";
 import ipc from "@/ipc";
 import { useEvents } from "@/hooks";
 import utils from "@/utils";
-import { useTimer } from "./useTimer";
-import { TimerDetails } from "./TimerDetails";
-import { TimerIntent } from "./TimerIntent";
+import { Timer, TimerIntent, useTimer } from "@/components";
 
-const Timer: React.FC = () => {
+const TimerPane: React.FC = () => {
   const { display } = React.useContext(MainWindowContext)!;
   const store = useStore();
 
@@ -157,80 +152,17 @@ const Timer: React.FC = () => {
           animate={{ translateX: 0, opacity: 1 }}
           exit={{ translateX: 300, opacity: 0.3 }}
         >
-          <Pane className="group relative grow flex flex-col" padding="lg">
-            <CircleTimer
-              isPlaying={timer.isPlaying}
-              duration={timer.duration}
-              elapsedTime={timer.elapsedTimeDetailed}
-              strokeWidth={2}
-              size={200}
-              color={
-                Color(
-                  timer.isPlaying
-                    ? store.currentTheme.primary_hex
-                    : store.currentTheme.base_hex
-                )
-                  .alpha(0.6)
-                  .hex() as ColorFormat
-              }
-              trailColor={
-                Color(store.currentTheme.window_hex).hex() as ColorFormat
-              }
-            >
-              <div className="absolute m-auto">
-                <TimerDetails
-                  timer={timer}
-                  config={{
-                    display: true,
-                    hideCountdown:
-                      store.interfaceConfig?.display_timer_countdown ?? false,
-                  }}
-                  onHideCountdownChange={() => {
-                    ipc.updateInterfaceConfig({
-                      display_timer_countdown:
-                        !store.interfaceConfig?.display_timer_countdown,
-                    });
-                  }}
-                />
-              </div>
-
-              <div className="absolute m-auto translate-y-[4.5rem]  w-full flex flex-col items-center gap-1 transition-opacity duration-150">
-                <div className="group flex flex-row items-center justify-center">
-                  <button
-                    tabIndex={-3}
-                    className="opacity-0 group-hover:opacity-100 transition-opacity duration-500 text-base/80 hover:text-primary"
-                    onClick={() => timer.restart()}
-                  >
-                    <VscDebugRestart size={21} />
-                  </button>
-
-                  <Button
-                    variant="ghost"
-                    onClick={() =>
-                      timer.isPlaying ? timer.pause() : timer.resume()
-                    }
-                    config={{ ghost: { highlight: false } }}
-                  >
-                    {timer.isPlaying ? (
-                      <MdPauseCircle size={36} />
-                    ) : (
-                      <MdPlayCircle size={36} />
-                    )}
-                  </Button>
-                  <button
-                    tabIndex={-3}
-                    className="opacity-0 group-hover:opacity-100 transition-opacity duration-500 text-base/80 hover:text-primary -translate-x-0.5"
-                    onClick={() => {
-                      timer.skip(true);
-                    }}
-                  >
-                    <MdSkipNext size={26} />
-                  </button>
-                </div>
-              </div>
-            </CircleTimer>
-
-            <TimerIntent data={store.currentIntent} />
+          <Pane className="grow flex flex-col" padding="lg">
+            <div className="grow flex flex-col gap-0.5 rounded overflow-hidden">
+              <Timer
+                theme={store.currentTheme!}
+                hideCountdown={
+                  store.interfaceConfig?.display_timer_countdown ?? false
+                }
+                {...timer}
+              />
+              <TimerIntent data={store.currentIntent} />
+            </div>
           </Pane>
         </motion.div>
       )}
@@ -238,4 +170,4 @@ const Timer: React.FC = () => {
   );
 };
 
-export default Timer;
+export default TimerPane;

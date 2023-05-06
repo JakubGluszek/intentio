@@ -7,3 +7,4 @@ export * from "./wrappers";
 export * from "./intents";
 export * from "./SliderCard";
 export * from "./Calendar";
+export * from "./timer";

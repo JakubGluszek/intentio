@@ -37,7 +37,7 @@ export const CircleTimer: React.FC<CircleTimerProps> = ({
   );
 
   return (
-    <div className="relative grow flex flex-col items-center justify-center bg-base/20 rounded shadow shadow-black/20">
+    <div className="relative grow flex flex-col items-center justify-center bg-base/10">
       <svg
         width={props.size}
         height={props.size}

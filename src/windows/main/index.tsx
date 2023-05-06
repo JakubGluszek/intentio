@@ -9,8 +9,8 @@ import config from "@/config";
 import { WindowContainer } from "@/components";
 import { MainWindowContext, MainWindowProvider } from "@/contexts";
 import { Button, Pane } from "@/ui";
-import Sidebar from "./sidebar";
-import Timer from "./timer";
+import SidebarPane from "./sidebar";
+import TimerPane from "./timer";
 
 const MainWindow: React.FC = () => {
   return (
@@ -24,8 +24,8 @@ const MainWindow: React.FC = () => {
         >
           <Titlebar />
           <div className="grow flex flex-row">
-            <Sidebar />
-            <Timer />
+            <SidebarPane />
+            <TimerPane />
           </div>
         </motion.div>
       </WindowContainer>

@@ -6,6 +6,5 @@ export * from "./Card";
 export * from "./Slider";
 export * from "./Tooltip";
 export * from "./ContextMenu";
-export * from "./CircleTimer";
 export * from "./Section";
 export * from "./CheckBox";
