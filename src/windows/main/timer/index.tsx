@@ -157,13 +157,13 @@ const Timer: React.FC = () => {
           animate={{ translateX: 0, opacity: 1 }}
           exit={{ translateX: 300, opacity: 0.3 }}
         >
-          <Pane className="group relative grow flex flex-col">
+          <Pane className="group relative grow flex flex-col" padding="lg">
             <CircleTimer
               isPlaying={timer.isPlaying}
               duration={timer.duration}
               elapsedTime={timer.elapsedTimeDetailed}
-              strokeWidth={4}
-              size={210}
+              strokeWidth={2}
+              size={200}
               color={
                 Color(
                   timer.isPlaying
@@ -229,9 +229,9 @@ const Timer: React.FC = () => {
                 </div>
               </div>
             </CircleTimer>
-          </Pane>
 
-          <TimerIntent data={store.currentIntent} />
+            <TimerIntent data={store.currentIntent} />
+          </Pane>
         </motion.div>
       )}
     </AnimatePresence>

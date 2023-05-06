@@ -76,7 +76,7 @@ export const WindowContainer: React.FC<WindowContainerProps> = (props) => {
           top: -128,
           pointerEvents: "none",
           backgroundImage:
-            "radial-gradient(circle at center, rgba(var(--primary-color) / 0.2), transparent 100%",
+            "radial-gradient(circle at center, rgba(var(--primary-color) / 0.1), transparent 100%",
         }}
       ></motion.div>
 

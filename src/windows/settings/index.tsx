@@ -2,6 +2,7 @@ import React from "react";
 import {
   MdAccountCircle,
   MdAudiotrack,
+  MdClose,
   MdColorLens,
   MdInfo,
   MdSettings,
@@ -15,7 +16,7 @@ import {
 import { VscSettings, VscTerminalBash } from "react-icons/vsc";
 
 import useStore from "@/store";
-import { Pane, Tabs } from "@/ui";
+import { Button, Pane, Tabs } from "@/ui";
 import { useEvents } from "@/hooks";
 import { Titlebar, WindowContainer } from "@/components";
 import TimerView from "./TimerView";
@@ -25,6 +26,7 @@ import ScriptsView from "./scriptsView";
 import AboutView from "./AboutView";
 import GeneralView from "./GeneralView";
 import AccountView from "./AccountView";
+import { appWindow } from "@tauri-apps/api/window";
 
 export type ColorType = "window" | "base" | "primary" | "text";
 
@@ -43,7 +45,6 @@ const SettingsWindow: React.FC = () => {
         <div className="grow flex flex-col gap-0.5">
           <SettingsTitlebar />
           <div className="grow flex flex-col gap-0.5">
-            <Navbar />
             <Content />
           </div>
         </div>
@@ -55,7 +56,20 @@ const SettingsWindow: React.FC = () => {
 const SettingsTitlebar: React.FC = () => {
   const { panel } = React.useContext(SettingsWindowContext)!;
 
-  return <Titlebar icon={MdSettings} title={`${panel}`} />;
+  return (
+    <Pane className="flex flex-col gap-1">
+      <div className="flex flex-row  items-center justify-between">
+        <div className="flex flex-row items-center gap-1 text-text">
+          <MdSettings size={24} className="text-text/60" />
+          <span className="text-lg font-semibold">{panel}</span>
+        </div>
+        <Button variant="ghost" onClick={() => appWindow.close()}>
+          <MdClose size={28} />
+        </Button>
+      </div>
+      <Navbar />
+    </Pane>
+  );
 };
 
 const Content: React.FC = () => {
@@ -83,33 +97,31 @@ const Navbar: React.FC = () => {
   }, []);
 
   return (
-    <Pane>
-      <Tabs value={panel} onChange={(value) => setPanel(value)}>
-        <Tabs.Tab value="Timer">
-          <MdTimer size={24} />
+    <Tabs value={panel} onChange={(value) => setPanel(value)}>
+      <Tabs.Tab value="Timer">
+        <MdTimer size={24} />
+      </Tabs.Tab>
+      <Tabs.Tab value="Audio">
+        <MdAudiotrack size={24} />
+      </Tabs.Tab>
+      <Tabs.Tab value="Themes">
+        <MdColorLens size={24} />
+      </Tabs.Tab>
+      <Tabs.Tab value="General">
+        <VscSettings size={24} />
+      </Tabs.Tab>
+      {osType !== "Windows_NT" && (
+        <Tabs.Tab value="Scripts">
+          <VscTerminalBash size={24} />
         </Tabs.Tab>
-        <Tabs.Tab value="Audio">
-          <MdAudiotrack size={24} />
-        </Tabs.Tab>
-        <Tabs.Tab value="Themes">
-          <MdColorLens size={24} />
-        </Tabs.Tab>
-        <Tabs.Tab value="General">
-          <VscSettings size={24} />
-        </Tabs.Tab>
-        {osType !== "Windows_NT" && (
-          <Tabs.Tab value="Scripts">
-            <VscTerminalBash size={24} />
-          </Tabs.Tab>
-        )}
-        <Tabs.Tab value="Account">
-          <MdAccountCircle size={24} />
-        </Tabs.Tab>
-        <Tabs.Tab value="About">
-          <MdInfo size={24} />
-        </Tabs.Tab>
-      </Tabs>
-    </Pane>
+      )}
+      <Tabs.Tab value="Account">
+        <MdAccountCircle size={24} />
+      </Tabs.Tab>
+      <Tabs.Tab value="About">
+        <MdInfo size={24} />
+      </Tabs.Tab>
+    </Tabs>
   );
 };
 

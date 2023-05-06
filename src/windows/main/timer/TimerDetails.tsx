@@ -59,7 +59,7 @@ export const TimerDetails: React.FC<TimerDetails> = (props) => {
       >
         {formattedTimeLeft}
       </button>
-      <span className="text-lg font-semibold text-text/70 whitespace-nowrap">
+      <span className="text-lg font-semibold text-text/80 whitespace-nowrap">
         {sessionType}
       </span>
     </div>
