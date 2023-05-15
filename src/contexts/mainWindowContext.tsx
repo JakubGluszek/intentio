@@ -22,7 +22,7 @@ export const MainWindowProvider: React.FC<Props> = ({ children }) => {
   const [display, setDisplay] = React.useState<DisplayType>("timer");
   const [isFocused, setIsFocused] = React.useState(false);
   const [timerDisplayCountdown, setTimerDisplayCountdown] =
-    React.useState(false);
+    React.useState(true);
 
   const toggleTimerCountdown = () => setTimerDisplayCountdown((prev) => !prev);
 
