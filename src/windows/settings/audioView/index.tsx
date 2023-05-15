@@ -4,7 +4,6 @@ import { BaseDirectory, FileEntry, readDir } from "@tauri-apps/api/fs";
 
 import ipc from "@/ipc";
 import useStore from "@/store";
-import { AudioConfigForUpdate } from "@/bindings/AudioConfigForUpdate";
 import SelectedTrack from "./SelectedTrack";
 import TrackView from "./TrackView";
 import { Button, Pane } from "@/ui";
@@ -15,17 +14,10 @@ const AudioView: React.FC = () => {
   const [tracks, setTracks] = React.useState<FileEntry[]>([]);
 
   const store = useStore();
-  const config = store.audioConfig;
-
-  const updateConfig = async (data: Partial<AudioConfigForUpdate>) => {
-    const result = await ipc.updateAudioConfig(data);
-    store.setAudioConfig(result);
-    return result;
-  };
+  let settings = store.settingsConfig;
 
   React.useEffect(() => {
     readTracks();
-    ipc.getAudioConfig().then((data) => store.setAudioConfig(data));
   }, []);
 
   // Reads files in audio directory matchings the specified file formats
@@ -42,29 +34,35 @@ const AudioView: React.FC = () => {
     });
   };
 
-  if (!config) return null;
+  if (!settings) return null;
 
   return (
     <div className="relative grow flex flex-col gap-0.5">
       <SelectedTrack
-        name={config.alert_file}
-        volume={config.alert_volume}
-        repeat={config.alert_repeat}
-        onVolumeChange={(volume) => updateConfig({ alert_volume: volume })}
-        onRepeatChange={(repeats) => updateConfig({ alert_repeat: repeats })}
-        onTrackPreview={() => ipc.playAudio(config.alert_file)}
+        name={settings.alert_file}
+        volume={settings.alert_volume}
+        repeat={settings.alert_repeat}
+        onVolumeChange={(volume) =>
+          ipc.updateSettingsConfig({ alert_volume: volume })
+        }
+        onRepeatChange={(repeats) =>
+          ipc.updateSettingsConfig({ alert_repeat: repeats })
+        }
+        onTrackPreview={() => ipc.playAudio(settings?.alert_file)}
       />
       <Pane className="grow flex flex-col gap-2 overflow-y-auto" padding="lg">
         <OpenFileExplorerButton />
         <div className="max-h-0 overflow-y">
           <div className="flex flex-col pb-1.5 gap-1">
             {tracks
-              .filter((track) => track.name !== config.alert_file)
+              .filter((track) => track.name !== settings?.alert_file)
               .map((track, idx) => (
                 <TrackView
                   key={idx}
                   name={track.name!}
-                  onSelected={() => updateConfig({ alert_audio: track.name })}
+                  onSelected={() =>
+                    ipc.updateSettingsConfig({ alert_audio: track.name })
+                  }
                   onTrackPreview={() => ipc.playAudio(track.name)}
                 />
               ))}

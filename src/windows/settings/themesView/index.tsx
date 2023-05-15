@@ -29,7 +29,6 @@ const ThemesView: React.FC = () => {
 
   React.useEffect(() => {
     ipc.getThemes().then((data) => store.setThemes(data));
-    ipc.getInterfaceConfig().then((data) => store.setInterfaceConfig(data));
   }, []);
 
   const setDefaultDisplay = () => setDisplay("themes");

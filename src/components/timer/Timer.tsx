@@ -4,7 +4,6 @@ import { VscDebugRestart } from "react-icons/vsc";
 import { clsx } from "@mantine/core";
 import Color from "color";
 
-import ipc from "@/ipc";
 import { Button } from "@/ui";
 import utils from "@/utils";
 import { Theme } from "@/bindings/Theme";
@@ -13,16 +12,11 @@ import { CircleTimer, ColorFormat } from "./CircleTimer";
 
 export interface TimerProps extends useTimerReturnValues {
   theme: Theme;
-  hideCountdown: boolean;
+  displayCountdown: boolean;
+  onToggleCountdown: () => void;
 }
 
 export const Timer: React.FC<TimerProps> = (props) => {
-  const toggleHideCountdown = () => {
-    ipc.updateInterfaceConfig({
-      display_timer_countdown: !props.hideCountdown,
-    });
-  };
-
   const formattedTimeLeft = utils.formatTimer(
     props.duration - props.elapsedTime
   );
@@ -49,9 +43,9 @@ export const Timer: React.FC<TimerProps> = (props) => {
       trailColor={Color(props.theme.window_hex).hex() as ColorFormat}
     >
       <div className="absolute m-auto">
-        {props.hideCountdown ? (
+        {!props.displayCountdown ? (
           <button
-            onClick={() => toggleHideCountdown()}
+            onClick={() => props.onToggleCountdown()}
             className={clsx(
               "text-4xl font-bold whitespace-nowrap transition-colors duration-150",
               props.isPlaying
@@ -71,7 +65,7 @@ export const Timer: React.FC<TimerProps> = (props) => {
                   ? "text-primary/80 hover:text-primary"
                   : "text-base/80 hover:text-[rgb(var(--base-color))]"
               )}
-              onClick={() => toggleHideCountdown()}
+              onClick={() => props.onToggleCountdown()}
               tabIndex={-3}
             >
               {formattedTimeLeft}

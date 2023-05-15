@@ -12,20 +12,20 @@ pub enum Error {
     #[error("Property '{0}' not found")]
     XPropertyNotFound(String),
 
-    #[error("StateNotAccessed")]
-    StateNotAccessed,
-
     #[error("Fail to create. Cause: {0}")]
     DatabaseFailToCreate(String),
-
-    #[error("No current project")]
-    NoCurrentProject,
 
     #[error(transparent)]
     Surreal(#[from] surrealdb::Error),
 
     #[error(transparent)]
     IO(#[from] std::io::Error),
+
+    #[error(transparent)]
+    JsonError(#[from] serde_json::Error),
+
+    #[error(transparent)]
+    TauriError(#[from] tauri::Error),
 }
 
 impl serde::Serialize for Error {

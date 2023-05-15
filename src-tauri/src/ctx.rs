@@ -27,6 +27,18 @@ impl Ctx {
         }
     }
 
+    pub fn get_database(&self) -> Arc<Database> {
+        self.database.clone()
+    }
+
+    pub fn emit_event<D: Serialize + Clone>(&self, event: &str, data: D) {
+        if let Some(app_handle) = &self.app_handle {
+            let _ = app_handle.emit_all(event, data);
+        }
+    }
+}
+
+impl Ctx {
     #[allow(dead_code)]
     pub async fn test() -> Arc<Self> {
         let ds = Datastore::new("memory").await.unwrap();
@@ -37,15 +49,5 @@ impl Ctx {
             database,
             app_handle: None,
         })
-    }
-
-    pub fn get_database(&self) -> Arc<Database> {
-        self.database.clone()
-    }
-
-    pub fn emit_event<D: Serialize + Clone>(&self, event: &str, data: D) {
-        if let Some(app_handle) = &self.app_handle {
-            let _ = app_handle.emit_all(event, data);
-        }
     }
 }

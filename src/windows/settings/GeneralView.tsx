@@ -13,14 +13,10 @@ const GeneralView: React.FC = () => {
   const store = useStore();
 
   React.useEffect(() => {
-    ipc.getBehaviorConfig().then((data) => store.setBehaviorConfig(data));
-  }, []);
-
-  React.useEffect(() => {
     isEnabled().then((value) => setIsAutoStart(value));
   }, []);
 
-  if (!store.behaviorConfig || isAutoStart === undefined) return null;
+  if (!store.settingsConfig || isAutoStart === undefined) return null;
 
   return (
     <Pane className="grow flex flex-col" padding="lg">
@@ -69,9 +65,9 @@ const GeneralView: React.FC = () => {
                     System notifications
                   </div>
                   <CheckBox
-                    checked={store.behaviorConfig.system_notifications}
+                    checked={store.settingsConfig.system_notifications}
                     onChange={(system_notifications) =>
-                      ipc.updateBehaviorConfig({ system_notifications })
+                      ipc.updateSettingsConfig({ system_notifications })
                     }
                   />
                 </div>
@@ -85,10 +81,10 @@ const GeneralView: React.FC = () => {
                     Always on top
                   </div>
                   <CheckBox
-                    checked={store.behaviorConfig.main_always_on_top}
+                    checked={store.settingsConfig.main_always_on_top}
                     onChange={(main_always_on_top) =>
                       ipc
-                        .updateBehaviorConfig({ main_always_on_top })
+                        .updateSettingsConfig({ main_always_on_top })
                         .then(() =>
                           toast("Restart app to apply change", {
                             duration: 2000,
@@ -102,9 +98,9 @@ const GeneralView: React.FC = () => {
                     Minimize to tray
                   </div>
                   <CheckBox
-                    checked={store.behaviorConfig.main_minimize_to_tray}
+                    checked={store.settingsConfig.main_minimize_to_tray}
                     onChange={(main_minimize_to_tray) =>
-                      ipc.updateBehaviorConfig({ main_minimize_to_tray })
+                      ipc.updateSettingsConfig({ main_minimize_to_tray })
                     }
                   />
                 </div>

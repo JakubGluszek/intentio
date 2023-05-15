@@ -1,11 +1,7 @@
 //! Tauri IPC commands to bridge the Theme Backend models Controller with Client side.
 
-use crate::cfg::InterfaceCfg;
 use crate::models::{ModelDeleteResultData, ThemeBmc, ThemeForCreate, ThemeForUpdate};
-use crate::prelude::{
-    Error, Result, BREAK_THEME_ID, FOCUS_THEME_ID, IDLE_THEME_ID, LONG_BREAK_THEME_ID,
-};
-use crate::state::AppState;
+use crate::prelude::{Error, Result};
 use crate::{ctx::Ctx, models::Theme};
 use tauri::{command, AppHandle, Wry};
 
@@ -54,44 +50,10 @@ pub async fn update_theme(app: AppHandle<Wry>, id: String, data: ThemeForUpdate)
 }
 
 #[command]
-pub async fn delete_theme(
-    app: AppHandle<Wry>,
-    id: String,
-    state: tauri::State<'_, tokio::sync::Mutex<AppState>>,
-) -> Result<ModelDeleteResultData> {
-    match Ctx::from_app(app) {
-        Ok(ctx) => match ThemeBmc::delete(ctx.clone(), &id).await {
-            Ok(data) => {
-                let mut state = state.lock().await;
-                if state.idle_theme.id == id {
-                    let theme = ThemeBmc::get(ctx.clone(), IDLE_THEME_ID).await.unwrap();
-                    state.idle_theme = theme;
-                    InterfaceCfg::set_idle_theme_id(ctx.clone(), IDLE_THEME_ID.to_string());
-                } else if state.focus_theme.id == id {
-                    let theme = ThemeBmc::get(ctx.clone(), FOCUS_THEME_ID).await.unwrap();
-                    state.focus_theme = theme;
-                    InterfaceCfg::set_focus_theme_id(ctx.clone(), FOCUS_THEME_ID.to_string());
-                } else if state.break_theme.id == id {
-                    let theme = ThemeBmc::get(ctx.clone(), BREAK_THEME_ID).await.unwrap();
-                    state.break_theme = theme;
-                    InterfaceCfg::set_break_theme_id(ctx.clone(), BREAK_THEME_ID.to_string());
-                } else if state.long_break_theme.id == id {
-                    let theme = ThemeBmc::get(ctx.clone(), LONG_BREAK_THEME_ID)
-                        .await
-                        .unwrap();
-                    state.long_break_theme = theme;
-                    InterfaceCfg::set_long_break_theme_id(
-                        ctx.clone(),
-                        LONG_BREAK_THEME_ID.to_string(),
-                    );
-                }
-                state.update_current_theme(ctx);
-                Ok(data)
-            }
-            Err(err) => Err(err).into(),
-        },
-        Err(_) => Err(Error::CtxFail).into(),
-    }
+pub async fn delete_theme(app: AppHandle<Wry>, id: String) -> Result<()> {
+    let ctx = Ctx::from_app(app)?;
+    ThemeBmc::delete(ctx, &id).await?;
+    Ok(())
 }
 
 #[command]

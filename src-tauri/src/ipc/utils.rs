@@ -1,26 +1,23 @@
 //! Utils IPC commands.
 use std::fs::File;
 
-use tauri::{command, AppHandle, Manager};
+use tauri::{command, AppHandle, Manager, Wry};
 
-use crate::cfg::{AudioCfg, BehaviorCfg};
+use crate::{
+    config::{ConfigManager, SettingsConfig},
+    prelude::Result,
+};
 
 #[command]
 pub async fn open_audio_dir(handle: AppHandle) {
-    let mut cmd = "xdg-open";
-
     #[cfg(target_os = "linux")]
-    {
-        cmd = "xdg-open";
-    }
+    let cmd = "xdg-open";
+
     #[cfg(target_os = "darwin")]
-    {
-        cmd = "open";
-    }
+    let cmd = "open";
+
     #[cfg(target_os = "windows")]
-    {
-        cmd = "explorer";
-    }
+    let cmd = "explorer";
 
     let path = handle
         .path_resolver()
@@ -31,16 +28,19 @@ pub async fn open_audio_dir(handle: AppHandle) {
 }
 
 #[command]
-pub async fn hide_main_window(app: AppHandle) {
-    let config = BehaviorCfg::get();
+pub async fn hide_main_window(app: AppHandle<Wry>) -> Result<()> {
+    let app_handle = app.app_handle();
+    let settings = ConfigManager::get::<SettingsConfig>()?;
 
-    let window = app.get_window("main").unwrap();
+    let window = app_handle.get_window("main").unwrap();
 
-    if config.main_minimize_to_tray {
+    if settings.main_minimize_to_tray {
         window.hide().unwrap();
     } else {
         window.minimize().unwrap();
     }
+
+    Ok(())
 }
 
 #[command]
@@ -49,27 +49,28 @@ pub async fn exit_main_window() {
 }
 
 #[command]
-pub async fn play_audio(audio: Option<String>, handle: AppHandle) {
-    let mut config = AudioCfg::get();
+pub async fn play_audio(audio: Option<String>, app: AppHandle<Wry>) -> Result<()> {
+    let app_handle = app.app_handle();
+    let settings = ConfigManager::get::<SettingsConfig>()?;
 
     let audio = match audio {
         Some(path) => path,
-        None => config.alert_file,
+        None => settings.alert_file,
     };
 
-    let path = handle
+    let path = app_handle
         .path_resolver()
         .resolve_resource(format!("./audio/{}", &audio))
         .expect("failed to resolve resource");
 
     let (_stream, stream_handle) = rodio::OutputStream::try_default().unwrap();
 
-    for _i in 0..config.alert_repeat {
-        config = AudioCfg::get();
-
+    for _i in 0..settings.alert_repeat {
         let file = File::open(path.as_path()).unwrap();
         let sink = stream_handle.play_once(file).unwrap();
-        sink.set_volume(config.alert_volume as f32);
+        sink.set_volume(settings.alert_volume as f32);
         sink.sleep_until_end();
     }
+
+    Ok(())
 }

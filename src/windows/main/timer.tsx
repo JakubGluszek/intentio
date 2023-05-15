@@ -12,7 +12,8 @@ import utils from "@/utils";
 import { Timer, TimerIntent, useTimer } from "@/components";
 
 const TimerPane: React.FC = () => {
-  const { display } = React.useContext(MainWindowContext)!;
+  const { display, timerDisplayCountdown, toggleTimerCountdown } =
+    React.useContext(MainWindowContext)!;
   const store = useStore();
 
   const timer = useTimer(store.timerConfig, {
@@ -49,7 +50,7 @@ const TimerPane: React.FC = () => {
           utils.executeScript(script.body)
       );
 
-      if (!store.behaviorConfig?.system_notifications) return;
+      if (!store.settingsConfig?.system_notifications) return;
 
       switch (session.type) {
         case "Focus":
@@ -86,8 +87,8 @@ const TimerPane: React.FC = () => {
           utils.executeScript(script.body)
       );
 
-      if (!store.behaviorConfig?.system_notifications) return;
-      if (document.hasFocus()) return;
+      if (!store.settingsConfig?.system_notifications || document.hasFocus())
+        return;
 
       switch (session.type) {
         case "Focus":
@@ -111,7 +112,7 @@ const TimerPane: React.FC = () => {
           utils.executeScript(script.body)
       );
 
-      if (!store.behaviorConfig?.system_notifications) return;
+      if (!store.settingsConfig?.system_notifications) return;
       if (document.hasFocus()) return;
 
       switch (session.type) {
@@ -131,7 +132,6 @@ const TimerPane: React.FC = () => {
   React.useEffect(() => {
     ipc.getTimerConfig().then((data) => store.setTimerConfig(data));
     ipc.getScripts().then((data) => store.setScripts(data));
-    ipc.getBehaviorConfig().then((data) => store.setBehaviorConfig(data));
   }, []);
 
   useEvents({
@@ -156,9 +156,8 @@ const TimerPane: React.FC = () => {
             <div className="grow flex flex-col gap-0.5 rounded overflow-hidden">
               <Timer
                 theme={store.currentTheme!}
-                hideCountdown={
-                  store.interfaceConfig?.display_timer_countdown ?? false
-                }
+                displayCountdown={timerDisplayCountdown}
+                onToggleCountdown={toggleTimerCountdown}
                 {...timer}
               />
               <TimerIntent data={store.currentIntent} />

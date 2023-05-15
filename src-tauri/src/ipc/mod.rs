@@ -1,4 +1,4 @@
-mod cfg;
+mod config;
 mod intent;
 mod note;
 mod script;
@@ -8,7 +8,7 @@ mod task;
 mod theme;
 mod utils;
 
-pub use cfg::*;
+pub use config::*;
 pub use intent::*;
 pub use note::*;
 pub use script::*;

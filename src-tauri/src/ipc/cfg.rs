@@ -4,33 +4,31 @@ use crate::{
     cfg::{
         AudioCfg, AudioConfig, AudioConfigForUpdate, BehaviorCfg, BehaviorConfig,
         BehaviorConfigForUpdate, InterfaceCfg, InterfaceConfig, InterfaceConfigForUpdate, TimerCfg,
-        TimerConfig, TimerConfigForUpdate,
+        TimerConfig,
     },
+    config::{self, ConfigManager},
     ctx::Ctx,
     prelude::{Error, Result},
 };
 
-#[command]
-pub async fn get_timer_config(app: AppHandle<Wry>) -> Result<TimerConfig> {
-    match Ctx::from_app(app) {
-        Ok(_) => Ok(TimerCfg::get()),
-        Err(_) => Err(Error::CtxFail).into(),
-    }
-}
-
-#[command]
-pub async fn update_timer_config(
-    app: AppHandle<Wry>,
-    data: TimerConfigForUpdate,
-) -> Result<TimerConfig> {
-    match Ctx::from_app(app) {
-        Ok(ctx) => {
-            let timer_cfg = TimerCfg::update(ctx, data);
-            Ok(timer_cfg)
-        }
-        Err(_) => Err(Error::CtxFail).into(),
-    }
-}
+// #[command]
+// pub async fn get_timer_config(app: AppHandle<Wry>) -> Result<TimerConfig> {
+//     match Ctx::from_app(app) {
+//         Ok(_) => Ok(TimerCfg::get()),
+//         Err(_) => Err(Error::CtxFail).into(),
+//     }
+// }
+//
+// #[command]
+// pub async fn update_timer_config(
+//     app: AppHandle<Wry>,
+//     data: config::TimerConfigForUpdate,
+// ) -> Result<config::TimerConfig> {
+//     match Ctx::from_app(app) {
+//         Ok(ctx) => ctx.update_config::<config::TimerConfig, config::TimerConfigForUpdate>(data),
+//         Err(_) => Err(Error::CtxFail).into(),
+//     }
+// }
 
 #[command]
 pub async fn get_audio_config(app: AppHandle<Wry>) -> Result<AudioConfig> {

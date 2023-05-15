@@ -3,7 +3,7 @@
     windows_subsystem = "windows"
 )]
 
-mod cfg;
+mod config;
 mod ctx;
 mod database;
 mod error;
@@ -16,10 +16,8 @@ mod utils;
 
 use crate::ipc::*;
 use crate::prelude::*;
-use database::Database;
-use models::ThemeBmc;
-use setup::init_setup;
-use std::sync::Arc;
+use setup::setup_database;
+use setup::setup_hook;
 use tauri::Manager;
 use tauri::{CustomMenuItem, SystemTray, SystemTrayEvent, SystemTrayMenu, SystemTrayMenuItem};
 use tauri_plugin_autostart::MacosLauncher;
@@ -30,16 +28,9 @@ fn main() -> Result<()> {
         .build()
         .expect("expected tokio runtime");
 
-    let database = runtime.block_on(async {
-        let database = Database::new().await.unwrap();
-        let database = Arc::new(database);
-
-        ThemeBmc::init_default_themes(database.clone())
-            .await
-            .unwrap();
-
-        database
-    });
+    let database = runtime
+        .block_on(setup_database())
+        .expect("database should be set up");
 
     tauri::Builder::default()
         .manage(database)
@@ -57,12 +48,8 @@ fn main() -> Result<()> {
             // config
             get_timer_config,
             update_timer_config,
-            get_audio_config,
-            update_audio_config,
-            get_behavior_config,
-            update_behavior_config,
-            get_interface_config,
-            update_interface_config,
+            get_settings_config,
+            update_settings_config,
             // Utils
             open_audio_dir,
             play_audio,
@@ -103,7 +90,7 @@ fn main() -> Result<()> {
             update_script,
             delete_script
         ])
-        .setup(move |app| Ok(runtime.block_on(init_setup(app))))
+        .setup(move |app| Ok(runtime.block_on(setup_hook(app))))
         .plugin(tauri_plugin_autostart::init(
             MacosLauncher::LaunchAgent,
             Some(vec![]),
@@ -136,7 +123,6 @@ fn handle_on_system_tray_event(app: &tauri::AppHandle, event: SystemTrayEvent) {
             }
             _ => {}
         },
-        #[cfg(target_os = "windows")]
         SystemTrayEvent::LeftClick { .. } => {
             let window = app.get_window("main").unwrap();
             window.show().unwrap();

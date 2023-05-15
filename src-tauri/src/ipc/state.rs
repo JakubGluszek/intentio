@@ -1,16 +1,17 @@
-use tauri::{command, AppHandle, Manager, Wry};
+use tauri::{command, AppHandle, Wry};
 
 use crate::{
-    cfg::InterfaceCfg,
+    config::{ConfigManager, SettingsConfig},
     ctx::Ctx,
     models::Theme,
+    prelude::Result,
     state::{AppState, SessionType, TimerStateForUpdate},
 };
 
 #[command]
 pub async fn get_current_theme(
     state: tauri::State<'_, tokio::sync::Mutex<AppState>>,
-) -> Result<Theme, ()> {
+) -> Result<Theme> {
     let state = state.lock().await;
 
     if state.timer.is_playing == false {
@@ -29,27 +30,26 @@ pub async fn set_current_theme(
     data: Theme,
     state: tauri::State<'_, tokio::sync::Mutex<AppState>>,
     app: AppHandle<Wry>,
-) -> Result<(), ()> {
-    if let Ok(ctx) = Ctx::from_app(app) {
-        let mut state = state.lock().await;
+) -> Result<()> {
+    let ctx = Ctx::from_app(app)?;
+    let mut state = state.lock().await;
 
-        if state.timer.is_playing == false {
-            state.idle_theme = data.clone();
-        } else {
-            match state.timer.session_type {
-                SessionType::Focus => {
-                    state.focus_theme = data.clone();
-                }
-                SessionType::Break => {
-                    state.break_theme = data.clone();
-                }
-                SessionType::LongBreak => {
-                    state.long_break_theme = data.clone();
-                }
+    if state.timer.is_playing == false {
+        state.idle_theme = data.clone();
+    } else {
+        match state.timer.session_type {
+            SessionType::Focus => {
+                state.focus_theme = data.clone();
+            }
+            SessionType::Break => {
+                state.break_theme = data.clone();
+            }
+            SessionType::LongBreak => {
+                state.long_break_theme = data.clone();
             }
         }
-        ctx.emit_event("current_theme_updated", data);
     }
+    ctx.emit_event("current_theme_updated", data);
 
     Ok(())
 }
@@ -59,7 +59,7 @@ pub async fn update_timer_state(
     data: TimerStateForUpdate,
     app: AppHandle<Wry>,
     state: tauri::State<'_, tokio::sync::Mutex<AppState>>,
-) -> Result<(), ()> {
+) -> Result<()> {
     let mut state = state.lock().await;
 
     if let Some(session_type) = data.session_type {
@@ -68,7 +68,6 @@ pub async fn update_timer_state(
     if let Some(is_playing) = data.is_playing {
         state.timer.is_playing = is_playing;
     }
-
     if let Ok(ctx) = Ctx::from_app(app) {
         state.update_current_theme(ctx);
     }
@@ -81,15 +80,19 @@ pub async fn set_idle_theme(
     data: Theme,
     app: AppHandle<Wry>,
     state: tauri::State<'_, tokio::sync::Mutex<AppState>>,
-) -> Result<(), ()> {
-    if let Ok(ctx) = Ctx::from_app(app.app_handle()) {
-        InterfaceCfg::set_idle_theme_id(ctx.clone(), data.id.clone());
+) -> Result<()> {
+    let ctx = Ctx::from_app(app)?;
 
-        let mut state = state.lock().await;
-        state.idle_theme = data;
+    // update settings config
+    let mut settings = ConfigManager::get::<SettingsConfig>()?;
+    settings.idle_theme_id = data.id.clone();
+    ConfigManager::save::<SettingsConfig>(&settings)?;
 
-        state.update_current_theme(ctx);
-    }
+    // update state
+    let mut state = state.lock().await;
+    state.idle_theme = data;
+    state.update_current_theme(ctx);
+
     Ok(())
 }
 
@@ -98,15 +101,19 @@ pub async fn set_focus_theme(
     data: Theme,
     app: AppHandle<Wry>,
     state: tauri::State<'_, tokio::sync::Mutex<AppState>>,
-) -> Result<(), ()> {
-    if let Ok(ctx) = Ctx::from_app(app.app_handle()) {
-        InterfaceCfg::set_focus_theme_id(ctx.clone(), data.id.clone());
+) -> Result<()> {
+    let ctx = Ctx::from_app(app)?;
 
-        let mut state = state.lock().await;
-        state.focus_theme = data;
+    // update settings config
+    let mut settings = ConfigManager::get::<SettingsConfig>()?;
+    settings.focus_theme_id = data.id.clone();
+    ConfigManager::save::<SettingsConfig>(&settings)?;
 
-        state.update_current_theme(ctx);
-    }
+    // update state
+    let mut state = state.lock().await;
+    state.focus_theme = data;
+    state.update_current_theme(ctx);
+
     Ok(())
 }
 
@@ -115,15 +122,19 @@ pub async fn set_break_theme(
     data: Theme,
     app: AppHandle<Wry>,
     state: tauri::State<'_, tokio::sync::Mutex<AppState>>,
-) -> Result<(), ()> {
-    if let Ok(ctx) = Ctx::from_app(app.app_handle()) {
-        InterfaceCfg::set_break_theme_id(ctx.clone(), data.id.clone());
+) -> Result<()> {
+    let ctx = Ctx::from_app(app)?;
 
-        let mut state = state.lock().await;
-        state.break_theme = data;
+    // update settings config
+    let mut settings = ConfigManager::get::<SettingsConfig>()?;
+    settings.break_theme_id = data.id.clone();
+    ConfigManager::save::<SettingsConfig>(&settings)?;
 
-        state.update_current_theme(ctx);
-    }
+    // update state
+    let mut state = state.lock().await;
+    state.break_theme = data;
+    state.update_current_theme(ctx);
+
     Ok(())
 }
 
@@ -132,14 +143,18 @@ pub async fn set_long_break_theme(
     data: Theme,
     app: AppHandle<Wry>,
     state: tauri::State<'_, tokio::sync::Mutex<AppState>>,
-) -> Result<(), ()> {
-    if let Ok(ctx) = Ctx::from_app(app.app_handle()) {
-        InterfaceCfg::set_long_break_theme_id(ctx.clone(), data.id.clone());
+) -> Result<()> {
+    let ctx = Ctx::from_app(app)?;
 
-        let mut state = state.lock().await;
-        state.long_break_theme = data;
+    // update settings config
+    let mut settings = ConfigManager::get::<SettingsConfig>()?;
+    settings.long_break_theme_id = data.id.clone();
+    ConfigManager::save::<SettingsConfig>(&settings)?;
 
-        state.update_current_theme(ctx);
-    }
+    // update state
+    let mut state = state.lock().await;
+    state.long_break_theme = data;
+    state.update_current_theme(ctx);
+
     Ok(())
 }

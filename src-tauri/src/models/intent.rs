@@ -2,7 +2,7 @@ use std::collections::BTreeMap;
 use std::sync::Arc;
 
 use serde::{Deserialize, Serialize};
-use surrealdb::sql::{thing, Array, Datetime, Object, Value};
+use surrealdb::sql::{thing, Datetime, Object, Value};
 use ts_rs::TS;
 
 use crate::database::{Database, Patchable};

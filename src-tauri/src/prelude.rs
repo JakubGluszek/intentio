@@ -1,9 +1,9 @@
 pub use crate::error::Error;
 
-pub const IDLE_THEME_ID: &'static str = "theme:forest";
-pub const FOCUS_THEME_ID: &'static str = "theme:abyss";
-pub const BREAK_THEME_ID: &'static str = "theme:dracula";
-pub const LONG_BREAK_THEME_ID: &'static str = "theme:space";
+pub const DEFAULT_IDLE_THEME_ID: &'static str = "theme:forest";
+pub const DEFAULT_FOCUS_THEME_ID: &'static str = "theme:abyss";
+pub const DEFAULT_BREAK_THEME_ID: &'static str = "theme:dracula";
+pub const DEFAULT_LONG_BREAK_THEME_ID: &'static str = "theme:space";
 
 pub const DEFAULT_ALERT_FILE: &'static str = "alert-1.ogg";
 

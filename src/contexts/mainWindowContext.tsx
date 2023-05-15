@@ -7,6 +7,8 @@ export type MainWindowContextType = {
   display: DisplayType;
   isFocused: boolean;
   toggleDisplay: () => void;
+  timerDisplayCountdown: boolean;
+  toggleTimerCountdown: () => void;
 };
 
 export const MainWindowContext =
@@ -19,6 +21,10 @@ interface Props {
 export const MainWindowProvider: React.FC<Props> = ({ children }) => {
   const [display, setDisplay] = React.useState<DisplayType>("timer");
   const [isFocused, setIsFocused] = React.useState(false);
+  const [timerDisplayCountdown, setTimerDisplayCountdown] =
+    React.useState(false);
+
+  const toggleTimerCountdown = () => setTimerDisplayCountdown((prev) => !prev);
 
   const toggleDisplay = () =>
     setDisplay((prev) => (prev === "timer" ? "sidebar" : "timer"));
@@ -32,7 +38,15 @@ export const MainWindowProvider: React.FC<Props> = ({ children }) => {
   }, []);
 
   return (
-    <MainWindowContext.Provider value={{ display, isFocused, toggleDisplay }}>
+    <MainWindowContext.Provider
+      value={{
+        display,
+        isFocused,
+        toggleDisplay,
+        timerDisplayCountdown,
+        toggleTimerCountdown,
+      }}
+    >
       {children}
     </MainWindowContext.Provider>
   );

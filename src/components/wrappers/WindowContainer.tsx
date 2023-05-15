@@ -25,8 +25,8 @@ export const WindowContainer: React.FC<WindowContainerProps> = (props) => {
       utils.applyTheme(data);
       store.setCurrentTheme(data);
     },
-    interface_config_updated: (data) => {
-      store.setInterfaceConfig(data);
+    settings_config_updated: (data) => {
+      store.setSettingsConfig(data);
     },
     timer_config_updated: (data) => store.setTimerConfig(data),
     theme_updated: (data) => {
@@ -47,11 +47,11 @@ export const WindowContainer: React.FC<WindowContainerProps> = (props) => {
   });
 
   React.useEffect(() => {
-    ipc.getInterfaceConfig().then((data) => store.setInterfaceConfig(data));
     ipc.getCurrentTheme().then((data) => {
       utils.applyTheme(data);
       store.setCurrentTheme(data);
     });
+    ipc.getSettingsConfig().then((data) => store.setSettingsConfig(data));
   }, []);
 
   if (!store.currentTheme) return null;
