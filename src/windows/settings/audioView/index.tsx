@@ -14,13 +14,13 @@ const AudioView: React.FC = () => {
   const [tracks, setTracks] = React.useState<FileEntry[]>([]);
 
   const store = useStore();
-  let settings = store.settingsConfig;
+  const settings = store.settingsConfig;
 
   React.useEffect(() => {
     readTracks();
   }, []);
 
-  // Reads files in audio directory matchings the specified file formats
+  // Reads files in audio directory matching the specified file formats
   const readTracks = () => {
     readDir("audio", {
       dir: BaseDirectory.Resource,
@@ -48,14 +48,14 @@ const AudioView: React.FC = () => {
         onRepeatChange={(repeats) =>
           ipc.updateSettingsConfig({ alert_repeat: repeats })
         }
-        onTrackPreview={() => ipc.playAudio(settings?.alert_file)}
+        onTrackPreview={() => ipc.playAudio(settings.alert_file)}
       />
       <Pane className="grow flex flex-col gap-2 overflow-y-auto" padding="lg">
         <OpenFileExplorerButton />
         <div className="max-h-0 overflow-y">
           <div className="flex flex-col pb-1.5 gap-1">
             {tracks
-              .filter((track) => track.name !== settings?.alert_file)
+              .filter((track) => track.name !== settings.alert_file)
               .map((track, idx) => (
                 <TrackView
                   key={idx}
