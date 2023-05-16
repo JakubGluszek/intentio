@@ -1,5 +1,6 @@
 import React from "react";
 
+import { OverflowY } from "@/components";
 import { Intent } from "@/bindings/Intent";
 import { IntentView } from "./IntentView";
 
@@ -24,8 +25,8 @@ export const IntentList: React.FC<IntentListProps> = (props) => {
   }, [props.data]);
 
   return (
-    <div className="grow flex overflow-y-auto rounded-sm">
-      <div className="w-full max-h-0 flex flex-col gap-1 overflow-y font-semibold">
+    <OverflowY>
+      <div className="flex flex-col gap-1">
         {intents.map((intent) => (
           <IntentView
             key={intent.id}
@@ -39,6 +40,6 @@ export const IntentList: React.FC<IntentListProps> = (props) => {
           />
         ))}
       </div>
-    </div>
+    </OverflowY>
   );
 };

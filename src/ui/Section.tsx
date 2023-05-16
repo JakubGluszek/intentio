@@ -13,10 +13,10 @@ export const Section: React.FC<SectionProps> = (props) => {
   return (
     <motion.section
       className={className}
-      transition={{ duration: 0.2 }}
+      transition={{ duration: 0.3, ease: "linear" }}
       variants={{
-        visible: { opacity: 1, x: 0 },
-        hidden: { opacity: 0, x: 32 },
+        hidden: { opacity: 0, scale: 0.9, x: 16 },
+        visible: { opacity: 1, scale: 1, x: 0 },
       }}
       {...restProps}
     >

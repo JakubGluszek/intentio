@@ -24,17 +24,16 @@ const SelectedTrack: React.FC<Props> = (props) => {
   return (
     <Card
       key={props.name}
-      className="self-center"
       transition={{
-        duration: 0.15,
-        ease: "circIn",
+        duration: 0.3,
+        ease: "easeIn",
       }}
-      initial={{ opacity: 0, width: "80%" }}
-      animate={{ opacity: 1, width: "100%" }}
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
     >
       <motion.div
         className="flex flex-col gap-1"
-        transition={{ duration: 0.2, delay: 0.15 }}
+        transition={{ duration: 0.2, delay: 0.3 }}
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
       >

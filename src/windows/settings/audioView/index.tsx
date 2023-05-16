@@ -6,6 +6,7 @@ import { MdRefresh } from "react-icons/md";
 
 import ipc from "@/ipc";
 import useStore from "@/store";
+import { CascadeSections, OverflowY } from "@/components";
 import { Button, Pane, Section, Tooltip } from "@/ui";
 import SelectedTrack from "./SelectedTrack";
 import TrackView from "./TrackView";
@@ -64,55 +65,57 @@ const AudioView: React.FC = () => {
   if (!settings) return null;
 
   return (
-    <Pane className="relative grow flex flex-col overflow-y-auto" padding="lg">
-      <div className="max-h-0 overflow-y">
-        <Section heading="Selected track">
-          <SelectedTrack
-            name={settings.alert_file}
-            volume={settings.alert_volume}
-            repeat={settings.alert_repeat}
-            onVolumeChange={(volume) =>
-              ipc.updateSettingsConfig({ alert_volume: volume })
-            }
-            onRepeatChange={(repeats) =>
-              ipc.updateSettingsConfig({ alert_repeat: repeats })
-            }
-            onTrackPreview={() => ipc.playAudio(settings.alert_file)}
-          />
-        </Section>
-        <Section
-          heading={
-            <div className="flex flex-row items-center justify-between">
-              <div className="section-heading">All tracks</div>
-              <div className="flex flex-row gap-1">
-                <Tooltip label="Reload">
-                  <Button variant="ghost" onClick={() => readTracks()}>
-                    <MdRefresh size={24} />
-                  </Button>
-                </Tooltip>
-                <OpenFileExplorerButton />
+    <Pane className="grow flex flex-col" padding="lg">
+      <OverflowY>
+        <CascadeSections>
+          <Section heading="Selected track">
+            <SelectedTrack
+              name={settings.alert_file}
+              volume={settings.alert_volume}
+              repeat={settings.alert_repeat}
+              onVolumeChange={(volume) =>
+                ipc.updateSettingsConfig({ alert_volume: volume })
+              }
+              onRepeatChange={(repeats) =>
+                ipc.updateSettingsConfig({ alert_repeat: repeats })
+              }
+              onTrackPreview={() => ipc.playAudio(settings.alert_file)}
+            />
+          </Section>
+          <Section
+            heading={
+              <div className="flex flex-row items-center justify-between">
+                <div className="section-heading">All tracks</div>
+                <div className="flex flex-row gap-1">
+                  <Tooltip label="Reload">
+                    <Button variant="ghost" onClick={() => readTracks()}>
+                      <MdRefresh size={24} />
+                    </Button>
+                  </Tooltip>
+                  <OpenFileExplorerButton />
+                </div>
               </div>
+            }
+          >
+            <div className="flex flex-col pb-1.5 gap-1">
+              {tracks
+                .filter((track) => track.name !== settings.alert_file)
+                .map((track) => (
+                  <TrackView
+                    key={track.name}
+                    name={track.name!}
+                    onSelected={() =>
+                      ipc
+                        .updateSettingsConfig({ alert_file: track.name })
+                        .then(() => toast("Selected new track."))
+                    }
+                    onTrackPreview={() => ipc.playAudio(track.name)}
+                  />
+                ))}
             </div>
-          }
-        >
-          <div className="flex flex-col pb-1.5 gap-1">
-            {tracks
-              .filter((track) => track.name !== settings.alert_file)
-              .map((track) => (
-                <TrackView
-                  key={track.name}
-                  name={track.name!}
-                  onSelected={() =>
-                    ipc
-                      .updateSettingsConfig({ alert_file: track.name })
-                      .then(() => toast("Selected new track."))
-                  }
-                  onTrackPreview={() => ipc.playAudio(track.name)}
-                />
-              ))}
-          </div>
-        </Section>
-      </div>
+          </Section>
+        </CascadeSections>
+      </OverflowY>
     </Pane>
   );
 };
