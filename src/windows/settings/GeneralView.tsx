@@ -42,7 +42,6 @@ const GeneralView: React.FC = () => {
             <Section heading="App">
               <Card
                 className="flex flex-row items-center justify-between"
-                withBorder
               >
                 <div className="text-text/90 group-hover:text-text">
                   Auto run on start-up
@@ -59,7 +58,7 @@ const GeneralView: React.FC = () => {
             </Section>
 
             <Section heading="Alerts">
-              <Card withBorder>
+              <Card>
                 <div className="flex flex-row items-center justify-between">
                   <div className="text-text/90 group-hover:text-text">
                     System notifications
@@ -75,7 +74,7 @@ const GeneralView: React.FC = () => {
             </Section>
 
             <Section heading="Main Window">
-              <Card className="flex flex-col gap-1" withBorder>
+              <Card className="flex flex-col gap-1">
                 <div className="flex flex-row items-center justify-between">
                   <div className="text-text/90 group-hover:text-text">
                     Always on top
