@@ -1,12 +1,12 @@
 import React from "react";
-import { AiFillFolder, AiFillFolderOpen } from "react-icons/ai";
 import { BaseDirectory, FileEntry, readDir } from "@tauri-apps/api/fs";
 
 import ipc from "@/ipc";
 import useStore from "@/store";
+import { Pane } from "@/ui";
 import SelectedTrack from "./SelectedTrack";
 import TrackView from "./TrackView";
-import { Button, Pane } from "@/ui";
+import { OpenFileExplorerButton } from "./OpenFileExplorerButton";
 
 const AUDIO_FORMATS = [".mp3", ".ogg"];
 
@@ -70,28 +70,6 @@ const AudioView: React.FC = () => {
         </div>
       </Pane>
     </div>
-  );
-};
-
-const OpenFileExplorerButton: React.FC = () => {
-  const [folderIcon, setFolderIcon] = React.useState<"open" | "closed">(
-    "closed"
-  );
-
-  return (
-    <Button
-      variant="ghost"
-      onClick={() => ipc.openAudioDir()}
-      onMouseEnter={() => setFolderIcon("open")}
-      onMouseLeave={() => setFolderIcon("closed")}
-    >
-      {folderIcon === "closed" ? (
-        <AiFillFolder size={24} />
-      ) : (
-        <AiFillFolderOpen size={24} />
-      )}
-      <label>Open folder</label>
-    </Button>
   );
 };
 
