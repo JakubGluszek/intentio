@@ -18,7 +18,7 @@ import { VscSettings, VscTerminalBash } from "react-icons/vsc";
 import useStore from "@/store";
 import { Button, Pane, Tabs } from "@/ui";
 import { useEvents } from "@/hooks";
-import { Titlebar, WindowContainer } from "@/components";
+import { WindowContainer } from "@/components";
 import TimerView from "./TimerView";
 import AudioView from "./audioView";
 import ThemesView from "./themesView";
@@ -34,8 +34,6 @@ const SettingsWindow: React.FC = () => {
   const store = useStore();
 
   useEvents({
-    interface_config_updated: (data) => store.setInterfaceConfig(data),
-    behavior_config_updated: (data) => store.setBehaviorConfig(data),
     theme_deleted: (data) => store.removeTheme(data.id),
   });
 
@@ -60,7 +58,7 @@ const SettingsTitlebar: React.FC = () => {
     <Pane className="flex flex-col gap-1">
       <div className="flex flex-row  items-center justify-between">
         <div className="flex flex-row items-center gap-1 text-text">
-          <MdSettings size={24} className="text-text/60" />
+          <MdSettings size={24} />
           <span className="text-lg font-semibold">{panel}</span>
         </div>
         <Button variant="ghost" onClick={() => appWindow.close()}>

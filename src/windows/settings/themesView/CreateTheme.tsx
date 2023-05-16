@@ -1,5 +1,4 @@
 import React from "react";
-import { MdCancel } from "react-icons/md";
 import { toast } from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import { ChromePicker } from "react-color";
