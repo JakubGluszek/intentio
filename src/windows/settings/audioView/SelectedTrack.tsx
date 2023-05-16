@@ -33,8 +33,8 @@ const SelectedTrack: React.FC<Props> = (props) => {
     >
       <motion.div
         className="flex flex-col gap-1"
-        transition={{ duration: 0.2, delay: 0.3 }}
-        initial={{ opacity: 0, scale: 0.8 }}
+        transition={{ duration: 0.2, delay: 0.2 }}
+        initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
       >
         {/* Selected audio file with volume and repeat control */}

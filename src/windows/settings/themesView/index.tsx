@@ -39,6 +39,17 @@ const ThemesView: React.FC = () => {
 
   if (store.themes.length === 0) return null;
 
+  /*
+  Section "Selected Themes"
+    Idle
+    Focus
+    Break
+    Long break
+  Section "Collection"
+    Add theme
+    Themes
+  */
+
   return (
     <Pane className="grow flex flex-col overflow-y-auto gap-2" padding="lg">
       <div className="flex flex-row justify-between">
