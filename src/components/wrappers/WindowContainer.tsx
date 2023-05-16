@@ -82,16 +82,16 @@ export const WindowContainer: React.FC<WindowContainerProps> = (props) => {
 
       <Toaster
         position="top-center"
-        containerStyle={{ top: 16, zIndex: 999999999 }}
+        containerStyle={{ top: 4, zIndex: 999999999 }}
         toastOptions={{
-          duration: 1400,
+          duration: 1800,
           style: {
             padding: 1,
             paddingInline: 2,
-            backgroundColor: "rgb(var(--base-color))",
+            backgroundColor: "rgb(var(--primary-color))",
             borderWidth: 2,
-            borderColor: "rgb(var(--window-color) / 0.6)",
-            borderRadius: 2,
+            borderColor: "rgb(var(--window-color) / 0.8)",
+            borderRadius: 6,
             fontSize: "0.9rem",
             fontWeight: 700,
             color: "rgb(var(--window-color))",

@@ -19,7 +19,7 @@ export const SliderCard: React.FC<SliderCardProps> = (props) => {
       : props.digit;
 
   return (
-    <Card className="flex flex-col gap-2 p-2" withBorder>
+    <Card className="flex flex-col gap-2">
       <div className="flex flex-row items-center justify-between">
         <div className="text-text">{props.label}</div>
         <div className="w-16 border-2 border-primary/20 rounded-sm py-0.5">

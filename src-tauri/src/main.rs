@@ -25,6 +25,7 @@ use tokio::runtime::Builder;
 
 fn main() -> Result<()> {
     let runtime = Builder::new_current_thread()
+        .enable_time()
         .build()
         .expect("expected tokio runtime");
 

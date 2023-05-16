@@ -88,6 +88,8 @@ pub async fn set_idle_theme(
     settings.idle_theme_id = data.id.clone();
     ConfigManager::save::<SettingsConfig>(&settings)?;
 
+    ctx.emit_event("settings_config_updated", settings);
+
     // update state
     let mut state = state.lock().await;
     state.idle_theme = data;
@@ -108,6 +110,8 @@ pub async fn set_focus_theme(
     let mut settings = ConfigManager::get::<SettingsConfig>()?;
     settings.focus_theme_id = data.id.clone();
     ConfigManager::save::<SettingsConfig>(&settings)?;
+
+    ctx.emit_event("settings_config_updated", settings);
 
     // update state
     let mut state = state.lock().await;
@@ -130,6 +134,8 @@ pub async fn set_break_theme(
     settings.break_theme_id = data.id.clone();
     ConfigManager::save::<SettingsConfig>(&settings)?;
 
+    ctx.emit_event("settings_config_updated", settings);
+
     // update state
     let mut state = state.lock().await;
     state.break_theme = data;
@@ -150,6 +156,8 @@ pub async fn set_long_break_theme(
     let mut settings = ConfigManager::get::<SettingsConfig>()?;
     settings.long_break_theme_id = data.id.clone();
     ConfigManager::save::<SettingsConfig>(&settings)?;
+
+    ctx.emit_event("settings_config_updated", settings);
 
     // update state
     let mut state = state.lock().await;

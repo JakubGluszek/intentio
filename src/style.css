@@ -86,6 +86,10 @@
 }
 
 @layer components {
+  .section-heading {
+    @apply text-primary/80 font-bold uppercase tracking-widest;
+  }
+
   .tooltip {
     @apply bg-window rounded border-2 shadow-lg border-base text-sm text-text p-0.5 px-2 pt-1;
   }

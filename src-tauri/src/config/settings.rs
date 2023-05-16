@@ -51,7 +51,7 @@ impl Default for SettingsConfig {
 #[derive(Serialize, Deserialize, TS, Debug)]
 #[ts(export, export_to = "../src/bindings/")]
 pub struct SettingsConfigForUpdate {
-    pub alert_audio: Option<String>,
+    pub alert_file: Option<String>,
     pub alert_volume: Option<f32>,
     #[ts(type = "number")]
     pub alert_repeat: Option<i64>,

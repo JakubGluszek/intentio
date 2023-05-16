@@ -13,17 +13,17 @@ export const Section: React.FC<SectionProps> = (props) => {
   return (
     <motion.section
       className={className}
-      transition={{ duration: 0.2 }}
+      transition={{ duration: 0.3, ease: "linear" }}
       variants={{
-        visible: { opacity: 1, x: 0 },
-        hidden: { opacity: 0, x: 32 },
+        hidden: { opacity: 0, scale: 0.9, x: 16 },
+        visible: { opacity: 1, scale: 1, x: 0 },
       }}
       {...restProps}
     >
-      {heading && (
-        <div className="w-fit text-center text-primary/80 font-bold uppercase tracking-widest">
-          {heading}
-        </div>
+      {typeof heading === "string" ? (
+        <div className="w-fit text-center section-heading">{heading}</div>
+      ) : (
+        heading
       )}
       <div className="flex flex-col gap-1.5">{children}</div>
     </motion.section>

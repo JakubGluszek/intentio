@@ -4,7 +4,6 @@ export interface SettingsConfig {
   alert_file: string;
   alert_volume: number;
   alert_repeat: number;
-  display_timer_countdown: boolean;
   idle_theme_id: string;
   focus_theme_id: string;
   break_theme_id: string;

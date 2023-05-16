@@ -1,6 +1,6 @@
 import React from "react";
 
-import { SliderCard } from "@/components";
+import { CascadeSections, OverflowY, SliderCard } from "@/components";
 import useStore from "@/store";
 import ipc from "@/ipc";
 import { Card, CheckBox, Pane, Section } from "@/ui";
@@ -21,9 +21,9 @@ const TimerView: React.FC = () => {
   if (!config) return null;
 
   return (
-    <Pane className="grow flex flex-col overflow-y-auto" padding="lg">
-      <div className="max-h-0 overflow-y">
-        <div className="flex flex-col gap-1 pb-1.5">
+    <Pane className="grow flex flex-col" padding="lg">
+      <OverflowY>
+        <CascadeSections>
           <Section heading="Duration">
             <SliderCard
               type="duration"
@@ -64,7 +64,7 @@ const TimerView: React.FC = () => {
           </Section>
 
           <Section heading="Repeat">
-            <Card className="flex flex-col gap-1" withBorder>
+            <Card className="flex flex-col gap-1">
               <div className="flex flex-row items-center justify-between">
                 <div>Auto start focus</div>
                 <CheckBox
@@ -87,21 +87,21 @@ const TimerView: React.FC = () => {
           </Section>
 
           <Section heading="Hotkeys">
-            <Card className="flex flex-row items-center justify-between" withBorder>
+            <Card className="flex flex-row items-center justify-between">
               <div>Start/Resume</div>
               <div className="w-24 bg-primary/30 py-1 text-sm font-bold text-center rounded-sm shadow-inner shadow-black/20">
                 CTRL + F1
               </div>
             </Card>
-            <Card className="flex flex-row items-center justify-between" withBorder>
+            <Card className="flex flex-row items-center justify-between">
               <div>Skip</div>
               <div className="w-24 bg-primary/30 p-1 text-sm font-bold text-center rounded-sm shadow-inner shadow-black/20">
                 CTRL + F2
               </div>
             </Card>
           </Section>
-        </div>
-      </div>
+        </CascadeSections>
+      </OverflowY>
     </Pane>
   );
 };

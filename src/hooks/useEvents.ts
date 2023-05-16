@@ -9,9 +9,7 @@ import { Task } from "@/bindings/Task";
 import { Note } from "@/bindings/Note";
 import { Script } from "@/bindings/Script";
 import { TimerConfig } from "@/bindings/TimerConfig";
-import { BehaviorConfig } from "@/bindings/BehaviorConfig";
-import { AudioConfig } from "@/bindings/AudioConfig";
-import { InterfaceConfig } from "@/bindings/InterfaceConfig";
+import { SettingsConfig } from "@/bindings/SettingsConfig";
 
 type Events = {
   [key: string]: any;
@@ -35,10 +33,8 @@ type Events = {
   script_created: Script;
   script_updated: Script;
   script_deleted: ModelDeleteResultData;
+  settings_config_updated: SettingsConfig;
   timer_config_updated: TimerConfig;
-  behavior_config_updated: BehaviorConfig;
-  audio_config_updated: AudioConfig;
-  interface_config_updated: InterfaceConfig;
   theme_updated: Theme;
   theme_deleted: ModelDeleteResultData;
   timer_play: undefined;

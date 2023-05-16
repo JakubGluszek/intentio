@@ -1,5 +1,5 @@
 import React from "react";
-import { MdArrowBack, MdDelete } from "react-icons/md";
+import { MdDelete } from "react-icons/md";
 import { toast } from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import { RiEyeCloseFill, RiEyeFill } from "react-icons/ri";
