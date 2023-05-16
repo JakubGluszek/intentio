@@ -55,7 +55,7 @@ export const Button: React.FC<ButtonProps> = (props) => {
         "text-base hover:text-primary/80",
         config?.ghost?.highlight === true
           ? "hover:bg-base/10 active:bg-base/20"
-          : "bg-transparent active:text-primary"
+          : "bg-transparent active:text-primary p-0"
       )
     );
   }

@@ -20,10 +20,10 @@ export const Section: React.FC<SectionProps> = (props) => {
       }}
       {...restProps}
     >
-      {heading && (
-        <div className="w-fit text-center text-primary/80 font-bold uppercase tracking-widest">
-          {heading}
-        </div>
+      {typeof heading === "string" ? (
+        <div className="w-fit text-center section-heading">{heading}</div>
+      ) : (
+        heading
       )}
       <div className="flex flex-col gap-1.5">{children}</div>
     </motion.section>

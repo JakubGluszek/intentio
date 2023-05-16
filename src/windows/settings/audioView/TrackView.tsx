@@ -1,36 +1,45 @@
-import { Button, Card } from "@/ui";
 import React from "react";
 import { MdAudiotrack, MdPlayCircle } from "react-icons/md";
 
+import { Button, Card, Tooltip } from "@/ui";
+
 interface Props {
   name: string;
-  onSelected: (name: string) => void;
-  onTrackPreview: (name: string) => void;
+  onSelected: () => void;
+  onTrackPreview: () => void;
 }
 
 const TrackView: React.FC<Props> = (props) => {
   return (
     <Card
-      className="p-0.5 px-1"
+      className="p-0.5 px-1 cursor-pointer"
       onClick={(e) =>
         // @ts-ignore
-        !e.target.closest("button") && props.onSelected(props.name)
+        !e.target.closest("button") && props.onSelected()
       }
+      transition={{ duration: 0.2, ease: "linear" }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      clickable
       data-tauri-disable-drag
     >
       <div className="flex flex-row items-center justify-between">
         <div className="flex flex-row items-center gap-1 text-text/90 group-hover:text-text">
           <MdAudiotrack size={20} />
-          <div>{props.name}</div>
+          <div className="w-[200px] whitespace-nowrap overflow-ellipsis overflow-hidden">
+            {props.name}
+          </div>
         </div>
-        <Button
-          variant="ghost"
-          className="opacity-0 group-hover:opacity-100"
-          onClick={() => props.onTrackPreview(props.name)}
-          config={{ ghost: { highlight: false } }}
-        >
-          <MdPlayCircle size={24} />
-        </Button>
+        <Tooltip label="Play audio">
+          <Button
+            variant="ghost"
+            className="opacity-0 group-hover:opacity-100"
+            onClick={() => props.onTrackPreview()}
+            config={{ ghost: { highlight: false } }}
+          >
+            <MdPlayCircle size={24} />
+          </Button>
+        </Tooltip>
       </div>
     </Card>
   );
