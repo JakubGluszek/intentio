@@ -2,7 +2,7 @@ import React from "react";
 import { BaseDirectory, FileEntry, readDir } from "@tauri-apps/api/fs";
 import { appWindow } from "@tauri-apps/api/window";
 import { toast } from "react-hot-toast";
-import { MdRefresh } from "react-icons/md";
+import { MdLabelImportant, MdRefresh } from "react-icons/md";
 
 import ipc from "@/ipc";
 import useStore from "@/store";
@@ -65,7 +65,7 @@ const AudioView: React.FC = () => {
   if (!settings) return null;
 
   return (
-    <Pane className="grow flex flex-col" padding="lg">
+    <Pane className="grow flex flex-col">
       <OverflowY>
         <CascadeSections>
           <Section heading="Selected track">
@@ -85,7 +85,10 @@ const AudioView: React.FC = () => {
           <Section
             heading={
               <div className="flex flex-row items-center justify-between">
-                <div className="section-heading">All tracks</div>
+                <div className="section-heading">
+                  <MdLabelImportant size={24} />
+                  <div>All tracks</div>
+                </div>
                 <div className="flex flex-row gap-1">
                   <Tooltip label="Reload">
                     <Button variant="ghost" onClick={() => readTracks()}>

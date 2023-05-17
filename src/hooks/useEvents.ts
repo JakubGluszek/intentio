@@ -35,6 +35,7 @@ type Events = {
   script_deleted: ModelDeleteResultData;
   settings_config_updated: SettingsConfig;
   timer_config_updated: TimerConfig;
+  theme_created: Theme;
   theme_updated: Theme;
   theme_deleted: ModelDeleteResultData;
   timer_play: undefined;

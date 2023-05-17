@@ -19,7 +19,7 @@ const GeneralView: React.FC = () => {
   if (!store.settingsConfig || isAutoStart === undefined) return null;
 
   return (
-    <Pane className="grow flex flex-col" padding="lg">
+    <Pane className="grow flex flex-col">
       <OverflowY>
         <CascadeSections>
           <Section heading="App">
@@ -53,7 +53,7 @@ const GeneralView: React.FC = () => {
           </Section>
 
           <Section heading="Main Window">
-            <Card className="flex flex-col gap-1">
+            <Card>
               <div className="flex flex-row items-center justify-between">
                 <div className="text-text/90 group-hover:text-text">
                   Always on top
@@ -69,6 +69,8 @@ const GeneralView: React.FC = () => {
                   }
                 />
               </div>
+            </Card>
+            <Card>
               <div className="flex flex-row items-center justify-between">
                 <div className="text-text/90 group-hover:text-text">
                   Minimize to tray

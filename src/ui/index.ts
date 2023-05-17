@@ -8,3 +8,4 @@ export * from "./Tooltip";
 export * from "./ContextMenu";
 export * from "./Section";
 export * from "./CheckBox";
+export * from "./PaneHeading";
