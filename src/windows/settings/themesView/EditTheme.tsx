@@ -1,11 +1,16 @@
 import React from "react";
-import { MdDelete } from "react-icons/md";
+import { MdDelete, MdPreview, MdSave } from "react-icons/md";
 import { toast } from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import { RiEyeCloseFill, RiEyeFill } from "react-icons/ri";
 import { emit } from "@tauri-apps/api/event";
 
-import { ColorInput, ModalContainer } from "@/components";
+import {
+  CascadeSections,
+  ColorInput,
+  ModalContainer,
+  OverflowY,
+} from "@/components";
 import { Theme } from "@/bindings/Theme";
 import ipc from "@/ipc";
 import useStore from "@/store";
@@ -14,7 +19,15 @@ import { ColorType } from "..";
 import { useClickOutside } from "@mantine/hooks";
 import { ChromePicker } from "react-color";
 import { useConfirmDelete } from "@/hooks";
-import { Button, Input, Pane } from "@/ui";
+import {
+  Button,
+  DangerButton,
+  Input,
+  Pane,
+  PaneHeading,
+  Section,
+  Tooltip,
+} from "@/ui";
 
 interface Props {
   data: Theme;
@@ -72,7 +85,7 @@ const EditTheme: React.FC<Props> = (props) => {
   }, []);
 
   return (
-    <Pane className="grow flex flex-col">
+    <React.Fragment>
       <ModalContainer
         display={!!viewColorPicker}
         hide={() => setViewColorPicker(undefined)}
@@ -86,98 +99,105 @@ const EditTheme: React.FC<Props> = (props) => {
         </div>
       </ModalContainer>
 
-      <form onSubmit={onSubmit} className="grow flex flex-col justify-between">
-        <div className="flex flex-row items-center gap-2">
-          <Input
-            {...register("name", { required: true, maxLength: 16 })}
-            id="color-scheme-name"
-            placeholder="Name"
-            maxLength={16}
-          />
-        </div>
-
-        <ColorInput
-          label="Window"
-          type="window_hex"
-          watch={watch}
-          register={register}
-          onViewColorPicker={() => {
-            setColorPickerHex(watch("window_hex"));
-            setViewColorPicker("window");
-          }}
-        />
-        <ColorInput
-          label="Base"
-          type="base_hex"
-          watch={watch}
-          register={register}
-          onViewColorPicker={() => {
-            setColorPickerHex(watch("base_hex"));
-            setViewColorPicker("base");
-          }}
-        />
-        <ColorInput
-          label="Primary"
-          type="primary_hex"
-          watch={watch}
-          register={register}
-          onViewColorPicker={() => {
-            setColorPickerHex(watch("primary_hex"));
-            setViewColorPicker("primary");
-          }}
-        />
-        <ColorInput
-          label="Text"
-          type="text_hex"
-          watch={watch}
-          register={register}
-          onViewColorPicker={() => {
-            setColorPickerHex(watch("text_hex"));
-            setViewColorPicker("text");
-          }}
-        />
-
-        <div className="w-full h-[2px] rounded bg-base/20"></div>
-
-        <div className="flex flex-row items-center justify-between">
-          {!viewConfirmDelete && (
-            <Button onClick={() => props.onExit()} variant="ghost">
-              Exit
-            </Button>
-          )}
-          <div className="flex flex-row gap-2">
-            <Button variant="ghost" onClick={() => onDelete()}>
-              <MdDelete size={24} />
-              {viewConfirmDelete && "Confirm"}
-            </Button>
-            {!viewConfirmDelete && (
+      <Pane className="grow flex flex-col gap-1 p-0">
+        <PaneHeading
+          body={
+            <div className="flex flex-row items-center justify-between">
+              <div>Edit theme</div>
               <div
-                className="flex flex-row items-center text-primary/80"
-                onMouseOver={() => {
-                  emit("preview_theme", getValues());
-                  setViewThemePreview(true);
-                }}
-                onMouseLeave={() => {
-                  emit("preview_theme", store.currentTheme);
-                  setViewThemePreview(false);
-                }}
+                className="flex flex-row items-center"
+                data-tauri-disable-drag
               >
-                {viewThemePreview ? (
-                  <RiEyeFill size={24} />
-                ) : (
-                  <RiEyeCloseFill size={24} />
-                )}
+                <Tooltip label="Delete" className="text-danger">
+                  <DangerButton variant="ghost" onClick={() => onDelete()}>
+                    {viewConfirmDelete ? "Confirm" : <MdDelete size={24} />}
+                  </DangerButton>
+                </Tooltip>
+
+                <Tooltip label="Save">
+                  <Button variant="ghost" onClick={() => onSubmit()}>
+                    <MdSave size={24} />
+                  </Button>
+                </Tooltip>
+
+                <Tooltip label="Preview">
+                  <Button
+                    variant="ghost"
+                    onMouseOver={() => {
+                      emit("preview_theme", getValues());
+                      setViewThemePreview(true);
+                    }}
+                    onMouseLeave={() => {
+                      emit("preview_theme", store.currentTheme);
+                      setViewThemePreview(false);
+                    }}
+                  >
+                    <MdPreview size={24} />
+                  </Button>
+                </Tooltip>
               </div>
-            )}
-            {!viewConfirmDelete && (
-              <Button variant="base" type="submit">
-                Update theme
-              </Button>
-            )}
-          </div>
-        </div>
-      </form>
-    </Pane>
+            </div>
+          }
+          onExit={props.onExit}
+        />
+        <OverflowY>
+          <CascadeSections>
+            <Section>
+              <form onSubmit={onSubmit} className="grow flex flex-col gap-1.5">
+                <div className="flex flex-row items-center gap-2">
+                  <Input
+                    {...register("name", { required: true, maxLength: 16 })}
+                    id="color-scheme-name"
+                    maxLength={16}
+                    placeholder="Name"
+                  />
+                </div>
+                <ColorInput
+                  label="Window"
+                  type="window_hex"
+                  watch={watch}
+                  register={register}
+                  onViewColorPicker={() => {
+                    setColorPickerHex(watch("window_hex"));
+                    setViewColorPicker("window");
+                  }}
+                />
+                <ColorInput
+                  label="Base"
+                  type="base_hex"
+                  watch={watch}
+                  register={register}
+                  onViewColorPicker={() => {
+                    setColorPickerHex(watch("base_hex"));
+                    setViewColorPicker("base");
+                  }}
+                />
+                <ColorInput
+                  label="Primary"
+                  type="primary_hex"
+                  watch={watch}
+                  register={register}
+                  onViewColorPicker={() => {
+                    setColorPickerHex(watch("primary_hex"));
+                    setViewColorPicker("primary");
+                  }}
+                />
+                <ColorInput
+                  label="Text"
+                  type="text_hex"
+                  watch={watch}
+                  register={register}
+                  onViewColorPicker={() => {
+                    setColorPickerHex(watch("text_hex"));
+                    setViewColorPicker("text");
+                  }}
+                />
+              </form>
+            </Section>
+          </CascadeSections>
+        </OverflowY>
+      </Pane>
+    </React.Fragment>
   );
 };
 

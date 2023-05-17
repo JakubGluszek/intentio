@@ -72,11 +72,11 @@ export const WindowContainer: React.FC<WindowContainerProps> = (props) => {
         className="fixed w-[364px] h-[448px] blur-xl"
         style={{
           opacity: 1,
-          left: -64,
-          top: -128,
+          left: -80,
+          top: -140,
           pointerEvents: "none",
           backgroundImage:
-            "radial-gradient(circle at center, rgba(var(--primary-color) / 0.1), transparent 100%",
+            "radial-gradient(circle at center, rgba(var(--base-color) / 0.4), transparent 90%",
         }}
       ></motion.div>
 

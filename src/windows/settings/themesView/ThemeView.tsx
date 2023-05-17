@@ -1,55 +1,48 @@
 import React from "react";
 import { MdEdit, MdFavorite, MdFavoriteBorder } from "react-icons/md";
+import { FaClone } from "react-icons/fa";
 import { emit } from "@tauri-apps/api/event";
+import { clsx } from "@mantine/core";
 
 import ipc from "@/ipc";
 import useStore from "@/store";
-import { useContextMenu } from "@/hooks";
-import { Theme } from "@/bindings/Theme";
 import { Tooltip } from "@/ui";
+import { Theme } from "@/bindings/Theme";
 
-interface Props {
+interface ThemeViewProps {
   data: Theme;
-  selectable: boolean;
-  onViewEdit: () => void;
-  onSelected: () => void;
+  isSelectable?: boolean;
+  onViewEdit?: (theme: Theme) => void;
+  onSelected?: (theme: Theme) => void;
 }
 
-const ThemeView: React.FC<Props> = (props) => {
+const ThemeView: React.FC<ThemeViewProps> = (props) => {
   const store = useStore();
-  const [menu, onContextMenuHandler] = useContextMenu();
 
   const handleToggleFavorite = () =>
-    ipc
-      .updateTheme(props.data.id, { favorite: !props.data.favorite })
-      .then(() => menu.hide());
+    ipc.updateTheme(props.data.id, { favorite: !props.data.favorite });
 
   return (
     <div
       onClick={(e) =>
         // @ts-ignore
-        !e.target.closest("button") && props.selectable && props.onSelected()
+        !e.target.closest("button") &&
+        props.isSelectable &&
+        props.onSelected?.(props.data)
       }
       className="group flex flex-row h-9 font-black overflow-clip shadow-lg rounded-sm border-2 border-base/30"
       style={{
         color: props.data.text_hex,
         backgroundColor: props.data.window_hex,
-        cursor: props.selectable ? "pointer" : "default",
+        cursor: props.isSelectable ? "pointer" : "default",
       }}
-      onContextMenu={onContextMenuHandler}
       data-tauri-disable-drag
     >
-      <Tooltip label="Press to preview">
+      <Tooltip label="Hold to preview">
         <button
           className="min-w-[32px] h-full cursor-pointer"
           style={{ backgroundColor: props.data.primary_hex }}
-          onMouseDown={() => {
-            if (props.selectable) {
-              props.onSelected();
-              return;
-            }
-            emit("preview_theme", props.data);
-          }}
+          onMouseDown={() => emit("preview_theme", props.data)}
           onMouseUp={() => emit("preview_theme", store.currentTheme)}
           onMouseOut={() => emit("preview_theme", store.currentTheme)}
         ></button>
@@ -64,22 +57,49 @@ const ThemeView: React.FC<Props> = (props) => {
         </div>
 
         {/* Theme operations */}
-        {props.selectable === false && (
-          <div className="flex flex-row gap-2 px-2">
-            {!props.data.default && (
-              <button
-                onClick={() => props.onViewEdit()}
-                className="opacity-60 hover:opacity-100 duration-75"
-                style={{
-                  color: props.data.primary_hex,
-                }}
-              >
-                <MdEdit size={20} />
-              </button>
-            )}
+        <div className="flex flex-row items-center gap-2 px-2">
+          {!props.isSelectable && (
+            <Tooltip label="Edit">
+              {!props.data.default && (
+                <button
+                  onClick={() => props.onViewEdit?.(props.data)}
+                  className="h-8 opacity-0 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-300"
+                  style={{
+                    color: props.data.primary_hex,
+                  }}
+                >
+                  <MdEdit size={20} />
+                </button>
+              )}
+            </Tooltip>
+          )}
+
+          <Tooltip label="Clone">
+            <button
+              onClick={() =>
+                ipc.createTheme({
+                  ...props.data,
+                  name: `${props.data.name} (copy)`,
+                })
+              }
+              className="h-8 opacity-0 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-300"
+              style={{
+                color: props.data.primary_hex,
+              }}
+            >
+              <FaClone size={16} />
+            </button>
+          </Tooltip>
+
+          <Tooltip label={props.data.favorite ? "Drop favorite" : "Favorite"}>
             <button
               onClick={() => handleToggleFavorite()}
-              className="opacity-80 hover:opacity-100"
+              className={clsx(
+                "h-8 transition-opacity duration-300",
+                props.data.favorite
+                  ? "opacity-80 hover:opacity-100"
+                  : "opacity-0 group-hover:opacity-80 hover:opacity-100"
+              )}
               style={{
                 color: props.data.primary_hex,
               }}
@@ -90,8 +110,8 @@ const ThemeView: React.FC<Props> = (props) => {
                 <MdFavoriteBorder size={20} />
               )}
             </button>
-          </div>
-        )}
+          </Tooltip>
+        </div>
       </div>
     </div>
   );

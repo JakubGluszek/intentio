@@ -2,6 +2,8 @@ import React from "react";
 import { UseFormRegister, UseFormWatch } from "react-hook-form";
 
 import { ThemeForCreate } from "@/bindings/ThemeForCreate";
+import { Card } from "@/ui";
+import { MdColorLens } from "react-icons/md";
 
 interface Props {
   label: string;
@@ -15,22 +17,23 @@ const ColorInput: React.FC<Props> = (props) => {
   const currentHex = props.watch(props.type);
 
   return (
-    <div className="flex flex-row items-center gap-2">
+    <Card className="flex flex-col gap-1">
       <label
-        className="min-w-[80px] text-text font-semibold"
+        className="min-w-[80px] flex flex-row items-center gap-1 text-text font-semibold"
         htmlFor={props.type}
       >
-        {props.label}
+        <MdColorLens size={20} />
+        <div>{props.label}</div>
       </label>
       <div
         data-tauri-disable-drag
         onClick={() => props.onViewColorPicker()}
         style={{ backgroundColor: currentHex }}
-        className="w-full h-8 opacity-80 hover:opacity-100 flex flex-row items-center justify-center border-2 border-base/30 shadow-lg shadow-black/30 hover:shadow-black/60 transition-all rounded cursor-pointer"
+        className="w-full p-1 opacity-80 hover:opacity-100 flex flex-row items-center justify-center shadow shadow-black/30 hover:shadow-lg hover:shadow-black/30 transition-all rounded cursor-pointer"
       >
         <div className="contrast-text font-bold">{currentHex}</div>
       </div>
-    </div>
+    </Card>
   );
 };
 

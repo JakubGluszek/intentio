@@ -8,3 +8,5 @@ export interface TimerSession {
   isPlaying: boolean;
   startedAt?: string;
 }
+
+export type ThemeState = "Idle" | "Focus" | "Break" | "Long Break";

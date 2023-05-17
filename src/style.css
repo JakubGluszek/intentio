@@ -81,13 +81,13 @@
   }
 
   h2 {
-    @apply font-medium text-lg;
+    @apply text-lg;
   }
 }
 
 @layer components {
   .section-heading {
-    @apply text-primary/80 font-bold uppercase tracking-widest;
+    @apply w-fit flex flex-row items-center gap-1 text-base font-bold uppercase tracking-widest;
   }
 
   .tooltip {

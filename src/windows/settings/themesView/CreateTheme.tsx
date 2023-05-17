@@ -6,12 +6,18 @@ import { emit } from "@tauri-apps/api/event";
 import { RiEyeCloseFill, RiEyeFill } from "react-icons/ri";
 import { useClickOutside } from "@mantine/hooks";
 
-import { ColorInput, ModalContainer } from "@/components";
+import {
+  CascadeSections,
+  ColorInput,
+  ModalContainer,
+  OverflowY,
+} from "@/components";
 import useStore from "@/store";
 import ipc from "@/ipc";
 import { ThemeForCreate } from "@/bindings/ThemeForCreate";
 import { ColorType } from "..";
-import { Button, Input, Pane } from "@/ui";
+import { Button, Input, Pane, PaneHeading, Section, Tooltip } from "@/ui";
+import { MdSave } from "react-icons/md";
 
 interface Props {
   onExit: () => void;
@@ -61,107 +67,117 @@ const CreateTheme: React.FC<Props> = (props) => {
   }, []);
 
   return (
-    <div className="grow flex flex-col gap-0.5">
-      <Pane className="grow flex flex-col">
-        <ModalContainer
-          display={!!viewColorPicker}
-          hide={() => setViewColorPicker(undefined)}
-        >
-          <div ref={modalRef} data-tauri-disable-drag>
-            <ChromePicker
-              color={colorPickerHex}
-              onChange={(data) => setColorPickerHex(data.hex)}
-              disableAlpha
-            />
-          </div>
-        </ModalContainer>
-
-        <form
-          onSubmit={onSubmit}
-          className="grow flex flex-col justify-between"
-        >
-          <div className="flex flex-row items-center gap-2">
-            <Input
-              {...register("name", { required: true, maxLength: 16 })}
-              id="color-scheme-name"
-              maxLength={16}
-              placeholder="Name"
-            />
-          </div>
-          <ColorInput
-            label="Window"
-            type="window_hex"
-            watch={watch}
-            register={register}
-            onViewColorPicker={() => {
-              setColorPickerHex(watch("window_hex"));
-              setViewColorPicker("window");
-            }}
+    <React.Fragment>
+      <ModalContainer
+        display={!!viewColorPicker}
+        hide={() => setViewColorPicker(undefined)}
+      >
+        <div ref={modalRef} data-tauri-disable-drag>
+          <ChromePicker
+            color={colorPickerHex}
+            onChange={(data) => setColorPickerHex(data.hex)}
+            disableAlpha
           />
-          <ColorInput
-            label="Base"
-            type="base_hex"
-            watch={watch}
-            register={register}
-            onViewColorPicker={() => {
-              setColorPickerHex(watch("base_hex"));
-              setViewColorPicker("base");
-            }}
-          />
-          <ColorInput
-            label="Primary"
-            type="primary_hex"
-            watch={watch}
-            register={register}
-            onViewColorPicker={() => {
-              setColorPickerHex(watch("primary_hex"));
-              setViewColorPicker("primary");
-            }}
-          />
-          <ColorInput
-            label="Text"
-            type="text_hex"
-            watch={watch}
-            register={register}
-            onViewColorPicker={() => {
-              setColorPickerHex(watch("text_hex"));
-              setViewColorPicker("text");
-            }}
-          />
+        </div>
+      </ModalContainer>
 
-          <div className="w-full h-[2px] rounded bg-base/20"></div>
-
-          <div className="flex flex-row items-center justify-between">
-            <Button variant="ghost" onClick={() => props.onExit()}>
-              <div>Exit</div>
-            </Button>
-
-            <div className="flex flex-row items-center gap-2">
+      <Pane className="grow flex flex-col gap-1 p-0">
+        <PaneHeading
+          body={
+            <div className="flex flex-row items-center justify-between">
+              <div>Create theme</div>
               <div
-                className="flex flex-row items-center text-primary/80 gap-2"
-                onMouseOver={() => {
-                  emit("preview_theme", getValues());
-                  setViewThemePreview(true);
-                }}
-                onMouseLeave={() => {
-                  emit("preview_theme", store.currentTheme);
-                  setViewThemePreview(false);
-                }}
+                className="flex flex-row items-center gap-1"
+                data-tauri-disable-drag
               >
-                {viewThemePreview ? (
-                  <RiEyeFill size={24} />
-                ) : (
-                  <RiEyeCloseFill size={24} />
-                )}
+                <Tooltip label="Save">
+                  <Button variant="ghost" onClick={() => onSubmit()}>
+                    <MdSave size={24} />
+                  </Button>
+                </Tooltip>
+
+                <Tooltip label="Preview">
+                  <Button
+                    variant="ghost"
+                    onMouseOver={() => {
+                      emit("preview_theme", getValues());
+                      setViewThemePreview(true);
+                    }}
+                    onMouseLeave={() => {
+                      emit("preview_theme", store.currentTheme);
+                      setViewThemePreview(false);
+                    }}
+                  >
+                    {viewThemePreview ? (
+                      <RiEyeFill size={24} />
+                    ) : (
+                      <RiEyeCloseFill size={24} />
+                    )}
+                  </Button>
+                </Tooltip>
               </div>
-              <Button variant="base" type="submit">
-                Create theme
-              </Button>
             </div>
-          </div>
-        </form>
+          }
+          onExit={props.onExit}
+        />
+        <OverflowY>
+          <CascadeSections>
+            <Section>
+              <form onSubmit={onSubmit} className="grow flex flex-col gap-1.5">
+                <div className="flex flex-row items-center gap-2">
+                  <Input
+                    {...register("name", { required: true, maxLength: 16 })}
+                    id="color-scheme-name"
+                    maxLength={16}
+                    placeholder="Name"
+                  />
+                </div>
+                <ColorInput
+                  label="Window"
+                  type="window_hex"
+                  watch={watch}
+                  register={register}
+                  onViewColorPicker={() => {
+                    setColorPickerHex(watch("window_hex"));
+                    setViewColorPicker("window");
+                  }}
+                />
+                <ColorInput
+                  label="Base"
+                  type="base_hex"
+                  watch={watch}
+                  register={register}
+                  onViewColorPicker={() => {
+                    setColorPickerHex(watch("base_hex"));
+                    setViewColorPicker("base");
+                  }}
+                />
+                <ColorInput
+                  label="Primary"
+                  type="primary_hex"
+                  watch={watch}
+                  register={register}
+                  onViewColorPicker={() => {
+                    setColorPickerHex(watch("primary_hex"));
+                    setViewColorPicker("primary");
+                  }}
+                />
+                <ColorInput
+                  label="Text"
+                  type="text_hex"
+                  watch={watch}
+                  register={register}
+                  onViewColorPicker={() => {
+                    setColorPickerHex(watch("text_hex"));
+                    setViewColorPicker("text");
+                  }}
+                />
+              </form>
+            </Section>
+          </CascadeSections>
+        </OverflowY>
       </Pane>
-    </div>
+    </React.Fragment>
   );
 };
 
