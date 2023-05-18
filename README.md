@@ -12,7 +12,7 @@ The technique has been widely adopted by individuals and organizations alike, an
 
 ## Preview
 
-![Preview](https://github.com/JakubGluszek/intentio/blob/master/.github/images/intentio-v2-preview.png)
+![Preview](https://github.com/JakubGluszek/intentio/blob/main/intentio-v2.png)
 
 ## Features
 
