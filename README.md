@@ -14,6 +14,10 @@ The technique has been widely adopted by individuals and organizations alike, an
 
 ![Preview](https://github.com/JakubGluszek/intentio/blob/main/intentio-v2.png)
 
+## Warning:
+v1 available in the releases page is heaviliy outdated. Usage is not recommened.
+Work is currently being done on v2.
+
 ## Features
 
 - **intents** - categorize what you spend your time on.
