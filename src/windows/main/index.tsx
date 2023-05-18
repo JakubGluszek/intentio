@@ -1,68 +1,119 @@
 import React from "react";
-import { MdRemove, MdClose, MdSettings } from "react-icons/md";
-import { TbLayoutSidebarRightCollapse } from "react-icons/tb";
+import {
+  MdRemove,
+  MdClose,
+  MdSettings,
+  MdTimer,
+  MdAnalytics,
+} from "react-icons/md";
+import { BiTargetLock } from "react-icons/bi";
 import { WebviewWindow } from "@tauri-apps/api/window";
-import { motion } from "framer-motion";
+import { clsx } from "@mantine/core";
 
 import ipc from "@/ipc";
 import config from "@/config";
 import { WindowContainer } from "@/components";
-import { MainWindowContext, MainWindowProvider } from "@/contexts";
+import { MainWindowProvider } from "@/contexts";
 import { Button, Pane } from "@/ui";
-import SidebarPane from "./sidebar";
-import TimerPane from "./timer";
+import { TimerWrapper } from "./timerWrapper";
+import IntentsView from "./sidebar/intentsView";
 
 const MainWindow: React.FC = () => {
+  const [display, setDisplay] = React.useState<
+    "Timer" | "Intents" | "Tasks" | "Notes"
+  >("Timer");
+
   return (
     <MainWindowProvider>
       <WindowContainer>
-        <motion.div
-          className="grow flex flex-col gap-0.5"
-          transition={{ duration: 0.2 }}
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-        >
+        <div className="grow flex flex-col gap-0.5">
           <Titlebar />
-          <div className="grow flex flex-row">
-            <SidebarPane />
-            <TimerPane />
-          </div>
-        </motion.div>
+          <Pane className="grow flex flex-col gap-0.5 p-0.5">
+            {/* Main panel switcher */}
+            <div className="flex flex-row bg-base/10 rounded-sm overflow-clip">
+              <PanelButton
+                active={display === "Timer"}
+                onClick={() => setDisplay("Timer")}
+              >
+                <MdTimer size={20} />
+                <div>Timer</div>
+              </PanelButton>
+              <PanelButton
+                active={display === "Intents"}
+                onClick={() => setDisplay("Intents")}
+              >
+                <BiTargetLock size={20} />
+                <div>Intents</div>
+              </PanelButton>
+            </div>
+
+            {display === "Timer" && <TimerWrapper />}
+            {display === "Intents" && <IntentsView />}
+          </Pane>
+        </div>
       </WindowContainer>
     </MainWindowProvider>
   );
 };
 
-const Titlebar: React.FC = () => {
-  const { display, toggleDisplay } = React.useContext(MainWindowContext)!;
+interface PanelButtonProps {
+  children: React.ReactNode;
+  active: boolean;
+  onClick: () => void;
+}
 
+const PanelButton: React.FC<PanelButtonProps> = (props) => {
   return (
-    <Pane className="flex flex-row items-center justify-between">
-      <div className="flex flex-row gap-0.5">
-        <Button variant="ghost" onClick={toggleDisplay}>
-          <motion.div
-            animate={{
-              rotateZ: display === "sidebar" ? 180 : 0,
-              transition: { duration: 0.3 },
-            }}
-          >
-            <TbLayoutSidebarRightCollapse size={28} />
-          </motion.div>
+    <button
+      onClick={props.onClick}
+      className={clsx(
+        "flex-1 flex flex-row items-center justify-center gap-1 font-black p-0.5 transition-colors duration-150 uppercase",
+        props.active
+          ? "bg-primary/20 text-primary"
+          : "bg-transparent text-base hover:text-primary hover:bg-base/10 active:bg-primary/10"
+      )}
+    >
+      {props.children}
+    </button>
+  );
+};
+
+const Titlebar: React.FC = () => {
+  return (
+    <Pane className="flex flex-row items-center justify-between p-0">
+      <div className="flex flex-row">
+        <Button
+          onClick={() => new WebviewWindow("settings", config.windows.settings)}
+          variant="ghost"
+          className="rounded-none"
+        >
+          <MdSettings size={24} />
         </Button>
         <Button
+          onClick={() =>
+            new WebviewWindow("analytics", config.windows.analytics)
+          }
           variant="ghost"
-          onClick={() => new WebviewWindow("settings", config.windows.settings)}
+          className="rounded-none"
         >
-          <MdSettings size={28} />
+          <MdAnalytics size={24} />
         </Button>
       </div>
       <h2 className="font-bold text-text">Intentio</h2>
-      <div className="flex flex-row gap-0.5">
-        <Button variant="ghost" onClick={() => ipc.hideMainWindow()}>
-          <MdRemove size={28} />
+      <div className="flex flex-row">
+        <Button
+          onClick={() => ipc.hideMainWindow()}
+          variant="ghost"
+          className="rounded-none"
+        >
+          <MdRemove size={24} />
         </Button>
-        <Button variant="ghost" onClick={() => ipc.exitMainWindow()}>
-          <MdClose size={28} />
+        <Button
+          onClick={() => ipc.exitMainWindow()}
+          variant="ghost"
+          className="rounded-none"
+        >
+          <MdClose size={24} />
         </Button>
       </div>
     </Pane>

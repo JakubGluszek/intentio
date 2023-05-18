@@ -34,7 +34,7 @@ export const Timer: React.FC<TimerProps> = (props) => {
       duration={props.duration}
       elapsedTime={props.elapsedTimeDetailed}
       strokeWidth={2}
-      size={200}
+      size={192}
       color={
         Color(props.isPlaying ? props.theme.primary_hex : props.theme.base_hex)
           .alpha(0.6)
@@ -77,7 +77,7 @@ export const Timer: React.FC<TimerProps> = (props) => {
         )}
       </div>
 
-      <div className="absolute m-auto translate-y-[4.5rem]  w-full flex flex-col items-center gap-1 transition-opacity duration-150">
+      <div className="absolute m-auto translate-y-[4.25rem]  w-full flex flex-col items-center gap-1 transition-opacity duration-150">
         <div className="group flex flex-row items-center justify-center">
           <button
             tabIndex={-3}

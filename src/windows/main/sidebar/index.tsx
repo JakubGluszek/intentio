@@ -46,33 +46,33 @@ const Sidebar: React.FC = () => {
             opacity: 0.3,
           }}
         >
-          {/* <AnimatePresence> */}
-          {/*   {store.currentIntent && ( */}
-          {/*     <motion.div */}
-          {/*       className="h-full flex flex-col gap-0.5 overflow-clip" */}
-          {/*       transition={{ duration: 0.075 }} */}
-          {/*       initial={{ width: 0, opacity: 0 }} */}
-          {/*       animate={{ width: 40, opacity: 1 }} */}
-          {/*       exit={{ width: 0 }} */}
-          {/*     > */}
-          {/*       <PaneButton */}
-          {/*         active={tab === "intents"} */}
-          {/*         onClick={() => setTab("intents")} */}
-          {/*         icon={BiTargetLock} */}
-          {/*       /> */}
-          {/*       <PaneButton */}
-          {/*         active={tab === "tasks"} */}
-          {/*         onClick={() => setTab("tasks")} */}
-          {/*         icon={MdCheckBox} */}
-          {/*       /> */}
-          {/*       <PaneButton */}
-          {/*         active={tab === "notes"} */}
-          {/*         onClick={() => setTab("notes")} */}
-          {/*         icon={MdStickyNote2} */}
-          {/*       /> */}
-          {/*     </motion.div> */}
-          {/*   )} */}
-          {/* </AnimatePresence> */}
+          <AnimatePresence>
+            {store.currentIntent && (
+              <motion.div
+                className="h-full flex flex-col gap-0.5 overflow-clip"
+                transition={{ duration: 0.075 }}
+                initial={{ width: 0, opacity: 0 }}
+                animate={{ width: 40, opacity: 1 }}
+                exit={{ width: 0 }}
+              >
+                <PaneButton
+                  active={tab === "intents"}
+                  onClick={() => setTab("intents")}
+                  icon={BiTargetLock}
+                />
+                <PaneButton
+                  active={tab === "tasks"}
+                  onClick={() => setTab("tasks")}
+                  icon={MdCheckBox}
+                />
+                <PaneButton
+                  active={tab === "notes"}
+                  onClick={() => setTab("notes")}
+                  icon={MdStickyNote2}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
           <div
             className="grow flex flex-col"
             style={{ width: store.currentIntent ? 258 : undefined }} // needed to combat odd overflow caused by some children with 'w-full'

@@ -1,18 +1,16 @@
 import React from "react";
-import { AnimatePresence, motion } from "framer-motion";
 import { sendNotification } from "@tauri-apps/api/notification";
 import { toast } from "react-hot-toast";
 
 import useStore from "@/store";
 import { MainWindowContext } from "@/contexts";
-import { Pane } from "@/ui";
 import ipc from "@/ipc";
 import { useEvents } from "@/hooks";
 import utils from "@/utils";
 import { Timer, TimerIntent, useTimer } from "@/components";
 
-const TimerPane: React.FC = () => {
-  const { display, timerDisplayCountdown, toggleTimerCountdown } =
+export const TimerWrapper: React.FC = () => {
+  const { timerDisplayCountdown, toggleTimerCountdown } =
     React.useContext(MainWindowContext)!;
   const store = useStore();
 
@@ -143,30 +141,14 @@ const TimerPane: React.FC = () => {
   if (!store.currentTheme) return null;
 
   return (
-    <AnimatePresence initial={false} mode="popLayout">
-      {display === "timer" && (
-        <motion.div
-          className="grow flex flex-col gap-0.5"
-          transition={{ duration: 0.3, ease: "linear" }}
-          initial={{ translateX: 300, opacity: 0.6 }}
-          animate={{ translateX: 0, opacity: 1 }}
-          exit={{ translateX: 300, opacity: 0.3 }}
-        >
-          <Pane className="grow flex flex-col" padding="lg">
-            <div className="grow flex flex-col gap-0.5 rounded overflow-hidden">
-              <Timer
-                theme={store.currentTheme!}
-                displayCountdown={timerDisplayCountdown}
-                onToggleCountdown={toggleTimerCountdown}
-                {...timer}
-              />
-              <TimerIntent data={store.currentIntent} />
-            </div>
-          </Pane>
-        </motion.div>
-      )}
-    </AnimatePresence>
+    <div className="grow flex flex-col gap-0.5">
+      <Timer
+        theme={store.currentTheme!}
+        displayCountdown={timerDisplayCountdown}
+        onToggleCountdown={toggleTimerCountdown}
+        {...timer}
+      />
+      <TimerIntent data={store.currentIntent} />
+    </div>
   );
 };
-
-export default TimerPane;

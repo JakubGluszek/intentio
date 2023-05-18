@@ -1,7 +1,7 @@
 import React from "react";
 import { MdCheckBox, MdStickyNote2 } from "react-icons/md";
 
-import { Button } from "@/ui";
+import { Button, Tooltip } from "@/ui";
 import { Intent } from "@/bindings/Intent";
 import { BiTargetLock } from "react-icons/bi";
 
@@ -22,12 +22,16 @@ export const TimerIntent: React.FC<TimerIntentProps> = (props) => {
       </div>
 
       <div className="absolute w-full flex flex-row items-center justify-between">
-        <Button variant="ghost">
-          <MdCheckBox size={24} />
-        </Button>
-        <Button variant="ghost">
-          <MdStickyNote2 size={24} />
-        </Button>
+        <Tooltip label="Tasks">
+          <Button variant="ghost">
+            <MdCheckBox size={24} />
+          </Button>
+        </Tooltip>
+        <Tooltip label="Notes">
+          <Button variant="ghost">
+            <MdStickyNote2 size={24} />
+          </Button>
+        </Tooltip>
       </div>
     </div>
   );
