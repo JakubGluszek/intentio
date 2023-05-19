@@ -21,6 +21,8 @@ pub async fn setup_database() -> Result<Arc<Database>> {
 }
 
 pub async fn setup_hook(app: &mut App) {
+    std::env::set_var("GTK_OVERLAY_SCROLLING", "0");
+
     setup_config().expect("initial config setup");
     setup_hotkeys_manager(app).expect("initial setup of hotkeys");
     setup_state(app).await.expect("initial state setup");
