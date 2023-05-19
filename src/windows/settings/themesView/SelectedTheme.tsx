@@ -1,7 +1,7 @@
 import React from "react";
 import { MdColorLens } from "react-icons/md";
 
-import { Card, Tooltip } from "@/ui";
+import { Tooltip } from "@/ui";
 import { ThemeState } from "@/types";
 import { Theme } from "@/bindings/Theme";
 
@@ -14,8 +14,8 @@ interface SelectedThemeProps {
 export const SelectedTheme: React.FC<SelectedThemeProps> = (props) => {
   return (
     <Tooltip label="Click to change" position="top-start">
-      <Card
-        className="p-0.5 cursor-pointer"
+      <div
+        className="border-2 border-base/20 hover:border-base/30 rounded-sm cursor-pointer shadow shadow-black/20 hover:shadow-lg hover:shadow-black/40"
         onClick={() => props.onChangeTheme(props.state)}
         data-tauri-disable-drag
       >
@@ -39,7 +39,7 @@ export const SelectedTheme: React.FC<SelectedThemeProps> = (props) => {
             {props.data.name}
           </button>
         </div>
-      </Card>
+      </div>
     </Tooltip>
   );
 };

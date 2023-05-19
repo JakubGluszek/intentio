@@ -1,5 +1,6 @@
 import React from "react";
 import { RiArchiveLine, RiArchiveFill } from "react-icons/ri";
+import { toast } from "react-hot-toast";
 
 import useStore from "@/store";
 import ipc from "@/ipc";
@@ -7,7 +8,6 @@ import { IntentList } from "@/components";
 import { Button, Tooltip } from "@/ui";
 import { useEvents } from "@/hooks";
 import CreateIntent from "./CreateIntent";
-import { toast } from "react-hot-toast";
 
 const IntentsView: React.FC = () => {
   const [viewArchive, setViewArchive] = React.useState(false);
@@ -39,7 +39,7 @@ const IntentsView: React.FC = () => {
   }, []);
 
   return (
-    <div className="grow flex flex-col gap-1 p-1 bg-base/10 rounded-sm">
+    <div className="grow flex flex-col gap-1.5 p-1 bg-base/10 rounded-sm">
       <div className="w-full flex flex-row items-center justify-between gap-1">
         <CreateIntent />
 

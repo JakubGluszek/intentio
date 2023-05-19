@@ -20,8 +20,7 @@ export const Pane: React.FC<PaneProps> = (props) => {
   } = props;
 
   let className = clsx(
-    "relative flex rounded-sm border-2 bg-window/95 bg-gradient-to-br from-primary/5 via-window/5 to-base/5 transition-colors duration-150",
-    "border-base/30",
+    "relative flex rounded-sm border-2 border-base/10 bg-window/95 transition-colors duration-150",
     padding === "sm" ? "p-0.5" : padding === "md" ? "p-1" : "p-1.5"
   );
 

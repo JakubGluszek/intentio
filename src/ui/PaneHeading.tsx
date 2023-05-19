@@ -11,7 +11,7 @@ interface PaneHeadingProps {
 
 export const PaneHeading: React.FC<PaneHeadingProps> = (props) => {
   return (
-    <div className="bg-lighter/10 shadow shadow-black/30 p-0.5">
+    <div className="bg-base/20 p-0.5 rounded-sm">
       <div className="flex flex-row items-center gap-1">
         <Tooltip label="Return">
           <Button variant="ghost" onClick={() => props.onExit()}>

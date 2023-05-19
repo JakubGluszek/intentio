@@ -45,7 +45,7 @@ export const Button: React.FC<ButtonProps> = (props) => {
       className,
       "bg-primary/5 hover:bg-primary/80 active:bg-primary \
       text-primary/80 hover:text-window active:text-window py-0.5 \
-      px-2 border-2 border-primary/40 hover:border-transparent active:border-primary active:-translate-y-[1px] \
+      px-2 border border-primary/40 hover:border-transparent active:border-primary active:-translate-y-[1px] \
       hover:shadow hover:shadow-black/20 active:shadow-lg active:shadow-black/60"
     );
   } else if (variant === "ghost") {

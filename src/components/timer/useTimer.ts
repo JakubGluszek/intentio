@@ -34,6 +34,7 @@ export const useTimer = (
     long_break_interval: 4,
     auto_start_focus: true,
     auto_start_breaks: true,
+    session_summary: false,
   },
   callbacks: TimerCallbacks
 ): useTimerReturnValues => {

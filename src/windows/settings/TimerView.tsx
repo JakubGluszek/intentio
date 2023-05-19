@@ -24,7 +24,7 @@ const TimerView: React.FC = () => {
     <Pane className="grow flex flex-col">
       <OverflowY>
         <CascadeSections>
-          <Section heading="Duration">
+          <Section heading="Durations">
             <SliderCard
               type="duration"
               label="Focus"
@@ -65,8 +65,8 @@ const TimerView: React.FC = () => {
 
           <Section heading="Auto start">
             <Card className="flex flex-col gap-1">
-              <div className="flex flex-row items-center justify-between">
-                <div>Focus</div>
+              <div className="flex flex-row items-center justify-between text-sm font-semibold">
+                <div>Auto Start Focus</div>
                 <CheckBox
                   checked={config.auto_start_focus}
                   onChange={(auto_start_focus) =>
@@ -76,8 +76,8 @@ const TimerView: React.FC = () => {
               </div>
             </Card>
             <Card>
-              <div className="flex flex-row items-center justify-between">
-                <div>Breaks</div>
+              <div className="flex flex-row items-center justify-between text-sm font-semibold">
+                <div>Auto Start Breaks</div>
                 <CheckBox
                   checked={config.auto_start_breaks}
                   onChange={(auto_start_breaks) =>
@@ -90,8 +90,8 @@ const TimerView: React.FC = () => {
 
           <Section heading="Focus session">
             <Card className="gap-1">
-              <div className="flex flex-row items-center justify-between">
-                <div>Summarize on complete</div>
+              <div className="flex flex-row items-center justify-between text-sm font-semibold">
+                <div>Session Summary</div>
                 <CheckBox
                   checked={config.session_summary}
                   onChange={(session_summary) =>
@@ -101,22 +101,22 @@ const TimerView: React.FC = () => {
               </div>
               <div className="text-sm text-text/60">
                 <div>
-                  You will be prompted to write a summary of your session.
+                  At the end of the session you can summarize your progress.
                 </div>
               </div>
             </Card>
           </Section>
 
           <Section heading="Hotkeys">
-            <Card className="flex flex-row items-center justify-between">
+            <Card className="flex flex-row items-center justify-between text-sm font-semibold">
               <div>Start/Resume</div>
-              <div className="w-24 bg-primary/30 py-1 text-sm font-bold text-center rounded-sm shadow-inner shadow-black/20">
+              <div className="w-24 bg-darker/20 py-0.5 text-primary text-sm font-bold text-center rounded-sm shadow-inner shadow-black/20">
                 CTRL + F1
               </div>
             </Card>
-            <Card className="flex flex-row items-center justify-between">
+            <Card className="flex flex-row items-center justify-between text-sm font-semibold">
               <div>Skip</div>
-              <div className="w-24 bg-primary/30 p-1 text-sm font-bold text-center rounded-sm shadow-inner shadow-black/20">
+              <div className="w-24 bg-darker/20 py-0.5 text-primary text-sm font-bold text-center rounded-sm shadow-inner shadow-black/20">
                 CTRL + F2
               </div>
             </Card>

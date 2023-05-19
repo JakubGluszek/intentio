@@ -39,24 +39,24 @@ export const IntentView: React.FC<IntentViewProps> = (props) => {
   return (
     <React.Fragment>
       <Tooltip
-        label="Right click for more"
+        label="Right click"
         hidden={menu.display}
-        openDelay={500}
+        openDelay={800}
         position="top-end"
       >
         <Card
           className={clsx(
-            "p-1 cursor-pointer",
-            props.active
-              ? "bg-primary/80 hover:bg-primary/80 text-window"
-              : "active:bg-primary/20"
+            "p-1 cursor-pointer hover:border-primary/30",
+            props.active &&
+            "bg-primary/50 border-transparent hover:bg-primary/60 hover:border-transparent active:bg-primary/70 active:border-transparent text-window"
           )}
+          clickable
           onClick={(e) => props.onClick?.(e)}
           onContextMenu={(e) => onContextMenuHandler(e)}
           active={props.active}
           data-tauri-disable-drag
         >
-          <div className="w-full flex flex-row items-center gap-1">
+          <div className="w-full flex flex-row items-center gap-1.5">
             <BiTargetLock size={20} className="min-w-[20px]" />
             <div className="w-full text-left whitespace-nowrap overflow-ellipsis overflow-hidden font-black">
               {props.data.label}

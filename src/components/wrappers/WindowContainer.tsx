@@ -1,6 +1,5 @@
 import React from "react";
 import { Toaster } from "react-hot-toast";
-import { motion } from "framer-motion";
 
 import { useDragWindow, useEvents, usePreventContextMenu } from "@/hooks";
 import ipc from "@/ipc";
@@ -60,31 +59,11 @@ export const WindowContainer: React.FC<WindowContainerProps> = (props) => {
     <div className="w-screen h-screen flex flex-col">
       {props.children}
 
-      {/* Gradient Overlay */}
-      <motion.div
-        animate={{
-          scale: [1, 1.8, 3, 1.8, 1],
-          transition: {
-            duration: 15,
-            repeat: Infinity,
-          },
-        }}
-        className="fixed w-[364px] h-[448px] blur-xl"
-        style={{
-          opacity: 1,
-          left: -80,
-          top: -140,
-          pointerEvents: "none",
-          backgroundImage:
-            "radial-gradient(circle at center, rgba(var(--base-color) / 0.1), transparent 80%",
-        }}
-      ></motion.div>
-
       <Toaster
         position="top-center"
         containerStyle={{ top: 4, zIndex: 999999999 }}
         toastOptions={{
-          duration: 1800,
+          duration: 2400,
           style: {
             padding: 1,
             paddingInline: 2,

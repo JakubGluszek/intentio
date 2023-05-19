@@ -28,7 +28,7 @@ export const MainBody: React.FC = () => {
   }
 
   return (
-    <Pane className="grow flex flex-col gap-0.5 p-0.5">
+    <Pane className="relative grow flex flex-col gap-0.5 p-0.5">
       {/* Main panel switcher */}
       <div className="flex flex-row bg-base/10 rounded-sm overflow-clip">
         <PanelButton

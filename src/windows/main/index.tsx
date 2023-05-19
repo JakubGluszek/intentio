@@ -45,7 +45,7 @@ const Titlebar: React.FC = () => {
           <MdAnalytics size={24} />
         </Button>
       </div>
-      <h2 className="font-bold text-text">Intentio</h2>
+      <div className="font-bold text-lg">Intentio</div>
       <div className="flex flex-row">
         <Button
           onClick={() => ipc.hideMainWindow()}

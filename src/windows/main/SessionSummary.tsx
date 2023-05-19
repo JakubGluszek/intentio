@@ -3,7 +3,7 @@ import React from "react";
 import { Editor } from "@/components";
 import { SessionForCreate } from "@/bindings/SessionForCreate";
 import { Button, Pane, Tooltip } from "@/ui";
-import { MdArrowForward, MdNotes, MdSave } from "react-icons/md";
+import { MdNotes, MdSave } from "react-icons/md";
 import ipc from "@/ipc";
 import { toast } from "react-hot-toast";
 import { TimerContext } from "@/contexts";
@@ -23,6 +23,8 @@ export const SessionSummary: React.FC<SesssionSummaryProps> = (props) => {
   }, []);
 
   const saveSession = (summary: string | null) => {
+    if (summary && summary.length > 0) toast("Summary added!");
+
     ipc
       .createSession({
         ...props.data,
@@ -45,11 +47,6 @@ export const SessionSummary: React.FC<SesssionSummaryProps> = (props) => {
           <div className="uppercase">Session Summary</div>
         </div>
         <div className="flex flex-row">
-          <Tooltip label="Skip summary">
-            <Button variant="ghost" onClick={() => saveSession(null)}>
-              <MdArrowForward size={24} />
-            </Button>
-          </Tooltip>
           <Tooltip label="Save">
             <Button variant="ghost" onClick={() => saveSession(summary)}>
               <MdSave size={24} />

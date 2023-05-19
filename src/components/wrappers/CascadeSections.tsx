@@ -10,6 +10,7 @@ export const CascadeSections: React.FC<CascadeSectionsProps> = ({
 }) => {
   return (
     <motion.div
+      className="flex flex-col gap-0.5"
       variants={{
         visible: {
           opacity: 1,

@@ -12,7 +12,7 @@ interface Props {
 const TrackView: React.FC<Props> = (props) => {
   return (
     <Card
-      className="p-0.5 px-1 cursor-pointer"
+      className="p-1 px-1 cursor-pointer"
       onClick={(e) =>
         // @ts-ignore
         !e.target.closest("button") && props.onSelected()
@@ -24,7 +24,7 @@ const TrackView: React.FC<Props> = (props) => {
       data-tauri-disable-drag
     >
       <div className="flex flex-row items-center justify-between">
-        <div className="flex flex-row items-center gap-1 text-text/90 group-hover:text-text">
+        <div className="flex flex-row items-center gap-1 text-text/90 group-hover:text-text font-semibold">
           <MdAudiotrack size={20} />
           <div className="w-[200px] whitespace-nowrap overflow-ellipsis overflow-hidden">
             {props.name}

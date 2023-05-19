@@ -99,7 +99,7 @@ const EditTheme: React.FC<Props> = (props) => {
         </div>
       </ModalContainer>
 
-      <Pane className="grow flex flex-col gap-1 p-0">
+      <Pane className="grow flex flex-col gap-1">
         <PaneHeading
           body={
             <div className="flex flex-row items-center justify-between">
@@ -108,9 +108,12 @@ const EditTheme: React.FC<Props> = (props) => {
                 className="flex flex-row items-center"
                 data-tauri-disable-drag
               >
-                <Tooltip label="Delete" className="text-danger">
+                <Tooltip
+                  label={viewConfirmDelete ? "Confirm" : "Delete"}
+                  className="text-danger"
+                >
                   <DangerButton variant="ghost" onClick={() => onDelete()}>
-                    {viewConfirmDelete ? "Confirm" : <MdDelete size={24} />}
+                    <MdDelete size={24} />
                   </DangerButton>
                 </Tooltip>
 
@@ -132,7 +135,11 @@ const EditTheme: React.FC<Props> = (props) => {
                       setViewThemePreview(false);
                     }}
                   >
-                    <MdPreview size={24} />
+                    {viewThemePreview ? (
+                      <RiEyeFill size={24} />
+                    ) : (
+                      <RiEyeCloseFill size={24} />
+                    )}
                   </Button>
                 </Tooltip>
               </div>

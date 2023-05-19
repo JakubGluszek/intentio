@@ -81,7 +81,7 @@ const CreateTheme: React.FC<Props> = (props) => {
         </div>
       </ModalContainer>
 
-      <Pane className="grow flex flex-col gap-1 p-0">
+      <Pane className="grow flex flex-col gap-1">
         <PaneHeading
           body={
             <div className="flex flex-row items-center justify-between">

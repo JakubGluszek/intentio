@@ -17,19 +17,18 @@ const ColorInput: React.FC<Props> = (props) => {
   const currentHex = props.watch(props.type);
 
   return (
-    <Card className="flex flex-col gap-1">
-      <label
-        className="min-w-[80px] flex flex-row items-center gap-1 text-text font-semibold"
-        htmlFor={props.type}
+    <Card className="flex flex-col gap-2">
+      <div
+        className="flex flex-row items-center gap-1.5 text-text font-semibold"
       >
         <MdColorLens size={20} />
         <div>{props.label}</div>
-      </label>
+      </div>
       <div
-        data-tauri-disable-drag
         onClick={() => props.onViewColorPicker()}
         style={{ backgroundColor: currentHex }}
-        className="w-full p-1 opacity-80 hover:opacity-100 flex flex-row items-center justify-center shadow shadow-black/30 hover:shadow-lg hover:shadow-black/30 transition-all rounded cursor-pointer"
+        className="w-full p-1 opacity-80 uppercase hover:opacity-100 flex flex-row items-center justify-center shadow shadow-black/30 hover:shadow-lg hover:shadow-black/30 transition-all rounded cursor-pointer"
+        data-tauri-disable-drag
       >
         <div className="contrast-text font-bold">{currentHex}</div>
       </div>

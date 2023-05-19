@@ -52,7 +52,7 @@ export const CircleTimer: React.FC<CircleTimerProps> = ({
 
         <path
           d={path}
-          fill="rgba(var(--primary-color) / 0.1)"
+          fill="rgba(var(--window-color) / 0.4)"
           stroke={stroke}
           strokeLinecap={"round"}
           strokeWidth={props.strokeWidth}
