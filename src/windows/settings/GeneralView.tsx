@@ -19,7 +19,7 @@ const GeneralView: React.FC = () => {
   if (!store.settingsConfig || isAutoStart === undefined) return null;
 
   return (
-    <Pane className="grow flex flex-col">
+    <Pane className="grow flex flex-col text-sm">
       <OverflowY>
         <CascadeSections>
           <Section heading="App">
@@ -79,6 +79,19 @@ const GeneralView: React.FC = () => {
                   checked={store.settingsConfig.main_minimize_to_tray}
                   onChange={(main_minimize_to_tray) =>
                     ipc.updateSettingsConfig({ main_minimize_to_tray })
+                  }
+                />
+              </div>
+            </Card>
+            <Card>
+              <div className="flex flex-row items-center justify-between">
+                <div className="text-text/90 group-hover:text-text">
+                  Display on timer complete
+                </div>
+                <CheckBox
+                  checked={store.settingsConfig.main_display_on_timer_complete}
+                  onChange={(main_display_on_timer_complete) =>
+                    ipc.updateSettingsConfig({ main_display_on_timer_complete })
                   }
                 />
               </div>

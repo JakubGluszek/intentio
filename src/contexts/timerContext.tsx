@@ -7,6 +7,7 @@ import ipc from "@/ipc";
 import useStore from "@/store";
 import utils from "@/utils";
 import { useEvents } from "@/hooks";
+import { appWindow } from "@tauri-apps/api/window";
 
 export interface TimerContextReturnValues extends useTimerReturnValues {
   displayCountdown: boolean;
@@ -28,6 +29,8 @@ export const TimerContextProvider: React.FC<TimerContextProviderProps> = ({
   const toggleDisplayCountdown = () => setDisplayCountdown((prev) => !prev);
 
   const store = useStore();
+
+  const settings = store.settingsConfig!;
 
   const timer = useTimer(store.timerConfig, {
     onStateUpdate: (state) =>
@@ -53,6 +56,14 @@ export const TimerContextProvider: React.FC<TimerContextProviderProps> = ({
       }
     },
     onCompleted: (session) => {
+      if (settings.main_display_on_timer_complete) {
+        appWindow.isVisible().then((visible) => {
+          if (!visible) {
+            appWindow.show();
+          }
+        });
+      }
+
       ipc.playAudio();
 
       store.scripts.forEach(

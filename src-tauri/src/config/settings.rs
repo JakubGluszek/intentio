@@ -11,17 +11,18 @@ use super::Config;
 #[derive(Serialize, Deserialize, TS, Debug, Clone)]
 #[ts(export, export_to = "../src/bindings/")]
 pub struct SettingsConfig {
-    pub alert_file: String,
-    pub alert_volume: f32,
-    #[ts(type = "number")]
-    pub alert_repeat: i64,
     pub idle_theme_id: String,
     pub focus_theme_id: String,
     pub break_theme_id: String,
     pub long_break_theme_id: String,
-    pub main_minimize_to_tray: bool,
+    pub alert_file: String,
+    pub alert_volume: f32,
+    #[ts(type = "number")]
+    pub alert_repeat: i64,
     pub system_notifications: bool,
+    pub main_minimize_to_tray: bool,
     pub main_always_on_top: bool,
+    pub main_display_on_timer_complete: bool,
 }
 
 impl Config for SettingsConfig {
@@ -33,16 +34,17 @@ impl Config for SettingsConfig {
 impl Default for SettingsConfig {
     fn default() -> Self {
         Self {
-            alert_file: DEFAULT_ALERT_FILE.into(),
-            alert_volume: 0.25,
-            alert_repeat: 2,
             idle_theme_id: DEFAULT_IDLE_THEME_ID.to_string(),
             focus_theme_id: DEFAULT_FOCUS_THEME_ID.to_string(),
             break_theme_id: DEFAULT_BREAK_THEME_ID.to_string(),
             long_break_theme_id: DEFAULT_LONG_BREAK_THEME_ID.to_string(),
-            main_minimize_to_tray: false,
+            alert_file: DEFAULT_ALERT_FILE.into(),
+            alert_volume: 0.25,
+            alert_repeat: 2,
             system_notifications: true,
+            main_minimize_to_tray: false,
             main_always_on_top: false,
+            main_display_on_timer_complete: true,
         }
     }
 }
@@ -51,15 +53,16 @@ impl Default for SettingsConfig {
 #[derive(Serialize, Deserialize, TS, Debug)]
 #[ts(export, export_to = "../src/bindings/")]
 pub struct SettingsConfigForUpdate {
-    pub alert_file: Option<String>,
-    pub alert_volume: Option<f32>,
-    #[ts(type = "number")]
-    pub alert_repeat: Option<i64>,
     pub idle_theme_id: Option<String>,
     pub focus_theme_id: Option<String>,
     pub break_theme_id: Option<String>,
     pub long_break_theme_id: Option<String>,
-    pub main_minimize_to_tray: Option<bool>,
+    pub alert_file: Option<String>,
+    pub alert_volume: Option<f32>,
+    #[ts(type = "number")]
+    pub alert_repeat: Option<i64>,
     pub system_notifications: Option<bool>,
+    pub main_minimize_to_tray: Option<bool>,
     pub main_always_on_top: Option<bool>,
+    pub main_display_on_timer_complete: Option<bool>,
 }
