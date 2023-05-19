@@ -31,7 +31,7 @@ pub struct Script {
 impl TryFrom<Object> for Script {
     type Error = Error;
     fn try_from(mut val: Object) -> Result<Self> {
-        let note = Self {
+        let script = Self {
             id: val.x_take_val("id")?,
             label: val.x_take_val("label")?,
             body: val.x_take_val("body")?,
@@ -44,7 +44,7 @@ impl TryFrom<Object> for Script {
             run_on_break_end: val.x_take_val("run_on_break_end")?,
         };
 
-        Ok(note)
+        Ok(script)
     }
 }
 

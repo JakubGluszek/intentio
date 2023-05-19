@@ -1,16 +1,15 @@
 import React from "react";
 import { BiTargetLock } from "react-icons/bi";
-import { MdCheckBox, MdStickyNote2 } from "react-icons/md";
+import { MdCheckBox } from "react-icons/md";
 import { AnimatePresence, motion } from "framer-motion";
 
 import useStore from "@/store";
 import { MainWindowContext } from "@/contexts";
 import IntentsView from "./intentsView";
 import TasksView from "./tasksView";
-import NotesView from "./notesView";
 import { PaneButton } from "@/ui";
 
-type Tab = "intents" | "notes" | "tasks";
+type Tab = "intents" | "tasks";
 
 const Sidebar: React.FC = () => {
   const [tab, setTab] = React.useState<Tab>("intents");
@@ -65,11 +64,6 @@ const Sidebar: React.FC = () => {
                   onClick={() => setTab("tasks")}
                   icon={MdCheckBox}
                 />
-                <PaneButton
-                  active={tab === "notes"}
-                  onClick={() => setTab("notes")}
-                  icon={MdStickyNote2}
-                />
               </motion.div>
             )}
           </AnimatePresence>
@@ -79,7 +73,6 @@ const Sidebar: React.FC = () => {
           >
             {tab === "intents" ? <IntentsView /> : null}
             {tab === "tasks" ? <TasksView /> : null}
-            {tab === "notes" ? <NotesView /> : null}
           </div>
         </motion.aside>
       )}

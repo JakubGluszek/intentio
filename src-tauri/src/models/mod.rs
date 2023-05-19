@@ -4,7 +4,6 @@ use serde::Serialize;
 use ts_rs::TS;
 
 mod intent;
-mod note;
 mod script;
 mod session;
 mod task;
@@ -12,7 +11,6 @@ mod theme;
 
 // Re-Exports
 pub use intent::*;
-pub use note::*;
 pub use script::*;
 pub use session::*;
 pub use task::*;

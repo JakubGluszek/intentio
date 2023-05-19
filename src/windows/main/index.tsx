@@ -19,9 +19,9 @@ import { TimerWrapper } from "./timerWrapper";
 import IntentsView from "./sidebar/intentsView";
 
 const MainWindow: React.FC = () => {
-  const [display, setDisplay] = React.useState<
-    "Timer" | "Intents" | "Tasks" | "Notes"
-  >("Timer");
+  const [display, setDisplay] = React.useState<"Timer" | "Intents" | "Tasks">(
+    "Timer"
+  );
 
   return (
     <MainWindowProvider>

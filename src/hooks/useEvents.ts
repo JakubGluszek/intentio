@@ -6,7 +6,6 @@ import { ModelDeleteResultData } from "@/bindings/ModelDeleteResultData";
 import { Session } from "@/bindings/Session";
 import { Theme } from "@/bindings/Theme";
 import { Task } from "@/bindings/Task";
-import { Note } from "@/bindings/Note";
 import { Script } from "@/bindings/Script";
 import { TimerConfig } from "@/bindings/TimerConfig";
 import { SettingsConfig } from "@/bindings/SettingsConfig";
@@ -26,10 +25,6 @@ type Events = {
   task_updated: Task;
   task_deleted: ModelDeleteResultData;
   tasks_deleted: ModelDeleteResultData[];
-  note_created: Note;
-  note_updated: Note;
-  note_deleted: ModelDeleteResultData;
-  notes_deleted: ModelDeleteResultData[];
   script_created: Script;
   script_updated: Script;
   script_deleted: ModelDeleteResultData;
