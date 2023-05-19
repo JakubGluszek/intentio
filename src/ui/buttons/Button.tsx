@@ -38,14 +38,14 @@ export const Button: React.FC<ButtonProps> = (props) => {
   } = props;
 
   let className =
-    "h-8 w-fit flex flex-row items-center justify-center gap-1 p-1 rounded-sm font-bold uppercase transition-all ease-linear duration-150";
+    "h-fit w-fit flex flex-row items-center justify-center gap-1 p-1 rounded-sm font-bold uppercase transition-all ease-linear duration-150";
 
   if (variant === "base") {
     className = twMerge(
       className,
-      "text-primary/80 hover:text-primary active:text-window \
-      bg-primary/5 hover:bg-primary/20 active:bg-primary \
-      px-2 border-2 border-primary/40 hover:border-primary/50 active:-translate-y-[1px] \
+      "bg-primary/5 hover:bg-primary/80 active:bg-primary \
+      text-primary/80 hover:text-window active:text-window py-0.5 \
+      px-2 border-2 border-primary/40 hover:border-transparent active:border-primary active:-translate-y-[1px] \
       hover:shadow hover:shadow-black/20 active:shadow-lg active:shadow-black/60"
     );
   } else if (variant === "ghost") {

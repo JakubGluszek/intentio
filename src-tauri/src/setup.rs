@@ -71,6 +71,7 @@ async fn setup_state(app: &mut App) -> Result<()> {
     let ctx = Ctx::from_app(app.app_handle())?;
     let settings = ConfigManager::get::<SettingsConfig>()?;
 
+    // handle possible error caused by theme_ids pointing to models which don't exist
     let idle_theme = ThemeBmc::get(ctx.clone(), &settings.idle_theme_id).await?;
     let focus_theme = ThemeBmc::get(ctx.clone(), &settings.focus_theme_id).await?;
     let break_theme = ThemeBmc::get(ctx.clone(), &settings.break_theme_id).await?;

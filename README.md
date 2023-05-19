@@ -22,7 +22,7 @@ Work is currently being done on v2.
 
 - **intents** - categorize what you spend your time on.
 - **tasks** - define & finish tasks, separate for each intent.
-- **notes** - summarize your progress, separate for each intent.
+- **summaries** - summarize your progress, separate for each intent.
 - **scripts** - write custom bash scripts to be executed on session events (ATM only for UNIX based systems).
 - **analytics** - view stats & monitor your progress.
 - **settings** - configure timer, alerts, themes and more.
@@ -66,13 +66,10 @@ npm run tauri dev
 
 ## Roadmap
 
-- [x] Ability to take notes
-- [x] Ability to define & finish tasks
 - [ ] Custom queues
 - [ ] In-app updater
 - [ ] Option to export data into multiple formats
 - [ ] More customizable user preferences, like windows behavior etc
-- [x] Ability to run bash scripts on session events (start, pause, end) for both "focus" and "break"
 - [ ] External server for synchronizing data between desktops
 - [ ] Shared sessions (p2p chat during break time and more)
 

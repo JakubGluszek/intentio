@@ -1,20 +1,40 @@
 import React from "react";
-import { AnimatePresence, motion } from "framer-motion";
 import { sendNotification } from "@tauri-apps/api/notification";
+
+import { useTimer, useTimerReturnValues } from "@/components";
+import ipc from "@/ipc";
+import useStore from "@/store";
+import utils from "@/utils";
+import { useEvents } from "@/hooks";
+import { appWindow } from "@tauri-apps/api/window";
+import { SessionForCreate } from "@/bindings/SessionForCreate";
 import { toast } from "react-hot-toast";
 
-import useStore from "@/store";
-import { MainWindowContext } from "@/contexts";
-import { Pane } from "@/ui";
-import ipc from "@/ipc";
-import { useEvents } from "@/hooks";
-import utils from "@/utils";
-import { Timer, TimerIntent, useTimer } from "@/components";
+export interface TimerContextReturnValues extends useTimerReturnValues {
+  displayCountdown: boolean;
+  toggleDisplayCountdown: () => void;
+  sessionForCreate: SessionForCreate | null;
+  clearSessionForCreate: () => void;
+}
 
-const TimerPane: React.FC = () => {
-  const { display, timerDisplayCountdown, toggleTimerCountdown } =
-    React.useContext(MainWindowContext)!;
+export const TimerContext =
+  React.createContext<TimerContextReturnValues | null>(null);
+
+interface TimerContextProviderProps {
+  children: React.ReactNode;
+}
+
+export const TimerContextProvider: React.FC<TimerContextProviderProps> = ({
+  children,
+}) => {
+  const [displayCountdown, setDisplayCountdown] = React.useState(true);
+  const [sessionForCreate, setSessionForCreate] =
+    React.useState<SessionForCreate | null>(null);
+
+  const toggleDisplayCountdown = () => setDisplayCountdown((prev) => !prev);
+
   const store = useStore();
+  const settings = store.settingsConfig!;
 
   const timer = useTimer(store.timerConfig, {
     onStateUpdate: (state) =>
@@ -29,16 +49,34 @@ const TimerPane: React.FC = () => {
         session.elapsedTime >= 60 &&
         session.startedAt
       ) {
-        ipc
-          .createSession({
+        if (timer.config.session_summary) {
+          setSessionForCreate({
             duration: ~~(session.elapsedTime! / 60),
             started_at: session.startedAt,
-            intent_id: store.currentIntent?.id!,
-          })
-          .then(() => toast("Session saved"));
+            summary: null,
+            intent_id: store.currentIntent?.id ?? null,
+          });
+        } else {
+          ipc
+            .createSession({
+              duration: ~~(session.elapsedTime! / 60),
+              started_at: session.startedAt,
+              summary: null,
+              intent_id: store.currentIntent?.id!,
+            })
+            .then(() => toast("Session saved"));
+        }
       }
     },
     onCompleted: (session) => {
+      if (settings.main_display_on_timer_complete) {
+        appWindow.isVisible().then((visible) => {
+          if (!visible) {
+            appWindow.show();
+          }
+        });
+      }
+
       ipc.playAudio();
 
       store.scripts.forEach(
@@ -140,33 +178,17 @@ const TimerPane: React.FC = () => {
     timer_skip: () => timer.skip(),
   });
 
-  if (!store.currentTheme) return null;
-
   return (
-    <AnimatePresence initial={false} mode="popLayout">
-      {display === "timer" && (
-        <motion.div
-          className="grow flex flex-col gap-0.5"
-          transition={{ duration: 0.3, ease: "linear" }}
-          initial={{ translateX: 300, opacity: 0.6 }}
-          animate={{ translateX: 0, opacity: 1 }}
-          exit={{ translateX: 300, opacity: 0.3 }}
-        >
-          <Pane className="grow flex flex-col" padding="lg">
-            <div className="grow flex flex-col gap-0.5 rounded overflow-hidden">
-              <Timer
-                theme={store.currentTheme!}
-                displayCountdown={timerDisplayCountdown}
-                onToggleCountdown={toggleTimerCountdown}
-                {...timer}
-              />
-              <TimerIntent data={store.currentIntent} />
-            </div>
-          </Pane>
-        </motion.div>
-      )}
-    </AnimatePresence>
+    <TimerContext.Provider
+      value={{
+        ...timer,
+        displayCountdown,
+        toggleDisplayCountdown,
+        sessionForCreate,
+        clearSessionForCreate: () => setSessionForCreate(null),
+      }}
+    >
+      {children}
+    </TimerContext.Provider>
   );
 };
-
-export default TimerPane;

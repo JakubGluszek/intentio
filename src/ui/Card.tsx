@@ -22,7 +22,7 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
     } = props;
 
     let className = clsx(
-      "group bg-base/[15%] backdrop-blur-sm p-1.5 rounded-sm transition-all duration-150",
+      "flex flex-col group bg-base/[15%] backdrop-blur-sm p-1.5 rounded-sm transition-all duration-150",
       active
         ? "border-primary/60 hover:border-primary/80 text-primary/80"
         : "border-base/30 hover:border-base/40 shadow shadow-black/20",

@@ -47,8 +47,7 @@ export const DeleteIntentModal: React.FC<DeleteIntentModalProps> = (props) => {
         </div>
         <div className="text-text/90 text-sm italic">
           This operation will also delete it's related
-          <span className="text-primary/80"> tasks</span> and
-          <span className="text-primary/80"> notes</span>.
+          <span className="text-primary/80"> tasks</span>
         </div>
         <div className="flex flex-row justify-between">
           <Button variant="base" onClick={() => props.onExit()}>

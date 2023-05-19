@@ -55,14 +55,18 @@ const SettingsTitlebar: React.FC = () => {
   const { panel } = React.useContext(SettingsWindowContext)!;
 
   return (
-    <Pane className="flex flex-col gap-1">
-      <div className="flex flex-row  items-center justify-between">
-        <div className="flex flex-row items-center gap-1 text-text">
+    <Pane className="flex flex-col">
+      <div className="flex flex-row items-center justify-between">
+        <div className="flex flex-row items-center gap-1 text-text/80">
           <MdSettings size={24} />
-          <span className="text-lg font-semibold">{panel}</span>
+          <span className="text-lg font-semibold">Settings {">"} {panel}</span>
         </div>
-        <Button variant="ghost" onClick={() => appWindow.close()}>
-          <MdClose size={28} />
+        <Button
+          variant="ghost"
+          config={{ ghost: { highlight: false } }}
+          onClick={() => appWindow.close()}
+        >
+          <MdClose size={24} />
         </Button>
       </div>
       <Navbar />

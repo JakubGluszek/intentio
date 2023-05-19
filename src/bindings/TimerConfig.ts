@@ -7,4 +7,5 @@ export interface TimerConfig {
   long_break_interval: number;
   auto_start_focus: boolean;
   auto_start_breaks: boolean;
+  session_summary: boolean;
 }

@@ -5,12 +5,14 @@ import { clsx } from "@mantine/core";
 export interface CheckBoxProps {
   checked: boolean;
   onChange: (value: boolean) => void;
+  width?: number;
+  height?: number;
 }
 
 export const CheckBox: React.FC<CheckBoxProps> = (props) => {
-  const [init, setInit] = React.useState(true);
+  const { width = 48, height = 20, ...restProps } = props;
 
-  const width = 64;
+  const [init, setInit] = React.useState(true);
 
   React.useEffect(() => {
     setInit(false);
@@ -20,17 +22,17 @@ export const CheckBox: React.FC<CheckBoxProps> = (props) => {
     <button
       className="group bg-base/20 rounded-sm shadow-inner shadow-black/30"
       style={{
-        width: width,
-        height: 20,
+        width,
+        height
       }}
-      onClick={() => props.onChange(!props.checked)}
+      onClick={() => restProps.onChange(!props.checked)}
       tabIndex={-3}
     >
       <div className="relative w-full h-full">
         <motion.div
           className={clsx(
             "rounded-sm",
-            props.checked
+            restProps.checked
               ? "bg-primary/80 group-hover:bg-primary shadow shadow-black/60"
               : "bg-base/80 group-hover:bg-base"
           )}

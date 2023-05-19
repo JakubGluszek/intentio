@@ -25,6 +25,7 @@ pub struct TimerConfig {
 
     pub auto_start_focus: bool,
     pub auto_start_breaks: bool,
+    pub session_summary: bool,
 }
 
 impl Config for TimerConfig {
@@ -42,6 +43,7 @@ impl Default for TimerConfig {
             long_break_interval: 4,
             auto_start_focus: false,
             auto_start_breaks: false,
+            session_summary: true,
         }
     }
 }
@@ -64,4 +66,5 @@ pub struct TimerConfigForUpdate {
 
     pub auto_start_focus: Option<bool>,
     pub auto_start_breaks: Option<bool>,
+    pub session_summary: Option<bool>,
 }

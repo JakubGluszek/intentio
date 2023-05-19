@@ -1,15 +1,13 @@
 import React from "react";
-import { MdAnalytics } from "react-icons/md";
-import { RiArchiveDrawerFill, RiArchiveDrawerLine } from "react-icons/ri";
-import { WebviewWindow } from "@tauri-apps/api/window";
+import { RiArchiveLine, RiArchiveFill } from "react-icons/ri";
 
 import useStore from "@/store";
 import ipc from "@/ipc";
 import { IntentList } from "@/components";
-import { Button, Pane, Tooltip } from "@/ui";
-import config from "@/config";
+import { Button, Tooltip } from "@/ui";
 import { useEvents } from "@/hooks";
 import CreateIntent from "./CreateIntent";
+import { toast } from "react-hot-toast";
 
 const IntentsView: React.FC = () => {
   const [viewArchive, setViewArchive] = React.useState(false);
@@ -41,34 +39,22 @@ const IntentsView: React.FC = () => {
   }, []);
 
   return (
-    <Pane className="grow flex flex-col gap-2" padding="lg">
+    <div className="grow flex flex-col gap-1 p-1 bg-base/10 rounded-sm">
       <div className="w-full flex flex-row items-center justify-between gap-1">
         <CreateIntent />
-        <div className="flex flex-row gap-0.5">
-          <Tooltip label={viewArchive ? "Hide Archive" : "View Archive"}>
-            <Button
-              variant="ghost"
-              onClick={() => setViewArchive((prev) => !prev)}
-            >
-              {viewArchive ? (
-                <RiArchiveDrawerFill size={22} />
-              ) : (
-                <RiArchiveDrawerLine size={22} />
-              )}
-            </Button>
-          </Tooltip>
 
-          <Tooltip label="Open Analytics">
-            <Button
-              variant="ghost"
-              onClick={() =>
-                new WebviewWindow("analytics", config.windows.analytics)
-              }
-            >
-              <MdAnalytics size={24} />
-            </Button>
-          </Tooltip>
-        </div>
+        <Tooltip label={viewArchive ? "Hide Archive" : "View Archive"}>
+          <Button
+            variant="ghost"
+            onClick={() => setViewArchive((prev) => !prev)}
+          >
+            {viewArchive ? (
+              <RiArchiveFill size={24} />
+            ) : (
+              <RiArchiveLine size={24} />
+            )}
+          </Button>
+        </Tooltip>
       </div>
 
       <IntentList
@@ -76,9 +62,12 @@ const IntentsView: React.FC = () => {
           (intent) => !!intent.archived_at === viewArchive
         )}
         selectedIntent={store.currentIntent}
-        onIntentSelected={(data) => store.setCurrentIntent(data)}
+        onIntentSelected={(data) => {
+          store.setCurrentIntent(data);
+          data && toast("Intent selected");
+        }}
       />
-    </Pane>
+    </div>
   );
 };
 

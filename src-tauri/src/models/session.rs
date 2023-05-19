@@ -15,9 +15,10 @@ use crate::{
 #[ts(export, export_to = "../src/bindings/")]
 pub struct Session {
     id: String,
+    intent_id: Option<String>,
     #[ts(type = "number")]
     duration: Minutes,
-    intent_id: Option<String>,
+    summary: Option<String>,
     started_at: String,
     finished_at: String,
 }
@@ -28,8 +29,9 @@ impl TryFrom<Object> for Session {
     fn try_from(mut val: Object) -> Result<Self> {
         let session = Self {
             id: val.x_take_val("id")?,
-            duration: val.x_take_val("duration")?,
             intent_id: val.x_take("intent_id")?,
+            duration: val.x_take_val("duration")?,
+            summary: val.x_take("summary")?,
             started_at: val.x_take_val("started_at")?,
             finished_at: val.x_take_val("finished_at")?,
         };
@@ -41,9 +43,10 @@ impl TryFrom<Object> for Session {
 #[derive(Deserialize, TS, Debug)]
 #[ts(export, export_to = "../src/bindings/")]
 pub struct SessionForCreate {
+    intent_id: Option<String>,
     #[ts(type = "number")]
     duration: Minutes,
-    intent_id: Option<String>,
+    summary: Option<String>,
     started_at: String,
 }
 
@@ -56,6 +59,9 @@ impl From<SessionForCreate> for Value {
 
         if let Some(intent_id) = val.intent_id {
             data.insert("intent_id".into(), intent_id.into());
+        }
+        if let Some(summary) = val.summary {
+            data.insert("summary".into(), summary.into());
         }
 
         Value::Object(data.into())
@@ -122,6 +128,7 @@ mod tests {
 
         let data = SessionForCreate {
             started_at: Datetime::default().timestamp().to_string(),
+            summary: Some("Test summary".to_string()),
             duration: 25,
             intent_id: None,
         };

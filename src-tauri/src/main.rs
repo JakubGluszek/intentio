@@ -70,12 +70,6 @@ fn main() -> Result<()> {
             delete_intent,
             archive_intent,
             unarchive_intent,
-            // Note
-            get_notes,
-            create_note,
-            update_note,
-            delete_note,
-            delete_notes,
             // Task
             create_task,
             update_task,

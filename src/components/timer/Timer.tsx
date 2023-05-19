@@ -13,7 +13,7 @@ import { CircleTimer, ColorFormat } from "./CircleTimer";
 export interface TimerProps extends useTimerReturnValues {
   theme: Theme;
   displayCountdown: boolean;
-  onToggleCountdown: () => void;
+  toggleDisplayCountdown: () => void;
 }
 
 export const Timer: React.FC<TimerProps> = (props) => {
@@ -34,7 +34,7 @@ export const Timer: React.FC<TimerProps> = (props) => {
       duration={props.duration}
       elapsedTime={props.elapsedTimeDetailed}
       strokeWidth={2}
-      size={200}
+      size={192}
       color={
         Color(props.isPlaying ? props.theme.primary_hex : props.theme.base_hex)
           .alpha(0.6)
@@ -45,7 +45,7 @@ export const Timer: React.FC<TimerProps> = (props) => {
       <div className="absolute m-auto">
         {!props.displayCountdown ? (
           <button
-            onClick={() => props.onToggleCountdown()}
+            onClick={() => props.toggleDisplayCountdown()}
             className={clsx(
               "text-4xl font-bold whitespace-nowrap transition-colors duration-150",
               props.isPlaying
@@ -65,7 +65,7 @@ export const Timer: React.FC<TimerProps> = (props) => {
                   ? "text-primary/80 hover:text-primary"
                   : "text-base/80 hover:text-[rgb(var(--base-color))]"
               )}
-              onClick={() => props.onToggleCountdown()}
+              onClick={() => props.toggleDisplayCountdown()}
               tabIndex={-3}
             >
               {formattedTimeLeft}
@@ -77,7 +77,7 @@ export const Timer: React.FC<TimerProps> = (props) => {
         )}
       </div>
 
-      <div className="absolute m-auto translate-y-[4.5rem]  w-full flex flex-col items-center gap-1 transition-opacity duration-150">
+      <div className="absolute m-auto translate-y-[4.25rem]  w-full flex flex-col items-center gap-1 transition-opacity duration-150">
         <div className="group flex flex-row items-center justify-center">
           <button
             tabIndex={-3}

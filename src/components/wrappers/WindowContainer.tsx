@@ -63,7 +63,7 @@ export const WindowContainer: React.FC<WindowContainerProps> = (props) => {
       {/* Gradient Overlay */}
       <motion.div
         animate={{
-          scale: [1, 1.2, 1.4, 1.2, 1],
+          scale: [1, 1.8, 3, 1.8, 1],
           transition: {
             duration: 15,
             repeat: Infinity,
@@ -76,7 +76,7 @@ export const WindowContainer: React.FC<WindowContainerProps> = (props) => {
           top: -140,
           pointerEvents: "none",
           backgroundImage:
-            "radial-gradient(circle at center, rgba(var(--base-color) / 0.4), transparent 90%",
+            "radial-gradient(circle at center, rgba(var(--base-color) / 0.1), transparent 80%",
         }}
       ></motion.div>
 
@@ -88,13 +88,13 @@ export const WindowContainer: React.FC<WindowContainerProps> = (props) => {
           style: {
             padding: 1,
             paddingInline: 2,
-            backgroundColor: "rgb(var(--primary-color))",
-            borderWidth: 2,
-            borderColor: "rgb(var(--window-color) / 0.8)",
-            borderRadius: 6,
+            backgroundColor: "rgb(var(--window-color))",
+            borderBottomWidth: 2,
+            borderColor: "rgb(var(--primary-color) / 0.8)",
+            borderRadius: 4,
             fontSize: "0.9rem",
             fontWeight: 700,
-            color: "rgb(var(--window-color))",
+            color: "rgb(var(--primary-color))",
             textAlign: "center",
           },
         }}

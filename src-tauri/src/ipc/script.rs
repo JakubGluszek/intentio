@@ -10,7 +10,7 @@ use crate::{
 pub async fn get_scripts(app: AppHandle<Wry>) -> Result<Vec<Script>> {
     match Ctx::from_app(app) {
         Ok(ctx) => match ScriptBmc::get_multi(ctx).await {
-            Ok(notes) => Ok(notes),
+            Ok(scripts) => Ok(scripts),
             Err(err) => Err(err).into(),
         },
         Err(_) => Err(Error::CtxFail).into(),
@@ -21,7 +21,7 @@ pub async fn get_scripts(app: AppHandle<Wry>) -> Result<Vec<Script>> {
 pub async fn create_script(app: AppHandle<Wry>, data: ScriptForCreate) -> Result<Script> {
     match Ctx::from_app(app) {
         Ok(ctx) => match ScriptBmc::create(ctx, data).await {
-            Ok(note) => Ok(note),
+            Ok(script) => Ok(script),
             Err(err) => Err(err).into(),
         },
         Err(_) => Err(Error::CtxFail).into(),
@@ -36,7 +36,7 @@ pub async fn update_script(
 ) -> Result<Script> {
     match Ctx::from_app(app) {
         Ok(ctx) => match ScriptBmc::update(ctx, &id, data).await {
-            Ok(note) => Ok(note),
+            Ok(script) => Ok(script),
             Err(err) => Err(err).into(),
         },
         Err(_) => Err(Error::CtxFail).into(),

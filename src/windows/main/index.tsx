@@ -1,68 +1,65 @@
 import React from "react";
-import { MdRemove, MdClose, MdSettings } from "react-icons/md";
-import { TbLayoutSidebarRightCollapse } from "react-icons/tb";
+import { MdRemove, MdClose, MdSettings, MdAnalytics } from "react-icons/md";
 import { WebviewWindow } from "@tauri-apps/api/window";
-import { motion } from "framer-motion";
 
 import ipc from "@/ipc";
 import config from "@/config";
 import { WindowContainer } from "@/components";
-import { MainWindowContext, MainWindowProvider } from "@/contexts";
+import { MainWindowProvider, TimerContextProvider } from "@/contexts";
 import { Button, Pane } from "@/ui";
-import SidebarPane from "./sidebar";
-import TimerPane from "./timer";
+import { MainBody } from "./Body";
 
 const MainWindow: React.FC = () => {
   return (
     <MainWindowProvider>
-      <WindowContainer>
-        <motion.div
-          className="grow flex flex-col gap-0.5"
-          transition={{ duration: 0.2 }}
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-        >
-          <Titlebar />
-          <div className="grow flex flex-row">
-            <SidebarPane />
-            <TimerPane />
+      <TimerContextProvider>
+        <WindowContainer>
+          <div className="grow flex flex-col gap-0.5">
+            <Titlebar />
+            <MainBody />
           </div>
-        </motion.div>
-      </WindowContainer>
+        </WindowContainer>
+      </TimerContextProvider>
     </MainWindowProvider>
   );
 };
 
 const Titlebar: React.FC = () => {
-  const { display, toggleDisplay } = React.useContext(MainWindowContext)!;
-
   return (
-    <Pane className="flex flex-row items-center justify-between">
-      <div className="flex flex-row gap-0.5">
-        <Button variant="ghost" onClick={toggleDisplay}>
-          <motion.div
-            animate={{
-              rotateZ: display === "sidebar" ? 180 : 0,
-              transition: { duration: 0.3 },
-            }}
-          >
-            <TbLayoutSidebarRightCollapse size={28} />
-          </motion.div>
+    <Pane className="flex flex-row items-center justify-between p-0">
+      <div className="flex flex-row">
+        <Button
+          onClick={() => new WebviewWindow("settings", config.windows.settings)}
+          variant="ghost"
+          className="rounded-none"
+        >
+          <MdSettings size={24} />
         </Button>
         <Button
+          onClick={() =>
+            new WebviewWindow("analytics", config.windows.analytics)
+          }
           variant="ghost"
-          onClick={() => new WebviewWindow("settings", config.windows.settings)}
+          className="rounded-none"
         >
-          <MdSettings size={28} />
+          <MdAnalytics size={24} />
         </Button>
       </div>
       <h2 className="font-bold text-text">Intentio</h2>
-      <div className="flex flex-row gap-0.5">
-        <Button variant="ghost" onClick={() => ipc.hideMainWindow()}>
-          <MdRemove size={28} />
+      <div className="flex flex-row">
+        <Button
+          onClick={() => ipc.hideMainWindow()}
+          variant="ghost"
+          className="rounded-none"
+        >
+          <MdRemove size={24} />
         </Button>
-        <Button variant="ghost" onClick={() => ipc.exitMainWindow()}>
-          <MdClose size={28} />
+        <Button
+          onClick={() => ipc.exitMainWindow()}
+          variant="ghost"
+          className="rounded-none"
+        >
+          <MdClose size={24} />
         </Button>
       </div>
     </Pane>

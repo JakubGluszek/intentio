@@ -1,14 +1,8 @@
 import React from "react";
 import { appWindow } from "@tauri-apps/api/window";
 
-type DisplayType = "sidebar" | "timer";
-
 export type MainWindowContextType = {
-  display: DisplayType;
   isFocused: boolean;
-  toggleDisplay: () => void;
-  timerDisplayCountdown: boolean;
-  toggleTimerCountdown: () => void;
 };
 
 export const MainWindowContext =
@@ -19,15 +13,7 @@ interface Props {
 }
 
 export const MainWindowProvider: React.FC<Props> = ({ children }) => {
-  const [display, setDisplay] = React.useState<DisplayType>("timer");
   const [isFocused, setIsFocused] = React.useState(false);
-  const [timerDisplayCountdown, setTimerDisplayCountdown] =
-    React.useState(true);
-
-  const toggleTimerCountdown = () => setTimerDisplayCountdown((prev) => !prev);
-
-  const toggleDisplay = () =>
-    setDisplay((prev) => (prev === "timer" ? "sidebar" : "timer"));
 
   React.useEffect(() => {
     const unlisten = appWindow.onFocusChanged(({ payload }) =>
@@ -40,11 +26,7 @@ export const MainWindowProvider: React.FC<Props> = ({ children }) => {
   return (
     <MainWindowContext.Provider
       value={{
-        display,
         isFocused,
-        toggleDisplay,
-        timerDisplayCountdown,
-        toggleTimerCountdown,
       }}
     >
       {children}

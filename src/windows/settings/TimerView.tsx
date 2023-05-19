@@ -63,10 +63,10 @@ const TimerView: React.FC = () => {
             />
           </Section>
 
-          <Section heading="Repeat">
+          <Section heading="Auto start">
             <Card className="flex flex-col gap-1">
               <div className="flex flex-row items-center justify-between">
-                <div>Auto start focus</div>
+                <div>Focus</div>
                 <CheckBox
                   checked={config.auto_start_focus}
                   onChange={(auto_start_focus) =>
@@ -74,14 +74,35 @@ const TimerView: React.FC = () => {
                   }
                 />
               </div>
+            </Card>
+            <Card>
               <div className="flex flex-row items-center justify-between">
-                <div>Auto start breaks</div>
+                <div>Breaks</div>
                 <CheckBox
                   checked={config.auto_start_breaks}
                   onChange={(auto_start_breaks) =>
                     updateConfig({ auto_start_breaks })
                   }
                 />
+              </div>
+            </Card>
+          </Section>
+
+          <Section heading="Focus session">
+            <Card className="gap-1">
+              <div className="flex flex-row items-center justify-between">
+                <div>Summarize on complete</div>
+                <CheckBox
+                  checked={config.session_summary}
+                  onChange={(session_summary) =>
+                    updateConfig({ session_summary })
+                  }
+                />
+              </div>
+              <div className="text-sm text-text/60">
+                <div>
+                  You will be prompted to write a summary of your session.
+                </div>
               </div>
             </Card>
           </Section>

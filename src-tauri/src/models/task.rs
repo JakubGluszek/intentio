@@ -27,7 +27,7 @@ pub struct Task {
 impl TryFrom<Object> for Task {
     type Error = Error;
     fn try_from(mut val: Object) -> Result<Self> {
-        let note = Self {
+        let task = Self {
             id: val.x_take_val("id")?,
             body: val.x_take_val("body")?,
             done: val.x_take_val("done")?,
@@ -36,7 +36,7 @@ impl TryFrom<Object> for Task {
             finished_at: val.x_take("finished_at")?,
         };
 
-        Ok(note)
+        Ok(task)
     }
 }
 
