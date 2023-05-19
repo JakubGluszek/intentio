@@ -13,10 +13,10 @@ import { clsx } from "@mantine/core";
 import ipc from "@/ipc";
 import config from "@/config";
 import { WindowContainer } from "@/components";
-import { MainWindowProvider } from "@/contexts";
+import { MainWindowProvider, TimerContextProvider } from "@/contexts";
 import { Button, Pane } from "@/ui";
-import { TimerWrapper } from "./timerWrapper";
 import IntentsView from "./sidebar/intentsView";
+import { TimerView } from "./TimerView";
 
 const MainWindow: React.FC = () => {
   const [display, setDisplay] = React.useState<"Timer" | "Intents" | "Tasks">(
@@ -25,33 +25,35 @@ const MainWindow: React.FC = () => {
 
   return (
     <MainWindowProvider>
-      <WindowContainer>
-        <div className="grow flex flex-col gap-0.5">
-          <Titlebar />
-          <Pane className="grow flex flex-col gap-0.5 p-0.5">
-            {/* Main panel switcher */}
-            <div className="flex flex-row bg-base/10 rounded-sm overflow-clip">
-              <PanelButton
-                active={display === "Timer"}
-                onClick={() => setDisplay("Timer")}
-              >
-                <MdTimer size={20} />
-                <div>Timer</div>
-              </PanelButton>
-              <PanelButton
-                active={display === "Intents"}
-                onClick={() => setDisplay("Intents")}
-              >
-                <BiTargetLock size={20} />
-                <div>Intents</div>
-              </PanelButton>
-            </div>
+      <TimerContextProvider>
+        <WindowContainer>
+          <div className="grow flex flex-col gap-0.5">
+            <Titlebar />
+            <Pane className="grow flex flex-col gap-0.5 p-0.5">
+              {/* Main panel switcher */}
+              <div className="flex flex-row bg-base/10 rounded-sm overflow-clip">
+                <PanelButton
+                  active={display === "Timer"}
+                  onClick={() => setDisplay("Timer")}
+                >
+                  <MdTimer size={20} />
+                  <div>Timer</div>
+                </PanelButton>
+                <PanelButton
+                  active={display === "Intents"}
+                  onClick={() => setDisplay("Intents")}
+                >
+                  <BiTargetLock size={20} />
+                  <div>Intents</div>
+                </PanelButton>
+              </div>
 
-            {display === "Timer" && <TimerWrapper />}
-            {display === "Intents" && <IntentsView />}
-          </Pane>
-        </div>
-      </WindowContainer>
+              {display === "Timer" && <TimerView />}
+              {display === "Intents" && <IntentsView />}
+            </Pane>
+          </div>
+        </WindowContainer>
+      </TimerContextProvider>
     </MainWindowProvider>
   );
 };

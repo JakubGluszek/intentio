@@ -13,7 +13,7 @@ import { CircleTimer, ColorFormat } from "./CircleTimer";
 export interface TimerProps extends useTimerReturnValues {
   theme: Theme;
   displayCountdown: boolean;
-  onToggleCountdown: () => void;
+  toggleDisplayCountdown: () => void;
 }
 
 export const Timer: React.FC<TimerProps> = (props) => {
@@ -45,7 +45,7 @@ export const Timer: React.FC<TimerProps> = (props) => {
       <div className="absolute m-auto">
         {!props.displayCountdown ? (
           <button
-            onClick={() => props.onToggleCountdown()}
+            onClick={() => props.toggleDisplayCountdown()}
             className={clsx(
               "text-4xl font-bold whitespace-nowrap transition-colors duration-150",
               props.isPlaying
@@ -65,7 +65,7 @@ export const Timer: React.FC<TimerProps> = (props) => {
                   ? "text-primary/80 hover:text-primary"
                   : "text-base/80 hover:text-[rgb(var(--base-color))]"
               )}
-              onClick={() => props.onToggleCountdown()}
+              onClick={() => props.toggleDisplayCountdown()}
               tabIndex={-3}
             >
               {formattedTimeLeft}

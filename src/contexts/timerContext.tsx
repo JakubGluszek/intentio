@@ -2,16 +2,31 @@ import React from "react";
 import { sendNotification } from "@tauri-apps/api/notification";
 import { toast } from "react-hot-toast";
 
-import useStore from "@/store";
-import { MainWindowContext } from "@/contexts";
+import { useTimer, useTimerReturnValues } from "@/components";
 import ipc from "@/ipc";
-import { useEvents } from "@/hooks";
+import useStore from "@/store";
 import utils from "@/utils";
-import { Timer, TimerIntent, useTimer } from "@/components";
+import { useEvents } from "@/hooks";
 
-export const TimerWrapper: React.FC = () => {
-  const { timerDisplayCountdown, toggleTimerCountdown } =
-    React.useContext(MainWindowContext)!;
+export interface TimerContextReturnValues extends useTimerReturnValues {
+  displayCountdown: boolean;
+  toggleDisplayCountdown: () => void;
+}
+
+export const TimerContext =
+  React.createContext<TimerContextReturnValues | null>(null);
+
+interface TimerContextProviderProps {
+  children: React.ReactNode;
+}
+
+export const TimerContextProvider: React.FC<TimerContextProviderProps> = ({
+  children,
+}) => {
+  const [displayCountdown, setDisplayCountdown] = React.useState(true);
+
+  const toggleDisplayCountdown = () => setDisplayCountdown((prev) => !prev);
+
   const store = useStore();
 
   const timer = useTimer(store.timerConfig, {
@@ -31,6 +46,7 @@ export const TimerWrapper: React.FC = () => {
           .createSession({
             duration: ~~(session.elapsedTime! / 60),
             started_at: session.startedAt,
+            summary: null,
             intent_id: store.currentIntent?.id!,
           })
           .then(() => toast("Session saved"));
@@ -138,17 +154,11 @@ export const TimerWrapper: React.FC = () => {
     timer_skip: () => timer.skip(),
   });
 
-  if (!store.currentTheme) return null;
-
   return (
-    <div className="grow flex flex-col gap-0.5">
-      <Timer
-        theme={store.currentTheme!}
-        displayCountdown={timerDisplayCountdown}
-        onToggleCountdown={toggleTimerCountdown}
-        {...timer}
-      />
-      <TimerIntent data={store.currentIntent} />
-    </div>
+    <TimerContext.Provider
+      value={{ ...timer, displayCountdown, toggleDisplayCountdown }}
+    >
+      {children}
+    </TimerContext.Provider>
   );
 };
