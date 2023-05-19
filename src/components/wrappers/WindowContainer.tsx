@@ -81,8 +81,8 @@ export const WindowContainer: React.FC<WindowContainerProps> = (props) => {
       ></motion.div>
 
       <Toaster
-        position="bottom-center"
-        containerStyle={{ top: 12, zIndex: 999999999 }}
+        position="top-center"
+        containerStyle={{ top: 4, zIndex: 999999999 }}
         toastOptions={{
           duration: 1800,
           style: {

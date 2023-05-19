@@ -12,7 +12,10 @@ const AnalyticsWindow: React.FC = () => {
   const calendar = useCalendar({ sessions: store.sessions });
 
   React.useEffect(() => {
-    ipc.getSessions().then((data) => store.setSessions(data));
+    ipc.getSessions().then((data) => {
+      store.setSessions(data);
+      console.log(data);
+    });
   }, []);
 
   return (

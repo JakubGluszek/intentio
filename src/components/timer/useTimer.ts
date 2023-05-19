@@ -23,6 +23,7 @@ export interface useTimerReturnValues extends TimerSession {
   skip: (manual?: boolean) => void;
   /** Floating point number for smooth stroke render */
   elapsedTimeDetailed: number;
+  config: TimerConfig;
 }
 
 export const useTimer = (
@@ -167,5 +168,6 @@ export const useTimer = (
     elapsedTime: ~~elapsedTime,
     isPlaying,
     iterations,
+    config,
   };
 };

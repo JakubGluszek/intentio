@@ -1,82 +1,26 @@
 import React from "react";
-import {
-  MdRemove,
-  MdClose,
-  MdSettings,
-  MdTimer,
-  MdAnalytics,
-} from "react-icons/md";
-import { BiTargetLock } from "react-icons/bi";
+import { MdRemove, MdClose, MdSettings, MdAnalytics } from "react-icons/md";
 import { WebviewWindow } from "@tauri-apps/api/window";
-import { clsx } from "@mantine/core";
 
 import ipc from "@/ipc";
 import config from "@/config";
 import { WindowContainer } from "@/components";
 import { MainWindowProvider, TimerContextProvider } from "@/contexts";
 import { Button, Pane } from "@/ui";
-import IntentsView from "./sidebar/intentsView";
-import { TimerView } from "./TimerView";
+import { MainBody } from "./Body";
 
 const MainWindow: React.FC = () => {
-  const [display, setDisplay] = React.useState<"Timer" | "Intents" | "Tasks">(
-    "Timer"
-  );
-
   return (
     <MainWindowProvider>
       <TimerContextProvider>
         <WindowContainer>
           <div className="grow flex flex-col gap-0.5">
             <Titlebar />
-            <Pane className="grow flex flex-col gap-0.5 p-0.5">
-              {/* Main panel switcher */}
-              <div className="flex flex-row bg-base/10 rounded-sm overflow-clip">
-                <PanelButton
-                  active={display === "Timer"}
-                  onClick={() => setDisplay("Timer")}
-                >
-                  <MdTimer size={20} />
-                  <div>Timer</div>
-                </PanelButton>
-                <PanelButton
-                  active={display === "Intents"}
-                  onClick={() => setDisplay("Intents")}
-                >
-                  <BiTargetLock size={20} />
-                  <div>Intents</div>
-                </PanelButton>
-              </div>
-
-              {display === "Timer" && <TimerView />}
-              {display === "Intents" && <IntentsView />}
-            </Pane>
+            <MainBody />
           </div>
         </WindowContainer>
       </TimerContextProvider>
     </MainWindowProvider>
-  );
-};
-
-interface PanelButtonProps {
-  children: React.ReactNode;
-  active: boolean;
-  onClick: () => void;
-}
-
-const PanelButton: React.FC<PanelButtonProps> = (props) => {
-  return (
-    <button
-      onClick={props.onClick}
-      className={clsx(
-        "flex-1 flex flex-row items-center justify-center gap-1 font-black p-0.5 transition-colors duration-150 uppercase",
-        props.active
-          ? "bg-primary/20 text-primary"
-          : "bg-transparent text-base hover:text-primary hover:bg-base/10 active:bg-primary/10"
-      )}
-    >
-      {props.children}
-    </button>
   );
 };
 

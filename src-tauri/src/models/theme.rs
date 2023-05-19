@@ -138,7 +138,7 @@ impl ThemeBmc {
                     window_hex: '#002a37',
                     base_hex: '#65c3b1',
                     primary_hex: '#0feda2',
-                    text_hex: '#bbbbbb',
+                    text_hex: '#EBEBEB',
                 };
                 CREATE theme:dracula CONTENT {
                     name: 'dracula',

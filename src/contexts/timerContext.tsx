@@ -1,6 +1,5 @@
 import React from "react";
 import { sendNotification } from "@tauri-apps/api/notification";
-import { toast } from "react-hot-toast";
 
 import { useTimer, useTimerReturnValues } from "@/components";
 import ipc from "@/ipc";
@@ -8,10 +7,14 @@ import useStore from "@/store";
 import utils from "@/utils";
 import { useEvents } from "@/hooks";
 import { appWindow } from "@tauri-apps/api/window";
+import { SessionForCreate } from "@/bindings/SessionForCreate";
+import { toast } from "react-hot-toast";
 
 export interface TimerContextReturnValues extends useTimerReturnValues {
   displayCountdown: boolean;
   toggleDisplayCountdown: () => void;
+  sessionForCreate: SessionForCreate | null;
+  clearSessionForCreate: () => void;
 }
 
 export const TimerContext =
@@ -25,11 +28,12 @@ export const TimerContextProvider: React.FC<TimerContextProviderProps> = ({
   children,
 }) => {
   const [displayCountdown, setDisplayCountdown] = React.useState(true);
+  const [sessionForCreate, setSessionForCreate] =
+    React.useState<SessionForCreate | null>(null);
 
   const toggleDisplayCountdown = () => setDisplayCountdown((prev) => !prev);
 
   const store = useStore();
-
   const settings = store.settingsConfig!;
 
   const timer = useTimer(store.timerConfig, {
@@ -45,14 +49,23 @@ export const TimerContextProvider: React.FC<TimerContextProviderProps> = ({
         session.elapsedTime >= 60 &&
         session.startedAt
       ) {
-        ipc
-          .createSession({
+        if (timer.config.session_summary) {
+          setSessionForCreate({
             duration: ~~(session.elapsedTime! / 60),
             started_at: session.startedAt,
             summary: null,
-            intent_id: store.currentIntent?.id!,
-          })
-          .then(() => toast("Session saved"));
+            intent_id: store.currentIntent?.id ?? null,
+          });
+        } else {
+          ipc
+            .createSession({
+              duration: ~~(session.elapsedTime! / 60),
+              started_at: session.startedAt,
+              summary: null,
+              intent_id: store.currentIntent?.id!,
+            })
+            .then(() => toast("Session saved"));
+        }
       }
     },
     onCompleted: (session) => {
@@ -167,7 +180,13 @@ export const TimerContextProvider: React.FC<TimerContextProviderProps> = ({
 
   return (
     <TimerContext.Provider
-      value={{ ...timer, displayCountdown, toggleDisplayCountdown }}
+      value={{
+        ...timer,
+        displayCountdown,
+        toggleDisplayCountdown,
+        sessionForCreate,
+        clearSessionForCreate: () => setSessionForCreate(null),
+      }}
     >
       {children}
     </TimerContext.Provider>

@@ -28,7 +28,7 @@ const Editor: React.FC<EditorProps> = (props) => {
   return (
     <div
       ref={containerRef}
-      className="relative grow text-sm rounded-sm overflow-clip border-2 border-base/40 hover:border-primary/40 shadow-lg shadow-black/30"
+      className="relative grow text-text rounded-sm overflow-clip border-2 border-base/40 hover:border-primary/40 shadow-lg shadow-black/30"
     >
       <CodeMirror
         autoFocus
