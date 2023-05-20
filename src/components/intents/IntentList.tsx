@@ -1,7 +1,8 @@
 import React from "react";
 
-import { OverflowY } from "@/components";
 import { Intent } from "@/bindings/Intent";
+import { ScrollArea } from "@/ui";
+
 import { IntentView } from "./IntentView";
 
 export interface IntentListProps {
@@ -25,7 +26,7 @@ export const IntentList: React.FC<IntentListProps> = (props) => {
   }, [props.data]);
 
   return (
-    <OverflowY>
+    <ScrollArea>
       <div className="flex flex-col gap-1">
         {intents.map((intent) => (
           <IntentView
@@ -40,6 +41,6 @@ export const IntentList: React.FC<IntentListProps> = (props) => {
           />
         ))}
       </div>
-    </OverflowY>
+    </ScrollArea>
   );
 };

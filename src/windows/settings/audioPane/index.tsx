@@ -6,15 +6,14 @@ import { MdLabelImportant, MdRefresh } from "react-icons/md";
 
 import ipc from "@/ipc";
 import useStore from "@/store";
-import { CascadeSections, OverflowY } from "@/components";
-import { Button, Pane, Section, Tooltip } from "@/ui";
+import { Button, Pane, Section, Tooltip, SectionsWrapper, ScrollArea } from "@/ui";
 import SelectedTrack from "./SelectedTrack";
 import TrackView from "./TrackView";
 import { OpenFileExplorerButton } from "./OpenFileExplorerButton";
 
 const AUDIO_FORMATS = [".mp3", ".ogg"];
 
-const AudioView: React.FC = () => {
+const AudioPane: React.FC = () => {
   const [tracks, setTracks] = React.useState<FileEntry[]>([]);
 
   const store = useStore();
@@ -66,8 +65,8 @@ const AudioView: React.FC = () => {
 
   return (
     <Pane className="grow flex flex-col">
-      <OverflowY>
-        <CascadeSections>
+      <ScrollArea>
+        <SectionsWrapper>
           <Section heading="Selected track">
             <SelectedTrack
               name={settings.alert_file}
@@ -117,10 +116,10 @@ const AudioView: React.FC = () => {
                 ))}
             </div>
           </Section>
-        </CascadeSections>
-      </OverflowY>
+        </SectionsWrapper>
+      </ScrollArea>
     </Pane>
   );
 };
 
-export default AudioView;
+export default AudioPane;

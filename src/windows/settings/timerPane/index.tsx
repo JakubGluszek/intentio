@@ -1,12 +1,12 @@
 import React from "react";
 
-import { CascadeSections, OverflowY, SliderCard } from "@/components";
+import { SliderCard } from "@/components";
 import useStore from "@/store";
 import ipc from "@/ipc";
-import { Card, CheckBox, Pane, Section } from "@/ui";
+import { Card, CheckBox, Pane, Section, SectionsWrapper, ScrollArea } from "@/ui";
 import { TimerConfigForUpdate } from "@/bindings/TimerConfigForUpdate";
 
-const TimerView: React.FC = () => {
+const TimerPane: React.FC = () => {
   const store = useStore();
 
   const config = store.timerConfig;
@@ -22,8 +22,8 @@ const TimerView: React.FC = () => {
 
   return (
     <Pane className="grow flex flex-col">
-      <OverflowY>
-        <CascadeSections>
+      <ScrollArea>
+        <SectionsWrapper>
           <Section heading="Durations">
             <SliderCard
               type="duration"
@@ -121,10 +121,10 @@ const TimerView: React.FC = () => {
               </div>
             </Card>
           </Section>
-        </CascadeSections>
-      </OverflowY>
+        </SectionsWrapper>
+      </ScrollArea>
     </Pane>
   );
 };
 
-export default TimerView;
+export default TimerPane;

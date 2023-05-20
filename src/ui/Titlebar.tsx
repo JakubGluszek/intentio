@@ -1,16 +1,16 @@
 import React from "react";
 import { MdClose } from "react-icons/md";
-import { appWindow } from "@tauri-apps/api/window";
 import { IconType } from "react-icons";
+import { appWindow } from "@tauri-apps/api/window";
 
 import { Button, Pane } from "@/ui";
 
-interface Props {
+interface TitlebarProps {
   icon: IconType;
   title: string;
 }
 
-const Titlebar: React.FC<Props> = (props) => {
+export const Titlebar: React.FC<TitlebarProps> = (props) => {
   return (
     <Pane className="flex flex-row items-center justify-between p-0">
       <div className="flex flex-row items-center gap-1 text-text pl-1">
@@ -27,5 +27,3 @@ const Titlebar: React.FC<Props> = (props) => {
     </Pane>
   );
 };
-
-export default Titlebar;

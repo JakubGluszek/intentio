@@ -1,11 +1,13 @@
 import React from "react";
 import { MdAnalytics } from "react-icons/md";
 
-import { Calendar, Titlebar, useCalendar, WindowContainer } from "@/components";
-import { Card, Pane } from "@/ui";
+import { WindowContainer } from "@/components";
+import { Card, Pane, Titlebar } from "@/ui";
 import useStore from "@/store";
 import ipc from "@/ipc";
+
 import { Statistics } from "./Statistics";
+import { Calendar, useCalendar } from "./Calendar";
 
 const AnalyticsWindow: React.FC = () => {
   const store = useStore();

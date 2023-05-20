@@ -2,12 +2,18 @@ import React from "react";
 import { enable, isEnabled, disable } from "tauri-plugin-autostart-api";
 import { toast } from "react-hot-toast";
 
-import { Card, CheckBox, Pane, Section } from "@/ui";
+import {
+  Card,
+  CheckBox,
+  Pane,
+  Section,
+  SectionsWrapper,
+  ScrollArea,
+} from "@/ui";
 import ipc from "@/ipc";
 import useStore from "@/store";
-import { CascadeSections, OverflowY } from "@/components";
 
-const GeneralView: React.FC = () => {
+const GeneralPane: React.FC = () => {
   const [isAutoStart, setIsAutoStart] = React.useState<boolean>();
 
   const store = useStore();
@@ -20,8 +26,8 @@ const GeneralView: React.FC = () => {
 
   return (
     <Pane className="grow flex flex-col text-sm">
-      <OverflowY>
-        <CascadeSections>
+      <ScrollArea>
+        <SectionsWrapper>
           <Section heading="App">
             <Card className="flex flex-row items-center justify-between">
               <div className="text-text/90 group-hover:text-text">
@@ -97,10 +103,10 @@ const GeneralView: React.FC = () => {
               </div>
             </Card>
           </Section>
-        </CascadeSections>
-      </OverflowY>
+        </SectionsWrapper>
+      </ScrollArea>
     </Pane>
   );
 };
 
-export default GeneralView;
+export default GeneralPane;

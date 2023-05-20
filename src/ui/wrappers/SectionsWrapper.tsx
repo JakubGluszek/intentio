@@ -1,11 +1,11 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-interface CascadeSectionsProps {
+interface SectionsWrapperProps {
   children: React.ReactNode;
 }
 
-export const CascadeSections: React.FC<CascadeSectionsProps> = ({
+export const SectionsWrapper: React.FC<SectionsWrapperProps> = ({
   children,
 }) => {
   return (

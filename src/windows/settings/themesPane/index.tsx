@@ -1,20 +1,27 @@
 import React from "react";
+import { MdAddCircle, MdLabelImportant } from "react-icons/md";
 
 import useStore from "@/store";
 import ipc from "@/ipc";
-import { CascadeSections, OverflowY } from "@/components";
-import { Button, Pane, Section, Tooltip } from "@/ui";
+import {
+  Button,
+  Pane,
+  Section,
+  Tooltip,
+  ScrollArea,
+  SectionsWrapper,
+} from "@/ui";
+import { useEvents } from "@/hooks";
 import { ThemeState } from "@/types";
 import { Theme } from "@/bindings/Theme";
+
 import EditTheme from "./EditTheme";
 import CreateTheme from "./CreateTheme";
 import { SelectedTheme } from "./SelectedTheme";
 import { ChangeTheme } from "./ChangeTheme";
 import ThemeView from "./ThemeView";
-import { MdAddCircle, MdLabelImportant } from "react-icons/md";
-import { useEvents } from "@/hooks";
 
-const ThemesView: React.FC = () => {
+const ThemesPane: React.FC = () => {
   const [editTheme, setEditTheme] = React.useState<Theme | null>(null);
   const [viewCreate, setViewCreate] = React.useState(false);
   const [viewChangeTheme, setViewChangeTheme] =
@@ -60,8 +67,8 @@ const ThemesView: React.FC = () => {
 
   return (
     <Pane className="grow flex flex-col">
-      <OverflowY>
-        <CascadeSections>
+      <ScrollArea>
+        <SectionsWrapper>
           <Section heading="Selected themes">
             <div className="flex flex-col gap-1">
               <SelectedTheme
@@ -112,10 +119,10 @@ const ThemesView: React.FC = () => {
                 />
               ))}
           </Section>
-        </CascadeSections>
-      </OverflowY>
+        </SectionsWrapper>
+      </ScrollArea>
     </Pane>
   );
 };
 
-export default ThemesView;
+export default ThemesPane;

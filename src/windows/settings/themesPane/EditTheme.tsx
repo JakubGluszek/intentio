@@ -1,40 +1,39 @@
 import React from "react";
-import { MdDelete, MdPreview, MdSave } from "react-icons/md";
+import { MdDelete, MdSave } from "react-icons/md";
 import { toast } from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import { RiEyeCloseFill, RiEyeFill } from "react-icons/ri";
 import { emit } from "@tauri-apps/api/event";
+import { useClickOutside } from "@mantine/hooks";
+import { ChromePicker } from "react-color";
 
-import {
-  CascadeSections,
-  ColorInput,
-  ModalContainer,
-  OverflowY,
-} from "@/components";
+import { ColorInput } from "@/components";
 import { Theme } from "@/bindings/Theme";
 import ipc from "@/ipc";
 import useStore from "@/store";
-import { ThemeForCreate } from "@/bindings/ThemeForCreate";
-import { ColorType } from "..";
-import { useClickOutside } from "@mantine/hooks";
-import { ChromePicker } from "react-color";
 import { useConfirmDelete } from "@/hooks";
 import {
   Button,
   DangerButton,
   Input,
+  ModalContainer,
   Pane,
   PaneHeading,
   Section,
   Tooltip,
+  ScrollArea,
+  SectionsWrapper,
 } from "@/ui";
+import { ThemeForCreate } from "@/bindings/ThemeForCreate";
 
-interface Props {
+import { ColorType } from "..";
+
+interface EditThemeProps {
   data: Theme;
   onExit: () => void;
 }
 
-const EditTheme: React.FC<Props> = (props) => {
+const EditTheme: React.FC<EditThemeProps> = (props) => {
   const [viewThemePreview, setViewThemePreview] = React.useState(false);
   const [viewColorPicker, setViewColorPicker] = React.useState<ColorType>();
   const [colorPickerHex, setColorPickerHex] = React.useState("#000000");
@@ -147,8 +146,8 @@ const EditTheme: React.FC<Props> = (props) => {
           }
           onExit={props.onExit}
         />
-        <OverflowY>
-          <CascadeSections>
+        <ScrollArea>
+          <SectionsWrapper>
             <Section>
               <form onSubmit={onSubmit} className="grow flex flex-col gap-1.5">
                 <div className="flex flex-row items-center gap-2">
@@ -201,8 +200,8 @@ const EditTheme: React.FC<Props> = (props) => {
                 />
               </form>
             </Section>
-          </CascadeSections>
-        </OverflowY>
+          </SectionsWrapper>
+        </ScrollArea>
       </Pane>
     </React.Fragment>
   );

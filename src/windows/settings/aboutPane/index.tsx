@@ -1,12 +1,12 @@
 import React from "react";
 
 import config from "@/config";
-import { IntentioLogo } from "@/components";
 import { SiDiscord } from "react-icons/si";
 import { IoIosBug, IoIosGlobe, IoLogoGithub } from "react-icons/io";
-import { Button, Pane, Tooltip } from "@/ui";
+import { Pane, Tooltip, Button } from "@/ui";
+import IntentioLogo from "./IntentioLogo";
 
-const AboutView: React.FC = () => {
+const AboutPane: React.FC = () => {
   return (
     <Pane className="grow flex flex-col justify-between" padding="lg">
       <div className="text-primary text-center translate-y-12">
@@ -80,4 +80,4 @@ const AboutView: React.FC = () => {
   );
 };
 
-export default AboutView;
+export default AboutPane;

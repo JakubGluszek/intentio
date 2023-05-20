@@ -4,26 +4,31 @@ import { useForm } from "react-hook-form";
 import { ChromePicker } from "react-color";
 import { emit } from "@tauri-apps/api/event";
 import { RiEyeCloseFill, RiEyeFill } from "react-icons/ri";
+import { MdSave } from "react-icons/md";
 import { useClickOutside } from "@mantine/hooks";
 
-import {
-  CascadeSections,
-  ColorInput,
-  ModalContainer,
-  OverflowY,
-} from "@/components";
+import { ColorInput } from "@/components";
 import useStore from "@/store";
 import ipc from "@/ipc";
+import {
+  Button,
+  Input,
+  ModalContainer,
+  Pane,
+  PaneHeading,
+  Section,
+  Tooltip,
+  ScrollArea,
+} from "@/ui";
 import { ThemeForCreate } from "@/bindings/ThemeForCreate";
-import { ColorType } from "..";
-import { Button, Input, Pane, PaneHeading, Section, Tooltip } from "@/ui";
-import { MdSave } from "react-icons/md";
 
-interface Props {
+import { ColorType } from "..";
+
+interface CreateThemeProps {
   onExit: () => void;
 }
 
-const CreateTheme: React.FC<Props> = (props) => {
+const CreateTheme: React.FC<CreateThemeProps> = (props) => {
   const [viewThemePreview, setViewThemePreview] = React.useState(false);
   const [viewColorPicker, setViewColorPicker] = React.useState<ColorType>();
   const [colorPickerHex, setColorPickerHex] = React.useState("#000000");
@@ -120,8 +125,8 @@ const CreateTheme: React.FC<Props> = (props) => {
           }
           onExit={props.onExit}
         />
-        <OverflowY>
-          <CascadeSections>
+        <ScrollArea>
+          <SectionsWrapper>
             <Section>
               <form onSubmit={onSubmit} className="grow flex flex-col gap-1.5">
                 <div className="flex flex-row items-center gap-2">
@@ -174,8 +179,8 @@ const CreateTheme: React.FC<Props> = (props) => {
                 />
               </form>
             </Section>
-          </CascadeSections>
-        </OverflowY>
+          </SectionsWrapper>
+        </ScrollArea>
       </Pane>
     </React.Fragment>
   );

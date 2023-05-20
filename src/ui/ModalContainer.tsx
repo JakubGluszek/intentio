@@ -4,13 +4,13 @@ import { AnimatePresence, motion } from "framer-motion";
 
 import { Card } from "@/ui";
 
-interface Props {
+interface ModalContainerProps {
   children: ReactNode;
   display: boolean;
   hide?: () => void;
 }
 
-const ModalContainer: React.FC<Props> = (props) => {
+export const ModalContainer: React.FC<ModalContainerProps> = (props) => {
   React.useEffect(() => {
     const handleOnKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") props.hide && props.hide();
@@ -49,5 +49,3 @@ const ModalContainer: React.FC<Props> = (props) => {
     document.getElementById("root")!
   );
 };
-
-export default ModalContainer;

@@ -1,7 +1,7 @@
 import React from "react";
 import { IoMdArrowRoundBack } from "react-icons/io";
 
-import { Button } from "./buttons";
+import { Button } from "@/ui";
 import { Tooltip } from "./Tooltip";
 
 interface PaneHeadingProps {

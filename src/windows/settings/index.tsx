@@ -15,16 +15,17 @@ import {
 import { VscSettings, VscTerminalBash } from "react-icons/vsc";
 
 import useStore from "@/store";
-import { Pane, Tabs } from "@/ui";
+import { Pane, Tabs, Titlebar } from "@/ui";
 import { useEvents } from "@/hooks";
-import { Titlebar, WindowContainer } from "@/components";
-import TimerView from "./TimerView";
-import AudioView from "./audioView";
-import ThemesView from "./themesView";
-import ScriptsView from "./scriptsView";
-import AboutView from "./AboutView";
-import GeneralView from "./GeneralView";
-import AccountView from "./AccountView";
+import { WindowContainer } from "@/components";
+
+import TimerPane from "./timerPane";
+import AudioPane from "./audioPane";
+import ThemesPane from "./themesPane";
+import GeneralPane from "./generalPane";
+import ScriptsPane from "./scriptsPane";
+import AccountPane from "./accountPane";
+import AboutPane from "./aboutPane";
 
 export type ColorType = "window" | "base" | "primary" | "text";
 
@@ -61,13 +62,13 @@ const Content: React.FC = () => {
 
   return (
     <div className="grow flex flex-col">
-      {panel === "Timer" ? <TimerView /> : null}
-      {panel === "Audio" ? <AudioView /> : null}
-      {panel === "Themes" ? <ThemesView /> : null}
-      {panel === "General" ? <GeneralView /> : null}
-      {panel === "Scripts" ? <ScriptsView /> : null}
-      {panel === "Account" ? <AccountView /> : null}
-      {panel === "About" ? <AboutView /> : null}
+      {panel === "Timer" ? <TimerPane /> : null}
+      {panel === "Audio" ? <AudioPane /> : null}
+      {panel === "Themes" ? <ThemesPane /> : null}
+      {panel === "General" ? <GeneralPane /> : null}
+      {panel === "Scripts" ? <ScriptsPane /> : null}
+      {panel === "Account" ? <AccountPane /> : null}
+      {panel === "About" ? <AboutPane /> : null}
     </div>
   );
 };

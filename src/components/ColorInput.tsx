@@ -5,7 +5,7 @@ import { ThemeForCreate } from "@/bindings/ThemeForCreate";
 import { Card } from "@/ui";
 import { MdColorLens } from "react-icons/md";
 
-interface Props {
+interface ColorInputProps {
   label: string;
   type: "window_hex" | "primary_hex" | "base_hex" | "text_hex";
   watch: UseFormWatch<ThemeForCreate>;
@@ -13,7 +13,7 @@ interface Props {
   onViewColorPicker: () => void;
 }
 
-const ColorInput: React.FC<Props> = (props) => {
+export const ColorInput: React.FC<ColorInputProps> = (props) => {
   const currentHex = props.watch(props.type);
 
   return (
@@ -35,5 +35,3 @@ const ColorInput: React.FC<Props> = (props) => {
     </Card>
   );
 };
-
-export default ColorInput;

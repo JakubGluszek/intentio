@@ -15,7 +15,7 @@ export interface EditorProps {
   onChange: (code: string) => void;
 }
 
-const Editor: React.FC<EditorProps> = (props) => {
+export const Editor: React.FC<EditorProps> = (props) => {
   const [height, setHeight] = React.useState(0);
 
   const store = useStore();
@@ -67,5 +67,3 @@ const makeCustomTheme = (data: Theme) =>
       { tag: t.typeName, color: Color(data.primary_hex).negate().hex() },
     ],
   });
-
-export default Editor;

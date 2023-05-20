@@ -1,8 +1,7 @@
 import React from "react";
 
-import { Pane, PaneHeading, Section } from "@/ui";
+import { Pane, PaneHeading, Section, SectionsWrapper, ScrollArea } from "@/ui";
 import { ThemeState } from "@/types";
-import { CascadeSections, OverflowY } from "@/components";
 import useStore from "@/store";
 import { Theme } from "@/bindings/Theme";
 import ThemeView from "./ThemeView";
@@ -19,8 +18,8 @@ export const ChangeTheme: React.FC<ChangeThemeProps> = (props) => {
   return (
     <Pane className="grow flex flex-col gap-1">
       <PaneHeading body={props.state} onExit={props.onExit} />
-      <OverflowY>
-        <CascadeSections>
+      <ScrollArea>
+        <SectionsWrapper>
           <Section>
             <div className="flex flex-col gap-1">
               {store.themes
@@ -36,8 +35,8 @@ export const ChangeTheme: React.FC<ChangeThemeProps> = (props) => {
                 ))}
             </div>
           </Section>
-        </CascadeSections>
-      </OverflowY>
+        </SectionsWrapper>
+      </ScrollArea>
     </Pane>
   );
 };
