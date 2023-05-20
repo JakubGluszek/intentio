@@ -45,7 +45,6 @@ const TaskView: React.FC<TaskViewProps> = (props) => {
     <React.Fragment>
       <Card
         ref={containerRef}
-        active={props.isSelected}
         className="p-0"
         onMouseDown={(e) => {
           // @ts-ignore

@@ -20,7 +20,6 @@ const TrackView: React.FC<Props> = (props) => {
       transition={{ duration: 0.2, ease: "linear" }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      clickable
       data-tauri-disable-drag
     >
       <div className="flex flex-row items-center justify-between">

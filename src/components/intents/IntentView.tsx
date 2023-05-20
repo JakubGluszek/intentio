@@ -50,10 +50,8 @@ export const IntentView: React.FC<IntentViewProps> = (props) => {
             props.active &&
             "bg-primary/50 border-transparent hover:bg-primary/60 hover:border-transparent active:bg-primary/70 active:border-transparent text-window"
           )}
-          clickable
           onClick={(e) => props.onClick?.(e)}
           onContextMenu={(e) => onContextMenuHandler(e)}
-          active={props.active}
           data-tauri-disable-drag
         >
           <div className="w-full flex flex-row items-center gap-1.5">
@@ -133,7 +131,7 @@ export const IntentView: React.FC<IntentViewProps> = (props) => {
               <RiArchiveFill size={20} />
             </Button>
           </Tooltip>
-          <Tooltip label="Delete" className="text-danger">
+          <Tooltip label="Delete" className="text-danger border-b-danger">
             <DangerButton
               variant="ghost"
               className="rounded-r"

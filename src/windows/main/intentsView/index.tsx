@@ -9,7 +9,11 @@ import { Button, Tooltip } from "@/ui";
 import { useEvents } from "@/hooks";
 import CreateIntent from "./CreateIntent";
 
-const IntentsView: React.FC = () => {
+interface IntentsViewProps {
+  onExit: () => void;
+}
+
+const IntentsView: React.FC<IntentsViewProps> = (props) => {
   const [viewArchive, setViewArchive] = React.useState(false);
 
   const store = useStore();
@@ -64,7 +68,10 @@ const IntentsView: React.FC = () => {
         selectedIntent={store.currentIntent}
         onIntentSelected={(data) => {
           store.setCurrentIntent(data);
-          data && toast("Intent selected");
+          if (data) {
+            toast("Intent selected");
+            props.onExit();
+          }
         }}
       />
     </div>

@@ -10,7 +10,8 @@ export interface SectionProps extends HTMLMotionProps<"section"> {
 export const Section: React.FC<SectionProps> = (props) => {
   const { children, heading, className: customClassName, ...restProps } = props;
 
-  let className = "flex flex-col gap-2 p-1 bg-base/10 rounded-sm";
+  let className =
+    "flex flex-col gap-2 p-1 bg-gradient-to-b from-primary/5 via-base/5 to-primary/5 rounded-sm";
 
   if (customClassName) {
     className = twMerge(className, customClassName);

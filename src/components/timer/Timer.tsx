@@ -9,7 +9,6 @@ import utils from "@/utils";
 import { Theme } from "@/bindings/Theme";
 import { useTimerReturnValues } from "./useTimer";
 import { CircleTimer, ColorFormat } from "./CircleTimer";
-import { GradientOverlay } from "./GradientOverlay";
 
 export interface TimerProps extends useTimerReturnValues {
   theme: Theme;
@@ -109,8 +108,6 @@ export const Timer: React.FC<TimerProps> = (props) => {
           </button>
         </div>
       </div>
-
-      <GradientOverlay />
     </CircleTimer>
   );
 };
