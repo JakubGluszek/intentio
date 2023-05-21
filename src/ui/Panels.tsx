@@ -31,7 +31,7 @@ export const Panels: React.FC<PanelsProps> & PanelsComposition = (props) => {
 
   return (
     <PanelsProvider {...restProps}>
-      <div className="flex flex-row">{children}</div>
+      <div className="flex flex-row bg-base/10 rounded-sm">{children}</div>
     </PanelsProvider>
   );
 };

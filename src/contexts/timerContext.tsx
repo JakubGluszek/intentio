@@ -1,24 +1,23 @@
 import React from "react";
 import { sendNotification } from "@tauri-apps/api/notification";
+import { appWindow } from "@tauri-apps/api/window";
+import { toast } from "react-hot-toast";
 
 import { useTimer, useTimerReturnValues } from "@/components";
 import ipc from "@/ipc";
 import useStore from "@/store";
 import utils from "@/utils";
 import { useEvents } from "@/hooks";
-import { appWindow } from "@tauri-apps/api/window";
 import { SessionForCreate } from "@/bindings/SessionForCreate";
-import { toast } from "react-hot-toast";
 
-export interface TimerContextReturnValues extends useTimerReturnValues {
+interface ITimerContext extends useTimerReturnValues {
   displayCountdown: boolean;
   toggleDisplayCountdown: () => void;
   sessionForCreate: SessionForCreate | null;
   clearSessionForCreate: () => void;
 }
 
-export const TimerContext =
-  React.createContext<TimerContextReturnValues | null>(null);
+export const TimerContext = React.createContext<ITimerContext | null>(null);
 
 interface TimerContextProviderProps {
   children: React.ReactNode;

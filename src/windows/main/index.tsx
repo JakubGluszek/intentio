@@ -1,13 +1,29 @@
 import React from "react";
-import { MdRemove, MdClose, MdSettings, MdAnalytics } from "react-icons/md";
+import {
+  MdTimer,
+  MdRemove,
+  MdClose,
+  MdSettings,
+  MdAnalytics,
+} from "react-icons/md";
+import { BiTargetLock } from "react-icons/bi";
 import { WebviewWindow } from "@tauri-apps/api/window";
 
 import ipc from "@/ipc";
 import config from "@/config";
 import { WindowContainer } from "@/components";
-import { Button, Pane } from "@/ui";
-import { MainWindowProvider, TimerContextProvider } from "@/contexts";
-import { Content } from "./Content";
+import { Button, Pane, Panels } from "@/ui";
+import {
+  MainWindowProvider,
+  TimerContextProvider,
+  TimerContext,
+  MainWindowContext,
+  MainWindowDisplay,
+} from "@/contexts";
+
+import IntentsView from "./intentsView";
+import { TimerView } from "./TimerView";
+import { SessionSummary } from "./SessionSummary";
 
 const MainWindow: React.FC = () => {
   return (
@@ -21,6 +37,52 @@ const MainWindow: React.FC = () => {
         </WindowContainer>
       </TimerContextProvider>
     </MainWindowProvider>
+  );
+};
+
+export const Content: React.FC = () => {
+  const [viewIntent, setViewIntent] = React.useState(false);
+
+  const timerCtx = React.useContext(TimerContext)!;
+  const windowCtx = React.useContext(MainWindowContext)!;
+
+  if (timerCtx.config.session_summary && timerCtx.sessionForCreate) {
+    return (
+      <SessionSummary
+        data={timerCtx.sessionForCreate}
+        onExit={() => timerCtx.clearSessionForCreate()}
+      />
+    );
+  }
+
+  return (
+    <Pane className="relative grow flex flex-col gap-0.5 p-0.5">
+      {!timerCtx.isPlaying && (
+        <Panels
+          value={windowCtx.display}
+          onChange={(value) => windowCtx.setDisplay(value as MainWindowDisplay)}
+        >
+          <Panels.Panel value="Timer">
+            <MdTimer size={20} />
+            <div>Timer</div>
+          </Panels.Panel>
+          <Panels.Panel value="Intents">
+            <BiTargetLock size={20} />
+            <div>Intents</div>
+          </Panels.Panel>
+        </Panels>
+      )}
+
+      {windowCtx.display === "Timer" && (
+        <TimerView
+          viewIntent={viewIntent}
+          toggleViewIntent={() => setViewIntent((prev) => !prev)}
+        />
+      )}
+      {windowCtx.display === "Intents" && (
+        <IntentsView onExit={() => windowCtx.setDisplay("Timer")} />
+      )}
+    </Pane>
   );
 };
 

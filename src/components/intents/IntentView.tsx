@@ -10,6 +10,7 @@ import ipc from "@/ipc";
 import { useContextMenu } from "@/hooks";
 import { Button, Card, ContextMenu, DangerButton, Tooltip } from "@/ui";
 import { Intent } from "@/bindings/Intent";
+
 import { EditIntent } from "./EditIntent";
 import { DeleteIntentModal } from "./DeleteIntentModal";
 
@@ -76,7 +77,7 @@ export const IntentView: React.FC<IntentViewProps> = (props) => {
         </Card>
       </Tooltip>
 
-      <ContextMenu className="w-fit border-none rounded" {...menu}>
+      <ContextMenu className="w-fit border-b-2 border-base/80 rounded" {...menu}>
         <div className="bg-lighter/10 flex flex-row gap-0.5 rounded">
           <Tooltip label="Start session">
             <Button variant="ghost" className="rounded-l">
