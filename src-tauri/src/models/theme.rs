@@ -167,6 +167,15 @@ impl ThemeBmc {
                     primary_hex: '#F66B0E',
                     text_hex: '#EFEFEF',
                 };
+                CREATE theme:snow CONTENT {
+                    name: 'snow',
+                    default: true,
+                    favorite: false,
+                    window_hex: '#E4EDED',
+                    base_hex: '#6F96F8',
+                    primary_hex: '#4685FF',
+                    text_hex: '#1F1F21',
+                };
             ";
 
             database.ds.execute(sql, &database.ses, None, false).await?;

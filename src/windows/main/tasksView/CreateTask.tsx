@@ -47,6 +47,7 @@ const CreateTask: React.FC<CreateTaskViewProps> = (props) => {
           props.setViewCreate(false);
           setValue("body", "");
         }}
+        className="h-7"
         placeholder="Describe your task"
         autoFocus
         minLength={1}

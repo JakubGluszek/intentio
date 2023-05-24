@@ -15,7 +15,7 @@ import {
 import { VscSettings, VscTerminalBash } from "react-icons/vsc";
 
 import useStore from "@/store";
-import { Pane, Tabs, Titlebar } from "@/ui";
+import { Pane, Panels, Titlebar } from "@/ui";
 import { useEvents } from "@/hooks";
 import { WindowContainer } from "@/components";
 
@@ -83,31 +83,31 @@ const Navbar: React.FC = () => {
 
   return (
     <Pane>
-      <Tabs value={panel} onChange={(value) => setPanel(value)}>
-        <Tabs.Tab value="Timer">
+      <Panels value={panel} onChange={(value) => setPanel(value)}>
+        <Panels.Panel value="Timer">
           <MdTimer size={24} />
-        </Tabs.Tab>
-        <Tabs.Tab value="Audio">
+        </Panels.Panel>
+        <Panels.Panel value="Audio">
           <MdAudiotrack size={24} />
-        </Tabs.Tab>
-        <Tabs.Tab value="Themes">
+        </Panels.Panel>
+        <Panels.Panel value="Themes">
           <MdColorLens size={24} />
-        </Tabs.Tab>
-        <Tabs.Tab value="General">
+        </Panels.Panel>
+        <Panels.Panel value="General">
           <VscSettings size={24} />
-        </Tabs.Tab>
+        </Panels.Panel>
         {osType !== "Windows_NT" && (
-          <Tabs.Tab value="Scripts">
+          <Panels.Panel value="Scripts">
             <VscTerminalBash size={24} />
-          </Tabs.Tab>
+          </Panels.Panel>
         )}
-        <Tabs.Tab value="Account">
+        <Panels.Panel value="Account">
           <MdAccountCircle size={24} />
-        </Tabs.Tab>
-        <Tabs.Tab value="About">
+        </Panels.Panel>
+        <Panels.Panel value="About">
           <MdInfo size={24} />
-        </Tabs.Tab>
-      </Tabs>
+        </Panels.Panel>
+      </Panels>
     </Pane>
   );
 };

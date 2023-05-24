@@ -1,12 +1,12 @@
 import React from "react";
 import { appWindow } from "@tauri-apps/api/window";
-import { useHotkeys } from "@mantine/hooks";
 
-export type MainWindowDisplay = "Timer" | "Intents";
+export type MainWindowDisplay = "Timer" | "Intent" | "Intents" | "Summary";
 
-interface IMainWindowContext {
+export interface IMainWindowContext {
   display: MainWindowDisplay;
   setDisplay: (value: MainWindowDisplay) => void;
+  prevDisplay: MainWindowDisplay;
   isFocused: boolean;
 }
 
@@ -22,7 +22,14 @@ export const MainWindowProvider: React.FC<MainWindowProviderProps> = ({
   children,
 }) => {
   const [display, setDisplay] = React.useState<MainWindowDisplay>("Timer");
+  const [prevDisplay, setPrevDisplay] =
+    React.useState<MainWindowDisplay>("Timer");
   const [isFocused, setIsFocused] = React.useState(false);
+
+  const handleSetDisplay = (value: MainWindowDisplay) => {
+    setPrevDisplay(display);
+    setDisplay(value);
+  };
 
   React.useEffect(() => {
     const unlisten = appWindow.onFocusChanged(({ payload }) =>
@@ -32,19 +39,13 @@ export const MainWindowProvider: React.FC<MainWindowProviderProps> = ({
     return () => unlisten.then((fn) => fn()) as never;
   }, []);
 
-  useHotkeys([
-    [
-      "Tab",
-      () => setDisplay((prev) => (prev === "Timer" ? "Intents" : "Timer")),
-    ],
-  ]);
-
   return (
     <MainWindowContext.Provider
       value={{
         isFocused,
         display,
-        setDisplay,
+        prevDisplay,
+        setDisplay: handleSetDisplay,
       }}
     >
       {children}

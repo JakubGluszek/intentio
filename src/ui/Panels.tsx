@@ -31,7 +31,7 @@ export const Panels: React.FC<PanelsProps> & PanelsComposition = (props) => {
 
   return (
     <PanelsProvider {...restProps}>
-      <div className="flex flex-row bg-base/10 rounded-sm">{children}</div>
+      <div className="w-full flex flex-row gap-0.5 rounded-sm">{children}</div>
     </PanelsProvider>
   );
 };
@@ -52,10 +52,10 @@ const Panel: React.FC<PanelProps> = (props) => {
         props.onClick?.(e);
       }}
       className={clsx(
-        "flex-1 flex flex-row items-center justify-center gap-1 font-black p-0.5 transition-colors duration-150 uppercase",
+        "flex-1 flex flex-row items-center glass justify-center gap-1 font-black p-0.5 transition-colors duration-300 uppercase",
         selected
-          ? "bg-primary/20 text-primary"
-          : "bg-transparent text-base hover:text-primary hover:bg-base/10 active:bg-primary/10"
+          ? "text-primary"
+          : "text-text/80 hover:text-primary"
       )}
       tabIndex={-3}
     >

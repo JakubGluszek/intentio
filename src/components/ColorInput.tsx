@@ -27,7 +27,7 @@ export const ColorInput: React.FC<ColorInputProps> = (props) => {
       <div
         onClick={() => props.onViewColorPicker()}
         style={{ backgroundColor: currentHex }}
-        className="w-full p-1 opacity-80 uppercase hover:opacity-100 flex flex-row items-center justify-center shadow shadow-black/30 hover:shadow-lg hover:shadow-black/30 transition-all rounded cursor-pointer"
+        className="w-full p-1 opacity-80 uppercase hover:opacity-100 flex flex-row items-center justify-center hover:shadow hover:shadow-black/20 transition-all rounded cursor-pointer"
         data-tauri-disable-drag
       >
         <div className="contrast-text font-bold">{currentHex}</div>

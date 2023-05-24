@@ -10,6 +10,5 @@ export * from "./Section";
 export * from "./PaneHeading";
 export * from "./CheckBox";
 export * from "./ModalContainer";
-export * from "./Tabs";
 export * from "./Panels";
 export * from "./Titlebar";

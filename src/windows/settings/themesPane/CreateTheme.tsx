@@ -19,6 +19,7 @@ import {
   Section,
   Tooltip,
   ScrollArea,
+  SectionsWrapper,
 } from "@/ui";
 import { ThemeForCreate } from "@/bindings/ThemeForCreate";
 
@@ -56,8 +57,7 @@ const CreateTheme: React.FC<CreateThemeProps> = (props) => {
   });
 
   const onSubmit = handleSubmit(async (data) => {
-    await ipc.createTheme(data).then((data) => {
-      store.addTheme(data);
+    await ipc.createTheme(data).then(() => {
       props.onExit();
       toast("Theme created");
     });

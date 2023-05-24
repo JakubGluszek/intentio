@@ -17,7 +17,7 @@ export const EditIntent: React.FC<EditIntentProps> = (props) => {
   return (
     <div className="relative">
       <Input
-        className="h-9"
+        className="h-8"
         value={label}
         onChange={(e) => setLabel(e.currentTarget.value)}
         onKeyDown={(e) => {

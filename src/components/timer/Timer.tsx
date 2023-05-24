@@ -40,7 +40,7 @@ export const Timer: React.FC<TimerProps> = (props) => {
       duration={props.duration}
       elapsedTime={props.elapsedTimeDetailed}
       strokeWidth={3}
-      size={192}
+      size={200}
       color={
         Color(props.isPlaying ? props.theme.primary_hex : props.theme.base_hex)
           .alpha(0.6)

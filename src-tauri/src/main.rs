@@ -76,6 +76,7 @@ fn main() -> Result<()> {
             delete_task,
             delete_tasks,
             get_tasks,
+            get_tasks_by_intent_id,
             // Session
             get_sessions,
             create_session,

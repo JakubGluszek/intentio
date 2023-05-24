@@ -7,8 +7,15 @@ import { toast } from "react-hot-toast";
 import { Button, Input } from "@/ui";
 import ipc from "@/ipc";
 
-const CreateIntent: React.FC = () => {
-  const [viewCreate, setViewCreate] = React.useState(false);
+interface CreateIntentProps {
+  viewCreate: boolean;
+  setViewCreate: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const CreateIntent: React.FC<CreateIntentProps> = ({
+  viewCreate,
+  setViewCreate,
+}) => {
   const { register, handleSubmit, setValue } = useForm<{ label: string }>();
 
   const ref = useClickOutside(() => {

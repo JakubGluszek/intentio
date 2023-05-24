@@ -2,7 +2,7 @@ import React from "react";
 
 import { Editor } from "@/components";
 import { SessionForCreate } from "@/bindings/SessionForCreate";
-import { Button, Pane, Tooltip } from "@/ui";
+import { Button, Tooltip } from "@/ui";
 import { MdNotes, MdSave } from "react-icons/md";
 import ipc from "@/ipc";
 import { toast } from "react-hot-toast";
@@ -40,7 +40,7 @@ export const SessionSummary: React.FC<SesssionSummaryProps> = (props) => {
   };
 
   return (
-    <Pane className="grow flex flex-col gap-0.5">
+    <div className="grow flex flex-col gap-0.5">
       <div className="flex flex-row items-center justify-between p-0.5">
         <div className="flex flex-row items-center text-primary gap-1 font-semibold">
           <MdNotes size={24} />
@@ -55,6 +55,6 @@ export const SessionSummary: React.FC<SesssionSummaryProps> = (props) => {
         </div>
       </div>
       <Editor value={summary} onChange={setSummary} lang="md" />
-    </Pane>
+    </div>
   );
 };

@@ -26,7 +26,7 @@ const ThemesList: React.FC<Props> = (props) => {
         <ThemeView
           key={theme.id}
           data={theme}
-          selectable={props.selectable}
+          isSelectable={props.selectable}
           onViewEdit={() => props.onThemeViewEdit(theme)}
           onSelected={() => props.onThemeSelected(theme)}
         />

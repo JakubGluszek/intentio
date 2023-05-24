@@ -63,3 +63,9 @@ pub async fn delete_tasks(
         Err(_) => Err(Error::CtxFail).into(),
     }
 }
+
+#[command]
+pub async fn get_tasks_by_intent_id(app: AppHandle<Wry>, intent_id: String) -> Result<Vec<Task>> {
+    let ctx = Ctx::from_app(app)?;
+    TaskBmc::get_multi_by_intent_id(ctx, intent_id).await
+}

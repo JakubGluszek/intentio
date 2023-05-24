@@ -24,3 +24,9 @@ export const deleteTask = async (id: string) => {
 export const deleteTasks = async (ids: string[]) => {
   return await invoke<ModelDeleteResultData>("delete_tasks", { ids });
 };
+
+export const getTasksByIntentId = async (intentId: string) => {
+  return await invoke<Task[]>("get_tasks_by_intent_id", {
+    intentId,
+  });
+};

@@ -1,4 +1,4 @@
-export * from "./intents";
+export * from "./intent";
 export * from "./timer";
 export * from "./Editor";
 export * from "./ColorInput";

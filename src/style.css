@@ -86,6 +86,10 @@
 }
 
 @layer components {
+  .glass {
+    @apply bg-gradient-to-br from-base/5 via-primary/5 to-base/5;
+  }
+
   .section-heading {
     @apply w-fit flex flex-row items-center gap-1 text-base font-bold uppercase tracking-widest;
   }

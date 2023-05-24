@@ -1,13 +1,20 @@
 import React from "react";
 import {
-  MdTimer,
   MdRemove,
   MdClose,
   MdSettings,
   MdAnalytics,
+  MdCheckBox,
+  MdHistory,
+  MdTimer,
+  MdArrowDropDown,
 } from "react-icons/md";
 import { BiTargetLock } from "react-icons/bi";
+import { IoMdStats } from "react-icons/io";
+import { AiFillControl } from "react-icons/ai";
 import { WebviewWindow } from "@tauri-apps/api/window";
+import { AnimatePresence, motion } from "framer-motion";
+import { clsx } from "@mantine/core";
 
 import ipc from "@/ipc";
 import config from "@/config";
@@ -18,12 +25,15 @@ import {
   TimerContextProvider,
   TimerContext,
   MainWindowContext,
-  MainWindowDisplay,
 } from "@/contexts";
+import useStore from "@/store";
 
 import IntentsView from "./intentsView";
+import TasksView from "./tasksView";
 import { TimerView } from "./TimerView";
-import { SessionSummary } from "./SessionSummary";
+import { StatsView } from "./StatsView";
+import { ConfigView } from "./ConfigView";
+import { HistoryView } from "./HistoryView";
 
 const MainWindow: React.FC = () => {
   return (
@@ -40,48 +50,119 @@ const MainWindow: React.FC = () => {
   );
 };
 
+type PanelType = "Timer" | "Stats" | "Tasks" | "History" | "Config" | string;
+
 export const Content: React.FC = () => {
-  const [viewIntent, setViewIntent] = React.useState(false);
+  const [panel, setPanel] = React.useState<PanelType>("Timer");
+  const [viewIntents, setViewIntents] = React.useState(false);
 
   const timerCtx = React.useContext(TimerContext)!;
   const windowCtx = React.useContext(MainWindowContext)!;
 
-  if (timerCtx.config.session_summary && timerCtx.sessionForCreate) {
-    return (
-      <SessionSummary
-        data={timerCtx.sessionForCreate}
-        onExit={() => timerCtx.clearSessionForCreate()}
-      />
-    );
-  }
+  const store = useStore();
+  const intent = store.currentIntent;
+
+  React.useEffect(() => {
+    if (timerCtx.config.session_summary && timerCtx.sessionForCreate) {
+      windowCtx.setDisplay("Summary");
+    }
+  }, [timerCtx.sessionForCreate]);
+
+  React.useEffect(() => {
+    intent && setViewIntents((prev) => (prev === true ? false : prev));
+  }, [intent]);
 
   return (
-    <Pane className="relative grow flex flex-col gap-0.5 p-0.5">
-      {!timerCtx.isPlaying && (
-        <Panels
-          value={windowCtx.display}
-          onChange={(value) => windowCtx.setDisplay(value as MainWindowDisplay)}
+    <Pane className="relative grow flex flex-col gap-0.5">
+      {/* Intent Heading */}
+      <div className="w-full h-7 flex flex-row items-center justify-between gap-1 glass rounded-sm overflow-clip">
+        <motion.div
+          key={viewIntents ? 1 : 0}
+          className={clsx(
+            "flex flex-row items-center gap-1 px-1 font-bold uppercase text-text/80"
+          )}
+          transition={{ duration: 0.4 }}
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
         >
-          <Panels.Panel value="Timer">
-            <MdTimer size={20} />
-            <div>Timer</div>
-          </Panels.Panel>
-          <Panels.Panel value="Intents">
-            <BiTargetLock size={20} />
-            <div>Intents</div>
-          </Panels.Panel>
-        </Panels>
-      )}
+          <BiTargetLock size={20} />
+          {viewIntents ? "Intents" : intent ? intent.label : "Select Intent"}
+        </motion.div>
+        <Button variant="ghost" onClick={() => setViewIntents((prev) => !prev)}>
+          <motion.div
+            transition={{ duration: 0.4 }}
+            animate={{ rotateZ: viewIntents ? 180 : 0 }}
+          >
+            <MdArrowDropDown size={24} />
+          </motion.div>
+        </Button>
+      </div>
 
-      {windowCtx.display === "Timer" && (
-        <TimerView
-          viewIntent={viewIntent}
-          toggleViewIntent={() => setViewIntent((prev) => !prev)}
-        />
-      )}
-      {windowCtx.display === "Intents" && (
-        <IntentsView onExit={() => windowCtx.setDisplay("Timer")} />
-      )}
+      <div className="grow flex flex-col gap-0.5">
+        <AnimatePresence mode="wait">
+          {viewIntents ? (
+            <motion.div
+              key={1}
+              className="flex flex-col"
+              transition={{ duration: 0.4 }}
+              initial={{ opacity: 0, height: "0%", scale: 0.9 }}
+              animate={{ opacity: 1, height: "100%", scale: 1 }}
+              exit={{ opacity: 0, height: "0%", scale: 0.9 }}
+            >
+              <IntentsView />
+            </motion.div>
+          ) : (
+            <motion.div
+              key={2}
+              className="grow flex flex-col"
+              transition={{ duration: 0.2 }}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+            >
+              <AnimatePresence initial={false} mode="wait">
+                {panel === "Stats" && <StatsView display={panel === "Stats"} />}
+                {panel === "Tasks" && <TasksView display={panel === "Tasks"} />}
+                {panel === "History" && (
+                  <HistoryView display={panel === "History"} />
+                )}
+                {panel === "Config" && (
+                  <ConfigView display={panel === "Config"} />
+                )}
+                {panel === "Timer" && <TimerView display={true} />}
+              </AnimatePresence>
+            </motion.div>
+          )}
+
+          {/* Current intent's actions */}
+          {!viewIntents && intent && (
+            <motion.div
+              transition={{ duration: 0.2 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <Panels value={panel} onChange={(value) => setPanel(value)}>
+                <Panels.Panel value="Stats">
+                  <IoMdStats size={20} />
+                </Panels.Panel>
+                <Panels.Panel value="Tasks">
+                  <MdCheckBox size={20} />
+                </Panels.Panel>
+                <Panels.Panel value="Timer">
+                  <MdTimer size={20} />
+                </Panels.Panel>
+                <Panels.Panel value="History">
+                  <MdHistory size={20} />
+                </Panels.Panel>
+                <Panels.Panel value="Config">
+                  <AiFillControl size={20} />
+                </Panels.Panel>
+              </Panels>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </Pane>
   );
 };

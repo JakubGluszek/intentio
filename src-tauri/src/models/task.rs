@@ -1,13 +1,13 @@
 use std::{collections::BTreeMap, sync::Arc};
 
 use serde::{Deserialize, Serialize};
-use surrealdb::sql::{Datetime, Object, Value};
+use surrealdb::sql::{Array, Datetime, Object, Value};
 use ts_rs::TS;
 
 use crate::{
     ctx::Ctx,
     database::{Creatable, Patchable},
-    prelude::{Error, Result},
+    prelude::{Error, Result, W},
     utils::{map, XTake, XTakeVal},
 };
 
@@ -149,5 +149,23 @@ impl TaskBmc {
         let objects = ctx.get_database().exec_select(Self::ENTITY).await?;
 
         objects.into_iter().map(|o| o.try_into()).collect()
+    }
+
+    pub async fn get_multi_by_intent_id(ctx: Arc<Ctx>, intent_id: String) -> Result<Vec<Task>> {
+        let sql = String::from("SELECT * FROM type::table($tb) WHERE intent_id = $intent_id");
+
+        let vars = BTreeMap::from([
+            ("tb".into(), Self::ENTITY.into()),
+            ("intent_id".into(), intent_id.into()),
+        ]);
+
+        let response = ctx.get_database().exec_sql(sql, Some(vars)).await?;
+
+        let array: Array = W(response.result?).try_into()?;
+
+        let objects: Result<Vec<Object>> =
+            array.into_iter().map(|value| W(value).try_into()).collect();
+
+        objects?.into_iter().map(|o| o.try_into()).collect()
     }
 }

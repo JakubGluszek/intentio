@@ -6,7 +6,7 @@ use crate::prelude::*;
 use crate::utils::map;
 use std::collections::BTreeMap;
 use surrealdb::sql::{thing, Array, Object, Value};
-use surrealdb::{Datastore, Session};
+use surrealdb::{Datastore, Response, Session};
 
 mod try_froms;
 mod x_takes;
@@ -140,5 +140,15 @@ impl Database {
 
         // build the list of objects
         array.into_iter().map(|value| W(value).try_into()).collect()
+    }
+
+    pub async fn exec_sql(
+        &self,
+        sql: String,
+        vars: Option<BTreeMap<String, Value>>,
+    ) -> Result<Response> {
+        let ress = self.ds.execute(&sql, &self.ses, vars, false).await?;
+
+        Ok(ress.into_iter().next().expect("Did not get a response"))
     }
 }
