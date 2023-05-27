@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import useStore from "@/store";
 import ipc from "@/ipc";
 import { IntentView } from "@/components";
-import { Button, ScrollArea, Tooltip } from "@/ui";
+import { Button, Glass, ScrollArea, Tooltip } from "@/ui";
 import { useEvents } from "@/hooks";
 
 import CreateIntent from "./CreateIntent";
@@ -56,8 +56,8 @@ const IntentsView: React.FC = () => {
   }, []);
 
   return (
-    <div className="grow flex flex-col gap-1.5 p-1 glass rounded-sm overflow-clip">
-      <div className="w-full flex flex-row items-center justify-between gap-1">
+    <Glass className="grow flex flex-col p-1">
+      <div className="w-full flex flex-row items-center justify-between gap-1 p-1">
         <CreateIntent viewCreate={viewCreate} setViewCreate={setViewCreate} />
 
         {!viewCreate && (
@@ -84,7 +84,7 @@ const IntentsView: React.FC = () => {
       </div>
 
       <ScrollArea>
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1 p-1">
           <AnimatePresence key={viewArchive ? 1 : 0} mode="popLayout">
             {intents
               .filter((intent) => !!intent.archived_at === viewArchive)
@@ -104,7 +104,7 @@ const IntentsView: React.FC = () => {
           </AnimatePresence>
         </div>
       </ScrollArea>
-    </div>
+    </Glass>
   );
 };
 

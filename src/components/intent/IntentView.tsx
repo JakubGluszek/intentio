@@ -3,7 +3,7 @@ import { TiPin, TiPinOutline } from "react-icons/ti";
 import { BiTargetLock } from "react-icons/bi";
 import { toast } from "react-hot-toast";
 import { clsx } from "@mantine/core";
-import { MdCancel, MdEdit, MdTimer } from "react-icons/md";
+import { MdEdit } from "react-icons/md";
 import { RiArchiveFill } from "react-icons/ri";
 import { motion } from "framer-motion";
 
@@ -41,7 +41,7 @@ export const IntentView = React.forwardRef<HTMLDivElement, IntentViewProps>(
         >
           <Card
             className={clsx(
-              "p-0.5 cursor-pointer",
+              "p-1 cursor-pointer",
               props.active
                 ? "bg-primary/50 border-transparent hover:bg-primary/60 hover:border-transparent active:bg-primary/70 active:border-transparent text-window"
                 : "hover:border-primary/50 hover:text-primary",

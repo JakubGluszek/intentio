@@ -1,5 +1,5 @@
 export * from "./buttons";
-export * from "./wrappers"
+export * from "./wrappers";
 export * from "./Input";
 export * from "./Pane";
 export * from "./Card";
@@ -12,3 +12,4 @@ export * from "./CheckBox";
 export * from "./ModalContainer";
 export * from "./Panels";
 export * from "./Titlebar";
+export * from "./Glass";

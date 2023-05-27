@@ -1,5 +1,6 @@
 import React from "react";
 import { clsx } from "@mantine/core";
+import { Glass } from "./Glass";
 
 type IPanelsContext = {
   value: string;
@@ -31,7 +32,9 @@ export const Panels: React.FC<PanelsProps> & PanelsComposition = (props) => {
 
   return (
     <PanelsProvider {...restProps}>
-      <div className="w-full flex flex-row gap-0.5 rounded-sm">{children}</div>
+      <div className="w-full flex flex-row gap-0.5">
+        {children}
+      </div>
     </PanelsProvider>
   );
 };
@@ -46,21 +49,26 @@ const Panel: React.FC<PanelProps> = (props) => {
   const selected = context.value === props.value;
 
   return (
-    <button
-      onClick={(e) => {
-        context.onChange(props.value);
-        props.onClick?.(e);
-      }}
-      className={clsx(
-        "flex-1 flex flex-row items-center glass justify-center gap-1 font-black p-0.5 transition-colors duration-300 uppercase",
-        selected
-          ? "text-primary"
-          : "text-text/80 hover:text-primary"
-      )}
-      tabIndex={-3}
+    <Glass
+      className="grow flex flex-row overflow-clip"
+      whileTap={{ scale: 0.95, borderRadius: 4 }}
     >
-      {props.children}
-    </button>
+      <button
+        onClick={(e) => {
+          context.onChange(props.value);
+          props.onClick?.(e);
+        }}
+        className={clsx(
+          "grow flex flex-row items-center justify-center gap-1 bg-base/10 font-black p-0.5 transition-colors duration-300 uppercase",
+          selected
+            ? "text-primary border-b-2 border-primary"
+            : "text-text/80 hover:text-primary"
+        )}
+        tabIndex={-3}
+      >
+        {props.children}
+      </button>
+    </Glass>
   );
 };
 

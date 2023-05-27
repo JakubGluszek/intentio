@@ -54,7 +54,7 @@ export const Button: React.FC<ButtonProps> = (props) => {
       clsx(
         "text-base hover:text-primary/80",
         config?.ghost?.highlight === true
-          ? "hover:bg-base/10 active:bg-base/20"
+          ? "hover:bg-base/5 active:bg-base/10"
           : "bg-transparent active:text-primary p-0"
       )
     );

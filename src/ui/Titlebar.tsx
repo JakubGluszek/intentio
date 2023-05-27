@@ -20,9 +20,8 @@ export const Titlebar: React.FC<TitlebarProps> = (props) => {
       <Button
         onClick={() => appWindow.close()}
         variant="ghost"
-        className="rounded-none"
       >
-        <MdClose size={24} />
+        <MdClose size={20} />
       </Button>
     </Pane>
   );

@@ -1,5 +1,5 @@
 import React from "react";
-import { motion, HTMLMotionProps, useMotionValue, useMotionTemplate } from "framer-motion";
+import { motion, HTMLMotionProps } from "framer-motion";
 import { twMerge } from "tailwind-merge";
 
 export interface CardProps extends HTMLMotionProps<"div"> {
@@ -8,26 +8,7 @@ export interface CardProps extends HTMLMotionProps<"div"> {
 
 export const Card = React.forwardRef<HTMLDivElement, CardProps>(
   (props, ref) => {
-    const {
-      children,
-      className: customClassName,
-      onMouseMove,
-      ...restProps
-    } = props;
-
-    let mouseX = useMotionValue(0);
-    let mouseY = useMotionValue(0);
-
-    function handleMouseMove({
-      currentTarget,
-      clientX,
-      clientY,
-    }: React.MouseEvent) {
-      let { left, top } = currentTarget.getBoundingClientRect();
-
-      mouseX.set(clientX - left);
-      mouseY.set(clientY - top);
-    }
+    const { children, className: customClassName, ...restProps } = props;
 
     let className =
       "relative group flex flex-col border-2 border-base/10 hover:border-base/20 text-sm\
@@ -38,29 +19,8 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
     }
 
     return (
-      <motion.div
-        ref={ref}
-        className={className}
-        onMouseMove={(e) => {
-          handleMouseMove(e);
-          onMouseMove?.(e);
-        }}
-        {...restProps}
-      >
+      <motion.div ref={ref} className={className} {...restProps}>
         {children}
-
-        <motion.div
-          className="pointer-events-none absolute -inset-px opacity-0 transition duration-300 group-hover:opacity-100"
-          style={{
-            background: useMotionTemplate`
-            radial-gradient(
-              200px circle at ${mouseX}px ${mouseY}px,
-              rgba(var(--base-color) / 0.15),
-              transparent 80%
-            )
-          `,
-          }}
-        />
       </motion.div>
     );
   }

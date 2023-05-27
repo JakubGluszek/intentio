@@ -1,9 +1,9 @@
 import React from "react";
-import { motion } from "framer-motion";
 
 import { Timer } from "@/components";
 import { TimerContext } from "@/contexts";
 import useStore from "@/store";
+import { Glass } from "@/ui";
 
 interface TimerViewProps {
   display: boolean;
@@ -18,13 +18,13 @@ export const TimerView: React.FC<TimerViewProps> = (props) => {
   if (!props.display || !theme) return null;
 
   return (
-    <motion.div
-      className="grow flex flex-col glass rounded-sm"
+    <Glass
+      className="grow flex flex-col"
       transition={{ duration: 0.2, delay: 0.1 }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
     >
       <Timer {...timerCtx} theme={theme} />
-    </motion.div>
+    </Glass>
   );
 };
