@@ -97,9 +97,9 @@ fn build_main_window(app: &mut App) -> Result<()> {
 
     tauri::WindowBuilder::new(app, "main", tauri::WindowUrl::App("/".into()))
         .title("Intentio")
-        .inner_size(300f64, 340f64)
-        .max_inner_size(300f64, 340f64)
-        .min_inner_size(300f64, 340f64)
+        .inner_size(300f64, 320f64)
+        .max_inner_size(300f64, 320f64)
+        .min_inner_size(300f64, 320f64)
         .fullscreen(false)
         .resizable(false)
         .decorations(false)
