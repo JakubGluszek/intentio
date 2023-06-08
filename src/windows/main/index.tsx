@@ -77,7 +77,7 @@ export const Content: React.FC = () => {
       {/* Intent Heading */}
       <div
         className={clsx(
-          "relative h-7 w-full flex flex-row items-center bg-base/10 gap-1 text-sm",
+          "relative h-7 w-full flex flex-row items-center bg-base/5 gap-1 text-sm",
           !viewIntents && "justify-center"
         )}
       >

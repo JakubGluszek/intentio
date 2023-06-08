@@ -56,7 +56,7 @@ const IntentsView: React.FC = () => {
   }, []);
 
   return (
-    <Glass className="grow flex flex-col p-1">
+    <Glass className="grow flex flex-col">
       <div className="w-full flex flex-row items-center justify-between gap-1 p-1">
         <CreateIntent viewCreate={viewCreate} setViewCreate={setViewCreate} />
 

@@ -13,7 +13,7 @@ export const Glass: React.FC<GlassProps> = (props) => {
   } = props;
 
   let className =
-    "relative bg-base/10";
+    "relative bg-base/5";
 
   if (customClassName) {
     className = twMerge(className, customClassName);
