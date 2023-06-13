@@ -13,6 +13,8 @@ mod prelude;
 mod setup;
 mod state;
 mod utils;
+mod db;
+mod schema;
 
 use crate::ipc::*;
 use crate::prelude::*;

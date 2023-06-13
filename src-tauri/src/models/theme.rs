@@ -260,7 +260,7 @@ mod tests {
 
         let array: Array = W(first_res.result?).try_into()?;
 
-        assert_eq!(array.len(), 5);
+        assert_eq!(array.len(), 6);
 
         Ok(())
     }

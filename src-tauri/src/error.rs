@@ -26,6 +26,9 @@ pub enum Error {
 
     #[error(transparent)]
     TauriError(#[from] tauri::Error),
+
+    #[error(transparent)]
+    DieselError(#[from] diesel::result::Error),
 }
 
 impl serde::Serialize for Error {
