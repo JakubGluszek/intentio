@@ -1,6 +1,5 @@
-use std::sync::Arc;
-
 use serde::{Deserialize, Serialize};
+use std::sync::Arc;
 use ts_rs::TS;
 
 use crate::{ctx::Ctx, models::Theme};

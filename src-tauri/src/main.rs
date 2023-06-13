@@ -6,18 +6,21 @@
 mod config;
 mod ctx;
 mod database;
+mod db;
 mod error;
 mod ipc;
 mod models;
 mod prelude;
+mod schema;
 mod setup;
 mod state;
 mod utils;
-mod db;
-mod schema;
+
+use std::sync::Mutex;
 
 use crate::ipc::*;
 use crate::prelude::*;
+use db::Db;
 use setup::setup_database;
 use setup::setup_hook;
 use tauri::Manager;
@@ -35,7 +38,10 @@ fn main() -> Result<()> {
         .block_on(setup_database())
         .expect("database should be set up");
 
+    let conn = Db::setup().expect("the database should be set up");
+
     tauri::Builder::default()
+        .manage(Mutex::new(conn))
         .manage(database)
         .system_tray(SystemTray::new().with_menu(create_tray_menu()))
         .on_system_tray_event(handle_on_system_tray_event)
@@ -66,6 +72,7 @@ fn main() -> Result<()> {
             delete_theme,
             delete_themes,
             // Intent
+            get_intent,
             get_intents,
             create_intent,
             update_intent,

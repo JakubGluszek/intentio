@@ -21,11 +21,9 @@ impl IntentBmc {
     }
 
     pub fn update(conn: &mut SqliteConnection, id: i32, data: &UpdateIntent) -> Result<i32> {
-        use crate::schema::intents;
+        use crate::schema::intents::dsl::intents;
 
-        diesel::update(intents::dsl::intents.find(id))
-            .set(data)
-            .execute(conn)?;
+        diesel::update(intents.find(id)).set(data).execute(conn)?;
         Ok(id)
     }
 
@@ -48,6 +46,25 @@ impl IntentBmc {
 
         let intents: Vec<Intent> = dsl::intents.load(conn)?;
         Ok(intents)
+    }
+
+    pub fn archive(conn: &mut SqliteConnection, id: i32) -> Result<i32> {
+        use crate::schema::intents::dsl::{archived_at, intents};
+
+        let now = chrono::Utc::now().naive_utc();
+        diesel::update(intents.find(id))
+            .set(archived_at.eq(now))
+            .execute(conn)?;
+        Ok(id)
+    }
+
+    pub fn unarchive(conn: &mut SqliteConnection, id: i32) -> Result<i32> {
+        use crate::schema::intents::dsl::{archived_at, intents};
+
+        diesel::update(intents.find(id))
+            .set(archived_at.eq::<Option<chrono::NaiveDateTime>>(None))
+            .execute(conn)?;
+        Ok(id)
     }
 }
 
@@ -138,5 +155,40 @@ mod intent_bmc_tests {
 
         let result = IntentBmc::get(&mut conn, id);
         assert!(matches!(result, Err(Error::DieselError(_))));
+    }
+
+    #[test]
+    fn test_archive_intent() {
+        let mut conn = Db::establish_connection_in_memory().unwrap();
+
+        let data = CreateIntent {
+            label: "foo".to_string(),
+        };
+        let id = IntentBmc::create(&mut conn, &data).unwrap();
+
+        IntentBmc::archive(&mut conn, id).unwrap();
+        let intent = IntentBmc::get(&mut conn, id).unwrap();
+
+        assert_ne!(intent.archived_at, None);
+    }
+
+    #[test]
+    fn test_unarchive_intent() {
+        let mut conn = Db::establish_connection_in_memory().unwrap();
+
+        let data = CreateIntent {
+            label: "foo".to_string(),
+        };
+        let id = IntentBmc::create(&mut conn, &data).unwrap();
+
+        IntentBmc::archive(&mut conn, id).unwrap();
+        let intent = IntentBmc::get(&mut conn, id).unwrap();
+
+        assert_ne!(intent.archived_at, None);
+
+        IntentBmc::unarchive(&mut conn, id).unwrap();
+        let intent = IntentBmc::get(&mut conn, id).unwrap();
+
+        assert_eq!(intent.archived_at, None);
     }
 }

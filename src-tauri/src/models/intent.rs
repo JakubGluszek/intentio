@@ -18,7 +18,7 @@ use crate::{
 use super::ModelDeleteResultData;
 
 #[derive(Serialize, Deserialize, TS, Debug, Clone)]
-#[ts(export, export_to = "../src/bindings/")]
+// #[ts(export, export_to = "../src/bindings/")]
 pub struct Intent {
     id: String,
     label: String,
