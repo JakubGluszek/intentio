@@ -71,7 +71,6 @@ impl IntentBmc {
 #[cfg(test)]
 mod intent_bmc_tests {
     use crate::{db::Db, prelude::Error};
-    use chrono::Utc;
 
     use super::*;
 

@@ -11,7 +11,7 @@ use super::BaseBmc;
 
 #[derive(TS, Deserialize)]
 #[ts(export, export_to = "../src/bindings/")]
-pub struct GetSessionListOptions {
+pub struct GetSessionsOptions {
     pub intent_id: Option<i32>,
     pub offset: Option<i32>,
     pub limit: Option<i32>,
@@ -38,7 +38,7 @@ impl SessionBmc {
 
     pub fn get_list(
         conn: &mut SqliteConnection,
-        options: Option<GetSessionListOptions>,
+        options: Option<GetSessionsOptions>,
     ) -> Result<Vec<Session>> {
         use crate::schema::sessions::dsl;
 
@@ -58,13 +58,10 @@ impl SessionBmc {
             if let Some(limit) = options.limit {
                 query = query.limit(limit as i64);
             }
+        };
 
-            let sessions: Vec<Session> = query.load(conn)?;
-            Ok(sessions)
-        } else {
-            let sessions: Vec<Session> = query.load(conn)?;
-            Ok(sessions)
-        }
+        let sessions: Vec<Session> = query.load(conn)?;
+        Ok(sessions)
     }
 }
 
@@ -83,7 +80,7 @@ mod session_bmc_tests {
     fn test_create_session() {
         let mut conn = Db::establish_test_connection().unwrap();
 
-        // create related intent
+        // Create related intent.
         let data = CreateIntent {
             label: "foo".to_string(),
         };
@@ -149,7 +146,7 @@ mod session_bmc_tests {
     fn test_get_list_of_sessions_without_options() {
         let mut conn = Db::establish_test_connection().unwrap();
 
-        // create related intent
+        // Create related intent.
         let data = CreateIntent {
             label: "foo".to_string(),
         };
@@ -174,7 +171,7 @@ mod session_bmc_tests {
     fn test_get_list_of_sessions_by_intent_id() {
         let mut conn = Db::establish_test_connection().unwrap();
 
-        // create related intent
+        // Create related intent.
         let data = CreateIntent {
             label: "foo".to_string(),
         };
@@ -202,7 +199,7 @@ mod session_bmc_tests {
             SessionBmc::create(&mut conn, &data).unwrap();
         }
 
-        let options = GetSessionListOptions {
+        let options = GetSessionsOptions {
             intent_id: Some(intent_id),
             offset: None,
             limit: None,
@@ -216,7 +213,7 @@ mod session_bmc_tests {
     fn test_get_list_of_sessions_with_offset_and_limit() {
         let mut conn = Db::establish_test_connection().unwrap();
 
-        // create related intent
+        // Create related intent.
         let data = CreateIntent {
             label: "foo".to_string(),
         };
@@ -233,7 +230,7 @@ mod session_bmc_tests {
             SessionBmc::create(&mut conn, &data).unwrap();
         }
 
-        let options = GetSessionListOptions {
+        let options = GetSessionsOptions {
             intent_id: Some(intent_id),
             offset: Some(4),
             limit: Some(4),

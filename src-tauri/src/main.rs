@@ -83,9 +83,10 @@ fn main() -> Result<()> {
             create_task,
             update_task,
             delete_task,
-            delete_tasks,
+            get_task,
             get_tasks,
-            get_tasks_by_intent_id,
+            complete_task,
+            uncomplete_task,
             // Session
             create_session,
             get_session,

@@ -4,7 +4,7 @@ use tauri::{command, AppHandle};
 
 use crate::{
     ctx::AppContext,
-    db::{CreateSession, GetSessionListOptions, Session, SessionBmc},
+    db::{CreateSession, GetSessionsOptions, Session, SessionBmc},
     prelude::Result,
 };
 
@@ -21,7 +21,7 @@ pub async fn get_session(app_handle: AppHandle, id: i32) -> Result<Session> {
 #[command]
 pub async fn get_sessions(
     app_handle: AppHandle,
-    options: Option<GetSessionListOptions>,
+    options: Option<GetSessionsOptions>,
 ) -> Result<Vec<Session>> {
     app_handle.db(|mut db| SessionBmc::get_list(&mut db, options))
 }
