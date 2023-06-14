@@ -11,6 +11,21 @@ diesel::table! {
 }
 
 diesel::table! {
+    scripts (id) {
+        id -> Integer,
+        label -> Text,
+        body -> Text,
+        enabled -> Bool,
+        exec_on_session_start -> Bool,
+        exec_on_session_pause -> Bool,
+        exec_on_session_complete -> Bool,
+        exec_on_break_start -> Bool,
+        exec_on_break_pause -> Bool,
+        exec_on_break_complete -> Bool,
+    }
+}
+
+diesel::table! {
     sessions (id) {
         id -> Integer,
         duration -> Integer,
@@ -37,6 +52,7 @@ diesel::joinable!(tasks -> intents (intent_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
     intents,
+    scripts,
     sessions,
     tasks,
 );

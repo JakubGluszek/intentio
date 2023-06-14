@@ -92,10 +92,11 @@ fn main() -> Result<()> {
             get_session,
             get_sessions,
             // Script
-            get_scripts,
             create_script,
             update_script,
-            delete_script
+            delete_script,
+            get_script,
+            get_scripts
         ])
         .setup(move |app| Ok(runtime.block_on(setup_hook(app))))
         .plugin(tauri_plugin_autostart::init(
