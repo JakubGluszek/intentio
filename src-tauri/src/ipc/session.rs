@@ -1,6 +1,6 @@
 //! Tauri IPC commands to bridge the Session Backend Model Controllers with client side.
 
-use tauri::{command, AppHandle};
+use tauri::{command, AppHandle, Manager};
 
 use crate::{
     bmc::{GetSessionsOptions, SessionBmc},
@@ -9,9 +9,15 @@ use crate::{
     prelude::Result,
 };
 
+use super::EventPayload;
+
 #[command]
 pub async fn create_session(app_handle: AppHandle, data: CreateSession) -> Result<i32> {
-    app_handle.db(|mut db| SessionBmc::create(&mut db, &data))
+    println!("{:#?}", data);
+    let id = app_handle.db(|mut db| SessionBmc::create(&mut db, &data))?;
+    let payload = EventPayload { data: id };
+    app_handle.emit_all("session_created", payload)?;
+    Ok(id)
 }
 
 #[command]

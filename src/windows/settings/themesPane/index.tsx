@@ -16,7 +16,7 @@ import { ThemeState } from "@/types";
 import { Theme } from "@/bindings/Theme";
 
 import EditTheme from "./EditTheme";
-import CreateTheme from "./CreateTheme";
+import CreateThemeView from "./CreateThemeView";
 import { SelectedTheme } from "./SelectedTheme";
 import { ChangeTheme } from "./ChangeTheme";
 import ThemeView from "./ThemeView";
@@ -33,9 +33,18 @@ const ThemesPane: React.FC = () => {
     ipc.getThemes().then((data) => store.setThemes(data));
   }, []);
 
-  useEvents({ theme_created: (data) => store.addTheme(data) });
+  useEvents({
+    theme_created: ({ data: id }) => {
+      ipc.getTheme(id).then((data) => store.addTheme(data));
+    },
+    theme_updated: ({ data: id }) => {
+      ipc.getTheme(id).then((data) => store.patchTheme(id, data));
+    },
+    theme_deleted: ({ data: id }) => store.removeTheme(id),
+  });
 
-  if (viewCreate) return <CreateTheme onExit={() => setViewCreate(false)} />;
+  if (viewCreate)
+    return <CreateThemeView onExit={() => setViewCreate(false)} />;
   if (editTheme)
     return <EditTheme data={editTheme} onExit={() => setEditTheme(null)} />;
   if (viewChangeTheme)
@@ -110,7 +119,6 @@ const ThemesPane: React.FC = () => {
           >
             {store.themes
               .sort((a, b) => (a.favorite ? 0 : 1) - (b.favorite ? 0 : 1))
-              .sort((a, b) => (a.default ? 1 : 0) - (b.default ? 1 : 0))
               .map((theme) => (
                 <ThemeView
                   key={theme.id}

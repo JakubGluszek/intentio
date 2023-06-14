@@ -9,6 +9,8 @@ use crate::{
     state::{AppState, SessionType, TimerStateForUpdate},
 };
 
+use super::EventPayload;
+
 #[command]
 pub async fn get_current_theme(state: tauri::State<'_, Mutex<AppState>>) -> Result<Theme> {
     let state = state.lock().unwrap();
@@ -48,7 +50,8 @@ pub async fn set_current_theme(
         }
     }
 
-    app_handle.emit_all("current_theme_updated", data)?;
+    let payload = EventPayload { data };
+    app_handle.emit_all("current_theme_updated", payload)?;
     Ok(())
 }
 
@@ -67,8 +70,7 @@ pub async fn update_timer_state(
         state.timer.is_playing = is_playing;
     }
 
-    state.update_current_theme(app_handle)?;
-
+    state.emit_current_theme(app_handle)?;
     Ok(())
 }
 
@@ -83,12 +85,13 @@ pub async fn set_idle_theme(
     settings.idle_theme_id = data.id.clone();
     ConfigManager::save::<SettingsConfig>(&settings)?;
 
-    app_handle.emit_all("settings_config_updated", settings)?;
+    let payload = EventPayload { data: settings };
+    app_handle.emit_all("settings_config_updated", payload)?;
 
     // update state
     let mut state = state.lock().unwrap();
     state.idle_theme = data;
-    state.update_current_theme(app_handle)?;
+    state.emit_current_theme(app_handle)?;
 
     Ok(())
 }
@@ -104,12 +107,13 @@ pub async fn set_focus_theme(
     settings.focus_theme_id = data.id.clone();
     ConfigManager::save::<SettingsConfig>(&settings)?;
 
-    app_handle.emit_all("settings_config_updated", settings)?;
+    let payload = EventPayload { data: settings };
+    app_handle.emit_all("settings_config_updated", payload)?;
 
     // update state
     let mut state = state.lock().unwrap();
     state.focus_theme = data;
-    state.update_current_theme(app_handle)?;
+    state.emit_current_theme(app_handle)?;
 
     Ok(())
 }
@@ -125,12 +129,13 @@ pub async fn set_break_theme(
     settings.break_theme_id = data.id.clone();
     ConfigManager::save::<SettingsConfig>(&settings)?;
 
-    app_handle.emit_all("settings_config_updated", settings)?;
+    let payload = EventPayload { data: settings };
+    app_handle.emit_all("settings_config_updated", payload)?;
 
     // update state
     let mut state = state.lock().unwrap();
     state.break_theme = data;
-    state.update_current_theme(app_handle)?;
+    state.emit_current_theme(app_handle)?;
 
     Ok(())
 }
@@ -146,12 +151,13 @@ pub async fn set_long_break_theme(
     settings.long_break_theme_id = data.id.clone();
     ConfigManager::save::<SettingsConfig>(&settings)?;
 
-    app_handle.emit_all("settings_config_updated", settings)?;
+    let payload = EventPayload { data: settings };
+    app_handle.emit_all("settings_config_updated", payload)?;
 
     // update state
     let mut state = state.lock().unwrap();
     state.long_break_theme = data;
-    state.update_current_theme(app_handle)?;
+    state.emit_current_theme(app_handle)?;
 
     Ok(())
 }

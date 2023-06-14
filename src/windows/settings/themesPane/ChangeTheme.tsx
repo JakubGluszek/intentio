@@ -24,7 +24,6 @@ export const ChangeTheme: React.FC<ChangeThemeProps> = (props) => {
             <div className="flex flex-col gap-1">
               {store.themes
                 .sort((a, b) => (a.favorite ? 0 : 1) - (b.favorite ? 0 : 1))
-                .sort((a, b) => (a.default ? 1 : 0) - (b.default ? 1 : 0))
                 .map((theme) => (
                   <ThemeView
                     key={theme.id}

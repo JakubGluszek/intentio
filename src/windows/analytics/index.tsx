@@ -8,15 +8,21 @@ import ipc from "@/ipc";
 
 import { Statistics } from "./Statistics";
 import { Calendar, useCalendar } from "./Calendar";
+import { useEvents } from "@/hooks";
 
 const AnalyticsWindow: React.FC = () => {
   const store = useStore();
   const calendar = useCalendar({ sessions: store.sessions });
 
+  useEvents({
+    session_created: ({ data: id }) => {
+      ipc.getSession(id).then((data) => store.addSession(data));
+    },
+  });
+
   React.useEffect(() => {
     ipc.getSessions().then((data) => {
       store.setSessions(data);
-      console.log(data);
     });
   }, []);
 

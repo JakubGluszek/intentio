@@ -21,7 +21,7 @@ import {
   ScrollArea,
   SectionsWrapper,
 } from "@/ui";
-import { ThemeForCreate } from "@/bindings/ThemeForCreate";
+import { CreateTheme } from "@/bindings/CreateTheme";
 
 import { ColorType } from "..";
 
@@ -29,13 +29,13 @@ interface CreateThemeProps {
   onExit: () => void;
 }
 
-const CreateTheme: React.FC<CreateThemeProps> = (props) => {
+const CreateThemeView: React.FC<CreateThemeProps> = (props) => {
   const [viewThemePreview, setViewThemePreview] = React.useState(false);
   const [viewColorPicker, setViewColorPicker] = React.useState<ColorType>();
   const [colorPickerHex, setColorPickerHex] = React.useState("#000000");
 
   const { register, handleSubmit, setValue, watch, getValues } =
-    useForm<ThemeForCreate>();
+    useForm<CreateTheme>();
   const store = useStore();
   const modalRef = useClickOutside(() => {
     switch (viewColorPicker) {
@@ -64,7 +64,7 @@ const CreateTheme: React.FC<CreateThemeProps> = (props) => {
   });
 
   React.useEffect(() => {
-    setValue("name", "");
+    setValue("label", "");
     setValue("window_hex", store.currentTheme!.window_hex);
     setValue("base_hex", store.currentTheme!.base_hex);
     setValue("primary_hex", store.currentTheme!.primary_hex);
@@ -131,17 +131,15 @@ const CreateTheme: React.FC<CreateThemeProps> = (props) => {
               <form onSubmit={onSubmit} className="grow flex flex-col gap-1.5">
                 <div className="flex flex-row items-center gap-2">
                   <Input
-                    {...register("name", { required: true, maxLength: 16 })}
+                    {...register("label", { required: true, maxLength: 16 })}
                     id="color-scheme-name"
                     maxLength={16}
-                    placeholder="Name"
+                    placeholder="Label"
                   />
                 </div>
                 <ColorInput
                   label="Window"
-                  type="window_hex"
-                  watch={watch}
-                  register={register}
+                  hex={watch("window_hex")!}
                   onViewColorPicker={() => {
                     setColorPickerHex(watch("window_hex"));
                     setViewColorPicker("window");
@@ -149,9 +147,7 @@ const CreateTheme: React.FC<CreateThemeProps> = (props) => {
                 />
                 <ColorInput
                   label="Base"
-                  type="base_hex"
-                  watch={watch}
-                  register={register}
+                  hex={watch("base_hex")!}
                   onViewColorPicker={() => {
                     setColorPickerHex(watch("base_hex"));
                     setViewColorPicker("base");
@@ -159,9 +155,7 @@ const CreateTheme: React.FC<CreateThemeProps> = (props) => {
                 />
                 <ColorInput
                   label="Primary"
-                  type="primary_hex"
-                  watch={watch}
-                  register={register}
+                  hex={watch("primary_hex")!}
                   onViewColorPicker={() => {
                     setColorPickerHex(watch("primary_hex"));
                     setViewColorPicker("primary");
@@ -169,9 +163,7 @@ const CreateTheme: React.FC<CreateThemeProps> = (props) => {
                 />
                 <ColorInput
                   label="Text"
-                  type="text_hex"
-                  watch={watch}
-                  register={register}
+                  hex={watch("text_hex")!}
                   onViewColorPicker={() => {
                     setColorPickerHex(watch("text_hex"));
                     setViewColorPicker("text");
@@ -186,4 +178,4 @@ const CreateTheme: React.FC<CreateThemeProps> = (props) => {
   );
 };
 
-export default CreateTheme;
+export default CreateThemeView;

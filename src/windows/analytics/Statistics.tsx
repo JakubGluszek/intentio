@@ -24,11 +24,7 @@ export const Statistics: React.FC<StatisticsProps> = (props) => {
   const focusedToday = React.useMemo(
     () =>
       props.sessions
-        .filter(
-          (s) =>
-            new Date(parseInt(s.finished_at)).toDateString() ==
-            today.toDateString()
-        )
+        .filter((s) => s.finished_at.toDateString() == today.toDateString())
         .reduce((p, c) => p + c.duration, 0) / 60,
     [props.sessions]
   );
@@ -37,20 +33,20 @@ export const Statistics: React.FC<StatisticsProps> = (props) => {
     let dayStreak = 1;
 
     const sorted = props.sessions.sort(
-      (a, b) => parseInt(b.finished_at) - parseInt(a.finished_at)
+      (a, b) => b.finished_at.getTime() - a.finished_at.getTime()
     );
     let prevDay = new Date();
     // there might be timezone related issues
     for (let i = 0; i < sorted.length; i++) {
       const s = sorted[i];
-      const date = new Date(parseInt(s.finished_at));
+      const date = s.finished_at;
 
       if (date.toDateString() === prevDay.toDateString()) continue;
       date.setDate(date.getDate() + 1);
 
       if (date.toDateString() === prevDay.toDateString()) {
         dayStreak += 1;
-        prevDay = new Date(parseInt(s.finished_at));
+        prevDay = s.finished_at;
       } else {
         break;
       }

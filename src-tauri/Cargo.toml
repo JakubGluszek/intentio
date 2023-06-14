@@ -29,7 +29,7 @@ chrono = { version = "0.4.22", features = ["serde"] }
 cuid = "1.2.0"
 rodio = "0.16.0"
 thiserror = "1"
-ts-rs = { version = "6", features = ["format", "chrono-impl"] }
+ts-rs = { version = "6", features = ["serde-compat", "format", "chrono-impl"] }
 toml = "0.5.9"
 tauri-hotkey = "0.1.2"
 tauri-plugin-autostart = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "dev" }

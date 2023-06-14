@@ -7,6 +7,8 @@ use crate::{
     prelude::Result,
 };
 
+use super::EventPayload;
+
 #[command]
 pub async fn get_timer_config() -> Result<TimerConfig> {
     ConfigManager::get::<TimerConfig>()
@@ -15,7 +17,8 @@ pub async fn get_timer_config() -> Result<TimerConfig> {
 #[command]
 pub async fn update_timer_config(app_handle: AppHandle, data: TimerConfigForUpdate) -> Result<()> {
     let config = ConfigManager::update::<TimerConfig, TimerConfigForUpdate>(data)?;
-    app_handle.emit_all("timer_config_updated", config)?;
+    let payload = EventPayload { data: config };
+    app_handle.emit_all("timer_config_updated", payload)?;
     Ok(())
 }
 
@@ -30,6 +33,7 @@ pub async fn update_settings_config(
     data: SettingsConfigForUpdate,
 ) -> Result<()> {
     let config = ConfigManager::update::<SettingsConfig, SettingsConfigForUpdate>(data)?;
-    app_handle.emit_all("settings_config_updated", config)?;
+    let payload = EventPayload { data: config };
+    app_handle.emit_all("settings_config_updated", payload)?;
     Ok(())
 }

@@ -1,14 +1,12 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "react-hot-toast";
 
-import useStore from "@/store";
 import ipc from "@/ipc";
 import { Editor } from "@/components";
 import utils from "@/utils";
-import { Script } from "@/bindings/Script";
-import { ScriptForUpdate } from "@/bindings/ScriptForUpdate";
 import { Button, Input, Pane } from "@/ui";
+import { Script } from "@/bindings/Script";
+import { UpdateScript } from "@/bindings/UpdateScript";
 
 interface Props {
   data: Script;
@@ -18,16 +16,11 @@ interface Props {
 const EditScript: React.FC<Props> = (props) => {
   const [body, setBody] = React.useState("");
 
-  const store = useStore();
-
-  const { register, handleSubmit, setValue } =
-    useForm<Partial<ScriptForUpdate>>();
+  const { register, handleSubmit, setValue } = useForm<Partial<UpdateScript>>();
 
   const onSubmit = handleSubmit((data) => {
-    ipc.updateScript(props.data.id, { ...data, body }).then((data) => {
-      store.patchScript(data.id, data);
+    ipc.updateScript(props.data.id, { ...data, body }).then(() => {
       props.onExit();
-      toast("Script updated");
     });
   });
 

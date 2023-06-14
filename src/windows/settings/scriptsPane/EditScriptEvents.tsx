@@ -3,10 +3,9 @@ import { Checkbox } from "@mantine/core";
 
 import utils from "@/utils";
 import ipc from "@/ipc";
-import useStore from "@/store";
 import { Script } from "@/bindings/Script";
-import { ScriptForUpdate } from "@/bindings/ScriptForUpdate";
 import { Button, Card, Pane } from "@/ui";
+import { UpdateScript } from "@/bindings/UpdateScript";
 
 interface Props {
   data: Script;
@@ -14,12 +13,8 @@ interface Props {
 }
 
 const EditScriptEvents: React.FC<Props> = (props) => {
-  const store = useStore();
-
-  const handleUpdate = (data: Partial<ScriptForUpdate>) =>
-    ipc.updateScript(props.data.id, data).then((data) => {
-      store.patchScript(props.data.id, data);
-    });
+  const handleUpdate = (data: Partial<UpdateScript>) =>
+    ipc.updateScript(props.data.id, data);
 
   return (
     <Pane className="grow flex flex-col justify-between gap-1">

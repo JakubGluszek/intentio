@@ -1,15 +1,15 @@
 import React from "react";
+import { MdNotes, MdSave } from "react-icons/md";
+import { toast } from "react-hot-toast";
 
 import { Editor } from "@/components";
-import { SessionForCreate } from "@/bindings/SessionForCreate";
 import { Button, Tooltip } from "@/ui";
-import { MdNotes, MdSave } from "react-icons/md";
 import ipc from "@/ipc";
-import { toast } from "react-hot-toast";
 import { TimerContext } from "@/contexts";
+import { CreateSession } from "@/bindings/CreateSession";
 
 interface SesssionSummaryProps {
-  data: SessionForCreate;
+  data: CreateSession;
   onExit: () => void;
 }
 

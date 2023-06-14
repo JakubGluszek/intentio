@@ -24,9 +24,9 @@ import {
   ScrollArea,
   SectionsWrapper,
 } from "@/ui";
-import { ThemeForCreate } from "@/bindings/ThemeForCreate";
 
 import { ColorType } from "..";
+import { UpdateTheme } from "@/bindings/UpdateTheme";
 
 interface EditThemeProps {
   data: Theme;
@@ -40,7 +40,7 @@ const EditTheme: React.FC<EditThemeProps> = (props) => {
 
   const store = useStore();
   const { register, handleSubmit, setValue, getValues, watch } =
-    useForm<ThemeForCreate>();
+    useForm<UpdateTheme>();
   const { viewConfirmDelete, onDelete } = useConfirmDelete(() =>
     ipc.deleteTheme(props.data.id).then(() => {
       props.onExit();
@@ -76,7 +76,7 @@ const EditTheme: React.FC<EditThemeProps> = (props) => {
   });
 
   React.useEffect(() => {
-    setValue("name", props.data.name);
+    setValue("label", props.data.label);
     setValue("window_hex", props.data.window_hex);
     setValue("base_hex", props.data.base_hex);
     setValue("primary_hex", props.data.primary_hex);
@@ -152,49 +152,41 @@ const EditTheme: React.FC<EditThemeProps> = (props) => {
               <form onSubmit={onSubmit} className="grow flex flex-col gap-1.5">
                 <div className="flex flex-row items-center gap-2">
                   <Input
-                    {...register("name", { required: true, maxLength: 16 })}
+                    {...register("label", { required: true, maxLength: 16 })}
                     id="color-scheme-name"
                     maxLength={16}
-                    placeholder="Name"
+                    placeholder="Label"
                   />
                 </div>
                 <ColorInput
                   label="Window"
-                  type="window_hex"
-                  watch={watch}
-                  register={register}
+                  hex={watch("window_hex")!}
                   onViewColorPicker={() => {
-                    setColorPickerHex(watch("window_hex"));
+                    setColorPickerHex(watch("window_hex")!);
                     setViewColorPicker("window");
                   }}
                 />
                 <ColorInput
                   label="Base"
-                  type="base_hex"
-                  watch={watch}
-                  register={register}
+                  hex={watch("base_hex")!}
                   onViewColorPicker={() => {
-                    setColorPickerHex(watch("base_hex"));
+                    setColorPickerHex(watch("base_hex")!);
                     setViewColorPicker("base");
                   }}
                 />
                 <ColorInput
                   label="Primary"
-                  type="primary_hex"
-                  watch={watch}
-                  register={register}
+                  hex={watch("primary_hex")!}
                   onViewColorPicker={() => {
-                    setColorPickerHex(watch("primary_hex"));
+                    setColorPickerHex(watch("primary_hex")!);
                     setViewColorPicker("primary");
                   }}
                 />
                 <ColorInput
                   label="Text"
-                  type="text_hex"
-                  watch={watch}
-                  register={register}
+                  hex={watch("text_hex")!}
                   onViewColorPicker={() => {
-                    setColorPickerHex(watch("text_hex"));
+                    setColorPickerHex(watch("text_hex")!);
                     setViewColorPicker("text");
                   }}
                 />

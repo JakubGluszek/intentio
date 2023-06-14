@@ -43,7 +43,7 @@ pub struct AppState {
 }
 
 impl AppState {
-    pub fn update_current_theme(self: &AppState, app_handle: AppHandle) -> Result<()> {
+    pub fn emit_current_theme(self: &AppState, app_handle: AppHandle) -> Result<()> {
         if self.timer.is_playing == false {
             app_handle.emit_all("current_theme_updated", self.idle_theme.clone())?;
         } else {

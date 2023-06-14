@@ -14,9 +14,7 @@ import {
 } from "@/contexts/settingsWindowContext";
 import { VscSettings, VscTerminalBash } from "react-icons/vsc";
 
-import useStore from "@/store";
 import { Pane, Panels, Titlebar } from "@/ui";
-import { useEvents } from "@/hooks";
 import { WindowContainer } from "@/components";
 
 import TimerPane from "./timerPane";
@@ -30,12 +28,6 @@ import AboutPane from "./aboutPane";
 export type ColorType = "window" | "base" | "primary" | "text";
 
 const SettingsWindow: React.FC = () => {
-  const store = useStore();
-
-  useEvents({
-    theme_deleted: (data) => store.removeTheme(data.id),
-  });
-
   return (
     <SettingsWindowProvider>
       <WindowContainer>

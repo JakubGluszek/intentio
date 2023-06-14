@@ -1,10 +1,8 @@
 import React from "react";
-import { toast } from "react-hot-toast";
 import { VscDebugStart, VscEdit, VscSymbolEvent } from "react-icons/vsc";
 import { MdDelete } from "react-icons/md";
 
 import ipc from "@/ipc";
-import useStore from "@/store";
 import { Script } from "@/bindings/Script";
 import { useConfirmDelete } from "@/hooks";
 import { MenuPosition } from "@/hooks/useContextMenu";
@@ -21,12 +19,8 @@ interface ScriptContextMenuProps {
 }
 
 const ScriptContextMenu: React.FC<ScriptContextMenuProps> = (props) => {
-  const store = useStore();
   const { viewConfirmDelete, onDelete } = useConfirmDelete(() =>
-    ipc.deleteScript(props.data.id).then((data) => {
-      store.removeScript(data.id);
-      toast("Script deleted");
-    })
+    ipc.deleteScript(props.data.id)
   );
 
   return (

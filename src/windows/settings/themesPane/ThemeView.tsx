@@ -53,24 +53,22 @@ const ThemeView: React.FC<ThemeViewProps> = (props) => {
           className="h-full flex items-center justify-center opacity-80 px-2 text-sm font-bold"
           style={{ color: props.data.text_hex }}
         >
-          {props.data.name}
+          {props.data.label}
         </div>
 
         {/* Theme operations */}
         <div className="flex flex-row items-center gap-2 px-2">
           {!props.isSelectable && (
             <Tooltip label="Edit">
-              {!props.data.default && (
-                <button
-                  onClick={() => props.onViewEdit?.(props.data)}
-                  className="h-8 opacity-0 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-300"
-                  style={{
-                    color: props.data.primary_hex,
-                  }}
-                >
-                  <MdEdit size={20} />
-                </button>
-              )}
+              <button
+                onClick={() => props.onViewEdit?.(props.data)}
+                className="h-8 opacity-0 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-300"
+                style={{
+                  color: props.data.primary_hex,
+                }}
+              >
+                <MdEdit size={20} />
+              </button>
             </Tooltip>
           )}
 
@@ -79,7 +77,7 @@ const ThemeView: React.FC<ThemeViewProps> = (props) => {
               onClick={() =>
                 ipc.createTheme({
                   ...props.data,
-                  name: `${props.data.name} (copy)`,
+                  label: `${props.data.label} (copy)`,
                 })
               }
               className="h-8 opacity-0 group-hover:opacity-80 hover:opacity-100 transition-opacity duration-300"

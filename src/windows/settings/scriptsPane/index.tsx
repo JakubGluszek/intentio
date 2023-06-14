@@ -7,9 +7,10 @@ import { Button, Pane, ScrollArea } from "@/ui";
 import { Script } from "@/bindings/Script";
 
 import ScriptView from "./ScriptView";
-import CreateScript from "./CreateScript";
+import CreateScriptView from "./CreateScriptView";
 import EditScript from "./EditScript";
 import EditScriptEvents from "./EditScriptEvents";
+import { useEvents } from "@/hooks";
 
 const ScriptsPane: React.FC = () => {
   const [viewCreate, setViewCreate] = React.useState(false);
@@ -20,11 +21,22 @@ const ScriptsPane: React.FC = () => {
 
   const store = useStore();
 
+  useEvents({
+    script_created: ({ data: id }) => {
+      ipc.getScript(id).then((data) => store.addScript(data));
+    },
+    script_updated: ({ data: id }) => {
+      ipc.getScript(id).then((data) => store.patchScript(id, data));
+    },
+    script_deleted: ({ data: id }) => store.removeScript(id),
+  });
+
   React.useEffect(() => {
     ipc.getScripts().then((data) => store.setScripts(data));
   }, []);
 
-  if (viewCreate) return <CreateScript onExit={() => setViewCreate(false)} />;
+  if (viewCreate)
+    return <CreateScriptView onExit={() => setViewCreate(false)} />;
   if (editScript)
     return <EditScript data={editScript} onExit={() => setEditScript(null)} />;
   if (editScriptEvents)

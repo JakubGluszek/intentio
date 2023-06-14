@@ -6,7 +6,9 @@ export interface TimerSession {
   elapsedTime: number;
   iterations: number;
   isPlaying: boolean;
-  startedAt?: string;
+  startedAt?: Date;
 }
 
 export type ThemeState = "Idle" | "Focus" | "Break" | "Long Break";
+
+export type ModelId = number;

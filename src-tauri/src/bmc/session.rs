@@ -45,6 +45,7 @@ impl SessionBmc {
         let mut query = dsl::sessions.into_boxed();
 
         if let Some(options) = options {
+            println!("there are options");
             // Filter out sessions based on the `intent_id` field
             if let Some(intent_id) = options.intent_id {
                 query = query.filter(dsl::intent_id.eq(intent_id));

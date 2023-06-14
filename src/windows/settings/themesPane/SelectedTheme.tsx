@@ -36,7 +36,7 @@ export const SelectedTheme: React.FC<SelectedThemeProps> = (props) => {
               color: props.data.base_hex,
             }}
           >
-            {props.data.name}
+            {props.data.label}
           </button>
         </div>
       </div>

@@ -1,29 +1,24 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "react-hot-toast";
 
-import useStore from "@/store";
 import ipc from "@/ipc";
 import { Editor } from "@/components";
 import utils from "@/utils";
-import { ScriptForCreate } from "@/bindings/ScriptForCreate";
 import { Button, Input, Pane } from "@/ui";
+import { CreateScript } from "@/bindings/CreateScript";
 
 interface CreateScriptViewProps {
   onExit: () => void;
 }
 
-const CreateScript: React.FC<CreateScriptViewProps> = (props) => {
+const CreateScriptView: React.FC<CreateScriptViewProps> = (props) => {
   const [body, setBody] = React.useState("");
 
-  const store = useStore();
-  const { register, handleSubmit } = useForm<ScriptForCreate>();
+  const { register, handleSubmit } = useForm<CreateScript>();
 
   const onSubmit = handleSubmit((data) => {
-    ipc.createScript({ ...data, body }).then((data) => {
-      store.addScript(data);
+    ipc.createScript({ ...data, body }).then(() => {
       props.onExit();
-      toast("Script saved");
     });
   });
 
@@ -58,4 +53,4 @@ const CreateScript: React.FC<CreateScriptViewProps> = (props) => {
   );
 };
 
-export default CreateScript;
+export default CreateScriptView;

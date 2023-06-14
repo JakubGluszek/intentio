@@ -44,10 +44,15 @@ const TaskView = React.forwardRef<HTMLDivElement, TaskViewProps>(
       });
     });
 
-    const handleCheck = () =>
-      ipc.updateTask(props.data.id, { done: !props.data.done }).then((task) => {
-        task.done && toast("Task completed");
-      });
+    const handleCheck = React.useCallback(() => {
+      if (!props.data.completed) {
+        ipc.completeTask(props.data.id).then(() => toast("Task completed"));
+      } else {
+        ipc
+          .uncompleteTask(props.data.id)
+          .then(() => toast("Task completion reverted"));
+      }
+    }, [props.data]);
 
     if (viewEdit)
       return (
@@ -97,7 +102,7 @@ const TaskView = React.forwardRef<HTMLDivElement, TaskViewProps>(
           >
             <div className="flex flex-row gap-0.5">
               <TaskButton
-                completed={props.data.done}
+                completed={props.data.completed}
                 onValueChange={() => handleCheck()}
               />
               <div className="pt-1" style={{ wordBreak: "break-all" }}>

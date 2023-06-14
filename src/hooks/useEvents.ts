@@ -1,40 +1,44 @@
 import React from "react";
 import { listen } from "@tauri-apps/api/event";
 
-import { Intent } from "@/bindings/Intent";
-import { ModelDeleteResultData } from "@/bindings/ModelDeleteResultData";
-import { Session } from "@/bindings/Session";
 import { Theme } from "@/bindings/Theme";
-import { Task } from "@/bindings/Task";
-import { Script } from "@/bindings/Script";
 import { TimerConfig } from "@/bindings/TimerConfig";
 import { SettingsConfig } from "@/bindings/SettingsConfig";
+import { EventPayload } from "@/bindings/EventPayload";
+
+type Id = number;
 
 type Events = {
   [key: string]: any;
-  current_theme_updated: Theme;
-  current_theme_changed: undefined;
-  intent_created: Intent;
-  intent_updated: Intent;
-  intent_deleted: ModelDeleteResultData;
-  intent_archived: Intent;
-  intent_unarchived: Intent;
-  session_saved: Session;
-  preview_theme: Theme;
-  task_created: Task;
-  task_updated: Task;
-  task_deleted: ModelDeleteResultData;
-  tasks_deleted: ModelDeleteResultData[];
-  script_created: Script;
-  script_updated: Script;
-  script_deleted: ModelDeleteResultData;
-  settings_config_updated: SettingsConfig;
-  timer_config_updated: TimerConfig;
-  theme_created: Theme;
-  theme_updated: Theme;
-  theme_deleted: ModelDeleteResultData;
+  intent_created: EventPayload<Id>;
+  intent_updated: EventPayload<Id>;
+  intent_deleted: EventPayload<Id>;
+  intent_archived: EventPayload<Id>;
+  intent_unarchived: EventPayload<Id>;
+
+  task_created: EventPayload<Id>;
+  task_updated: EventPayload<Id>;
+  task_deleted: EventPayload<Id>;
+
+  script_created: EventPayload<Id>;
+  script_updated: EventPayload<Id>;
+  script_deleted: EventPayload<Id>;
+
+  theme_created: EventPayload<Id>;
+  theme_updated: EventPayload<Id>;
+  theme_deleted: EventPayload<Id>;
+
+  session_created: EventPayload<Id>;
+
+  settings_config_updated: EventPayload<SettingsConfig>;
+  timer_config_updated: EventPayload<TimerConfig>;
+
   timer_play: undefined;
   timer_skip: undefined;
+
+  current_theme_changed: undefined;
+  current_theme_updated: Theme;
+  preview_theme: Theme;
 };
 
 type Callback<T extends keyof Events> = (data: Events[T]) => void;

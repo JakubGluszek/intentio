@@ -41,13 +41,13 @@ export const useTimer = (
   const [sessionType, setSessionType] = React.useState<SessionType>("Focus");
   const [isPlaying, setIsPlaying] = React.useState(false);
   const [duration, setDuration] = React.useState(config.focus_duration * 60);
-  const [startedAt, setStartedAt] = React.useState<string>(); // epoch in ms
+  const [startedAt, setStartedAt] = React.useState<Date>(); // epoch in ms
   const [iterations, setIterations] = React.useState(0);
   const [elapsedTime, setElapsedTime] = React.useState(0);
 
   const resume = React.useCallback(
     (withCallback: boolean = true) => {
-      if (!startedAt) setStartedAt(new Date().getTime().toString());
+      if (!startedAt) setStartedAt(new Date());
       setIsPlaying(true);
       withCallback && callbacks.onResumed?.({ type: sessionType });
       callbacks.onStateUpdate?.({ isPlaying: true });

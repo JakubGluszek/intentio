@@ -1,13 +1,14 @@
 import { StateCreator } from "zustand";
 
+import { ModelId } from "@/types";
 import { Script } from "@/bindings/Script";
 
 export interface ScriptsSlice {
   scripts: Script[];
   setScripts: (data: Script[]) => void;
   addScript: (data: Script) => void;
-  patchScript: (id: string, data: Script) => void;
-  removeScript: (id: string) => void;
+  patchScript: (id: ModelId, data: Script) => void;
+  removeScript: (id: ModelId) => void;
 }
 
 export const createScriptsSlice: StateCreator<

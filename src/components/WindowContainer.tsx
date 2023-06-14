@@ -24,24 +24,26 @@ export const WindowContainer: React.FC<WindowContainerProps> = (props) => {
       utils.applyTheme(data);
       store.setCurrentTheme(data);
     },
-    settings_config_updated: (data) => {
+    settings_config_updated: ({ data }) => {
       store.setSettingsConfig(data);
     },
-    timer_config_updated: (data) => store.setTimerConfig(data),
-    theme_updated: (data) => {
-      if (store.currentTheme?.id === data.id) {
-        ipc.setCurrentTheme(data);
-      } else if (store.getIdleTheme()?.id === data.id) {
-        ipc.setIdleTheme(data);
-      } else if (store.getFocusTheme()?.id === data.id) {
-        ipc.setFocusTheme(data);
-      } else if (store.getBreakTheme()?.id === data.id) {
-        ipc.setBreakTheme(data);
-      } else if (store.getLongBreakTheme()?.id === data.id) {
-        ipc.setLongBreakTheme(data);
-      }
+    timer_config_updated: ({ data }) => store.setTimerConfig(data),
+    theme_updated: ({ data: id }) => {
+      ipc.getTheme(id).then((data) => {
+        if (store.currentTheme?.id === id) {
+          ipc.setCurrentTheme(data);
+        } else if (store.getIdleTheme()?.id === id) {
+          ipc.setIdleTheme(data);
+        } else if (store.getFocusTheme()?.id === id) {
+          ipc.setFocusTheme(data);
+        } else if (store.getBreakTheme()?.id === id) {
+          ipc.setBreakTheme(data);
+        } else if (store.getLongBreakTheme()?.id === id) {
+          ipc.setLongBreakTheme(data);
+        }
 
-      store.patchTheme(data.id, data);
+        store.patchTheme(data.id, data);
+      });
     },
   });
 

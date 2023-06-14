@@ -32,23 +32,26 @@ const IntentsView: React.FC = () => {
   }, [store.intents]);
 
   useEvents({
-    intent_created: (data) => store.addIntent(data),
-    intent_updated: (data) => store.patchIntent(data.id, data),
-    intent_deleted: (data) => {
-      if (store.currentIntent?.id === data.id) {
+    intent_created: ({ data: id }) => {
+      ipc.getIntent(id).then((data) => store.addIntent(data));
+    },
+    intent_updated: ({ data: id }) => {
+      ipc.getIntent(id).then((data) => store.patchIntent(id, data));
+    },
+    intent_deleted: ({ data: id }) => {
+      if (store.currentIntent?.id === id) {
         store.setCurrentIntent(undefined);
       }
-
-      store.removeIntent(data.id);
+      store.removeIntent(id);
     },
-    intent_archived: (data) => {
-      if (store.currentIntent?.id === data.id) {
+    intent_archived: ({ data: id }) => {
+      if (store.currentIntent?.id === id) {
         store.setCurrentIntent(undefined);
       }
-
-      store.patchIntent(data.id, data);
+      ipc.getIntent(id).then((data) => store.patchIntent(id, data));
     },
-    intent_unarchived: (data) => store.patchIntent(data.id, data),
+    intent_unarchived: ({ data: id }) =>
+      ipc.getIntent(id).then((data) => store.patchIntent(id, data)),
   });
 
   React.useEffect(() => {

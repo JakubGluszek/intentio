@@ -85,11 +85,10 @@ export const IntentView = React.forwardRef<HTMLDivElement, IntentViewProps>(
                 variant="ghost"
                 className="rounded-none"
                 onClick={() => {
-                  ipc
-                    .updateIntent(props.data.id, { pinned: !props.data.pinned })
-                    .then((data) => {
-                      toast(data.pinned ? "Pinned to top" : "Unpinned");
-                    });
+                  ipc.updateIntent(props.data.id, {
+                    pinned: !props.data.pinned,
+                  });
+                  toast(!props.data.pinned ? "Pinned to top" : "Unpinned");
                   menu.hide();
                 }}
               >

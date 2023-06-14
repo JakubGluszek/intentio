@@ -1,38 +1,41 @@
 import React from "react";
 import { MdDelete } from "react-icons/md";
-import { toast } from "react-hot-toast";
 import { AnimatePresence } from "framer-motion";
 
 import useStore from "@/store";
 import ipc from "@/ipc";
 import { DangerButton, Tooltip } from "@/ui";
 import { useConfirmDelete, useEvents } from "@/hooks";
+import { ModelId } from "@/types";
 import { Task } from "@/bindings/Task";
 
 import CreateTask from "./CreateTask";
 import TaskView from "./TaskView";
 import { PanelView, PanelViewProps } from "../PanelView";
 import { TaskButton } from "./TaskButton";
+import { toast } from "react-hot-toast";
 
 const TasksView: React.FC<PanelViewProps> = (props) => {
   const [viewCompletedTasks, setViewCompletedTasks] = React.useState(false);
-  const [selectedTasksIds, setSelectedTasksIds] = React.useState<string[]>([]);
+  const [selectedTasksIds, setSelectedTasksIds] = React.useState<ModelId[]>([]);
   const [viewCreate, setViewCreate] = React.useState(false);
 
   const store = useStore();
   const tasksContainer = React.useRef<HTMLDivElement>(null);
 
   useEvents({
-    task_created: (data) => {
-      store.addTask(data);
-      tasksContainer.current?.scrollIntoView({
-        block: "start",
-        behavior: "smooth",
+    task_created: ({ data: id }) => {
+      ipc.getTask(id).then((data) => {
+        store.addTask(data);
+        tasksContainer.current?.scrollIntoView({
+          block: "start",
+          behavior: "smooth",
+        });
       });
     },
-    task_updated: (data) => store.patchTask(data.id, data),
-    task_deleted: (data) => store.removeTask(data.id),
-    tasks_deleted: (data) => data.forEach((d) => store.removeTask(d.id)),
+    task_updated: ({ data: id }) =>
+      ipc.getTask(id).then((data) => store.patchTask(id, data)),
+    task_deleted: ({ data: id }) => store.removeTask(id),
   });
 
   React.useEffect(() => {
@@ -81,8 +84,8 @@ interface TasksListProps {
   innerRef: React.RefObject<HTMLDivElement>;
   tasks: Task[];
   viewCompletedTasks: boolean;
-  selectedTasksIds: string[];
-  setSelectedTasksIds: React.Dispatch<React.SetStateAction<string[]>>;
+  selectedTasksIds: ModelId[];
+  setSelectedTasksIds: React.Dispatch<React.SetStateAction<ModelId[]>>;
 }
 
 const TasksList: React.FC<TasksListProps> = (props) => {
@@ -97,7 +100,7 @@ const TasksList: React.FC<TasksListProps> = (props) => {
             mode="popLayout"
           >
             {props.tasks
-              .filter((task) => task.done === props.viewCompletedTasks)
+              .filter((task) => task.completed === props.viewCompletedTasks)
               .map((task) => {
                 let isSelected = props.selectedTasksIds.includes(task.id);
 
@@ -149,18 +152,15 @@ const ToggleTasksView: React.FC<ToggleTasksViewProps> = (props) => {
 };
 
 interface DeleteMultiTasksButtonProps {
-  selectedTasksIds: string[];
-  setSelectedTasksIds: React.Dispatch<React.SetStateAction<string[]>>;
+  selectedTasksIds: ModelId[];
+  setSelectedTasksIds: React.Dispatch<React.SetStateAction<ModelId[]>>;
 }
 
 const DeleteMultiTasksButton: React.FC<DeleteMultiTasksButtonProps> = (
   props
 ) => {
   const { viewConfirmDelete, onDelete } = useConfirmDelete(() =>
-    ipc.deleteTasks(props.selectedTasksIds).then(() => {
-      props.setSelectedTasksIds([]);
-      toast("Tasks deleted");
-    })
+    toast("feature corrupted")
   );
 
   return (
