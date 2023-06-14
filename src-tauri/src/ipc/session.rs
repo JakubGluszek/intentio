@@ -1,31 +1,27 @@
-//! Tauri IPC commands to bridge the Focused Backend models Controller with Client side.
+//! Tauri IPC commands to bridge the Session Backend Model Controllers with client side.
 
-use tauri::{command, AppHandle, Wry};
+use tauri::{command, AppHandle};
 
 use crate::{
-    ctx::Ctx,
-    models::{Session, SessionBmc, SessionForCreate},
-    prelude::{Error, Result},
+    ctx::AppContext,
+    db::{CreateSession, GetSessionListOptions, Session, SessionBmc},
+    prelude::Result,
 };
 
 #[command]
-pub async fn get_sessions(app: AppHandle<Wry>) -> Result<Vec<Session>> {
-    match Ctx::from_app(app) {
-        Ok(ctx) => match SessionBmc::get_multi(ctx).await {
-            Ok(sessions) => Ok(sessions),
-            Err(err) => Err(err).into(),
-        },
-        Err(_) => Err(Error::CtxFail).into(),
-    }
+pub async fn create_session(app_handle: AppHandle, data: CreateSession) -> Result<i32> {
+    app_handle.db(|mut db| SessionBmc::create(&mut db, &data))
 }
 
 #[command]
-pub async fn create_session(app: AppHandle<Wry>, data: SessionForCreate) -> Result<Session> {
-    match Ctx::from_app(app) {
-        Ok(ctx) => match SessionBmc::create(ctx, data).await {
-            Ok(session) => Ok(session),
-            Err(err) => Err(err).into(),
-        },
-        Err(_) => Err(Error::CtxFail).into(),
-    }
+pub async fn get_session(app_handle: AppHandle, id: i32) -> Result<Session> {
+    app_handle.db(|mut db| SessionBmc::get(&mut db, id))
+}
+
+#[command]
+pub async fn get_sessions(
+    app_handle: AppHandle,
+    options: Option<GetSessionListOptions>,
+) -> Result<Vec<Session>> {
+    app_handle.db(|mut db| SessionBmc::get_list(&mut db, options))
 }

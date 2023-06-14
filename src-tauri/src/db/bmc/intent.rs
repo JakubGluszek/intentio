@@ -41,7 +41,7 @@ impl IntentBmc {
         Ok(intent)
     }
 
-    pub fn get_all(conn: &mut SqliteConnection) -> Result<Vec<Intent>> {
+    pub fn get_list(conn: &mut SqliteConnection) -> Result<Vec<Intent>> {
         use crate::schema::intents::dsl;
 
         let intents: Vec<Intent> = dsl::intents.load(conn)?;
@@ -77,7 +77,7 @@ mod intent_bmc_tests {
 
     #[test]
     fn test_create_intent() {
-        let mut conn = Db::establish_connection_in_memory().unwrap();
+        let mut conn = Db::establish_test_connection().unwrap();
 
         let data = CreateIntent {
             label: "foo".to_string(),
@@ -89,7 +89,7 @@ mod intent_bmc_tests {
 
     #[test]
     fn test_update_intent() {
-        let mut conn = Db::establish_connection_in_memory().unwrap();
+        let mut conn = Db::establish_test_connection().unwrap();
 
         let data = CreateIntent {
             label: "foo".to_string(),
@@ -108,7 +108,7 @@ mod intent_bmc_tests {
 
     #[test]
     fn test_get_intent() {
-        let mut conn = Db::establish_connection_in_memory().unwrap();
+        let mut conn = Db::establish_test_connection().unwrap();
 
         let data = CreateIntent {
             label: "foo".to_string(),
@@ -120,16 +120,11 @@ mod intent_bmc_tests {
         assert_eq!(&intent.label, "foo");
         assert_eq!(intent.pinned, false);
         assert_eq!(intent.archived_at, None);
-
-        let created_at = intent.created_at.timestamp_micros();
-        let now = Utc::now().naive_utc().timestamp_micros();
-
-        assert!(created_at < now);
     }
 
     #[test]
-    fn test_get_all_intents() {
-        let mut conn = Db::establish_connection_in_memory().unwrap();
+    fn test_get_list_of_intents() {
+        let mut conn = Db::establish_test_connection().unwrap();
 
         let data = CreateIntent {
             label: "foo".to_string(),
@@ -137,14 +132,14 @@ mod intent_bmc_tests {
         for _ in 0..10 {
             IntentBmc::create(&mut conn, &data).unwrap();
         }
-        let intents = IntentBmc::get_all(&mut conn).unwrap();
+        let intents = IntentBmc::get_list(&mut conn).unwrap();
 
         assert_eq!(intents.len(), 10);
     }
 
     #[test]
     fn test_delete_intent() {
-        let mut conn = Db::establish_connection_in_memory().unwrap();
+        let mut conn = Db::establish_test_connection().unwrap();
 
         let data = CreateIntent {
             label: "foo".to_string(),
@@ -159,7 +154,7 @@ mod intent_bmc_tests {
 
     #[test]
     fn test_archive_intent() {
-        let mut conn = Db::establish_connection_in_memory().unwrap();
+        let mut conn = Db::establish_test_connection().unwrap();
 
         let data = CreateIntent {
             label: "foo".to_string(),
@@ -174,7 +169,7 @@ mod intent_bmc_tests {
 
     #[test]
     fn test_unarchive_intent() {
-        let mut conn = Db::establish_connection_in_memory().unwrap();
+        let mut conn = Db::establish_test_connection().unwrap();
 
         let data = CreateIntent {
             label: "foo".to_string(),

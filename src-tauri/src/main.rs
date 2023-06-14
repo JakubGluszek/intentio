@@ -87,8 +87,9 @@ fn main() -> Result<()> {
             get_tasks,
             get_tasks_by_intent_id,
             // Session
-            get_sessions,
             create_session,
+            get_session,
+            get_sessions,
             // Script
             get_scripts,
             create_script,

@@ -9,3 +9,21 @@ diesel::table! {
         archived_at -> Nullable<Timestamp>,
     }
 }
+
+diesel::table! {
+    sessions (id) {
+        id -> Integer,
+        duration -> Integer,
+        summary -> Nullable<Text>,
+        started_at -> Timestamp,
+        finished_at -> Timestamp,
+        intent_id -> Integer,
+    }
+}
+
+diesel::joinable!(sessions -> intents (intent_id));
+
+diesel::allow_tables_to_appear_in_same_query!(
+    intents,
+    sessions,
+);

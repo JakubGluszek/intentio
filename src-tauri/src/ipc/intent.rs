@@ -34,7 +34,7 @@ pub async fn get_intent(app_handle: AppHandle, id: i32) -> Result<Intent> {
 
 #[command]
 pub async fn get_intents(app_handle: AppHandle) -> Result<Vec<Intent>> {
-    let intents = app_handle.db(|mut db| IntentBmc::get_all(&mut db))?;
+    let intents = app_handle.db(|mut db| IntentBmc::get_list(&mut db))?;
     Ok(intents)
 }
 

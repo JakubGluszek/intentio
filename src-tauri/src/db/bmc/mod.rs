@@ -1,12 +1,13 @@
 mod intent;
+mod session;
+
+pub use intent::*;
+pub use session::*;
 
 use diesel::prelude::*;
 use diesel::SqliteConnection;
-pub use intent::*;
 
 use crate::prelude::Result;
-
-use super::last_insert_rowid;
 
 pub struct BaseBmc {}
 
@@ -16,3 +17,7 @@ impl BaseBmc {
         Ok(id)
     }
 }
+
+diesel::sql_function!(
+    fn last_insert_rowid() -> diesel::sql_types::Integer;
+);

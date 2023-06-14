@@ -4,7 +4,7 @@ mod models;
 pub use bmc::*;
 pub use models::*;
 
-use diesel::{sqlite::Sqlite, Connection, SqliteConnection};
+use diesel::{connection::SimpleConnection, sqlite::Sqlite, Connection, SqliteConnection};
 use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationError, MigrationHarness};
 use std::{
     error::Error,
@@ -22,6 +22,9 @@ impl Db {
             Self::create_root_dir()?;
         }
         let mut conn = Self::establish_connection();
+
+        conn.batch_execute("PRAGMA foreign_keys = ON;").unwrap();
+
         Self::run_migrations(&mut conn).expect("should run migrations");
 
         Ok(conn)
@@ -34,9 +37,10 @@ impl Db {
     }
 
     #[allow(dead_code)]
-    pub fn establish_connection_in_memory() -> Result<SqliteConnection, MigrationError> {
+    pub fn establish_test_connection() -> Result<SqliteConnection, MigrationError> {
         let mut conn = SqliteConnection::establish(":memory:")
             .expect("should establish an in memory database connection");
+        conn.batch_execute("PRAGMA foreign_keys = ON;").unwrap();
         Self::run_migrations(&mut conn).expect("should run a migration on in memory connection");
         Ok(conn)
     }
@@ -60,7 +64,3 @@ impl Db {
         tauri::api::path::data_dir().unwrap().join("intentio/")
     }
 }
-
-diesel::sql_function!(
-    fn last_insert_rowid() -> diesel::sql_types::Integer;
-);
