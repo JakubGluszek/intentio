@@ -65,12 +65,11 @@ fn main() -> Result<()> {
             hide_main_window,
             exit_main_window,
             // Theme
-            get_theme,
-            get_themes,
             create_theme,
             update_theme,
             delete_theme,
-            delete_themes,
+            get_theme,
+            get_themes,
             // Intent
             get_intent,
             get_intents,

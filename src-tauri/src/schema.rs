@@ -47,6 +47,18 @@ diesel::table! {
     }
 }
 
+diesel::table! {
+    themes (id) {
+        id -> Integer,
+        label -> Text,
+        favorite -> Bool,
+        window_hex -> Text,
+        base_hex -> Text,
+        text_hex -> Text,
+        primary_hex -> Text,
+    }
+}
+
 diesel::joinable!(sessions -> intents (intent_id));
 diesel::joinable!(tasks -> intents (intent_id));
 
@@ -55,4 +67,5 @@ diesel::allow_tables_to_appear_in_same_query!(
     scripts,
     sessions,
     tasks,
+    themes,
 );
