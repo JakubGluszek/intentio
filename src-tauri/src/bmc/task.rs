@@ -4,9 +4,7 @@ use diesel::SqliteConnection;
 use serde::Deserialize;
 use ts_rs::TS;
 
-use crate::db::CreateTask;
-use crate::db::Task;
-use crate::db::UpdateTask;
+use crate::models::{CreateTask, Task, UpdateTask};
 use crate::prelude::Result;
 
 use super::BaseBmc;
@@ -24,7 +22,7 @@ pub struct TaskBmc {}
 
 impl TaskBmc {
     pub fn create(conn: &mut SqliteConnection, data: &CreateTask) -> Result<i32> {
-        use crate::schema::tasks;
+        use crate::db::schema::tasks;
 
         diesel::insert_into(tasks::table)
             .values(data)
@@ -33,7 +31,7 @@ impl TaskBmc {
     }
 
     pub fn update(conn: &mut SqliteConnection, id: i32, data: &UpdateTask) -> Result<i32> {
-        use crate::schema::tasks::dsl;
+        use crate::db::schema::tasks::dsl;
 
         diesel::update(dsl::tasks.find(id))
             .set(data)
@@ -42,14 +40,14 @@ impl TaskBmc {
     }
 
     pub fn delete(conn: &mut SqliteConnection, id: i32) -> Result<i32> {
-        use crate::schema::tasks::dsl;
+        use crate::db::schema::tasks::dsl;
 
         diesel::delete(dsl::tasks.filter(dsl::id.eq(id))).execute(conn)?;
         Ok(id)
     }
 
     pub fn get(conn: &mut SqliteConnection, id: i32) -> Result<Task> {
-        use crate::schema::tasks::dsl;
+        use crate::db::schema::tasks::dsl;
 
         let task: Task = dsl::tasks.find(id).first(conn)?;
         Ok(task)
@@ -59,7 +57,7 @@ impl TaskBmc {
         conn: &mut SqliteConnection,
         options: Option<GetTasksOptions>,
     ) -> Result<Vec<Task>> {
-        use crate::schema::tasks::dsl;
+        use crate::db::schema::tasks::dsl;
 
         let mut query = dsl::tasks.into_boxed();
 
@@ -110,10 +108,7 @@ impl TaskBmc {
 mod task_bmc_tests {
     use chrono::{Duration, Utc};
 
-    use crate::{
-        db::{CreateIntent, Db, IntentBmc},
-        prelude::Error,
-    };
+    use crate::{bmc::IntentBmc, db::Db, models::CreateIntent, prelude::Error};
 
     use super::*;
 

@@ -29,12 +29,6 @@ chrono = { version = "0.4.22", features = ["serde"] }
 cuid = "1.2.0"
 rodio = "0.16.0"
 thiserror = "1"
-tokio = { version = "1", features = ["full"] }
-surrealdb = { version = "1.0.0-beta.8", default-features = false, features = [
-  'parallel',
-  'kv-mem',
-  'kv-rocksdb',
-] }
 ts-rs = { version = "6", features = ["format", "chrono-impl"] }
 toml = "0.5.9"
 tauri-hotkey = "0.1.2"

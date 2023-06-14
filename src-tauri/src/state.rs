@@ -1,8 +1,8 @@
 use serde::{Deserialize, Serialize};
-use std::sync::Arc;
+use tauri::{AppHandle, Manager};
 use ts_rs::TS;
 
-use crate::{ctx::Ctx, models::Theme};
+use crate::{models::Theme, prelude::Result};
 
 #[derive(Serialize, Deserialize, Clone, TS)]
 #[ts(export, export_to = "../src/bindings/")]
@@ -43,21 +43,22 @@ pub struct AppState {
 }
 
 impl AppState {
-    pub fn update_current_theme(self: &AppState, ctx: Arc<Ctx>) {
+    pub fn update_current_theme(self: &AppState, app_handle: AppHandle) -> Result<()> {
         if self.timer.is_playing == false {
-            ctx.emit_event("current_theme_updated", self.idle_theme.clone());
+            app_handle.emit_all("current_theme_updated", self.idle_theme.clone())?;
         } else {
             match self.timer.session_type {
                 SessionType::Focus => {
-                    ctx.emit_event("current_theme_updated", self.focus_theme.clone())
+                    app_handle.emit_all("current_theme_updated", self.focus_theme.clone())?;
                 }
                 SessionType::Break => {
-                    ctx.emit_event("current_theme_updated", self.break_theme.clone())
+                    app_handle.emit_all("current_theme_updated", self.break_theme.clone())?;
                 }
                 SessionType::LongBreak => {
-                    ctx.emit_event("current_theme_updated", self.long_break_theme.clone())
+                    app_handle.emit_all("current_theme_updated", self.long_break_theme.clone())?;
                 }
             }
         }
+        Ok(())
     }
 }

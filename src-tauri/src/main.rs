@@ -3,46 +3,32 @@
     windows_subsystem = "windows"
 )]
 
+mod bmc;
 mod config;
 mod ctx;
-mod database;
 mod db;
 mod error;
 mod ipc;
 mod models;
 mod prelude;
-mod schema;
 mod setup;
 mod state;
-mod utils;
 
 use std::sync::Mutex;
 
 use crate::ipc::*;
 use crate::prelude::*;
 use db::Db;
-use setup::setup_database;
 use setup::setup_hook;
 use tauri::Manager;
 use tauri::{CustomMenuItem, SystemTray, SystemTrayEvent, SystemTrayMenu, SystemTrayMenuItem};
 use tauri_plugin_autostart::MacosLauncher;
-use tokio::runtime::Builder;
 
 fn main() -> Result<()> {
-    let runtime = Builder::new_current_thread()
-        .enable_time()
-        .build()
-        .expect("expected tokio runtime");
-
-    let database = runtime
-        .block_on(setup_database())
-        .expect("database should be set up");
-
-    let conn = Db::setup().expect("the database should be set up");
+    let db = Db::setup().expect("the database should be set up");
 
     tauri::Builder::default()
-        .manage(Mutex::new(conn))
-        .manage(database)
+        .manage(Mutex::new(db))
         .system_tray(SystemTray::new().with_menu(create_tray_menu()))
         .on_system_tray_event(handle_on_system_tray_event)
         .invoke_handler(tauri::generate_handler![
@@ -97,7 +83,7 @@ fn main() -> Result<()> {
             get_script,
             get_scripts
         ])
-        .setup(move |app| Ok(runtime.block_on(setup_hook(app))))
+        .setup(move |app| Ok(setup_hook(app)))
         .plugin(tauri_plugin_autostart::init(
             MacosLauncher::LaunchAgent,
             Some(vec![]),

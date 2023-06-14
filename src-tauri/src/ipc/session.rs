@@ -3,8 +3,9 @@
 use tauri::{command, AppHandle};
 
 use crate::{
+    bmc::{GetSessionsOptions, SessionBmc},
     ctx::AppContext,
-    db::{CreateSession, GetSessionsOptions, Session, SessionBmc},
+    models::{CreateSession, Session},
     prelude::Result,
 };
 

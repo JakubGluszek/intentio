@@ -3,8 +3,9 @@
 use tauri::{command, AppHandle};
 
 use crate::{
+    bmc::ThemeBmc,
     ctx::AppContext,
-    db::{CreateTheme, Theme, ThemeBmc, UpdateTheme},
+    models::{CreateTheme, Theme, UpdateTheme},
     prelude::Result,
 };
 

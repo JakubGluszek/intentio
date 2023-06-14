@@ -3,8 +3,9 @@
 use tauri::{command, AppHandle};
 
 use crate::{
+    bmc::IntentBmc,
     ctx::AppContext,
-    db::{CreateIntent, Intent, IntentBmc, UpdateIntent},
+    models::{CreateIntent, Intent, UpdateIntent},
     prelude::Result,
 };
 

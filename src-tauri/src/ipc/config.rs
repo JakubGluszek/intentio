@@ -1,10 +1,9 @@
-use tauri::{command, AppHandle, Wry};
+use tauri::{command, AppHandle, Manager};
 
 use crate::{
     config::{
         ConfigManager, SettingsConfig, SettingsConfigForUpdate, TimerConfig, TimerConfigForUpdate,
     },
-    ctx::Ctx,
     prelude::Result,
 };
 
@@ -14,10 +13,9 @@ pub async fn get_timer_config() -> Result<TimerConfig> {
 }
 
 #[command]
-pub async fn update_timer_config(app: AppHandle<Wry>, data: TimerConfigForUpdate) -> Result<()> {
-    let ctx = Ctx::from_app(app)?;
+pub async fn update_timer_config(app_handle: AppHandle, data: TimerConfigForUpdate) -> Result<()> {
     let config = ConfigManager::update::<TimerConfig, TimerConfigForUpdate>(data)?;
-    ctx.emit_event("timer_config_updated", config);
+    app_handle.emit_all("timer_config_updated", config)?;
     Ok(())
 }
 
@@ -28,11 +26,10 @@ pub async fn get_settings_config() -> Result<SettingsConfig> {
 
 #[command]
 pub async fn update_settings_config(
-    app: AppHandle<Wry>,
+    app_handle: AppHandle,
     data: SettingsConfigForUpdate,
 ) -> Result<()> {
-    let ctx = Ctx::from_app(app)?;
     let config = ConfigManager::update::<SettingsConfig, SettingsConfigForUpdate>(data)?;
-    ctx.emit_event("settings_config_updated", config);
+    app_handle.emit_all("settings_config_updated", config)?;
     Ok(())
 }

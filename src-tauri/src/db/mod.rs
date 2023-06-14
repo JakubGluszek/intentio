@@ -1,8 +1,4 @@
-mod bmc;
-mod models;
-
-pub use bmc::*;
-pub use models::*;
+pub mod schema;
 
 use diesel::{connection::SimpleConnection, sqlite::Sqlite, Connection, SqliteConnection};
 use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationError, MigrationHarness};

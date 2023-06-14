@@ -1,9 +1,9 @@
 use diesel::prelude::*;
 use diesel::SqliteConnection;
 
-use crate::db::CreateTheme;
-use crate::db::Theme;
-use crate::db::UpdateTheme;
+use crate::models::CreateTheme;
+use crate::models::Theme;
+use crate::models::UpdateTheme;
 use crate::prelude::Result;
 
 use super::BaseBmc;
@@ -12,7 +12,7 @@ pub struct ThemeBmc {}
 
 impl ThemeBmc {
     pub fn create(conn: &mut SqliteConnection, data: &CreateTheme) -> Result<i32> {
-        use crate::schema::themes;
+        use crate::db::schema::themes;
 
         diesel::insert_into(themes::table)
             .values(data)
@@ -20,7 +20,7 @@ impl ThemeBmc {
         BaseBmc::get_last_insert_id(conn)
     }
     pub fn update(conn: &mut SqliteConnection, id: i32, data: &UpdateTheme) -> Result<i32> {
-        use crate::schema::themes::dsl;
+        use crate::db::schema::themes::dsl;
 
         diesel::update(dsl::themes.find(id))
             .set(data)
@@ -28,19 +28,19 @@ impl ThemeBmc {
         Ok(id)
     }
     pub fn delete(conn: &mut SqliteConnection, id: i32) -> Result<i32> {
-        use crate::schema::themes::dsl;
+        use crate::db::schema::themes::dsl;
 
         diesel::delete(dsl::themes.find(id)).execute(conn)?;
         Ok(id)
     }
     pub fn get(conn: &mut SqliteConnection, id: i32) -> Result<Theme> {
-        use crate::schema::themes::dsl;
+        use crate::db::schema::themes::dsl;
 
         let theme = dsl::themes.find(id).first(conn)?;
         Ok(theme)
     }
     pub fn get_list(conn: &mut SqliteConnection) -> Result<Vec<Theme>> {
-        use crate::schema::themes::dsl;
+        use crate::db::schema::themes::dsl;
 
         let themes = dsl::themes.load(conn)?;
         Ok(themes)
@@ -48,10 +48,10 @@ impl ThemeBmc {
     pub fn create_default_themes(conn: &mut SqliteConnection) -> Result<()> {
         let query = r#"
             INSERT INTO themes (label, favorite, window_hex, base_hex, primary_hex, text_hex) VALUES 
-            ('abyss', 0, '#222831', '#77CED2', '#00ADB5', '#EEEEEE'),
             ('forest', 0, '#002a37', '#65c3b1', '#0feda2', '#EBEBEB'),
-            ('dracula', 0, '#282a36', '#d1bdf1', '#bd93f9', '#f8f8f2'),
+            ('abyss', 0, '#222831', '#77CED2', '#00ADB5', '#EEEEEE'),
             ('space', 0, '#120A2B', '#78A2B3', '#01A8B5', '#FAEDF0'),
+            ('dracula', 0, '#282a36', '#d1bdf1', '#bd93f9', '#f8f8f2'),
             ('blaze', 0, '#112B3C', '#f79385', '#F66B0E', '#EFEFEF'),
             ('snow', 0, '#E4EDED', '#6F96F8', '#4685FF', '#1F1F21');
         "#;

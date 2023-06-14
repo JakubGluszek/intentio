@@ -1,9 +1,9 @@
 use diesel::prelude::*;
 use diesel::SqliteConnection;
 
-use crate::db::CreateScript;
-use crate::db::Script;
-use crate::db::UpdateScript;
+use crate::models::CreateScript;
+use crate::models::Script;
+use crate::models::UpdateScript;
 use crate::prelude::Result;
 
 use super::BaseBmc;
@@ -12,7 +12,7 @@ pub struct ScriptBmc {}
 
 impl ScriptBmc {
     pub fn create(conn: &mut SqliteConnection, data: &CreateScript) -> Result<i32> {
-        use crate::schema::scripts;
+        use crate::db::schema::scripts;
 
         diesel::insert_into(scripts::table)
             .values(data)
@@ -21,28 +21,28 @@ impl ScriptBmc {
     }
 
     pub fn update(conn: &mut SqliteConnection, id: i32, data: &UpdateScript) -> Result<i32> {
-        use crate::schema::scripts::dsl::scripts;
+        use crate::db::schema::scripts::dsl::scripts;
 
         diesel::update(scripts.find(id)).set(data).execute(conn)?;
         Ok(id)
     }
 
     pub fn delete(conn: &mut SqliteConnection, id: i32) -> Result<i32> {
-        use crate::schema::scripts::dsl::scripts;
+        use crate::db::schema::scripts::dsl::scripts;
 
         diesel::delete(scripts.find(id)).execute(conn)?;
         Ok(id)
     }
 
     pub fn get(conn: &mut SqliteConnection, id: i32) -> Result<Script> {
-        use crate::schema::scripts::dsl::scripts;
+        use crate::db::schema::scripts::dsl::scripts;
 
         let script = scripts.find(id).first(conn)?;
         Ok(script)
     }
 
     pub fn get_list(conn: &mut SqliteConnection) -> Result<Vec<Script>> {
-        use crate::schema::scripts::dsl;
+        use crate::db::schema::scripts::dsl;
 
         let scripts = dsl::scripts.load(conn)?;
         Ok(scripts)

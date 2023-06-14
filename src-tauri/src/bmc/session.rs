@@ -3,8 +3,8 @@ use diesel::SqliteConnection;
 use serde::Deserialize;
 use ts_rs::TS;
 
-use crate::db::CreateSession;
-use crate::db::Session;
+use crate::models::CreateSession;
+use crate::models::Session;
 use crate::prelude::Result;
 
 use super::BaseBmc;
@@ -21,7 +21,7 @@ pub struct SessionBmc {}
 
 impl SessionBmc {
     pub fn create(conn: &mut SqliteConnection, data: &CreateSession) -> Result<i32> {
-        use crate::schema::sessions;
+        use crate::db::schema::sessions;
 
         diesel::insert_into(sessions::table)
             .values(data)
@@ -30,7 +30,7 @@ impl SessionBmc {
     }
 
     pub fn get(conn: &mut SqliteConnection, id: i32) -> Result<Session> {
-        use crate::schema::sessions::dsl;
+        use crate::db::schema::sessions::dsl;
 
         let session: Session = dsl::sessions.find(id).first(conn)?;
         Ok(session)
@@ -40,7 +40,7 @@ impl SessionBmc {
         conn: &mut SqliteConnection,
         options: Option<GetSessionsOptions>,
     ) -> Result<Vec<Session>> {
-        use crate::schema::sessions::dsl;
+        use crate::db::schema::sessions::dsl;
 
         let mut query = dsl::sessions.into_boxed();
 
@@ -69,10 +69,7 @@ impl SessionBmc {
 mod session_bmc_tests {
     use chrono::Duration;
 
-    use crate::{
-        db::{CreateIntent, Db, IntentBmc},
-        prelude::Error,
-    };
+    use crate::{bmc::IntentBmc, db::Db, models::CreateIntent, prelude::Error};
 
     use super::*;
 

@@ -3,8 +3,9 @@
 use tauri::{command, AppHandle};
 
 use crate::{
+    bmc::{GetTasksOptions, TaskBmc},
     ctx::AppContext,
-    db::{CreateTask, GetTasksOptions, Task, TaskBmc, UpdateTask},
+    models::{CreateTask, Task, UpdateTask},
     prelude::Result,
 };
 

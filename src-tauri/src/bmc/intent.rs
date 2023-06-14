@@ -1,8 +1,9 @@
 use diesel::prelude::*;
 use diesel::SqliteConnection;
 
-use crate::db::UpdateIntent;
-use crate::db::{CreateIntent, Intent};
+use crate::models::CreateIntent;
+use crate::models::Intent;
+use crate::models::UpdateIntent;
 use crate::prelude::Result;
 
 use super::BaseBmc;
@@ -11,7 +12,7 @@ pub struct IntentBmc {}
 
 impl IntentBmc {
     pub fn create(conn: &mut SqliteConnection, data: &CreateIntent) -> Result<i32> {
-        use crate::schema::intents;
+        use crate::db::schema::intents;
 
         diesel::insert_into(intents::table)
             .values(data)
@@ -21,35 +22,35 @@ impl IntentBmc {
     }
 
     pub fn update(conn: &mut SqliteConnection, id: i32, data: &UpdateIntent) -> Result<i32> {
-        use crate::schema::intents::dsl::intents;
+        use crate::db::schema::intents::dsl::intents;
 
         diesel::update(intents.find(id)).set(data).execute(conn)?;
         Ok(id)
     }
 
     pub fn delete(conn: &mut SqliteConnection, id: i32) -> Result<i32> {
-        use crate::schema::intents::dsl;
+        use crate::db::schema::intents::dsl;
 
         diesel::delete(dsl::intents.filter(dsl::id.eq(id))).execute(conn)?;
         Ok(id)
     }
 
     pub fn get(conn: &mut SqliteConnection, id: i32) -> Result<Intent> {
-        use crate::schema::intents::dsl;
+        use crate::db::schema::intents::dsl;
 
         let intent = dsl::intents.find(id).first(conn)?;
         Ok(intent)
     }
 
     pub fn get_list(conn: &mut SqliteConnection) -> Result<Vec<Intent>> {
-        use crate::schema::intents::dsl;
+        use crate::db::schema::intents::dsl;
 
         let intents: Vec<Intent> = dsl::intents.load(conn)?;
         Ok(intents)
     }
 
     pub fn archive(conn: &mut SqliteConnection, id: i32) -> Result<i32> {
-        use crate::schema::intents::dsl::{archived_at, intents};
+        use crate::db::schema::intents::dsl::{archived_at, intents};
 
         let now = chrono::Utc::now().naive_utc();
         diesel::update(intents.find(id))
@@ -59,7 +60,7 @@ impl IntentBmc {
     }
 
     pub fn unarchive(conn: &mut SqliteConnection, id: i32) -> Result<i32> {
-        use crate::schema::intents::dsl::{archived_at, intents};
+        use crate::db::schema::intents::dsl::{archived_at, intents};
 
         diesel::update(intents.find(id))
             .set(archived_at.eq::<Option<chrono::NaiveDateTime>>(None))

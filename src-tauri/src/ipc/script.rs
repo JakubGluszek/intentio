@@ -3,8 +3,9 @@
 use tauri::{command, AppHandle};
 
 use crate::{
+    bmc::ScriptBmc,
     ctx::AppContext,
-    db::{CreateScript, Script, ScriptBmc, UpdateScript},
+    models::{CreateScript, Script, UpdateScript},
     prelude::Result,
 };
 
