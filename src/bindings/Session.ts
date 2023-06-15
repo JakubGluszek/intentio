@@ -4,7 +4,7 @@ export interface Session {
   id: number;
   duration: number;
   summary: string | null;
-  started_at: Date;
-  finished_at: Date;
+  started_at: number;
+  finished_at: number;
   intent_id: number;
 }

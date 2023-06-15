@@ -3,6 +3,6 @@
 export interface CreateSession {
   duration: number;
   summary: string | null;
-  started_at: string;
+  started_at: number;
   intent_id: number;
 }

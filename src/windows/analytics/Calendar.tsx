@@ -80,11 +80,11 @@ export const useCalendar = (props: useCalendarProps) => {
 
     // transform sessions to appropriate Date objects
     for (let i = 0; i < props.sessions.length; i++) {
-      const date = props.sessions[i].finished_at;
+      const timestamp = props.sessions[i].finished_at;
 
-      if (date.getTime() < dateRange.getTime()) continue;
+      if (timestamp < Math.round(dateRange.getTime() / 1000)) continue;
 
-      const iso_date = date.toISOString().split("T")[0];
+      const iso_date = new Date(timestamp * 1000).toISOString().split("T")[0];
 
       const day = days.get(iso_date);
       if (day) {

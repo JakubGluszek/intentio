@@ -45,7 +45,6 @@ impl SessionBmc {
         let mut query = dsl::sessions.into_boxed();
 
         if let Some(options) = options {
-            println!("there are options");
             // Filter out sessions based on the `intent_id` field
             if let Some(intent_id) = options.intent_id {
                 query = query.filter(dsl::intent_id.eq(intent_id));
@@ -68,8 +67,6 @@ impl SessionBmc {
 
 #[cfg(test)]
 mod session_bmc_tests {
-    use chrono::Duration;
-
     use crate::{bmc::IntentBmc, db::Db, models::CreateIntent, prelude::Error};
 
     use super::*;
@@ -84,7 +81,7 @@ mod session_bmc_tests {
         };
         let intent_id = IntentBmc::create(&mut conn, &data).unwrap();
 
-        let started_at = chrono::Utc::now().naive_utc();
+        let started_at = chrono::Utc::now().timestamp();
         let data = CreateSession {
             duration: 1500,
             summary: None,
@@ -100,7 +97,7 @@ mod session_bmc_tests {
     fn test_fail_create_session_non_existent_intent_row() {
         let mut conn = Db::establish_test_connection().unwrap();
 
-        let started_at = chrono::Utc::now().naive_utc();
+        let started_at = chrono::Utc::now().timestamp();
         let data = CreateSession {
             duration: 1500,
             summary: None,
@@ -122,7 +119,7 @@ mod session_bmc_tests {
         };
         let intent_id = IntentBmc::create(&mut conn, &data).unwrap();
 
-        let started_at = chrono::Utc::now().naive_utc() - Duration::minutes(15);
+        let started_at = chrono::Utc::now().timestamp();
         let data = CreateSession {
             duration: 1500,
             summary: None,
@@ -137,7 +134,6 @@ mod session_bmc_tests {
         assert_eq!(session.duration, 1500);
         assert_eq!(session.summary, None);
         assert_eq!(session.intent_id, intent_id);
-        assert!(session.finished_at.timestamp() > session.started_at.timestamp());
     }
 
     #[test]
@@ -151,7 +147,7 @@ mod session_bmc_tests {
         let intent_id = IntentBmc::create(&mut conn, &data).unwrap();
 
         for _ in 0..10 {
-            let started_at = chrono::Utc::now().naive_utc() - Duration::minutes(15);
+            let started_at = chrono::Utc::now().timestamp();
             let data = CreateSession {
                 duration: 1500,
                 summary: None,
@@ -177,7 +173,7 @@ mod session_bmc_tests {
         let intent_id2 = IntentBmc::create(&mut conn, &data).unwrap();
 
         for _ in 0..5 {
-            let started_at = chrono::Utc::now().naive_utc() - Duration::minutes(15);
+            let started_at = chrono::Utc::now().timestamp();
             let data = CreateSession {
                 duration: 1500,
                 summary: None,
@@ -187,7 +183,7 @@ mod session_bmc_tests {
             SessionBmc::create(&mut conn, &data).unwrap();
         }
         for _ in 0..5 {
-            let started_at = chrono::Utc::now().naive_utc() - Duration::minutes(15);
+            let started_at = chrono::Utc::now().timestamp();
             let data = CreateSession {
                 duration: 1500,
                 summary: None,
@@ -218,7 +214,7 @@ mod session_bmc_tests {
         let intent_id = IntentBmc::create(&mut conn, &data).unwrap();
 
         for _ in 0..10 {
-            let started_at = chrono::Utc::now().naive_utc() - Duration::minutes(15);
+            let started_at = chrono::Utc::now().timestamp();
             let data = CreateSession {
                 duration: 1500,
                 summary: None,

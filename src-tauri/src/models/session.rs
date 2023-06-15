@@ -1,4 +1,3 @@
-use chrono::NaiveDateTime;
 use diesel::prelude::*;
 use diesel::Queryable;
 use serde::{Deserialize, Serialize};
@@ -13,10 +12,10 @@ pub struct Session {
     pub id: i32,
     pub duration: i32,
     pub summary: Option<String>,
-    #[ts(type = "Date")]
-    pub started_at: NaiveDateTime,
-    #[ts(type = "Date")]
-    pub finished_at: NaiveDateTime,
+    #[ts(type = "number")]
+    pub started_at: i64,
+    #[ts(type = "number")]
+    pub finished_at: i64,
     pub intent_id: i32,
 }
 
@@ -26,6 +25,7 @@ pub struct Session {
 pub struct CreateSession {
     pub duration: i32,
     pub summary: Option<String>,
-    pub started_at: NaiveDateTime,
+    #[ts(type = "number")]
+    pub started_at: i64,
     pub intent_id: i32,
 }

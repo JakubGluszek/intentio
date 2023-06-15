@@ -13,7 +13,6 @@ use super::EventPayload;
 
 #[command]
 pub async fn create_session(app_handle: AppHandle, data: CreateSession) -> Result<i32> {
-    println!("{:#?}", data);
     let id = app_handle.db(|mut db| SessionBmc::create(&mut db, &data))?;
     let payload = EventPayload { data: id };
     app_handle.emit_all("session_created", payload)?;

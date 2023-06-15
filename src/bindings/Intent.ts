@@ -4,6 +4,6 @@ export interface Intent {
   id: number;
   label: string;
   pinned: boolean;
-  created_at: Date;
-  archived_at: Date;
+  created_at: number;
+  archived_at: number;
 }

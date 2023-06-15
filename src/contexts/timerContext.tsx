@@ -53,7 +53,7 @@ export const TimerContextProvider: React.FC<TimerContextProviderProps> = ({
         if (timer.config.session_summary) {
           setSessionForCreate({
             duration: ~~(session.elapsedTime! / 60),
-            started_at: session.startedAt.toLocaleString(),
+            started_at: Math.round(session.startedAt.getTime() / 1000),
             summary: null,
             intent_id: store.currentIntent.id,
           });
@@ -61,7 +61,7 @@ export const TimerContextProvider: React.FC<TimerContextProviderProps> = ({
           ipc
             .createSession({
               duration: ~~(session.elapsedTime! / 60),
-              started_at: session.startedAt.toLocaleString(),
+              started_at: Math.round(session.startedAt.getTime() / 1000),
               summary: null,
               intent_id: store.currentIntent.id,
             })

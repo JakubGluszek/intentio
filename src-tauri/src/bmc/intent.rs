@@ -52,7 +52,7 @@ impl IntentBmc {
     pub fn archive(conn: &mut SqliteConnection, id: i32) -> Result<i32> {
         use crate::db::schema::intents::dsl::{archived_at, intents};
 
-        let now = chrono::Utc::now().naive_utc();
+        let now = chrono::Utc::now().timestamp();
         diesel::update(intents.find(id))
             .set(archived_at.eq(now))
             .execute(conn)?;
@@ -63,7 +63,7 @@ impl IntentBmc {
         use crate::db::schema::intents::dsl::{archived_at, intents};
 
         diesel::update(intents.find(id))
-            .set(archived_at.eq::<Option<chrono::NaiveDateTime>>(None))
+            .set(archived_at.eq::<Option<i64>>(None))
             .execute(conn)?;
         Ok(id)
     }

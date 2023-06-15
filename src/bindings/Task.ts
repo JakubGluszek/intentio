@@ -4,7 +4,7 @@ export interface Task {
   id: number;
   body: string;
   completed: boolean;
-  created_at: Date;
-  finished_at: Date;
+  created_at: number;
+  finished_at: number;
   intent_id: number;
 }

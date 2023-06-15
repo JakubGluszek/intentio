@@ -1,4 +1,3 @@
-use chrono::NaiveDateTime;
 use diesel::prelude::*;
 use diesel::Queryable;
 use serde::{Deserialize, Serialize};
@@ -13,10 +12,10 @@ pub struct Intent {
     pub id: i32,
     pub label: String,
     pub pinned: bool,
-    #[ts(type = "Date")]
-    pub created_at: NaiveDateTime,
-    #[ts(type = "Date")]
-    pub archived_at: Option<NaiveDateTime>,
+    #[ts(type = "number")]
+    pub created_at: i64,
+    #[ts(type = "number")]
+    pub archived_at: Option<i64>,
 }
 
 #[derive(Insertable, Deserialize, TS, Debug, Clone)]

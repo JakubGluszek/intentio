@@ -5,8 +5,8 @@ diesel::table! {
         id -> Integer,
         label -> Text,
         pinned -> Bool,
-        created_at -> Timestamp,
-        archived_at -> Nullable<Timestamp>,
+        created_at -> BigInt,
+        archived_at -> Nullable<BigInt>,
     }
 }
 
@@ -30,8 +30,8 @@ diesel::table! {
         id -> Integer,
         duration -> Integer,
         summary -> Nullable<Text>,
-        started_at -> Timestamp,
-        finished_at -> Timestamp,
+        started_at -> BigInt,
+        finished_at -> BigInt,
         intent_id -> Integer,
     }
 }
@@ -41,8 +41,8 @@ diesel::table! {
         id -> Integer,
         body -> Text,
         completed -> Bool,
-        created_at -> Timestamp,
-        finished_at -> Nullable<Timestamp>,
+        created_at -> BigInt,
+        finished_at -> Nullable<BigInt>,
         intent_id -> Integer,
     }
 }

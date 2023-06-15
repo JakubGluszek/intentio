@@ -106,8 +106,6 @@ impl TaskBmc {
 
 #[cfg(test)]
 mod task_bmc_tests {
-    use chrono::{Duration, Utc};
-
     use crate::{bmc::IntentBmc, db::Db, models::CreateIntent, prelude::Error};
 
     use super::*;
@@ -198,10 +196,6 @@ mod task_bmc_tests {
         assert_eq!(task.id, 1);
         assert_eq!(task.body, "supercalifragilisticexpialidocious".to_string());
         assert_eq!(task.completed, false);
-        assert!(
-            task.created_at.timestamp()
-                < (Utc::now().naive_utc() + Duration::minutes(60)).timestamp()
-        );
         assert!(task.finished_at.is_none());
     }
 

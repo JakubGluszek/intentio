@@ -1,4 +1,3 @@
-use chrono::NaiveDateTime;
 use diesel::prelude::*;
 use diesel::Queryable;
 use serde::{Deserialize, Serialize};
@@ -13,10 +12,10 @@ pub struct Task {
     pub id: i32,
     pub body: String,
     pub completed: bool,
-    #[ts(type = "Date")]
-    pub created_at: NaiveDateTime,
-    #[ts(type = "Date")]
-    pub finished_at: Option<NaiveDateTime>,
+    #[ts(type = "number")]
+    pub created_at: i64,
+    #[ts(type = "number")]
+    pub finished_at: Option<i64>,
     pub intent_id: i32,
 }
 
