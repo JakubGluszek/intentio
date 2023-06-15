@@ -11,10 +11,10 @@ use super::Config;
 #[derive(Serialize, Deserialize, TS, Debug, Clone)]
 #[ts(export, export_to = "../src/bindings/")]
 pub struct SettingsConfig {
-    pub idle_theme_id: String,
-    pub focus_theme_id: String,
-    pub break_theme_id: String,
-    pub long_break_theme_id: String,
+    pub idle_theme_id: i32,
+    pub focus_theme_id: i32,
+    pub break_theme_id: i32,
+    pub long_break_theme_id: i32,
     pub alert_file: String,
     pub alert_volume: f32,
     #[ts(type = "number")]
@@ -34,10 +34,10 @@ impl Config for SettingsConfig {
 impl Default for SettingsConfig {
     fn default() -> Self {
         Self {
-            idle_theme_id: DEFAULT_IDLE_THEME_ID.to_string(),
-            focus_theme_id: DEFAULT_FOCUS_THEME_ID.to_string(),
-            break_theme_id: DEFAULT_BREAK_THEME_ID.to_string(),
-            long_break_theme_id: DEFAULT_LONG_BREAK_THEME_ID.to_string(),
+            idle_theme_id: 1,
+            focus_theme_id: 2,
+            break_theme_id: 3,
+            long_break_theme_id: 4,
             alert_file: DEFAULT_ALERT_FILE.into(),
             alert_volume: 0.25,
             alert_repeat: 2,
@@ -53,10 +53,10 @@ impl Default for SettingsConfig {
 #[derive(Serialize, Deserialize, TS, Debug)]
 #[ts(export, export_to = "../src/bindings/")]
 pub struct SettingsConfigForUpdate {
-    pub idle_theme_id: Option<String>,
-    pub focus_theme_id: Option<String>,
-    pub break_theme_id: Option<String>,
-    pub long_break_theme_id: Option<String>,
+    pub idle_theme_id: Option<i32>,
+    pub focus_theme_id: Option<i32>,
+    pub break_theme_id: Option<i32>,
+    pub long_break_theme_id: Option<i32>,
     pub alert_file: Option<String>,
     pub alert_volume: Option<f32>,
     #[ts(type = "number")]

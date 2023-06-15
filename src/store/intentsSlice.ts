@@ -1,5 +1,6 @@
 import { StateCreator } from "zustand";
 
+import { ModelId } from "@/types";
 import { Intent } from "@/bindings/Intent";
 
 export interface IntentsSlice {
@@ -7,9 +8,9 @@ export interface IntentsSlice {
   currentIntent: Intent | undefined;
   setIntents: (data: Intent[]) => void;
   addIntent: (data: Intent) => void;
-  patchIntent: (id: string, data: Intent) => void;
-  removeIntent: (id: string) => void;
-  getIntentById: (id?: string | null) => Intent | undefined;
+  patchIntent: (id: ModelId, data: Intent) => void;
+  removeIntent: (id: ModelId) => void;
+  getIntentById: (id?: ModelId | null) => Intent | undefined;
   setCurrentIntent: (data: Intent | undefined) => void;
 }
 

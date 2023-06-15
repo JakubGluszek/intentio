@@ -21,7 +21,7 @@ const config = {
   windows: {
     main: {
       width: 300,
-      height: 320,
+      height: 340,
     },
     settings: {
       url: "/settings",

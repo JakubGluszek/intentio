@@ -1,5 +1,6 @@
-import { Theme } from "@/bindings/Theme";
 import { invoke } from "@tauri-apps/api";
+
+import { Theme } from "@/bindings/Theme";
 
 export const getCurrentTheme = async () => {
   return await invoke<Theme>("get_current_theme");

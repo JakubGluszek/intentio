@@ -1,30 +1,34 @@
-use std::sync::Arc;
+use std::sync::{Arc, Mutex};
 
 use crate::{
+    bmc::ThemeBmc,
     config::{ConfigManager, SettingsConfig, TimerConfig},
-    ctx::Ctx,
-    database::Database,
-    models::ThemeBmc,
+    ctx::AppContext,
     prelude::Result,
     state::{AppState, TimerState},
 };
 use tauri::{App, Manager};
 use tauri_hotkey::{Hotkey, HotkeyManager, Key, Modifier};
 
-pub async fn setup_database() -> Result<Arc<Database>> {
-    let database = Database::new().await?;
-    let database = Arc::new(database);
+pub fn setup_hook(app: &mut App) {
+    // Disables GTK's scroll bar
+    std::env::set_var("GTK_OVERLAY_SCROLLING", "0");
 
-    ThemeBmc::init_default_themes(database.clone()).await?;
-
-    Ok(database)
+    setup_database(app).expect("should set up database");
+    setup_config().expect("should set up config");
+    setup_hotkeys_manager(app).expect("should set up hotkeys");
+    setup_state(app).expect("should set up state");
+    build_main_window(app).expect("should build main window");
 }
 
-pub async fn setup_hook(app: &mut App) {
-    setup_config().expect("initial config setup");
-    setup_hotkeys_manager(app).expect("initial setup of hotkeys");
-    setup_state(app).await.expect("initial state setup");
-    build_main_window(app).expect("initial main window build");
+fn setup_database(app: &mut App) -> Result<()> {
+    let app_handle = app.app_handle();
+    let themes = app_handle.db(|mut db| ThemeBmc::get_list(&mut db))?;
+
+    if themes.len() == 0 {
+        app_handle.db(|mut db| ThemeBmc::create_default_themes(&mut db))?
+    }
+    Ok(())
 }
 
 fn setup_config() -> Result<()> {
@@ -39,17 +43,16 @@ fn setup_config() -> Result<()> {
 }
 
 fn setup_hotkeys_manager(app: &mut App) -> Result<()> {
-    let ctx = Ctx::from_app(app.app_handle())?;
-
     let mut hm = HotkeyManager::new();
-    let ctx_clone = ctx.clone();
+    let app_handle = Arc::new(app.app_handle());
+    let app_handle_clone = app_handle.clone();
 
     hm.register(
         Hotkey {
             modifiers: vec![Modifier::CTRL],
             keys: vec![Key::F1],
         },
-        move || ctx_clone.emit_event("timer_play", ()),
+        move || app_handle_clone.emit_all("timer_play", ()).unwrap(),
     )
     .expect("CTRL + F1 failed to register");
 
@@ -58,35 +61,33 @@ fn setup_hotkeys_manager(app: &mut App) -> Result<()> {
             modifiers: vec![Modifier::CTRL],
             keys: vec![Key::F2],
         },
-        move || ctx.emit_event("timer_skip", ()),
+        move || app_handle.emit_all("timer_skip", ()).unwrap(),
     )
     .expect("CTRL + F2 failed to register");
 
     app.manage(hm);
-
     Ok(())
 }
 
-async fn setup_state(app: &mut App) -> Result<()> {
-    let ctx = Ctx::from_app(app.app_handle())?;
+fn setup_state(app: &mut App) -> Result<()> {
+    let app_handle = app.app_handle();
     let settings = ConfigManager::get::<SettingsConfig>()?;
 
-    // handle possible error caused by theme_ids pointing to models which don't exist
-    let idle_theme = ThemeBmc::get(ctx.clone(), &settings.idle_theme_id).await?;
-    let focus_theme = ThemeBmc::get(ctx.clone(), &settings.focus_theme_id).await?;
-    let break_theme = ThemeBmc::get(ctx.clone(), &settings.break_theme_id).await?;
-    let long_break_theme = ThemeBmc::get(ctx.clone(), &settings.long_break_theme_id).await?;
+    let idle_theme = app_handle.db(|mut db| ThemeBmc::get(&mut db, settings.idle_theme_id))?;
+    let focus_theme = app_handle.db(|mut db| ThemeBmc::get(&mut db, settings.focus_theme_id))?;
+    let break_theme = app_handle.db(|mut db| ThemeBmc::get(&mut db, settings.break_theme_id))?;
+    let long_break_theme =
+        app_handle.db(|mut db| ThemeBmc::get(&mut db, settings.long_break_theme_id))?;
 
     let app_state = AppState {
         timer: TimerState::default(),
-        focus_theme,
         idle_theme,
+        focus_theme,
         break_theme,
         long_break_theme,
     };
 
-    app.manage(tokio::sync::Mutex::new(app_state));
-
+    app.manage(Mutex::new(app_state));
     Ok(())
 }
 
@@ -95,9 +96,9 @@ fn build_main_window(app: &mut App) -> Result<()> {
 
     tauri::WindowBuilder::new(app, "main", tauri::WindowUrl::App("/".into()))
         .title("Intentio")
-        .inner_size(300f64, 320f64)
-        .max_inner_size(300f64, 320f64)
-        .min_inner_size(300f64, 320f64)
+        .inner_size(300f64, 340f64)
+        .max_inner_size(300f64, 340f64)
+        .min_inner_size(300f64, 340f64)
         .fullscreen(false)
         .resizable(false)
         .decorations(false)

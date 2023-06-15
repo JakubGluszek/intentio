@@ -3,38 +3,32 @@
     windows_subsystem = "windows"
 )]
 
+mod bmc;
 mod config;
 mod ctx;
-mod database;
+mod db;
 mod error;
 mod ipc;
 mod models;
 mod prelude;
 mod setup;
 mod state;
-mod utils;
+
+use std::sync::Mutex;
 
 use crate::ipc::*;
 use crate::prelude::*;
-use setup::setup_database;
+use db::Db;
 use setup::setup_hook;
 use tauri::Manager;
 use tauri::{CustomMenuItem, SystemTray, SystemTrayEvent, SystemTrayMenu, SystemTrayMenuItem};
 use tauri_plugin_autostart::MacosLauncher;
-use tokio::runtime::Builder;
 
 fn main() -> Result<()> {
-    let runtime = Builder::new_current_thread()
-        .enable_time()
-        .build()
-        .expect("expected tokio runtime");
-
-    let database = runtime
-        .block_on(setup_database())
-        .expect("database should be set up");
+    let db = Db::setup().expect("the database should be set up");
 
     tauri::Builder::default()
-        .manage(database)
+        .manage(Mutex::new(db))
         .system_tray(SystemTray::new().with_menu(create_tray_menu()))
         .on_system_tray_event(handle_on_system_tray_event)
         .invoke_handler(tauri::generate_handler![
@@ -57,13 +51,13 @@ fn main() -> Result<()> {
             hide_main_window,
             exit_main_window,
             // Theme
-            get_theme,
-            get_themes,
             create_theme,
             update_theme,
             delete_theme,
-            delete_themes,
+            get_theme,
+            get_themes,
             // Intent
+            get_intent,
             get_intents,
             create_intent,
             update_intent,
@@ -74,18 +68,22 @@ fn main() -> Result<()> {
             create_task,
             update_task,
             delete_task,
-            delete_tasks,
+            get_task,
             get_tasks,
+            complete_task,
+            uncomplete_task,
             // Session
-            get_sessions,
             create_session,
+            get_session,
+            get_sessions,
             // Script
-            get_scripts,
             create_script,
             update_script,
-            delete_script
+            delete_script,
+            get_script,
+            get_scripts
         ])
-        .setup(move |app| Ok(runtime.block_on(setup_hook(app))))
+        .setup(move |app| Ok(setup_hook(app)))
         .plugin(tauri_plugin_autostart::init(
             MacosLauncher::LaunchAgent,
             Some(vec![]),

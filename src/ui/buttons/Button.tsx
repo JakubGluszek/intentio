@@ -43,8 +43,8 @@ export const Button: React.FC<ButtonProps> = (props) => {
   if (variant === "base") {
     className = twMerge(
       className,
-      "bg-primary/5 hover:bg-primary/80 active:bg-primary \
-      text-primary/80 hover:text-window active:text-window py-0.5 \
+      "bg-primary/5 hover:bg-primary/80 active:bg-primary p-0 \
+      text-primary/80 hover:text-window active:text-window \
       px-2 border-2 border-primary/40 hover:border-transparent active:border-primary active:-translate-y-[1px] \
       hover:shadow hover:shadow-black/20 active:shadow-lg active:shadow-black/60"
     );
@@ -54,7 +54,7 @@ export const Button: React.FC<ButtonProps> = (props) => {
       clsx(
         "text-base hover:text-primary/80",
         config?.ghost?.highlight === true
-          ? "hover:bg-base/10 active:bg-base/20"
+          ? "hover:bg-base/5 active:bg-base/10"
           : "bg-transparent active:text-primary p-0"
       )
     );

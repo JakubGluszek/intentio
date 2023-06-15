@@ -1,15 +1,15 @@
 import { StateCreator } from "zustand";
 
+import { ModelId } from "@/types";
 import { Task } from "@/bindings/Task";
 
 export interface TasksSlice {
   tasks: Task[];
   setTasks: (data: Task[]) => void;
   addTask: (data: Task) => void;
-  patchTask: (id: string, data: Task) => void;
-  removeTask: (id: string) => void;
-  getTaskByIntent: (intentId: string) => Task[];
-  getTasksByDate: (date: string, intentId?: string) => Task[]; // date example: 2023-02-14
+  patchTask: (id: ModelId, data: Task) => void;
+  removeTask: (id: ModelId) => void;
+  getTaskByIntent: (intentId: ModelId) => Task[];
 }
 
 export const createTasksSlice: StateCreator<TasksSlice, [], [], TasksSlice> = (
@@ -29,24 +29,6 @@ export const createTasksSlice: StateCreator<TasksSlice, [], [], TasksSlice> = (
   removeTask: (id) =>
     set((state) => ({ tasks: state.tasks.filter((i) => i.id !== id) })),
 
-  getTaskByIntent: (intentId: string) =>
+  getTaskByIntent: (intentId) =>
     get().tasks.filter((task) => task.intent_id === intentId),
-
-  getTasksByDate: (date, intentId) => {
-    var tasks = get().tasks;
-
-    if (intentId) {
-      tasks = tasks.filter((task) => task.intent_id === intentId);
-    }
-
-    tasks = tasks.filter((task) =>
-      task.done
-        ? date ===
-        new Date(parseInt(task.finished_at!)).toISOString().split("T")[0]
-        : date ===
-        new Date(parseInt(task.created_at)).toISOString().split("T")[0]
-    );
-
-    return tasks
-  },
 });

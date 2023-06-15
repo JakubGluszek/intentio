@@ -1,55 +1,46 @@
-use tauri::{command, AppHandle, Wry};
+//! Tauri IPC commands to bridge the Script Backend Model Controller with client side.
+
+use tauri::{command, AppHandle, Manager};
 
 use crate::{
-    ctx::Ctx,
-    models::{ModelDeleteResultData, Script, ScriptBmc, ScriptForCreate, ScriptForUpdate},
-    prelude::{Error, Result},
+    bmc::ScriptBmc,
+    ctx::AppContext,
+    models::{CreateScript, Script, UpdateScript},
+    prelude::Result,
 };
 
+use super::EventPayload;
+
 #[command]
-pub async fn get_scripts(app: AppHandle<Wry>) -> Result<Vec<Script>> {
-    match Ctx::from_app(app) {
-        Ok(ctx) => match ScriptBmc::get_multi(ctx).await {
-            Ok(scripts) => Ok(scripts),
-            Err(err) => Err(err).into(),
-        },
-        Err(_) => Err(Error::CtxFail).into(),
-    }
+pub async fn create_script(app_handle: AppHandle, data: CreateScript) -> Result<i32> {
+    let id = app_handle.db(|mut db| ScriptBmc::create(&mut db, &data))?;
+    let payload = EventPayload { data: id };
+    app_handle.emit_all("script_created", payload)?;
+    Ok(id)
 }
 
 #[command]
-pub async fn create_script(app: AppHandle<Wry>, data: ScriptForCreate) -> Result<Script> {
-    match Ctx::from_app(app) {
-        Ok(ctx) => match ScriptBmc::create(ctx, data).await {
-            Ok(script) => Ok(script),
-            Err(err) => Err(err).into(),
-        },
-        Err(_) => Err(Error::CtxFail).into(),
-    }
+pub async fn update_script(app_handle: AppHandle, id: i32, data: UpdateScript) -> Result<i32> {
+    let id = app_handle.db(|mut db| ScriptBmc::update(&mut db, id, &data))?;
+    let payload = EventPayload { data: id };
+    app_handle.emit_all("script_updated", payload)?;
+    Ok(id)
 }
 
 #[command]
-pub async fn update_script(
-    app: AppHandle<Wry>,
-    id: String,
-    data: ScriptForUpdate,
-) -> Result<Script> {
-    match Ctx::from_app(app) {
-        Ok(ctx) => match ScriptBmc::update(ctx, &id, data).await {
-            Ok(script) => Ok(script),
-            Err(err) => Err(err).into(),
-        },
-        Err(_) => Err(Error::CtxFail).into(),
-    }
+pub async fn delete_script(app_handle: AppHandle, id: i32) -> Result<i32> {
+    let id = app_handle.db(|mut db| ScriptBmc::delete(&mut db, id))?;
+    let payload = EventPayload { data: id };
+    app_handle.emit_all("script_deleted", payload)?;
+    Ok(id)
 }
 
 #[command]
-pub async fn delete_script(app: AppHandle<Wry>, id: String) -> Result<ModelDeleteResultData> {
-    match Ctx::from_app(app) {
-        Ok(ctx) => match ScriptBmc::delete(ctx, &id).await {
-            Ok(data) => Ok(data),
-            Err(err) => Err(err).into(),
-        },
-        Err(_) => Err(Error::CtxFail).into(),
-    }
+pub async fn get_script(app_handle: AppHandle, id: i32) -> Result<Script> {
+    app_handle.db(|mut db| ScriptBmc::get(&mut db, id))
+}
+
+#[command]
+pub async fn get_scripts(app_handle: AppHandle) -> Result<Vec<Script>> {
+    app_handle.db(|mut db| ScriptBmc::get_list(&mut db))
 }

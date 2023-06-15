@@ -1,26 +1,34 @@
 import { invoke } from "@tauri-apps/api";
 
+import { ModelId } from "@/types";
 import { Task } from "@/bindings/Task";
-import { TaskForCreate } from "@/bindings/TaskForCreate";
-import { TaskForUpdate } from "@/bindings/TaskForUpdate";
-import { ModelDeleteResultData } from "@/bindings/ModelDeleteResultData";
+import { UpdateTask } from "@/bindings/UpdateTask";
+import { CreateTask } from "@/bindings/CreateTask";
+
+export const createTask = async (data: CreateTask) => {
+  return await invoke<ModelId>("create_task", { data });
+};
+
+export const updateTask = async (id: ModelId, data: Partial<UpdateTask>) => {
+  return await invoke<ModelId>("update_task", { id, data });
+};
+
+export const deleteTask = async (id: ModelId) => {
+  return await invoke<ModelId>("delete_task", { id });
+};
+
+export const getTask = async (id: ModelId) => {
+  return await invoke<Task>("get_task", { id });
+};
 
 export const getTasks = async () => {
   return await invoke<Task[]>("get_tasks");
 };
 
-export const createTask = async (data: TaskForCreate) => {
-  return await invoke<Task>("create_task", { data });
+export const completeTask = async (id: ModelId) => {
+  return await invoke<ModelId>("complete_task", { id });
 };
 
-export const updateTask = async (id: string, data: Partial<TaskForUpdate>) => {
-  return await invoke<Task>("update_task", { id, data });
-};
-
-export const deleteTask = async (id: string) => {
-  return await invoke<ModelDeleteResultData>("delete_task", { id });
-};
-
-export const deleteTasks = async (ids: string[]) => {
-  return await invoke<ModelDeleteResultData>("delete_tasks", { ids });
+export const uncompleteTask = async (id: ModelId) => {
+  return await invoke<ModelId>("uncomplete_task", { id });
 };

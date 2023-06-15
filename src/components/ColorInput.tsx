@@ -1,40 +1,29 @@
 import React from "react";
-import { UseFormRegister, UseFormWatch } from "react-hook-form";
-
-import { ThemeForCreate } from "@/bindings/ThemeForCreate";
-import { Card } from "@/ui";
 import { MdColorLens } from "react-icons/md";
 
-interface Props {
+import { Card } from "@/ui";
+
+interface ColorInputProps {
   label: string;
-  type: "window_hex" | "primary_hex" | "base_hex" | "text_hex";
-  watch: UseFormWatch<ThemeForCreate>;
-  register: UseFormRegister<ThemeForCreate>;
+  hex: string;
   onViewColorPicker: () => void;
 }
 
-const ColorInput: React.FC<Props> = (props) => {
-  const currentHex = props.watch(props.type);
-
+export const ColorInput: React.FC<ColorInputProps> = (props) => {
   return (
-    <Card className="flex flex-col gap-1">
-      <label
-        className="min-w-[80px] flex flex-row items-center gap-1 text-text font-semibold"
-        htmlFor={props.type}
-      >
+    <Card className="flex flex-col gap-2">
+      <div className="flex flex-row items-center gap-1.5 text-text font-semibold">
         <MdColorLens size={20} />
         <div>{props.label}</div>
-      </label>
+      </div>
       <div
-        data-tauri-disable-drag
         onClick={() => props.onViewColorPicker()}
-        style={{ backgroundColor: currentHex }}
-        className="w-full p-1 opacity-80 hover:opacity-100 flex flex-row items-center justify-center shadow shadow-black/30 hover:shadow-lg hover:shadow-black/30 transition-all rounded cursor-pointer"
+        style={{ backgroundColor: props.hex }}
+        className="w-full p-1 opacity-80 uppercase hover:opacity-100 flex flex-row items-center justify-center hover:shadow hover:shadow-black/20 transition-all rounded cursor-pointer"
+        data-tauri-disable-drag
       >
-        <div className="contrast-text font-bold">{currentHex}</div>
+        <div className="contrast-text font-bold">{props.hex}</div>
       </div>
     </Card>
   );
 };
-
-export default ColorInput;

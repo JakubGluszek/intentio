@@ -1,79 +1,62 @@
-//! Tauri IPC commands to bridge the Project Backend models Controller with Client side.
+//! Tauri IPC commands to bridge the Intent Backend Model Controller with client side.
 
-use tauri::{command, AppHandle, Wry};
+use tauri::{command, AppHandle, Manager};
 
 use crate::{
-    ctx::Ctx,
-    models::{Intent, IntentBmc, IntentForCreate, IntentForUpdate, ModelDeleteResultData},
-    prelude::{Error, Result},
+    bmc::IntentBmc,
+    ctx::AppContext,
+    models::{CreateIntent, Intent, UpdateIntent},
+    prelude::Result,
 };
 
+use super::EventPayload;
+
 #[command]
-pub async fn get_intents(app: AppHandle<Wry>) -> Result<Vec<Intent>> {
-    match Ctx::from_app(app) {
-        Ok(ctx) => match IntentBmc::list(ctx.get_database()).await {
-            Ok(intents) => Ok(intents),
-            Err(err) => Err(err).into(),
-        },
-        Err(_) => Err(Error::CtxFail).into(),
-    }
+pub async fn create_intent(app_handle: AppHandle, data: CreateIntent) -> Result<i32> {
+    let id = app_handle.db(|mut db| IntentBmc::create(&mut db, &data))?;
+    let payload = EventPayload { data: id };
+    app_handle.emit_all("intent_created", payload)?;
+    Ok(id)
 }
 
 #[command]
-pub async fn create_intent(app: AppHandle<Wry>, data: IntentForCreate) -> Result<Intent> {
-    match Ctx::from_app(app) {
-        Ok(ctx) => match IntentBmc::create(ctx, data).await {
-            Ok(intent) => Ok(intent),
-            Err(err) => Err(err).into(),
-        },
-        Err(_) => Err(Error::CtxFail).into(),
-    }
+pub async fn update_intent(app_handle: AppHandle, id: i32, data: UpdateIntent) -> Result<i32> {
+    let id = app_handle.db(|mut db| IntentBmc::update(&mut db, id, &data))?;
+    let payload = EventPayload { data: id };
+    app_handle.emit_all("intent_updated", payload)?;
+    Ok(id)
 }
 
 #[command]
-pub async fn update_intent(
-    app: AppHandle<Wry>,
-    id: String,
-    data: IntentForUpdate,
-) -> Result<Intent> {
-    match Ctx::from_app(app) {
-        Ok(ctx) => match IntentBmc::update(ctx, &id, data).await {
-            Ok(intent) => Ok(intent),
-            Err(err) => Err(err).into(),
-        },
-        Err(_) => Err(Error::CtxFail).into(),
-    }
+pub async fn delete_intent(app_handle: AppHandle, id: i32) -> Result<i32> {
+    let id = app_handle.db(|mut db| IntentBmc::delete(&mut db, id))?;
+    let payload = EventPayload { data: id };
+    app_handle.emit_all("intent_deleted", payload)?;
+    Ok(id)
 }
 
 #[command]
-pub async fn delete_intent(app: AppHandle<Wry>, id: String) -> Result<ModelDeleteResultData> {
-    match Ctx::from_app(app) {
-        Ok(ctx) => match IntentBmc::delete(ctx, &id).await {
-            Ok(data) => Ok(data),
-            Err(err) => Err(err).into(),
-        },
-        Err(_) => Err(Error::CtxFail).into(),
-    }
+pub async fn get_intent(app_handle: AppHandle, id: i32) -> Result<Intent> {
+    app_handle.db(|mut db| IntentBmc::get(&mut db, id))
 }
 
 #[command]
-pub async fn archive_intent(app: AppHandle<Wry>, id: String) -> Result<Intent> {
-    match Ctx::from_app(app) {
-        Ok(ctx) => match IntentBmc::archive(ctx, &id).await {
-            Ok(intent) => Ok(intent),
-            Err(err) => Err(err).into(),
-        },
-        Err(_) => Err(Error::CtxFail).into(),
-    }
+pub async fn get_intents(app_handle: AppHandle) -> Result<Vec<Intent>> {
+    app_handle.db(|mut db| IntentBmc::get_list(&mut db))
 }
 
 #[command]
-pub async fn unarchive_intent(app: AppHandle<Wry>, id: String) -> Result<Intent> {
-    match Ctx::from_app(app) {
-        Ok(ctx) => match IntentBmc::unarchive(ctx, &id).await {
-            Ok(intent) => Ok(intent),
-            Err(err) => Err(err).into(),
-        },
-        Err(_) => Err(Error::CtxFail).into(),
-    }
+pub async fn archive_intent(app_handle: AppHandle, id: i32) -> Result<i32> {
+    let id = app_handle.db(|mut db| IntentBmc::archive(&mut db, id))?;
+    let payload = EventPayload { data: id };
+    app_handle.emit_all("intent_archived", payload)?;
+    Ok(id)
+}
+
+#[command]
+pub async fn unarchive_intent(app_handle: AppHandle, id: i32) -> Result<i32> {
+    let id = app_handle.db(|mut db| IntentBmc::unarchive(&mut db, id))?;
+    let payload = EventPayload { data: id };
+    app_handle.emit_all("intent_unarchived", payload)?;
+    Ok(id)
 }

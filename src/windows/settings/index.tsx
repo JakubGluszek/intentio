@@ -2,7 +2,6 @@ import React from "react";
 import {
   MdAccountCircle,
   MdAudiotrack,
-  MdClose,
   MdColorLens,
   MdInfo,
   MdSettings,
@@ -15,33 +14,26 @@ import {
 } from "@/contexts/settingsWindowContext";
 import { VscSettings, VscTerminalBash } from "react-icons/vsc";
 
-import useStore from "@/store";
-import { Button, Pane, Tabs } from "@/ui";
-import { useEvents } from "@/hooks";
+import { Pane, Panels, Titlebar } from "@/ui";
 import { WindowContainer } from "@/components";
-import TimerView from "./TimerView";
-import AudioView from "./audioView";
-import ThemesView from "./themesView";
-import ScriptsView from "./scriptsView";
-import AboutView from "./AboutView";
-import GeneralView from "./GeneralView";
-import AccountView from "./AccountView";
-import { appWindow } from "@tauri-apps/api/window";
+
+import TimerPane from "./timerPane";
+import AudioPane from "./audioPane";
+import ThemesPane from "./themesPane";
+import GeneralPane from "./generalPane";
+import ScriptsPane from "./scriptsPane";
+import AccountPane from "./accountPane";
+import AboutPane from "./aboutPane";
 
 export type ColorType = "window" | "base" | "primary" | "text";
 
 const SettingsWindow: React.FC = () => {
-  const store = useStore();
-
-  useEvents({
-    theme_deleted: (data) => store.removeTheme(data.id),
-  });
-
   return (
     <SettingsWindowProvider>
       <WindowContainer>
         <div className="grow flex flex-col gap-0.5">
           <SettingsTitlebar />
+          <Navbar />
           <div className="grow flex flex-col gap-0.5">
             <Content />
           </div>
@@ -54,24 +46,7 @@ const SettingsWindow: React.FC = () => {
 const SettingsTitlebar: React.FC = () => {
   const { panel } = React.useContext(SettingsWindowContext)!;
 
-  return (
-    <Pane className="flex flex-col">
-      <div className="flex flex-row items-center justify-between">
-        <div className="flex flex-row items-center gap-1 text-text/80">
-          <MdSettings size={24} />
-          <span className="text-lg font-semibold">Settings {">"} {panel}</span>
-        </div>
-        <Button
-          variant="ghost"
-          config={{ ghost: { highlight: false } }}
-          onClick={() => appWindow.close()}
-        >
-          <MdClose size={24} />
-        </Button>
-      </div>
-      <Navbar />
-    </Pane>
-  );
+  return <Titlebar icon={MdSettings} title={`Settings | ${panel}`} />;
 };
 
 const Content: React.FC = () => {
@@ -79,13 +54,13 @@ const Content: React.FC = () => {
 
   return (
     <div className="grow flex flex-col">
-      {panel === "Timer" ? <TimerView /> : null}
-      {panel === "Audio" ? <AudioView /> : null}
-      {panel === "Themes" ? <ThemesView /> : null}
-      {panel === "General" ? <GeneralView /> : null}
-      {panel === "Scripts" ? <ScriptsView /> : null}
-      {panel === "Account" ? <AccountView /> : null}
-      {panel === "About" ? <AboutView /> : null}
+      {panel === "Timer" ? <TimerPane /> : null}
+      {panel === "Audio" ? <AudioPane /> : null}
+      {panel === "Themes" ? <ThemesPane /> : null}
+      {panel === "General" ? <GeneralPane /> : null}
+      {panel === "Scripts" ? <ScriptsPane /> : null}
+      {panel === "Account" ? <AccountPane /> : null}
+      {panel === "About" ? <AboutPane /> : null}
     </div>
   );
 };
@@ -99,31 +74,33 @@ const Navbar: React.FC = () => {
   }, []);
 
   return (
-    <Tabs value={panel} onChange={(value) => setPanel(value)}>
-      <Tabs.Tab value="Timer">
-        <MdTimer size={24} />
-      </Tabs.Tab>
-      <Tabs.Tab value="Audio">
-        <MdAudiotrack size={24} />
-      </Tabs.Tab>
-      <Tabs.Tab value="Themes">
-        <MdColorLens size={24} />
-      </Tabs.Tab>
-      <Tabs.Tab value="General">
-        <VscSettings size={24} />
-      </Tabs.Tab>
-      {osType !== "Windows_NT" && (
-        <Tabs.Tab value="Scripts">
-          <VscTerminalBash size={24} />
-        </Tabs.Tab>
-      )}
-      <Tabs.Tab value="Account">
-        <MdAccountCircle size={24} />
-      </Tabs.Tab>
-      <Tabs.Tab value="About">
-        <MdInfo size={24} />
-      </Tabs.Tab>
-    </Tabs>
+    <Pane>
+      <Panels value={panel} onChange={(value) => setPanel(value)}>
+        <Panels.Panel value="Timer">
+          <MdTimer size={24} />
+        </Panels.Panel>
+        <Panels.Panel value="Audio">
+          <MdAudiotrack size={24} />
+        </Panels.Panel>
+        <Panels.Panel value="Themes">
+          <MdColorLens size={24} />
+        </Panels.Panel>
+        <Panels.Panel value="General">
+          <VscSettings size={24} />
+        </Panels.Panel>
+        {osType !== "Windows_NT" && (
+          <Panels.Panel value="Scripts">
+            <VscTerminalBash size={24} />
+          </Panels.Panel>
+        )}
+        <Panels.Panel value="Account">
+          <MdAccountCircle size={24} />
+        </Panels.Panel>
+        <Panels.Panel value="About">
+          <MdInfo size={24} />
+        </Panels.Panel>
+      </Panels>
+    </Pane>
   );
 };
 

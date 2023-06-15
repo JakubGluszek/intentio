@@ -1,13 +1,14 @@
 import { StateCreator } from "zustand";
 
+import { ModelId } from "@/types";
 import { Theme } from "@/bindings/Theme";
 
 export interface ThemesSlice {
   themes: Theme[];
   setThemes: (data: Theme[]) => void;
   addTheme: (data: Theme) => void;
-  patchTheme: (id: string, data: Theme) => void;
-  removeTheme: (id: string) => void;
+  patchTheme: (id: ModelId, data: Theme) => void;
+  removeTheme: (id: ModelId) => void;
 }
 
 export const createThemesSlice: StateCreator<

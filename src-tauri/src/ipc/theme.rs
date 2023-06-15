@@ -1,71 +1,46 @@
-//! Tauri IPC commands to bridge the Theme Backend models Controller with Client side.
+//! Tauri IPC commands to bridge the Theme Backend Model Controller with client side.
 
-use crate::models::{ModelDeleteResultData, ThemeBmc, ThemeForCreate, ThemeForUpdate};
-use crate::prelude::{Error, Result};
-use crate::{ctx::Ctx, models::Theme};
-use tauri::{command, AppHandle, Wry};
+use tauri::{command, AppHandle, Manager};
+
+use crate::{
+    bmc::ThemeBmc,
+    ctx::AppContext,
+    models::{CreateTheme, Theme, UpdateTheme},
+    prelude::Result,
+};
+
+use super::EventPayload;
 
 #[command]
-pub async fn get_theme(app: AppHandle<Wry>, id: String) -> Result<Theme> {
-    match Ctx::from_app(app) {
-        Ok(ctx) => match ThemeBmc::get(ctx, &id).await {
-            Ok(theme) => Ok(theme),
-            Err(err) => Err(err).into(),
-        },
-        Err(_) => Err(Error::CtxFail).into(),
-    }
+pub async fn create_theme(app_handle: AppHandle, data: CreateTheme) -> Result<i32> {
+    let id = app_handle.db(|mut db| ThemeBmc::create(&mut db, &data))?;
+    let payload = EventPayload { data: id };
+    app_handle.emit_all("theme_created", payload)?;
+    Ok(id)
 }
 
 #[command]
-pub async fn get_themes(app: AppHandle<Wry>) -> Result<Vec<Theme>> {
-    match Ctx::from_app(app) {
-        Ok(ctx) => match ThemeBmc::list(ctx).await {
-            Ok(themes) => Ok(themes),
-            Err(err) => Err(err).into(),
-        },
-        Err(_) => Err(Error::CtxFail).into(),
-    }
+pub async fn update_theme(app_handle: AppHandle, id: i32, data: UpdateTheme) -> Result<i32> {
+    let id = app_handle.db(|mut db| ThemeBmc::update(&mut db, id, &data))?;
+    let payload = EventPayload { data: id };
+    app_handle.emit_all("theme_updated", payload)?;
+    Ok(id)
 }
 
 #[command]
-pub async fn create_theme(app: AppHandle<Wry>, data: ThemeForCreate) -> Result<Theme> {
-    match Ctx::from_app(app) {
-        Ok(ctx) => match ThemeBmc::create(ctx, data).await {
-            Ok(theme) => Ok(theme),
-            Err(err) => Err(err).into(),
-        },
-        Err(_) => Err(Error::CtxFail).into(),
-    }
+pub async fn delete_theme(app_handle: AppHandle, id: i32) -> Result<i32> {
+    let id = app_handle.db(|mut db| ThemeBmc::delete(&mut db, id))?;
+    let payload = EventPayload { data: id };
+    app_handle.emit_all("theme_deleted", payload)?;
+    Ok(id)
 }
 
 #[command]
-pub async fn update_theme(app: AppHandle<Wry>, id: String, data: ThemeForUpdate) -> Result<Theme> {
-    match Ctx::from_app(app) {
-        Ok(ctx) => match ThemeBmc::update(ctx, &id, data).await {
-            Ok(theme) => Ok(theme),
-            Err(err) => Err(err).into(),
-        },
-        Err(_) => Err(Error::CtxFail).into(),
-    }
+pub async fn get_theme(app_handle: AppHandle, id: i32) -> Result<Theme> {
+    app_handle.db(|mut db| ThemeBmc::get(&mut db, id))
 }
 
 #[command]
-pub async fn delete_theme(app: AppHandle<Wry>, id: String) -> Result<()> {
-    let ctx = Ctx::from_app(app)?;
-    ThemeBmc::delete(ctx, &id).await?;
-    Ok(())
-}
-
-#[command]
-pub async fn delete_themes(
-    app: AppHandle<Wry>,
-    ids: Vec<String>,
-) -> Result<Vec<ModelDeleteResultData>> {
-    match Ctx::from_app(app) {
-        Ok(ctx) => match ThemeBmc::delete_multi(ctx, ids).await {
-            Ok(data) => Ok(data),
-            Err(err) => Err(err).into(),
-        },
-        Err(_) => Err(Error::CtxFail).into(),
-    }
+pub async fn get_themes(app_handle: AppHandle) -> Result<Vec<Theme>> {
+    app_handle.db(|mut db| ThemeBmc::get_list(&mut db))
 }

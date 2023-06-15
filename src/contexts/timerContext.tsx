@@ -1,24 +1,23 @@
 import React from "react";
 import { sendNotification } from "@tauri-apps/api/notification";
+import { appWindow } from "@tauri-apps/api/window";
+import { toast } from "react-hot-toast";
 
 import { useTimer, useTimerReturnValues } from "@/components";
 import ipc from "@/ipc";
 import useStore from "@/store";
 import utils from "@/utils";
 import { useEvents } from "@/hooks";
-import { appWindow } from "@tauri-apps/api/window";
-import { SessionForCreate } from "@/bindings/SessionForCreate";
-import { toast } from "react-hot-toast";
+import { CreateSession } from "@/bindings/CreateSession";
 
-export interface TimerContextReturnValues extends useTimerReturnValues {
+interface ITimerContext extends useTimerReturnValues {
   displayCountdown: boolean;
   toggleDisplayCountdown: () => void;
-  sessionForCreate: SessionForCreate | null;
+  sessionForCreate: CreateSession | null;
   clearSessionForCreate: () => void;
 }
 
-export const TimerContext =
-  React.createContext<TimerContextReturnValues | null>(null);
+export const TimerContext = React.createContext<ITimerContext | null>(null);
 
 interface TimerContextProviderProps {
   children: React.ReactNode;
@@ -29,7 +28,7 @@ export const TimerContextProvider: React.FC<TimerContextProviderProps> = ({
 }) => {
   const [displayCountdown, setDisplayCountdown] = React.useState(true);
   const [sessionForCreate, setSessionForCreate] =
-    React.useState<SessionForCreate | null>(null);
+    React.useState<CreateSession | null>(null);
 
   const toggleDisplayCountdown = () => setDisplayCountdown((prev) => !prev);
 
@@ -49,20 +48,22 @@ export const TimerContextProvider: React.FC<TimerContextProviderProps> = ({
         session.elapsedTime >= 60 &&
         session.startedAt
       ) {
+        if (!store.currentIntent) return;
+
         if (timer.config.session_summary) {
           setSessionForCreate({
             duration: ~~(session.elapsedTime! / 60),
-            started_at: session.startedAt,
+            started_at: Math.round(session.startedAt.getTime() / 1000),
             summary: null,
-            intent_id: store.currentIntent?.id ?? null,
+            intent_id: store.currentIntent.id,
           });
         } else {
           ipc
             .createSession({
               duration: ~~(session.elapsedTime! / 60),
-              started_at: session.startedAt,
+              started_at: Math.round(session.startedAt.getTime() / 1000),
               summary: null,
-              intent_id: store.currentIntent?.id!,
+              intent_id: store.currentIntent.id,
             })
             .then(() => toast("Session saved"));
         }
@@ -81,10 +82,10 @@ export const TimerContextProvider: React.FC<TimerContextProviderProps> = ({
 
       store.scripts.forEach(
         (script) =>
-          script.active &&
+          script.enabled &&
           (session.type === "Focus"
-            ? script.run_on_session_end
-            : script.run_on_break_end) &&
+            ? script.exec_on_session_complete
+            : script.exec_on_break_complete) &&
           utils.executeScript(script.body)
       );
 
@@ -118,10 +119,10 @@ export const TimerContextProvider: React.FC<TimerContextProviderProps> = ({
     onResumed: (session) => {
       store.scripts.forEach(
         (script) =>
-          script.active &&
+          script.enabled &&
           (session.type === "Focus"
-            ? script.run_on_session_start
-            : script.run_on_break_start) &&
+            ? script.exec_on_session_start
+            : script.exec_on_break_start) &&
           utils.executeScript(script.body)
       );
 
@@ -143,10 +144,10 @@ export const TimerContextProvider: React.FC<TimerContextProviderProps> = ({
     onPaused: (session) => {
       store.scripts.forEach(
         (script) =>
-          script.active &&
+          script.enabled &&
           (session.type === "Focus"
-            ? script.run_on_session_pause
-            : script.run_on_break_pause) &&
+            ? script.exec_on_session_pause
+            : script.exec_on_break_pause) &&
           utils.executeScript(script.body)
       );
 
@@ -173,7 +174,8 @@ export const TimerContextProvider: React.FC<TimerContextProviderProps> = ({
   }, []);
 
   useEvents({
-    script_updated: (data) => store.patchScript(data.id, data),
+    script_updated: ({ data: id }) =>
+      ipc.getScript(id).then((data) => store.patchScript(id, data)),
     timer_play: () => (timer.isPlaying ? timer.pause() : timer.resume()),
     timer_skip: () => timer.skip(),
   });

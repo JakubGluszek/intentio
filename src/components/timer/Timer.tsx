@@ -2,11 +2,13 @@ import React from "react";
 import { MdPauseCircle, MdPlayCircle, MdSkipNext } from "react-icons/md";
 import { VscDebugRestart } from "react-icons/vsc";
 import { clsx } from "@mantine/core";
+import { useHotkeys } from "@mantine/hooks";
 import Color from "color";
 
 import { Button } from "@/ui";
 import utils from "@/utils";
 import { Theme } from "@/bindings/Theme";
+
 import { useTimerReturnValues } from "./useTimer";
 import { CircleTimer, ColorFormat } from "./CircleTimer";
 
@@ -17,6 +19,10 @@ export interface TimerProps extends useTimerReturnValues {
 }
 
 export const Timer: React.FC<TimerProps> = (props) => {
+  useHotkeys([
+    ["Space", () => (props.isPlaying ? props.pause() : props.resume())],
+  ]);
+
   const formattedTimeLeft = utils.formatTimer(
     props.duration - props.elapsedTime
   );
@@ -33,8 +39,8 @@ export const Timer: React.FC<TimerProps> = (props) => {
       isPlaying={props.isPlaying}
       duration={props.duration}
       elapsedTime={props.elapsedTimeDetailed}
-      strokeWidth={2}
-      size={192}
+      strokeWidth={3}
+      size={200}
       color={
         Color(props.isPlaying ? props.theme.primary_hex : props.theme.base_hex)
           .alpha(0.6)
@@ -76,7 +82,6 @@ export const Timer: React.FC<TimerProps> = (props) => {
           </div>
         )}
       </div>
-
       <div className="absolute m-auto translate-y-[4.25rem]  w-full flex flex-col items-center gap-1 transition-opacity duration-150">
         <div className="group flex flex-row items-center justify-center">
           <button
