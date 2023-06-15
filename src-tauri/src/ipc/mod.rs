@@ -5,6 +5,7 @@ mod session;
 mod state;
 mod task;
 mod theme;
+mod timer;
 mod utils;
 
 pub use config::*;
@@ -14,10 +15,11 @@ pub use session::*;
 pub use state::*;
 pub use task::*;
 pub use theme::*;
-use ts_rs::TS;
+pub use timer::*;
 pub use utils::*;
 
 use serde::Serialize;
+use ts_rs::TS;
 
 #[derive(Serialize, Clone, TS)]
 #[ts(export, export_to = "../src/bindings/")]

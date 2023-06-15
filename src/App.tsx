@@ -4,6 +4,7 @@ import { Route, Routes } from "react-router-dom";
 const MainWindow = React.lazy(() => import("./windows/main"));
 const SettingsWindow = React.lazy(() => import("./windows/settings"));
 const AnalyticsWindow = React.lazy(() => import("./windows/analytics"));
+const TestTimerWindow = React.lazy(() => import("./windows/TestTimerWindow"));
 
 const App: React.FC = () => {
   return (
@@ -12,6 +13,7 @@ const App: React.FC = () => {
         <Route index element={<MainWindow />} />
         <Route path="settings" element={<SettingsWindow />} />
         <Route path="analytics" element={<AnalyticsWindow />} />
+        <Route path="timer" element={<TestTimerWindow />} />
       </Routes>
     </React.Fragment>
   );

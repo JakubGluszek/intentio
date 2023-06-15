@@ -4,8 +4,10 @@ use crate::{
     bmc::ThemeBmc,
     config::{ConfigManager, SettingsConfig, TimerConfig},
     ctx::AppContext,
+    db::Db,
     prelude::Result,
     state::{AppState, TimerState},
+    timer::Timer,
 };
 use tauri::{App, Manager};
 use tauri_hotkey::{Hotkey, HotkeyManager, Key, Modifier};
@@ -14,6 +16,7 @@ pub fn setup_hook(app: &mut App) {
     // Disables GTK's scroll bar
     std::env::set_var("GTK_OVERLAY_SCROLLING", "0");
 
+    setup_timer(app);
     setup_database(app).expect("should set up database");
     setup_config().expect("should set up config");
     setup_hotkeys_manager(app).expect("should set up hotkeys");
@@ -21,13 +24,23 @@ pub fn setup_hook(app: &mut App) {
     build_main_window(app).expect("should build main window");
 }
 
-fn setup_database(app: &mut App) -> Result<()> {
+fn setup_timer(app: &mut App) {
     let app_handle = app.app_handle();
-    let themes = app_handle.db(|mut db| ThemeBmc::get_list(&mut db))?;
 
+    let timer = Timer::init(app_handle);
+
+    app.manage(Mutex::new(timer));
+}
+
+fn setup_database(app: &mut App) -> Result<()> {
+    let mut conn = Db::setup().expect("the database should be set up");
+
+    let themes = ThemeBmc::get_list(&mut conn)?;
     if themes.len() == 0 {
-        app_handle.db(|mut db| ThemeBmc::create_default_themes(&mut db))?
+        ThemeBmc::create_default_themes(&mut conn)?
     }
+
+    app.manage(Mutex::new(conn));
     Ok(())
 }
 
