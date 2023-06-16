@@ -17,7 +17,7 @@ use crate::{
     models::CreateSession,
 };
 
-#[derive(Serialize, Debug, Clone)]
+#[derive(Serialize, Debug, Clone, PartialEq)]
 pub enum SessionType {
     Focus,
     Break,
@@ -72,10 +72,11 @@ impl TimerSession {
     }
 
     pub fn save(&self, app_handle: AppHandle, intent_id: Option<i32>) {
-        if intent_id.is_none() {
-            return;
-        };
-        if self.started_at.is_some() || self.duration >= 60 {
+        let can_be_saved = self._type == SessionType::Focus
+            && self.started_at.is_some()
+            && self.time_elapsed >= 60;
+
+        if can_be_saved && intent_id.is_some() {
             let data = CreateSession {
                 duration: self.time_elapsed as i32,
                 started_at: self.started_at.unwrap(),
@@ -85,7 +86,7 @@ impl TimerSession {
             app_handle
                 .db(|mut db| SessionBmc::create(&mut db, &data))
                 .unwrap();
-        }
+        };
     }
 
     fn next_session(
@@ -100,13 +101,15 @@ impl TimerSession {
                 // Try to save session before switching to a break
                 self.save(app_handle.clone(), intent_id);
 
-                let iter_val = iteration.fetch_add(1, Ordering::SeqCst) as i64;
+                let iter_val = iteration.load(Ordering::SeqCst) as i64;
                 // Switch over to a long break
                 if iter_val > 0 && iter_val % config.long_break_interval == 0 {
                     self.set_long_break_session(&config);
                 } else {
                     self.set_break_session(&config);
                 }
+
+                iteration.fetch_add(1, Ordering::SeqCst);
                 config.auto_start_breaks
             }
             _ => {
@@ -141,7 +144,9 @@ impl TimerSession {
         self.time_elapsed = 0;
         self.started_at = None;
     }
+}
 
+impl TimerSession {
     fn get_config() -> TimerConfig {
         ConfigManager::get::<TimerConfig>().unwrap()
     }
@@ -190,14 +195,21 @@ impl Timer {
                 // Increments elapsed time
                 session.time_elapsed += 1;
                 session.emit_state(app_handle.clone());
+                // If there is time remaining, skip over to the next loop iteration
                 if session.time_elapsed < session.duration * 60 {
                     continue;
                 };
+
+                // Switch session
                 let auto_start_next =
                     session.next_session(app_handle.clone(), iteration.clone(), intent_id);
-                if !auto_start_next {
-                    break;
-                }
+                // Determine whether to autostart the next one
+                if auto_start_next {
+                    session.play();
+                    continue;
+                };
+                // Kill thread
+                break;
             }
         });
     }
