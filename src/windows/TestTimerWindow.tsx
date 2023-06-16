@@ -1,20 +1,9 @@
 import React from "react";
-import { listen } from "@tauri-apps/api/event";
 
 import { useTimer } from "@/hooks";
 import { Button, Pane } from "@/ui";
 import { Intent } from "@/bindings/Intent";
 import ipc from "@/ipc";
-
-type SessionType = "Focus" | "Break" | "LongBreak";
-
-interface TimerState {
-  _type: SessionType;
-  is_playing: boolean;
-  duration: number;
-  time_elapsed: number;
-  started_at: number | null;
-}
 
 const TestTimerWindow: React.FC = () => {
   const [intent, setIntent] = React.useState<Intent>();
@@ -23,12 +12,6 @@ const TestTimerWindow: React.FC = () => {
 
   React.useEffect(() => {
     ipc.getIntent(1).then((data) => setIntent(data));
-    const listener = listen<TimerState>("timer_session_updated", (event) => {
-      console.log(event.payload);
-    });
-    return () => {
-      listener.then((f) => f()) as never;
-    };
   }, []);
 
   if (!intent) return null;
@@ -48,8 +31,8 @@ const TestTimerWindow: React.FC = () => {
         <Button variant="base" onClick={timer.skip}>
           Skip
         </Button>
-        <Button variant="base" onClick={() => timer.setIntent(1)}>
-          Set intent
+        <Button variant="base" onClick={() => timer.setSessionByIntent(intent)}>
+          Set session
         </Button>
       </div>
 

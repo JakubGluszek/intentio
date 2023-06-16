@@ -5,6 +5,7 @@ import { Theme } from "@/bindings/Theme";
 import { TimerConfig } from "@/bindings/TimerConfig";
 import { SettingsConfig } from "@/bindings/SettingsConfig";
 import { EventPayload } from "@/bindings/EventPayload";
+import { TimerSession } from "@/bindings/TimerSession";
 
 type Id = number;
 
@@ -39,6 +40,8 @@ type Events = {
   current_theme_changed: undefined;
   current_theme_updated: Theme;
   preview_theme: Theme;
+
+  timer_session_updated: TimerSession;
 };
 
 type Callback<T extends keyof Events> = (data: Events[T]) => void;
