@@ -83,6 +83,13 @@ fn main() -> Result<()> {
             timer_restart,
             timer_skip,
             timer_set_intent,
+            timer_add_to_queue,
+            timer_remove_from_queue,
+            timer_reorder_queue,
+            timer_clear_queue,
+            timer_increment_queue_session_iterations,
+            timer_decrement_queue_session_iterations,
+            timer_update_queue_session_duration
         ])
         .setup(move |app| Ok(setup_hook(app)))
         .plugin(tauri_plugin_autostart::init(

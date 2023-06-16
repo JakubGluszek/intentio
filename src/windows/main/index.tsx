@@ -172,8 +172,8 @@ export const Content: React.FC = () => {
                     new WebviewWindow("test-timer-window", {
                       url: "/timer",
                       title: "Test Timer Window",
-                      width: 300,
-                      height: 200,
+                      width: 400,
+                      height: 400,
                       ...WebviewConfig,
                     })
                   }

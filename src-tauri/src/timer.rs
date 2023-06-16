@@ -7,15 +7,18 @@ use std::{
     time::Duration,
 };
 
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use tauri::{AppHandle, Manager};
+use ts_rs::TS;
 
 use crate::{
     bmc::SessionBmc,
     config::{ConfigManager, TimerConfig},
     ctx::AppContext,
-    models::CreateSession,
+    models::{CreateSession, Intent},
 };
+
+type AutoStartNext = bool;
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
 pub enum SessionType {
@@ -33,8 +36,6 @@ pub struct TimerSession {
     pub started_at: Option<i64>,
 }
 
-type AutoStartNext = bool;
-
 impl TimerSession {
     pub fn init() -> Self {
         let config = Self::get_config();
@@ -48,6 +49,12 @@ impl TimerSession {
         }
     }
 
+    fn get_config() -> TimerConfig {
+        ConfigManager::get::<TimerConfig>().unwrap()
+    }
+}
+
+impl TimerSession {
     pub fn play(&mut self) {
         if let None = self.started_at {
             let timestamp = chrono::Utc::now().timestamp();
@@ -146,9 +153,77 @@ impl TimerSession {
     }
 }
 
-impl TimerSession {
-    fn get_config() -> TimerConfig {
-        ConfigManager::get::<TimerConfig>().unwrap()
+#[derive(TS, Serialize, Deserialize, Debug, Clone)]
+#[ts(export, export_to = "../src/bindings/")]
+pub struct QueueSession {
+    intent: Intent,
+    duration: u32,
+    iterations: u32,
+}
+
+impl QueueSession {
+    pub fn increment_iterations(&mut self) {
+        self.iterations += 1;
+    }
+    pub fn decrement_iterations(&mut self) {
+        if self.iterations > 1 {
+            self.iterations -= 1;
+        };
+    }
+    pub fn update_duration(&mut self, duration: u32) {
+        self.duration = duration;
+    }
+}
+
+#[derive(TS, Serialize, Debug, Clone)]
+#[ts(export, export_to = "../src/bindings/")]
+struct Queue {
+    queue: Vec<QueueSession>,
+}
+
+impl Queue {
+    pub fn init() -> Self {
+        Self { queue: vec![] }
+    }
+}
+
+impl Queue {
+    pub fn add(&mut self, session: QueueSession) {
+        println!("timer -> queue -> add session");
+        self.queue.push(session);
+        println!("queue = {:#?}", self.queue);
+    }
+    pub fn remove(&mut self, idx: usize) {
+        println!("timer -> queue -> remove session");
+        self.queue.remove(idx);
+        println!("queue = {:#?}", self.queue);
+    }
+    pub fn reorder(&mut self, idx: usize, target_idx: usize) {
+        println!("timer -> queue -> reorder session");
+        let session = self.queue[idx].clone();
+        self.queue[idx] = self.queue[target_idx].clone();
+        self.queue[target_idx] = session;
+        println!("queue = {:#?}", self.queue);
+    }
+    pub fn clear(&mut self) {
+        println!("timer -> queue -> clear queue");
+        self.queue.clear();
+        println!("queue = {:#?}", self.queue);
+    }
+    pub fn increment_session_iterations(&mut self, idx: usize) {
+        println!("timer -> queue -> increment session iterations");
+        self.queue[idx].increment_iterations();
+        println!("queue = {:#?}", self.queue);
+    }
+    pub fn decrement_session_iterations(&mut self, idx: usize) {
+        println!("timer -> queue -> decrement session iterations");
+        self.queue[idx].decrement_iterations();
+        println!("queue = {:#?}", self.queue);
+    }
+    pub fn update_session_duration(&mut self, idx: usize, duration: u32) {
+        println!("timer -> queue -> update session duration");
+        self.queue[idx].update_duration(duration);
+        println!("queue = {:#?}", self.queue);
     }
 }
 
@@ -157,6 +232,7 @@ pub struct Timer {
     session: Arc<Mutex<TimerSession>>,
     iteration: Arc<AtomicU32>,
     intent_id: Arc<Mutex<Option<i32>>>,
+    queue: Queue,
 }
 
 impl Timer {
@@ -166,9 +242,12 @@ impl Timer {
             session: Arc::new(Mutex::new(TimerSession::init())),
             iteration: Arc::new(AtomicU32::new(0)),
             intent_id: Arc::new(Mutex::new(None)),
+            queue: Queue::init(),
         }
     }
+}
 
+impl Timer {
     pub fn play(&mut self) {
         let mut session = self.session.lock().unwrap();
         let intent_id = self.intent_id.lock().unwrap();
@@ -213,13 +292,11 @@ impl Timer {
             }
         });
     }
-
     pub fn stop(&mut self) {
         let mut session = self.session.lock().unwrap();
         session.stop();
         session.emit_state(self.app_handle.clone());
     }
-
     pub fn restart(&mut self) {
         let mut session = self.session.lock().unwrap();
         let app_handle = self.app_handle.clone();
@@ -230,7 +307,6 @@ impl Timer {
         session.restart();
         session.emit_state(self.app_handle.clone());
     }
-
     pub fn skip(&mut self) {
         let mut session = self.session.lock().unwrap();
         let iteration = self.iteration.clone();
@@ -241,5 +317,27 @@ impl Timer {
 
     pub fn set_intent_id(&mut self, id: i32) {
         *self.intent_id.lock().unwrap() = Some(id);
+    }
+
+    pub fn add_to_queue(&mut self, session: QueueSession) {
+        self.queue.add(session);
+    }
+    pub fn remove_from_queue(&mut self, idx: usize) {
+        self.queue.remove(idx);
+    }
+    pub fn reorder_queue(&mut self, idx: usize, target_idx: usize) {
+        self.queue.reorder(idx, target_idx);
+    }
+    pub fn clear_queue(&mut self) {
+        self.queue.clear();
+    }
+    pub fn increment_queue_session_iterations(&mut self, idx: usize) {
+        self.queue.increment_session_iterations(idx);
+    }
+    pub fn decrement_queue_session_iterations(&mut self, idx: usize) {
+        self.queue.decrement_session_iterations(idx);
+    }
+    pub fn update_queue_session_duration(&mut self, idx: usize, duration: u32) {
+        self.queue.update_session_duration(idx, duration);
     }
 }
