@@ -14,6 +14,11 @@ use std::{
 
 use tauri::AppHandle;
 
+use crate::{
+    config::{ConfigManager, TimerConfig},
+    models::Intent,
+};
+
 type TimerResult<T> = Result<T, TimerError>;
 
 pub struct Timer {
@@ -32,6 +37,10 @@ impl Timer {
             queue: Queue::init(),
         }
     }
+
+    fn get_config() -> TimerConfig {
+        ConfigManager::get::<TimerConfig>().unwrap()
+    }
 }
 
 impl Timer {
@@ -40,11 +49,25 @@ impl Timer {
         let session = session.lock().unwrap().clone();
         Ok(session)
     }
-    pub fn set_session(&mut self, data: CreateTimerSession) {
-        self.session = Some(Arc::new(Mutex::new(TimerSession::new(data))));
-        // Emit updated state
-        let session = self.get_session().unwrap();
-        session.emit_state(self.app_handle.clone())
+    pub fn set_session_intent(&mut self, intent: Intent) {
+        match &mut self.session {
+            Some(session) => {
+                let mut session = session.lock().unwrap();
+                session.intent = intent;
+                session.emit_state(self.app_handle.clone())
+            }
+            None => {
+                let config = Self::get_config();
+                let data = CreateTimerSession {
+                    _type: SessionType::Focus,
+                    duration: config.focus_duration,
+                    intent,
+                };
+                let session = TimerSession::new(data);
+                session.emit_state(self.app_handle.clone());
+                self.session = Some(Arc::new(Mutex::new(session)));
+            }
+        }
     }
 
     pub fn play(&mut self) -> TimerResult<()> {

@@ -2,14 +2,14 @@ import { invoke } from "@tauri-apps/api";
 
 import { QueueSession } from "@/bindings/QueueSession";
 import { TimerSession } from "@/bindings/TimerSession";
-import { CreateTimerSession } from "@/bindings/CreateTimerSession";
+import { Intent } from "@/bindings/Intent";
 
 export const timerGetSession = async () => {
   return await invoke<TimerSession>("timer_get_session");
 };
 
-export const timerSetSession = async (data: CreateTimerSession) => {
-  return await invoke<void>("timer_set_session", { data });
+export const timerSetSessionIntent = async (intent: Intent) => {
+  return await invoke<void>("timer_set_session_intent", { intent });
 };
 
 export const timerPlay = async () => {

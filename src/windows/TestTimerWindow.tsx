@@ -2,8 +2,8 @@ import React from "react";
 
 import { useTimer } from "@/hooks";
 import { Button, Pane } from "@/ui";
-import { Intent } from "@/bindings/Intent";
 import ipc from "@/ipc";
+import { Intent } from "@/bindings/Intent";
 
 const TestTimerWindow: React.FC = () => {
   const [intent, setIntent] = React.useState<Intent>();
@@ -31,8 +31,8 @@ const TestTimerWindow: React.FC = () => {
         <Button variant="base" onClick={timer.skip}>
           Skip
         </Button>
-        <Button variant="base" onClick={() => timer.setSessionByIntent(intent)}>
-          Set session
+        <Button variant="base" onClick={() => timer.setIntent(intent)}>
+          Set intent
         </Button>
       </div>
 

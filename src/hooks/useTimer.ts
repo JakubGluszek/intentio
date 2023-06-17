@@ -4,17 +4,13 @@ import ipc from "@/ipc";
 import { QueueSession } from "@/bindings/QueueSession";
 import { TimerSession } from "@/bindings/TimerSession";
 import { Intent } from "@/bindings/Intent";
-import { CreateTimerSession } from "@/bindings/CreateTimerSession";
-import { TimerConfig } from "@/bindings/TimerConfig";
 import useEvents from "./useEvents";
 
 export const useTimer = () => {
   const [session, setSession] = React.useState<TimerSession>();
-  const [config, setConfig] = React.useState<TimerConfig>();
 
   React.useEffect(() => {
     ipc.timerGetSession().then((data) => setSession(data));
-    ipc.getTimerConfig().then((data) => setConfig(data));
   }, []);
 
   useEvents({
@@ -24,15 +20,8 @@ export const useTimer = () => {
     },
   });
 
-  const setSessionByIntent = async (intent: Intent) => {
-    if (!config) throw Error("Cannot set session without timer config");
-
-    let data: CreateTimerSession = {
-      _type: "Focus",
-      duration: config.focus_duration,
-      intent,
-    };
-    ipc.timerSetSession(data);
+  const setIntent = async (intent: Intent) => {
+    ipc.timerSetSessionIntent(intent);
   };
 
   const play = async () => {
@@ -49,10 +38,6 @@ export const useTimer = () => {
 
   const skip = async () => {
     return ipc.timerSkip();
-  };
-
-  const setIntent = async (id: number) => {
-    return ipc.timerSetIntent(id);
   };
 
   const addToQueue = async (data: QueueSession) => {
@@ -85,12 +70,11 @@ export const useTimer = () => {
 
   return {
     session,
-    setSessionByIntent,
+    setIntent,
     play,
     stop,
     restart,
     skip,
-    setIntent,
     addToQueue,
     removeFromQueue,
     reorderQueue,

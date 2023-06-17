@@ -79,7 +79,7 @@ fn main() -> Result<()> {
             get_scripts,
             // Timer
             timer_get_session,
-            timer_set_session,
+            timer_set_session_intent,
             timer_play,
             timer_stop,
             timer_restart,

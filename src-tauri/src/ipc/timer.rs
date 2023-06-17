@@ -1,10 +1,6 @@
 use tauri::{command, AppHandle};
 
-use crate::{
-    ctx::AppContext,
-    prelude::Result,
-    timer::{CreateTimerSession, QueueSession},
-};
+use crate::{ctx::AppContext, models::Intent, prelude::Result, timer::QueueSession};
 
 #[command]
 pub async fn timer_get_session(app_handle: AppHandle) -> Result<()> {
@@ -13,8 +9,8 @@ pub async fn timer_get_session(app_handle: AppHandle) -> Result<()> {
 }
 
 #[command]
-pub async fn timer_set_session(app_handle: AppHandle, data: CreateTimerSession) -> Result<()> {
-    app_handle.timer(|timer| timer.set_session(data));
+pub async fn timer_set_session_intent(app_handle: AppHandle, intent: Intent) -> Result<()> {
+    app_handle.timer(|timer| timer.set_session_intent(intent));
     Ok(())
 }
 

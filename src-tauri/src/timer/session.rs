@@ -9,10 +9,12 @@ use ts_rs::TS;
 
 use crate::{
     bmc::SessionBmc,
-    config::{ConfigManager, TimerConfig},
+    config::TimerConfig,
     ctx::AppContext,
     models::{CreateSession, Intent},
 };
+
+use super::Timer;
 
 type AutoStartNext = bool;
 
@@ -24,13 +26,11 @@ pub enum SessionType {
     LongBreak,
 }
 
-#[derive(TS, Deserialize, Debug, Clone)]
-#[ts(export, export_to = "../src/bindings/")]
+#[derive(Deserialize, Debug, Clone)]
 pub struct CreateTimerSession {
-    _type: SessionType,
-    #[ts(type = "number")]
-    duration: i64,
-    intent: Intent,
+    pub _type: SessionType,
+    pub duration: i64,
+    pub intent: Intent,
 }
 
 #[derive(TS, Serialize, Debug, Clone)]
@@ -57,10 +57,6 @@ impl TimerSession {
             time_elapsed: 0,
             started_at: None,
         }
-    }
-
-    fn get_config() -> TimerConfig {
-        ConfigManager::get::<TimerConfig>().unwrap()
     }
 }
 
@@ -111,7 +107,7 @@ impl TimerSession {
         app_handle: AppHandle,
         iteration: Arc<AtomicU32>,
     ) -> AutoStartNext {
-        let config = Self::get_config();
+        let config = Timer::get_config();
         let auto_start_next = match self._type {
             SessionType::Focus => {
                 // Try to save session before switching to a break
