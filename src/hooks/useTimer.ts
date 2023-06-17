@@ -7,10 +7,13 @@ import { Intent } from "@/bindings/Intent";
 import useEvents from "./useEvents";
 
 export const useTimer = () => {
-  const [session, setSession] = React.useState<TimerSession>();
+  const [session, setSession] = React.useState<TimerSession | null>();
 
   React.useEffect(() => {
-    ipc.timerGetSession().then((data) => setSession(data));
+    ipc
+      .timerGetSession()
+      .then((data) => setSession(data))
+      .catch(() => setSession(null));
   }, []);
 
   useEvents({

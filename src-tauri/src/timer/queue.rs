@@ -3,11 +3,13 @@ use ts_rs::TS;
 
 use crate::models::Intent;
 
+use super::{CreateTimerSession, SessionType, TimerSession};
+
 #[derive(TS, Serialize, Deserialize, Debug, Clone)]
 #[ts(export, export_to = "../src/bindings/")]
 pub struct QueueSession {
     intent: Intent,
-    duration: u32,
+    duration: i64,
     iterations: u32,
 }
 
@@ -20,7 +22,7 @@ impl QueueSession {
             self.iterations -= 1;
         };
     }
-    pub fn update_duration(&mut self, duration: u32) {
+    pub fn update_duration(&mut self, duration: i64) {
         self.duration = duration;
     }
 }
@@ -28,51 +30,71 @@ impl QueueSession {
 #[derive(TS, Serialize, Debug, Clone)]
 #[ts(export, export_to = "../src/bindings/")]
 pub struct Queue {
-    queue: Vec<QueueSession>,
+    data: Vec<QueueSession>,
 }
 
 impl Queue {
     pub fn init() -> Self {
-        Self { queue: vec![] }
+        Self { data: vec![] }
     }
 }
 
 impl Queue {
+    pub fn is_empty(&self) -> bool {
+        println!("timer -> queue -> is empty");
+        self.data.is_empty()
+    }
+    pub fn next(&mut self, session: &mut TimerSession) {
+        println!("timer -> queue -> next");
+        let session_queue = &mut self.data[0];
+        session_queue.iterations -= 1;
+
+        session._type = SessionType::Focus;
+        session.duration = session_queue.duration;
+        session.intent = session_queue.intent.clone();
+        session.time_elapsed = 0;
+        session.started_at = None;
+
+        if session_queue.iterations <= 0 {
+            self.remove(0)
+        };
+        println!("queue = {:#?}", self.data);
+    }
     pub fn add(&mut self, session: QueueSession) {
         println!("timer -> queue -> add session");
-        self.queue.push(session);
-        println!("queue = {:#?}", self.queue);
+        self.data.push(session);
+        println!("queue = {:#?}", self.data);
     }
     pub fn remove(&mut self, idx: usize) {
         println!("timer -> queue -> remove session");
-        self.queue.remove(idx);
-        println!("queue = {:#?}", self.queue);
+        self.data.remove(idx);
+        println!("queue = {:#?}", self.data);
     }
     pub fn reorder(&mut self, idx: usize, target_idx: usize) {
         println!("timer -> queue -> reorder session");
-        let session = self.queue[idx].clone();
-        self.queue[idx] = self.queue[target_idx].clone();
-        self.queue[target_idx] = session;
-        println!("queue = {:#?}", self.queue);
+        let session = self.data[idx].clone();
+        self.data[idx] = self.data[target_idx].clone();
+        self.data[target_idx] = session;
+        println!("queue = {:#?}", self.data);
     }
     pub fn clear(&mut self) {
         println!("timer -> queue -> clear queue");
-        self.queue.clear();
-        println!("queue = {:#?}", self.queue);
+        self.data.clear();
+        println!("queue = {:#?}", self.data);
     }
     pub fn increment_session_iterations(&mut self, idx: usize) {
         println!("timer -> queue -> increment session iterations");
-        self.queue[idx].increment_iterations();
-        println!("queue = {:#?}", self.queue);
+        self.data[idx].increment_iterations();
+        println!("queue = {:#?}", self.data);
     }
     pub fn decrement_session_iterations(&mut self, idx: usize) {
         println!("timer -> queue -> decrement session iterations");
-        self.queue[idx].decrement_iterations();
-        println!("queue = {:#?}", self.queue);
+        self.data[idx].decrement_iterations();
+        println!("queue = {:#?}", self.data);
     }
-    pub fn update_session_duration(&mut self, idx: usize, duration: u32) {
+    pub fn update_session_duration(&mut self, idx: usize, duration: i64) {
         println!("timer -> queue -> update session duration");
-        self.queue[idx].update_duration(duration);
-        println!("queue = {:#?}", self.queue);
+        self.data[idx].update_duration(duration);
+        println!("queue = {:#?}", self.data);
     }
 }

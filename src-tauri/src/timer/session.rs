@@ -14,7 +14,7 @@ use crate::{
     models::{CreateSession, Intent},
 };
 
-use super::Timer;
+use super::{Queue, Timer};
 
 type AutoStartNext = bool;
 
@@ -106,6 +106,7 @@ impl TimerSession {
         &mut self,
         app_handle: AppHandle,
         iteration: Arc<AtomicU32>,
+        queue: &mut Queue,
     ) -> AutoStartNext {
         let config = Timer::get_config();
         let auto_start_next = match self._type {
@@ -125,7 +126,11 @@ impl TimerSession {
                 config.auto_start_breaks
             }
             _ => {
-                self.set_focus_session(&config);
+                if queue.is_empty() {
+                    self.set_focus_session(&config);
+                } else {
+                    queue.next(self);
+                };
                 config.auto_start_focus
             }
         };

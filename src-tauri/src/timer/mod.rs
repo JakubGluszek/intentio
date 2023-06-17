@@ -25,7 +25,7 @@ pub struct Timer {
     app_handle: AppHandle,
     session: Option<Arc<Mutex<TimerSession>>>,
     iteration: Arc<AtomicU32>,
-    queue: Queue,
+    queue: Arc<Mutex<Queue>>,
 }
 
 impl Timer {
@@ -34,7 +34,7 @@ impl Timer {
             app_handle,
             session: None,
             iteration: Arc::new(AtomicU32::new(0)),
-            queue: Queue::init(),
+            queue: Arc::new(Mutex::new(Queue::init())),
         }
     }
 
@@ -82,6 +82,7 @@ impl Timer {
         let session = self.get_session_clone()?;
         let app_handle = self.app_handle.clone();
         let iteration = self.iteration.clone();
+        let queue = self.queue.clone();
         // Run timer logic inside of a new thread
         thread::spawn(move || {
             loop {
@@ -100,8 +101,10 @@ impl Timer {
                     continue;
                 };
 
+                let mut queue = queue.lock().unwrap();
                 // Switch session
-                let auto_start_next = session.next_session(app_handle.clone(), iteration.clone());
+                let auto_start_next =
+                    session.next_session(app_handle.clone(), iteration.clone(), &mut queue);
                 // Determine whether to autostart the next one
                 if auto_start_next {
                     session.play();
@@ -135,32 +138,41 @@ impl Timer {
         let session_guard = self.get_session_clone()?;
         let mut session = session_guard.lock().unwrap();
         let iteration = self.iteration.clone();
+        let queue_guard = self.queue.clone();
+        let mut queue = queue_guard.lock().unwrap();
 
         session.stop();
-        session.next_session(self.app_handle.clone(), iteration);
+        session.next_session(self.app_handle.clone(), iteration, &mut *queue);
         Ok(())
     }
 
     pub fn add_to_queue(&mut self, session: QueueSession) {
-        self.queue.add(session);
+        let mut queue = self.queue.lock().unwrap();
+        queue.add(session);
     }
     pub fn remove_from_queue(&mut self, idx: usize) {
-        self.queue.remove(idx);
+        let mut queue = self.queue.lock().unwrap();
+        queue.remove(idx);
     }
     pub fn reorder_queue(&mut self, idx: usize, target_idx: usize) {
-        self.queue.reorder(idx, target_idx);
+        let mut queue = self.queue.lock().unwrap();
+        queue.reorder(idx, target_idx);
     }
     pub fn clear_queue(&mut self) {
-        self.queue.clear();
+        let mut queue = self.queue.lock().unwrap();
+        queue.clear();
     }
     pub fn increment_queue_session_iterations(&mut self, idx: usize) {
-        self.queue.increment_session_iterations(idx);
+        let mut queue = self.queue.lock().unwrap();
+        queue.increment_session_iterations(idx);
     }
     pub fn decrement_queue_session_iterations(&mut self, idx: usize) {
-        self.queue.decrement_session_iterations(idx);
+        let mut queue = self.queue.lock().unwrap();
+        queue.decrement_session_iterations(idx);
     }
-    pub fn update_queue_session_duration(&mut self, idx: usize, duration: u32) {
-        self.queue.update_session_duration(idx, duration);
+    pub fn update_queue_session_duration(&mut self, idx: usize, duration: i64) {
+        let mut queue = self.queue.lock().unwrap();
+        queue.update_session_duration(idx, duration);
     }
 
     fn get_session_clone(&self) -> TimerResult<Arc<Mutex<TimerSession>>> {

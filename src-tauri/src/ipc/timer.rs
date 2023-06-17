@@ -88,7 +88,7 @@ pub async fn timer_decrement_queue_session_iterations(
 pub async fn timer_update_queue_session_duration(
     app_handle: AppHandle,
     idx: usize,
-    duration: u32,
+    duration: i64,
 ) -> Result<()> {
     app_handle.timer(|timer| timer.update_queue_session_duration(idx, duration));
     Ok(())

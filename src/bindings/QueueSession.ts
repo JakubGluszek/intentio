@@ -3,6 +3,6 @@ import type { Intent } from "./Intent";
 
 export interface QueueSession {
   intent: Intent;
-  duration: number;
+  duration: bigint;
   iterations: number;
 }

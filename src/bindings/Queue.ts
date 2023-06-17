@@ -2,5 +2,5 @@
 import type { QueueSession } from "./QueueSession";
 
 export interface Queue {
-  queue: Array<QueueSession>;
+  data: Array<QueueSession>;
 }
