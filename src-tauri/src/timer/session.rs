@@ -14,7 +14,7 @@ use crate::{
     models::{CreateSession, Intent},
 };
 
-use super::{TimerQueue, Timer};
+use super::{Timer, TimerQueue};
 
 type AutoStartNext = bool;
 
@@ -45,10 +45,13 @@ pub struct TimerSession {
     #[ts(type = "number")]
     pub started_at: Option<i64>,
     pub intent: Intent,
+
+    #[serde(skip_serializing)]
+    pub app_handle: AppHandle,
 }
 
 impl TimerSession {
-    pub fn new(data: CreateTimerSession) -> Self {
+    pub fn new(app_handle: AppHandle, data: CreateTimerSession) -> Self {
         Self {
             _type: data._type,
             duration: data.duration,
@@ -56,6 +59,7 @@ impl TimerSession {
             is_playing: false,
             time_elapsed: 0,
             started_at: None,
+            app_handle,
         }
     }
 }
@@ -78,13 +82,13 @@ impl TimerSession {
         self.started_at = None;
     }
 
-    pub fn emit_state(&self, app_handle: AppHandle) {
-        app_handle
+    pub fn emit(&self) {
+        self.app_handle
             .emit_all("timer_session_updated", self.clone())
             .unwrap();
     }
 
-    pub fn save(&self, app_handle: AppHandle) {
+    pub fn save(&self) {
         let can_be_saved = self._type == SessionType::Focus
             && self.started_at.is_some()
             && self.time_elapsed >= 60;
@@ -96,7 +100,7 @@ impl TimerSession {
                 summary: None,
                 intent_id: self.intent.id,
             };
-            app_handle
+            self.app_handle
                 .db(|mut db| SessionBmc::create(&mut db, &data))
                 .unwrap();
         };
@@ -104,7 +108,6 @@ impl TimerSession {
 
     pub fn next_session(
         &mut self,
-        app_handle: AppHandle,
         iteration: Arc<AtomicU32>,
         queue: &mut TimerQueue,
     ) -> AutoStartNext {
@@ -112,7 +115,7 @@ impl TimerSession {
         let auto_start_next = match self._type {
             SessionType::Focus => {
                 // Try to save session before switching to a break
-                self.save(app_handle.clone());
+                self.save();
 
                 let iter_val = iteration.load(Ordering::SeqCst) as i64;
                 // Switch over to a long break
@@ -137,7 +140,7 @@ impl TimerSession {
         if !auto_start_next {
             self.stop();
         };
-        self.emit_state(app_handle);
+        self.emit();
         auto_start_next
     }
 

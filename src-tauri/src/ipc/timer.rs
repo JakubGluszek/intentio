@@ -15,7 +15,9 @@ pub async fn timer_get_session(app_handle: AppHandle) -> Result<()> {
 
 #[command]
 pub async fn timer_set_session_intent(app_handle: AppHandle, intent: Intent) -> Result<()> {
-    app_handle.timer(|timer| timer.set_session_intent(intent));
+    app_handle
+        .clone()
+        .timer(|timer| timer.set_session_intent(app_handle, intent));
     Ok(())
 }
 

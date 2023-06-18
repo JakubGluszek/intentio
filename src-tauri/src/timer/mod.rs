@@ -20,7 +20,6 @@ pub use session::*;
 type TimerResult<T> = Result<T, TimerError>;
 
 pub struct Timer {
-    app_handle: AppHandle,
     session: Option<Arc<Mutex<TimerSession>>>,
     iteration: Arc<AtomicU32>,
     queue: Arc<Mutex<TimerQueue>>,
@@ -30,7 +29,6 @@ pub struct Timer {
 impl Timer {
     pub fn init(app_handle: AppHandle) -> Self {
         Self {
-            app_handle: app_handle.clone(),
             session: None,
             iteration: Arc::new(AtomicU32::new(0)),
             queue: Arc::new(Mutex::new(TimerQueue::new(app_handle))),
@@ -52,7 +50,6 @@ impl Timer {
         session.play();
 
         let session = self.get_session_clone()?;
-        let app_handle = self.app_handle.clone();
         let iteration = self.iteration.clone();
         let queue = self.queue.clone();
 
@@ -68,7 +65,7 @@ impl Timer {
                 }
                 // Increments elapsed time
                 session.time_elapsed += 1;
-                session.emit_state(app_handle.clone());
+                session.emit();
                 // If there is time remaining, skip over to the next loop iteration
                 if session.time_elapsed < session.duration * 60 {
                     continue;
@@ -76,8 +73,7 @@ impl Timer {
 
                 let mut queue = queue.lock().unwrap();
                 // Switch session
-                let auto_start_next =
-                    session.next_session(app_handle.clone(), iteration.clone(), &mut queue);
+                let auto_start_next = session.next_session(iteration.clone(), &mut queue);
                 // Determine whether to autostart the next one
                 if auto_start_next {
                     session.play();
@@ -92,17 +88,16 @@ impl Timer {
     pub fn stop(&mut self) -> TimerResult<()> {
         let mut session = self.get_session_guard()?;
         session.stop();
-        session.emit_state(self.app_handle.clone());
+        session.emit();
         Ok(())
     }
     pub fn restart(&mut self) -> TimerResult<()> {
         let mut session = self.get_session_guard()?;
-        let app_handle = self.app_handle.clone();
 
         session.stop();
-        session.save(app_handle);
+        session.save();
         session.restart();
-        session.emit_state(self.app_handle.clone());
+        session.emit();
         Ok(())
     }
     pub fn skip(&mut self) -> TimerResult<()> {
@@ -112,7 +107,7 @@ impl Timer {
         let mut queue = queue_guard.lock().unwrap();
 
         session.stop();
-        session.next_session(self.app_handle.clone(), iteration, &mut *queue);
+        session.next_session(iteration, &mut *queue);
         Ok(())
     }
 }
@@ -138,12 +133,12 @@ impl Timer {
         let session = self.get_session_guard()?.clone();
         Ok(session)
     }
-    pub fn set_session_intent(&mut self, intent: Intent) {
+    pub fn set_session_intent(&mut self, app_handle: AppHandle, intent: Intent) {
         match &mut self.session {
             Some(session) => {
                 let mut session = session.lock().unwrap();
                 session.intent = intent;
-                session.emit_state(self.app_handle.clone())
+                session.emit();
             }
             None => {
                 let config = Self::get_config();
@@ -152,8 +147,8 @@ impl Timer {
                     duration: config.focus_duration,
                     intent,
                 };
-                let session = TimerSession::new(data);
-                session.emit_state(self.app_handle.clone());
+                let session = TimerSession::new(app_handle, data);
+                session.emit();
                 self.session = Some(Arc::new(Mutex::new(session)));
             }
         }
