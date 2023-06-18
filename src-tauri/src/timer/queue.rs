@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 use tauri::{AppHandle, Manager};
 use ts_rs::TS;
 
-use super::{SessionType, TimerSession};
+use super::{SessionType, TimerError, TimerResult, TimerSession};
 use crate::models::Intent;
 
 #[derive(TS, Serialize, Deserialize, Debug, Clone)]
@@ -61,14 +61,17 @@ impl TimerQueue {
     }
     pub fn emit(&self) {
         self.app_handle
-            .emit_all("timer_queue_updated", self.queue.clone())
+            .emit_all("timer_queue_updated", self.get())
             .unwrap();
     }
 
     pub fn is_empty(&self) -> bool {
         self.queue.data.is_empty()
     }
-    pub fn next(&mut self, session: &mut TimerSession) {
+    pub fn next(&mut self, session: &mut TimerSession) -> TimerResult<()> {
+        if self.is_empty() {
+            return Err(TimerError::EmptyQueue);
+        };
         let session_queue = &mut self.queue.data[0];
         session_queue.iterations -= 1;
 
@@ -79,38 +82,57 @@ impl TimerQueue {
         session.started_at = None;
 
         if session_queue.iterations <= 0 {
-            self.remove(0)
+            self.remove(0)?;
         };
         self.emit();
+        Ok(())
     }
     pub fn add(&mut self, session: QueueSession) {
         self.queue.data.push(session);
         self.emit();
     }
-    pub fn remove(&mut self, idx: usize) {
+    pub fn remove(&mut self, idx: usize) -> TimerResult<()> {
+        self.validate_index_in_range(idx)?;
         self.queue.data.remove(idx);
         self.emit();
+        Ok(())
     }
-    pub fn reorder(&mut self, idx: usize, target_idx: usize) {
+    pub fn reorder(&mut self, idx: usize, target_idx: usize) -> TimerResult<()> {
+        self.validate_index_in_range(idx)?;
+        self.validate_index_in_range(target_idx)?;
         let session = self.queue.data[idx].clone();
         self.queue.data[idx] = self.queue.data[target_idx].clone();
         self.queue.data[target_idx] = session;
         self.emit();
+        Ok(())
     }
     pub fn clear(&mut self) {
         self.queue.data.clear();
         self.emit();
     }
-    pub fn increment_session_iterations(&mut self, idx: usize) {
+    pub fn increment_session_iterations(&mut self, idx: usize) -> TimerResult<()> {
+        self.validate_index_in_range(idx)?;
         self.queue.data[idx].increment_iterations();
         self.emit();
+        Ok(())
     }
-    pub fn decrement_session_iterations(&mut self, idx: usize) {
+    pub fn decrement_session_iterations(&mut self, idx: usize) -> TimerResult<()> {
+        self.validate_index_in_range(idx)?;
         self.queue.data[idx].decrement_iterations();
         self.emit();
+        Ok(())
     }
-    pub fn update_session_duration(&mut self, idx: usize, duration: i64) {
+    pub fn update_session_duration(&mut self, idx: usize, duration: i64) -> TimerResult<()> {
+        self.validate_index_in_range(idx)?;
         self.queue.data[idx].update_duration(duration);
         self.emit();
+        Ok(())
+    }
+
+    fn validate_index_in_range(&self, idx: usize) -> TimerResult<()> {
+        if self.queue.data.len() <= idx {
+            return Err(TimerError::QueueIndexOutOfRange);
+        };
+        Ok(())
     }
 }

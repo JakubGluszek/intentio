@@ -5,4 +5,8 @@ use ts_rs::TS;
 pub enum TimerError {
     #[error("UndefinedSession")]
     UndefinedSession,
+    #[error("EmptyQueue")]
+    EmptyQueue,
+    #[error("QueueIndexOutOfRange")]
+    QueueIndexOutOfRange,
 }

@@ -59,7 +59,7 @@ pub async fn timer_add_to_queue(app_handle: AppHandle, data: QueueSession) -> Re
 
 #[command]
 pub async fn timer_remove_from_queue(app_handle: AppHandle, idx: usize) -> Result<()> {
-    app_handle.timer(|timer| timer.remove_from_queue(idx));
+    app_handle.timer(|timer| timer.remove_from_queue(idx))?;
     Ok(())
 }
 
@@ -69,7 +69,7 @@ pub async fn timer_reorder_queue(
     idx: usize,
     target_idx: usize,
 ) -> Result<()> {
-    app_handle.timer(|timer| timer.reorder_queue(idx, target_idx));
+    app_handle.timer(|timer| timer.reorder_queue(idx, target_idx))?;
     Ok(())
 }
 
@@ -84,7 +84,7 @@ pub async fn timer_increment_queue_session_iterations(
     app_handle: AppHandle,
     idx: usize,
 ) -> Result<()> {
-    app_handle.timer(|timer| timer.increment_queue_session_iterations(idx));
+    app_handle.timer(|timer| timer.increment_queue_session_iterations(idx))?;
     Ok(())
 }
 
@@ -93,7 +93,7 @@ pub async fn timer_decrement_queue_session_iterations(
     app_handle: AppHandle,
     idx: usize,
 ) -> Result<()> {
-    app_handle.timer(|timer| timer.decrement_queue_session_iterations(idx));
+    app_handle.timer(|timer| timer.decrement_queue_session_iterations(idx))?;
     Ok(())
 }
 
@@ -103,6 +103,6 @@ pub async fn timer_update_queue_session_duration(
     idx: usize,
     duration: i64,
 ) -> Result<()> {
-    app_handle.timer(|timer| timer.update_queue_session_duration(idx, duration));
+    app_handle.timer(|timer| timer.update_queue_session_duration(idx, duration))?;
     Ok(())
 }

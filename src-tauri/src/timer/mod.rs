@@ -73,7 +73,7 @@ impl Timer {
 
                 let mut queue = queue.lock().unwrap();
                 // Switch session
-                let auto_start_next = session.next_session(iteration.clone(), &mut queue);
+                let auto_start_next = session.next_session(iteration.clone(), &mut queue).unwrap();
                 // Determine whether to autostart the next one
                 if auto_start_next {
                     session.play();
@@ -106,7 +106,7 @@ impl Timer {
         let mut queue = queue_guard.lock().unwrap();
 
         session.stop();
-        session.next_session(iteration, &mut *queue);
+        session.next_session(iteration, &mut *queue)?;
         Ok(())
     }
 }
@@ -163,28 +163,28 @@ impl Timer {
         let mut queue = self.queue.lock().unwrap();
         queue.add(session);
     }
-    pub fn remove_from_queue(&mut self, idx: usize) {
+    pub fn remove_from_queue(&mut self, idx: usize) -> TimerResult<()> {
         let mut queue = self.queue.lock().unwrap();
-        queue.remove(idx);
+        queue.remove(idx)
     }
-    pub fn reorder_queue(&mut self, idx: usize, target_idx: usize) {
+    pub fn reorder_queue(&mut self, idx: usize, target_idx: usize) -> TimerResult<()> {
         let mut queue = self.queue.lock().unwrap();
-        queue.reorder(idx, target_idx);
+        queue.reorder(idx, target_idx)
     }
     pub fn clear_queue(&mut self) {
         let mut queue = self.queue.lock().unwrap();
-        queue.clear();
+        queue.clear()
     }
-    pub fn increment_queue_session_iterations(&mut self, idx: usize) {
+    pub fn increment_queue_session_iterations(&mut self, idx: usize) -> TimerResult<()> {
         let mut queue = self.queue.lock().unwrap();
-        queue.increment_session_iterations(idx);
+        queue.increment_session_iterations(idx)
     }
-    pub fn decrement_queue_session_iterations(&mut self, idx: usize) {
+    pub fn decrement_queue_session_iterations(&mut self, idx: usize) -> TimerResult<()> {
         let mut queue = self.queue.lock().unwrap();
-        queue.decrement_session_iterations(idx);
+        queue.decrement_session_iterations(idx)
     }
-    pub fn update_queue_session_duration(&mut self, idx: usize, duration: i64) {
+    pub fn update_queue_session_duration(&mut self, idx: usize, duration: i64) -> TimerResult<()> {
         let mut queue = self.queue.lock().unwrap();
-        queue.update_session_duration(idx, duration);
+        queue.update_session_duration(idx, duration)
     }
 }
