@@ -5,7 +5,7 @@ use ts_rs::TS;
 
 use crate::db::schema::intents;
 
-#[derive(Queryable, Selectable, Serialize, TS, Debug, Clone)]
+#[derive(Queryable, Selectable, Serialize, Deserialize, TS, Debug, Clone)]
 #[diesel(table_name = intents, check_for_backend(diesel::sqlite::Sqlite))]
 #[ts(export, export_to = "../src/bindings/")]
 pub struct Intent {

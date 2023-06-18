@@ -1,5 +1,5 @@
 /** Generic config for windows that are created via `WebviewWindow` */
-const WebviewConfig = {
+export const WebviewConfig = {
   decorations: false,
   skipTaskbar: true,
   resizable: false,

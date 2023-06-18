@@ -17,7 +17,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { clsx } from "@mantine/core";
 
 import ipc from "@/ipc";
-import config from "@/config";
+import config, { WebviewConfig } from "@/config";
 import { WindowContainer } from "@/components";
 import { Button, Pane, Panels } from "@/ui";
 import {
@@ -166,6 +166,20 @@ export const Content: React.FC = () => {
                 <Panels.Panel value="Config">
                   <AiFillControl size={20} />
                 </Panels.Panel>
+                <Button
+                  variant="ghost"
+                  onClick={() =>
+                    new WebviewWindow("test-timer-window", {
+                      url: "/timer",
+                      title: "Test Timer Window",
+                      width: 400,
+                      height: 400,
+                      ...WebviewConfig,
+                    })
+                  }
+                >
+                  <MdTimer size={20} />
+                </Button>
               </Panels>
             </motion.div>
           )}

@@ -13,22 +13,17 @@ mod models;
 mod prelude;
 mod setup;
 mod state;
-
-use std::sync::Mutex;
+mod timer;
 
 use crate::ipc::*;
 use crate::prelude::*;
-use db::Db;
 use setup::setup_hook;
 use tauri::Manager;
 use tauri::{CustomMenuItem, SystemTray, SystemTrayEvent, SystemTrayMenu, SystemTrayMenuItem};
 use tauri_plugin_autostart::MacosLauncher;
 
 fn main() -> Result<()> {
-    let db = Db::setup().expect("the database should be set up");
-
     tauri::Builder::default()
-        .manage(Mutex::new(db))
         .system_tray(SystemTray::new().with_menu(create_tray_menu()))
         .on_system_tray_event(handle_on_system_tray_event)
         .invoke_handler(tauri::generate_handler![
@@ -81,7 +76,22 @@ fn main() -> Result<()> {
             update_script,
             delete_script,
             get_script,
-            get_scripts
+            get_scripts,
+            // Timer
+            timer_get_session,
+            timer_set_session_intent,
+            timer_play,
+            timer_stop,
+            timer_restart,
+            timer_skip,
+            timer_get_queue,
+            timer_add_to_queue,
+            timer_remove_from_queue,
+            timer_reorder_queue,
+            timer_clear_queue,
+            timer_increment_queue_session_iterations,
+            timer_decrement_queue_session_iterations,
+            timer_update_queue_session_duration
         ])
         .setup(move |app| Ok(setup_hook(app)))
         .plugin(tauri_plugin_autostart::init(

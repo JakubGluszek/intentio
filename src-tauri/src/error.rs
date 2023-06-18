@@ -1,6 +1,8 @@
 //! This is the main (and only for now) application Error type.
 //! It's using 'thiserror' as it reduces boilerplate error code while providing rich error typing.
 
+use crate::timer::TimerError;
+
 #[derive(thiserror::Error, Debug)]
 pub enum Error {
     #[error(transparent)]
@@ -14,6 +16,9 @@ pub enum Error {
 
     #[error(transparent)]
     DieselError(#[from] diesel::result::Error),
+
+    #[error(transparent)]
+    TimerError(#[from] TimerError),
 }
 
 impl serde::Serialize for Error {
