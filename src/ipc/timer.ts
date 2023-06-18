@@ -3,6 +3,7 @@ import { invoke } from "@tauri-apps/api";
 import { QueueSession } from "@/bindings/QueueSession";
 import { TimerSession } from "@/bindings/TimerSession";
 import { Intent } from "@/bindings/Intent";
+import { Queue } from "@/bindings/Queue";
 
 export const timerGetSession = async () => {
   return await invoke<TimerSession>("timer_get_session");
@@ -13,23 +14,27 @@ export const timerSetSessionIntent = async (intent: Intent) => {
 };
 
 export const timerPlay = async () => {
-  return await invoke<void>("timer_play", {});
+  return await invoke<void>("timer_play");
 };
 
 export const timerStop = async () => {
-  return await invoke<void>("timer_stop", {});
+  return await invoke<void>("timer_stop");
 };
 
 export const timerRestart = async () => {
-  return await invoke<void>("timer_restart", {});
+  return await invoke<void>("timer_restart");
 };
 
 export const timerSkip = async () => {
-  return await invoke<void>("timer_skip", {});
+  return await invoke<void>("timer_skip");
 };
 
 export const timerSetIntent = async (id: number) => {
   return await invoke<void>("timer_set_intent", { id });
+};
+
+export const timerGetQueue = async () => {
+  return await invoke<Queue>("timer_get_queue");
 };
 
 export const timerAddToQueue = async (data: QueueSession) => {
@@ -45,7 +50,7 @@ export const timerReorderQueue = async (idx: number, targetIdx: number) => {
 };
 
 export const timerClearQueue = async () => {
-  return await invoke<void>("timer_clear_queue", {});
+  return await invoke<void>("timer_clear_queue");
 };
 
 export const timerIncrementQueueSessionIterations = async (idx: number) => {

@@ -4,22 +4,34 @@ import ipc from "@/ipc";
 import { QueueSession } from "@/bindings/QueueSession";
 import { TimerSession } from "@/bindings/TimerSession";
 import { Intent } from "@/bindings/Intent";
+import { Queue } from "@/bindings/Queue";
+
 import useEvents from "./useEvents";
 
 export const useTimer = () => {
   const [session, setSession] = React.useState<TimerSession | null>();
+  const [queue, setQueue] = React.useState<Queue | null>();
 
   React.useEffect(() => {
     ipc
       .timerGetSession()
       .then((data) => setSession(data))
       .catch(() => setSession(null));
+
+    ipc
+      .timerGetQueue()
+      .then((data) => setQueue(data))
+      .catch(() => setQueue(null));
   }, []);
 
   useEvents({
     timer_session_updated: (data) => {
-      console.log(JSON.stringify(data));
+      console.log(data);
       setSession(data);
+    },
+    timer_queue_updated: (data) => {
+      console.log(data);
+      setQueue(data);
     },
   });
 
@@ -73,6 +85,7 @@ export const useTimer = () => {
 
   return {
     session,
+    queue,
     setIntent,
     play,
     stop,

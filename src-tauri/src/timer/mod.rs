@@ -1,3 +1,14 @@
+use crate::{
+    config::{ConfigManager, TimerConfig},
+    models::Intent,
+};
+use std::{
+    sync::{atomic::AtomicU32, Arc, Mutex, MutexGuard},
+    thread,
+    time::Duration,
+};
+use tauri::AppHandle;
+
 mod error;
 mod queue;
 mod session;
@@ -6,73 +17,34 @@ pub use error::*;
 pub use queue::*;
 pub use session::*;
 
-use std::{
-    sync::{atomic::AtomicU32, Arc, Mutex},
-    thread,
-    time::Duration,
-};
-
-use tauri::AppHandle;
-
-use crate::{
-    config::{ConfigManager, TimerConfig},
-    models::Intent,
-};
-
 type TimerResult<T> = Result<T, TimerError>;
 
 pub struct Timer {
     app_handle: AppHandle,
     session: Option<Arc<Mutex<TimerSession>>>,
     iteration: Arc<AtomicU32>,
-    queue: Arc<Mutex<Queue>>,
+    queue: Arc<Mutex<TimerQueue>>,
 }
 
+// Static timer methods
 impl Timer {
     pub fn init(app_handle: AppHandle) -> Self {
         Self {
-            app_handle,
+            app_handle: app_handle.clone(),
             session: None,
             iteration: Arc::new(AtomicU32::new(0)),
-            queue: Arc::new(Mutex::new(Queue::init())),
+            queue: Arc::new(Mutex::new(TimerQueue::new(app_handle))),
         }
     }
-
     fn get_config() -> TimerConfig {
         ConfigManager::get::<TimerConfig>().unwrap()
     }
 }
 
+// Methods for interacting with timer
 impl Timer {
-    pub fn get_session(&self) -> TimerResult<TimerSession> {
-        let session = self.get_session_clone()?;
-        let session = session.lock().unwrap().clone();
-        Ok(session)
-    }
-    pub fn set_session_intent(&mut self, intent: Intent) {
-        match &mut self.session {
-            Some(session) => {
-                let mut session = session.lock().unwrap();
-                session.intent = intent;
-                session.emit_state(self.app_handle.clone())
-            }
-            None => {
-                let config = Self::get_config();
-                let data = CreateTimerSession {
-                    _type: SessionType::Focus,
-                    duration: config.focus_duration,
-                    intent,
-                };
-                let session = TimerSession::new(data);
-                session.emit_state(self.app_handle.clone());
-                self.session = Some(Arc::new(Mutex::new(session)));
-            }
-        }
-    }
-
     pub fn play(&mut self) -> TimerResult<()> {
-        let session_guard = self.get_session_clone()?;
-        let mut session = session_guard.lock().unwrap();
+        let mut session = self.get_session_guard()?;
         // Exit function if session is already playing
         if session.is_playing {
             return Ok(());
@@ -83,6 +55,7 @@ impl Timer {
         let app_handle = self.app_handle.clone();
         let iteration = self.iteration.clone();
         let queue = self.queue.clone();
+
         // Run timer logic inside of a new thread
         thread::spawn(move || {
             loop {
@@ -117,15 +90,13 @@ impl Timer {
         Ok(())
     }
     pub fn stop(&mut self) -> TimerResult<()> {
-        let session_guard = self.get_session_clone()?;
-        let mut session = session_guard.lock().unwrap();
+        let mut session = self.get_session_guard()?;
         session.stop();
         session.emit_state(self.app_handle.clone());
         Ok(())
     }
     pub fn restart(&mut self) -> TimerResult<()> {
-        let session_guard = self.get_session_clone()?;
-        let mut session = session_guard.lock().unwrap();
+        let mut session = self.get_session_guard()?;
         let app_handle = self.app_handle.clone();
 
         session.stop();
@@ -135,8 +106,7 @@ impl Timer {
         Ok(())
     }
     pub fn skip(&mut self) -> TimerResult<()> {
-        let session_guard = self.get_session_clone()?;
-        let mut session = session_guard.lock().unwrap();
+        let mut session = self.get_session_guard()?;
         let iteration = self.iteration.clone();
         let queue_guard = self.queue.clone();
         let mut queue = queue_guard.lock().unwrap();
@@ -145,7 +115,56 @@ impl Timer {
         session.next_session(self.app_handle.clone(), iteration, &mut *queue);
         Ok(())
     }
+}
 
+// Helper methods
+impl Timer {
+    fn get_session_clone(&self) -> TimerResult<Arc<Mutex<TimerSession>>> {
+        if let Some(session) = &self.session {
+            return Ok(session.clone());
+        };
+        Err(TimerError::UndefinedSession)
+    }
+    fn get_session_guard(&self) -> Result<MutexGuard<TimerSession>, TimerError> {
+        let session = self.session.as_ref().ok_or(TimerError::UndefinedSession)?;
+        let session_guard = session.lock().unwrap();
+        Ok(session_guard)
+    }
+}
+
+// Session related methods
+impl Timer {
+    pub fn get_session(&self) -> TimerResult<TimerSession> {
+        let session = self.get_session_guard()?.clone();
+        Ok(session)
+    }
+    pub fn set_session_intent(&mut self, intent: Intent) {
+        match &mut self.session {
+            Some(session) => {
+                let mut session = session.lock().unwrap();
+                session.intent = intent;
+                session.emit_state(self.app_handle.clone())
+            }
+            None => {
+                let config = Self::get_config();
+                let data = CreateTimerSession {
+                    _type: SessionType::Focus,
+                    duration: config.focus_duration,
+                    intent,
+                };
+                let session = TimerSession::new(data);
+                session.emit_state(self.app_handle.clone());
+                self.session = Some(Arc::new(Mutex::new(session)));
+            }
+        }
+    }
+}
+
+// Methods for interacting with the timer's queue
+impl Timer {
+    pub fn get_queue(&self) -> Queue {
+        self.queue.lock().unwrap().get()
+    }
     pub fn add_to_queue(&mut self, session: QueueSession) {
         let mut queue = self.queue.lock().unwrap();
         queue.add(session);
@@ -173,12 +192,5 @@ impl Timer {
     pub fn update_queue_session_duration(&mut self, idx: usize, duration: i64) {
         let mut queue = self.queue.lock().unwrap();
         queue.update_session_duration(idx, duration);
-    }
-
-    fn get_session_clone(&self) -> TimerResult<Arc<Mutex<TimerSession>>> {
-        if let Some(session) = &self.session {
-            return Ok(session.clone());
-        };
-        Err(TimerError::UndefinedSession)
     }
 }

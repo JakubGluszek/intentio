@@ -84,6 +84,7 @@ fn main() -> Result<()> {
             timer_stop,
             timer_restart,
             timer_skip,
+            timer_get_queue,
             timer_add_to_queue,
             timer_remove_from_queue,
             timer_reorder_queue,
