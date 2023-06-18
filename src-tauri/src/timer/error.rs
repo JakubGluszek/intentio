@@ -1,5 +1,8 @@
-#[derive(thiserror::Error, Debug)]
+use ts_rs::TS;
+
+#[derive(thiserror::Error, TS, Debug)]
+#[ts(export, export_to = "../src/bindings/")]
 pub enum TimerError {
-    #[error("Timer session is not defined")]
+    #[error("UndefinedSession")]
     UndefinedSession,
 }

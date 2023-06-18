@@ -93,7 +93,6 @@ impl Timer {
     }
     pub fn restart(&mut self) -> TimerResult<()> {
         let mut session = self.get_session_guard()?;
-
         session.stop();
         session.save();
         session.restart();

@@ -40,7 +40,7 @@ export const useTimer = () => {
   };
 
   const play = async () => {
-    return ipc.timerPlay();
+    return ipc.timerPlay().catch((err) => console.log(err));
   };
 
   const stop = async () => {
