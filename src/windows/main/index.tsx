@@ -43,6 +43,21 @@ const MainWindow: React.FC = () => {
           <Pane className="grow flex flex-col gap-0.5">
             <Titlebar />
             <Content />
+            <Button
+              variant="base"
+              className="w-full h-fit"
+              onClick={() =>
+                new WebviewWindow("new-main-window-demo", {
+                  url: "/new-main",
+                  title: "New main window demo",
+                  width: 320,
+                  height: 336,
+                  ...WebviewConfig,
+                })
+              }
+            >
+              New main window demo
+            </Button>
           </Pane>
         </WindowContainer>
       </TimerContextProvider>

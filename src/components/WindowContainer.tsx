@@ -58,7 +58,7 @@ export const WindowContainer: React.FC<WindowContainerProps> = (props) => {
   if (!store.currentTheme) return null;
 
   return (
-    <div className="w-screen h-screen flex flex-col">
+    <>
       {props.children}
 
       <Toaster
@@ -80,6 +80,6 @@ export const WindowContainer: React.FC<WindowContainerProps> = (props) => {
           },
         }}
       />
-    </div>
+    </>
   );
 };
