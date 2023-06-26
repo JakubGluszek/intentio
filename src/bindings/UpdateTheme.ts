@@ -3,6 +3,7 @@
 export interface UpdateTheme {
   label: string | null;
   favorite: boolean | null;
+  variant: string | null;
   window_hex: string | null;
   base_hex: string | null;
   text_hex: string | null;

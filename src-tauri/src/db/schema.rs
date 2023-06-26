@@ -56,6 +56,7 @@ diesel::table! {
         base_hex -> Text,
         text_hex -> Text,
         primary_hex -> Text,
+        variant -> Text,
     }
 }
 

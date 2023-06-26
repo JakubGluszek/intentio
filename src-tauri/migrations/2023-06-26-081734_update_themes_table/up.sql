@@ -1,0 +1,2 @@
+ALTER TABLE themes
+ADD COLUMN variant VARCHAR(7) NOT NULL DEFAULT 'dark';

@@ -16,6 +16,7 @@ pub struct Theme {
     pub base_hex: String,
     pub text_hex: String,
     pub primary_hex: String,
+    pub variant: String,
 }
 
 #[derive(Insertable, Deserialize, TS, Debug, Clone)]
@@ -23,6 +24,7 @@ pub struct Theme {
 #[ts(export, export_to = "../src/bindings/")]
 pub struct CreateTheme {
     pub label: String,
+    pub variant: String,
     pub window_hex: String,
     pub base_hex: String,
     pub text_hex: String,
@@ -35,6 +37,7 @@ pub struct CreateTheme {
 pub struct UpdateTheme {
     pub label: Option<String>,
     pub favorite: Option<bool>,
+    pub variant: Option<String>,
     pub window_hex: Option<String>,
     pub base_hex: Option<String>,
     pub text_hex: Option<String>,

@@ -2,6 +2,7 @@
 
 export interface CreateTheme {
   label: string;
+  variant: string;
   window_hex: string;
   base_hex: string;
   text_hex: string;
