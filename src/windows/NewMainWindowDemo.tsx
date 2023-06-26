@@ -6,7 +6,6 @@ import {
   MdClose,
   MdHistory,
   MdInfo,
-  MdLabelImportant,
   MdRemove,
   MdSettings,
   MdTag,
@@ -58,9 +57,9 @@ const NewMainWindowDemo: React.FC = () => {
   return (
     <WindowContainer>
       <div ref={windowRef} className="w-[20rem] h-[21rem]">
-        <div className="w-screen h-screen flex flex-col bg-window/95 border-2 border-base/5 rounded-md overflow-clip">
+        <div className="w-screen h-screen flex flex-col bg-window/95 border-2 border-base/10 rounded-md overflow-clip">
           {/* Titlebar */}
-          <div className="flex flex-row items-center h-8 p-0.5 bg-base/5">
+          <div className="flex flex-row items-center h-8 p-0.5 bg-base/10">
             <div className="flex flex-row">
               <Button variant="ghost">
                 <MdSettings size={iconSize} />
@@ -82,9 +81,9 @@ const NewMainWindowDemo: React.FC = () => {
             </div>
           </div>
 
-          <div className="relative grow flex flex-col p-1">
+          <div className="relative grow flex flex-col p-0.5">
             <div className="grow flex flex-col gap-0.5">
-              <div className="h-8 flex flex-row gap-0.5 rounded-sm overflow-clip">
+              <div className="h-8 flex flex-row gap-0.5 rounded-[1px] overflow-clip">
                 {/* Heading Label */}
                 <div className="flex-1 flex flex-row items-center gap-1 px-2 text-text/60 bg-base/5">
                   <MdInfo size={iconSize} />
@@ -113,7 +112,7 @@ const NewMainWindowDemo: React.FC = () => {
                 </div>
               </div>
               {/* Intents List */}
-              <div className="grow flex flex-col bg-base/5 p-1 gap-1 rounded-sm transition-all duration-150">
+              <div className="grow flex flex-col bg-base/5 p-1 gap-1 rounded-[1px] transition-all duration-150">
                 <button className="h-fit flex flex-col gap-0.5 p-1 hover:bg-primary/20 bg-base/5 border border-base/10 active:bg-primary/30 active:border-transparent rounded-sm transition-all duration-300 hover:shadow-black/25 hover:shadow active:shadow-black/25 active:shadow-lg">
                   <div className="flex flex-row items-center gap-1 text-text/80">
                     <BiTargetLock size={iconSize} />
@@ -149,7 +148,7 @@ const NewMainWindowDemo: React.FC = () => {
               </div>
 
               {/* Intent Panels */}
-              <div className="h-7 flex flex-row rounded-sm overflow-clip">
+              <div className="h-7 flex flex-row rounded-[1px]">
                 <PanelButton>
                   <HiViewList size={iconSize} />
                 </PanelButton>

@@ -5,7 +5,12 @@ const MainWindow = React.lazy(() => import("./windows/main"));
 const SettingsWindow = React.lazy(() => import("./windows/settings"));
 const AnalyticsWindow = React.lazy(() => import("./windows/analytics"));
 const TestTimerWindow = React.lazy(() => import("./windows/TestTimerWindow"));
-const NewMainWindowDemo = React.lazy(() => import("./windows/NewMainWindowDemo"));
+const NewMainWindowDemo = React.lazy(
+  () => import("./windows/NewMainWindowDemo")
+);
+const NewSettingsWindowDemo = React.lazy(
+  () => import("./windows/NewSettingsWindowDemo")
+);
 
 const App: React.FC = () => {
   return (
@@ -16,6 +21,7 @@ const App: React.FC = () => {
         <Route path="analytics" element={<AnalyticsWindow />} />
         <Route path="timer" element={<TestTimerWindow />} />
         <Route path="new-main" element={<NewMainWindowDemo />} />
+        <Route path="new-settings" element={<NewSettingsWindowDemo />} />
       </Routes>
     </React.Fragment>
   );

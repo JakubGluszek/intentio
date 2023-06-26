@@ -42,7 +42,6 @@ const MainWindow: React.FC = () => {
         <WindowContainer>
           <Pane className="grow flex flex-col gap-0.5">
             <Titlebar />
-            <Content />
             <Button
               variant="base"
               className="w-full h-fit"
@@ -56,7 +55,22 @@ const MainWindow: React.FC = () => {
                 })
               }
             >
-              New main window demo
+              Open main window demo
+            </Button>
+            <Button
+              variant="base"
+              className="w-full h-fit"
+              onClick={() =>
+                new WebviewWindow("new-settings-window-demo", {
+                  url: "/new-settings",
+                  title: "New main window demo",
+                  width: 320,
+                  height: 384,
+                  ...WebviewConfig,
+                })
+              }
+            >
+              Open settings window demo
             </Button>
           </Pane>
         </WindowContainer>
