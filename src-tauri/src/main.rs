@@ -40,6 +40,8 @@ fn main() -> Result<()> {
             update_timer_config,
             get_settings_config,
             update_settings_config,
+            get_queue_config,
+            update_queue_config,
             // Utils
             open_audio_dir,
             play_audio,

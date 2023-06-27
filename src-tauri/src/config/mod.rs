@@ -4,11 +4,13 @@ use std::{
 };
 
 use serde::{Deserialize, Serialize};
+use serde_json::Value;
 
+mod queue;
 mod settings;
 mod timer;
 
-use serde_json::Value;
+pub use queue::*;
 pub use settings::*;
 pub use timer::*;
 
