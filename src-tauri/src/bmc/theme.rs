@@ -47,13 +47,13 @@ impl ThemeBmc {
     }
     pub fn create_default_themes(conn: &mut SqliteConnection) -> Result<()> {
         let query = r#"
-            INSERT INTO themes (label, favorite, window_hex, base_hex, primary_hex, text_hex) VALUES 
-            ('forest', 0, '#002a37', '#65c3b1', '#0feda2', '#EBEBEB'),
-            ('abyss', 0, '#222831', '#77CED2', '#00ADB5', '#EEEEEE'),
-            ('space', 0, '#120A2B', '#78A2B3', '#01A8B5', '#FAEDF0'),
-            ('dracula', 0, '#282a36', '#d1bdf1', '#bd93f9', '#f8f8f2'),
-            ('blaze', 0, '#112B3C', '#f79385', '#F66B0E', '#EFEFEF'),
-            ('snow', 0, '#E4EDED', '#6F96F8', '#4685FF', '#1F1F21');
+            INSERT INTO themes (label, favorite, variant, window_hex, base_hex, primary_hex, text_hex) VALUES 
+            ('forest', 0, 'dark', '#002a37', '#65c3b1', '#0feda2', '#EBEBEB'),
+            ('abyss', 0, 'dark', '#222831', '#77CED2', '#00ADB5', '#EEEEEE'),
+            ('space', 0, 'dark', '#120A2B', '#78A2B3', '#01A8B5', '#FAEDF0'),
+            ('dracula', 0, 'dark', '#282a36', '#d1bdf1', '#bd93f9', '#f8f8f2'),
+            ('blaze', 0, 'dark', '#112B3C', '#f79385', '#F66B0E', '#EFEFEF'),
+            ('snow', 0, 'light', '#E4EDED', '#6F96F8', '#4685FF', '#1F1F21');
         "#;
         diesel::sql_query(query).execute(conn)?;
         Ok(())
@@ -74,6 +74,7 @@ mod theme_bmc_tests {
         // Create theme.
         let data = CreateTheme {
             label: "void".to_string(),
+            variant: "dark".to_string(),
             window_hex: "#000000".to_string(),
             base_hex: "#000000".to_string(),
             text_hex: "#000000".to_string(),
@@ -90,6 +91,7 @@ mod theme_bmc_tests {
         // Create theme.
         let data = CreateTheme {
             label: "void".to_string(),
+            variant: "dark".to_string(),
             window_hex: "#000000".to_string(),
             base_hex: "#000000".to_string(),
             text_hex: "#000000".to_string(),
@@ -99,6 +101,7 @@ mod theme_bmc_tests {
         // Update theme.
         let data = UpdateTheme {
             label: Some("light".to_string()),
+            variant: Some("light".to_string()),
             favorite: None,
             window_hex: Some("#FFFFFF".to_string()),
             base_hex: Some("#FFFFFF".to_string()),
@@ -111,6 +114,7 @@ mod theme_bmc_tests {
 
         assert_eq!(theme.id, 1);
         assert_eq!(theme.label, "light".to_string());
+        assert_eq!(theme.variant, "light".to_string());
         assert_eq!(theme.favorite, false);
         assert_eq!(theme.window_hex, "#FFFFFF".to_string());
         assert_eq!(theme.base_hex, "#FFFFFF".to_string());
@@ -124,6 +128,7 @@ mod theme_bmc_tests {
         // Create theme.
         let data = CreateTheme {
             label: "void".to_string(),
+            variant: "dark".to_string(),
             window_hex: "#000000".to_string(),
             base_hex: "#000000".to_string(),
             text_hex: "#000000".to_string(),
@@ -144,6 +149,7 @@ mod theme_bmc_tests {
         // Create theme.
         let data = CreateTheme {
             label: "void".to_string(),
+            variant: "dark".to_string(),
             window_hex: "#000000".to_string(),
             base_hex: "#000000".to_string(),
             text_hex: "#000000".to_string(),
@@ -169,6 +175,7 @@ mod theme_bmc_tests {
         for _ in 0..10 {
             let data = CreateTheme {
                 label: "void".to_string(),
+                variant: "dark".to_string(),
                 window_hex: "#000000".to_string(),
                 base_hex: "#000000".to_string(),
                 text_hex: "#000000".to_string(),

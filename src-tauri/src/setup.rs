@@ -2,7 +2,7 @@ use std::sync::{Arc, Mutex};
 
 use crate::{
     bmc::ThemeBmc,
-    config::{ConfigManager, SettingsConfig, TimerConfig},
+    config::{ConfigManager, QueueConfig, SettingsConfig, TimerConfig},
     ctx::AppContext,
     db::Db,
     prelude::Result,
@@ -51,6 +51,7 @@ fn setup_config() -> Result<()> {
 
     ConfigManager::validate::<TimerConfig>()?;
     ConfigManager::validate::<SettingsConfig>()?;
+    ConfigManager::validate::<QueueConfig>()?;
 
     Ok(())
 }

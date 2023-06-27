@@ -3,6 +3,7 @@ use diesel::SqliteConnection;
 
 use crate::models::CreateIntent;
 use crate::models::Intent;
+use crate::models::Tag;
 use crate::models::UpdateIntent;
 use crate::prelude::Result;
 
@@ -67,11 +68,29 @@ impl IntentBmc {
             .execute(conn)?;
         Ok(id)
     }
+
+    pub fn get_tags(conn: &mut SqliteConnection, intent_id: i32) -> Result<Vec<Tag>> {
+        use crate::db::schema::intent_tags::dsl as intent_tags_dsl;
+        use crate::db::schema::tags::dsl as tags_dsl;
+
+        let tags = intent_tags_dsl::intent_tags
+            .filter(intent_tags_dsl::intent_id.eq(intent_id))
+            .inner_join(tags_dsl::tags)
+            .select(tags_dsl::tags::all_columns())
+            .load::<Tag>(conn)?;
+
+        Ok(tags)
+    }
 }
 
 #[cfg(test)]
 mod intent_bmc_tests {
-    use crate::{db::Db, prelude::Error};
+    use crate::{
+        bmc::{IntentTagBmc, TagBmc},
+        db::Db,
+        models::{CreateIntentTag, CreateTag},
+        prelude::Error,
+    };
 
     use super::*;
 
@@ -185,5 +204,64 @@ mod intent_bmc_tests {
         let intent = IntentBmc::get(&mut conn, id).unwrap();
 
         assert_eq!(intent.archived_at, None);
+    }
+
+    #[test]
+    fn test_get_tags_for_intent() {
+        let mut conn = Db::establish_test_connection().unwrap();
+
+        // Create an intent
+        let intent_data = CreateIntent {
+            label: "test intent".to_string(),
+        };
+        let intent_id = IntentBmc::create(&mut conn, &intent_data).unwrap();
+
+        // Create some tags
+        let tag_data = vec![
+            CreateTag {
+                label: "tag1".to_string(),
+            },
+            CreateTag {
+                label: "tag2".to_string(),
+            },
+            CreateTag {
+                label: "tag3".to_string(),
+            },
+        ];
+        let tag_ids: Vec<i32> = tag_data
+            .iter()
+            .map(|data| TagBmc::create(&mut conn, data).unwrap())
+            .collect();
+
+        // Associate the tags with the intent
+        let intent_tag_data = vec![
+            CreateIntentTag {
+                intent_id,
+                tag_id: tag_ids[0],
+            },
+            CreateIntentTag {
+                intent_id,
+                tag_id: tag_ids[1],
+            },
+        ];
+        intent_tag_data.iter().for_each(|data| {
+            IntentTagBmc::create(&mut conn, data).unwrap();
+        });
+
+        // Get the tags for the intent
+        let tags = IntentBmc::get_tags(&mut conn, intent_id).unwrap();
+
+        // Check that the correct tags were returned
+        let expected_tags = vec![
+            Tag {
+                id: tag_ids[0],
+                label: "tag1".to_string(),
+            },
+            Tag {
+                id: tag_ids[1],
+                label: "tag2".to_string(),
+            },
+        ];
+        assert_eq!(tags, expected_tags);
     }
 }

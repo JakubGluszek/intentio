@@ -8,4 +8,5 @@ export interface Theme {
   base_hex: string;
   text_hex: string;
   primary_hex: string;
+  variant: string;
 }
