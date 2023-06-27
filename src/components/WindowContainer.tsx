@@ -5,6 +5,7 @@ import { useDragWindow, useEvents, usePreventContextMenu } from "@/hooks";
 import ipc from "@/ipc";
 import useStore from "@/store";
 import utils from "@/utils";
+import { WindowProvider } from "@/contexts";
 
 export interface WindowContainerProps {
   children: React.ReactNode;
@@ -58,7 +59,7 @@ export const WindowContainer: React.FC<WindowContainerProps> = (props) => {
   if (!store.currentTheme) return null;
 
   return (
-    <>
+    <WindowProvider>
       {props.children}
 
       <Toaster
@@ -80,6 +81,6 @@ export const WindowContainer: React.FC<WindowContainerProps> = (props) => {
           },
         }}
       />
-    </>
+    </WindowProvider>
   );
 };
