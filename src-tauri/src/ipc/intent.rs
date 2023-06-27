@@ -5,7 +5,7 @@ use tauri::{command, AppHandle, Manager};
 use crate::{
     bmc::IntentBmc,
     ctx::AppContext,
-    models::{CreateIntent, Intent, UpdateIntent},
+    models::{CreateIntent, Intent, Tag, UpdateIntent},
     prelude::Result,
 };
 
@@ -59,4 +59,9 @@ pub async fn unarchive_intent(app_handle: AppHandle, id: i32) -> Result<i32> {
     let payload = EventPayload { data: id };
     app_handle.emit_all("intent_unarchived", payload)?;
     Ok(id)
+}
+
+#[command]
+pub async fn get_intent_tags(app_handle: AppHandle, id: i32) -> Result<Vec<Tag>> {
+    app_handle.db(|mut db| IntentBmc::get_tags(&mut db, id))
 }

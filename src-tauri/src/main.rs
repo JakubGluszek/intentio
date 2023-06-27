@@ -27,7 +27,7 @@ fn main() -> Result<()> {
         .system_tray(SystemTray::new().with_menu(create_tray_menu()))
         .on_system_tray_event(handle_on_system_tray_event)
         .invoke_handler(tauri::generate_handler![
-            // state
+            // State
             get_current_theme,
             set_current_theme,
             update_timer_state,
@@ -35,7 +35,7 @@ fn main() -> Result<()> {
             set_focus_theme,
             set_break_theme,
             set_long_break_theme,
-            // config
+            // Config
             get_timer_config,
             update_timer_config,
             get_settings_config,
@@ -91,7 +91,14 @@ fn main() -> Result<()> {
             timer_clear_queue,
             timer_increment_queue_session_iterations,
             timer_decrement_queue_session_iterations,
-            timer_update_queue_session_duration
+            timer_update_queue_session_duration,
+            // Intent Tags
+            create_tag,
+            update_tag,
+            delete_tag,
+            get_tag,
+            get_tags,
+            get_intent_tags,
         ])
         .setup(move |app| Ok(setup_hook(app)))
         .plugin(tauri_plugin_autostart::init(

@@ -1,6 +1,14 @@
 // @generated automatically by Diesel CLI.
 
 diesel::table! {
+    intent_tags (id) {
+        id -> Integer,
+        intent_id -> Integer,
+        tag_id -> Integer,
+    }
+}
+
+diesel::table! {
     intents (id) {
         id -> Integer,
         label -> Text,
@@ -37,6 +45,13 @@ diesel::table! {
 }
 
 diesel::table! {
+    tags (id) {
+        id -> Integer,
+        label -> Text,
+    }
+}
+
+diesel::table! {
     tasks (id) {
         id -> Integer,
         body -> Text,
@@ -60,13 +75,17 @@ diesel::table! {
     }
 }
 
+diesel::joinable!(intent_tags -> intents (intent_id));
+diesel::joinable!(intent_tags -> tags (tag_id));
 diesel::joinable!(sessions -> intents (intent_id));
 diesel::joinable!(tasks -> intents (intent_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
+    intent_tags,
     intents,
     scripts,
     sessions,
+    tags,
     tasks,
     themes,
 );
