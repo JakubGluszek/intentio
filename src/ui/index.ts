@@ -13,3 +13,5 @@ export * from "./ModalContainer";
 export * from "./Panels";
 export * from "./Titlebar";
 export * from "./Glass";
+export * from "./IconView";
+export * from "./Modal";

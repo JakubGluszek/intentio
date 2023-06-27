@@ -1,10 +1,20 @@
 use diesel::prelude::*;
 use diesel::SqliteConnection;
+use ts_rs::TS;
 
 use crate::models::CreateIntentTag;
 use crate::prelude::Result;
 
 use super::BaseBmc;
+
+use serde::{Deserialize, Serialize};
+
+#[derive(Serialize, Deserialize, TS, Debug, Clone)]
+#[ts(export, export_to = "../src/bindings/")]
+pub struct DeleteIntentTag {
+    pub intent_id: i32,
+    pub tag_id: i32,
+}
 
 pub struct IntentTagBmc {}
 
@@ -19,11 +29,18 @@ impl IntentTagBmc {
         BaseBmc::get_last_insert_id(conn)
     }
 
-    pub fn delete(conn: &mut SqliteConnection, id: i32) -> Result<i32> {
+    pub fn delete(conn: &mut SqliteConnection, data: &DeleteIntentTag) -> Result<()> {
         use crate::db::schema::intent_tags::dsl;
 
-        diesel::delete(dsl::intent_tags.filter(dsl::id.eq(id))).execute(conn)?;
-        Ok(id)
+        diesel::delete(
+            dsl::intent_tags.filter(
+                dsl::intent_id
+                    .eq(data.intent_id)
+                    .and(dsl::tag_id.eq(data.tag_id)),
+            ),
+        )
+        .execute(conn)?;
+        Ok(())
     }
 }
 
@@ -64,7 +81,8 @@ mod intent_tag_bmc_tests {
 
         assert_eq!(id, 1);
 
+        let data = DeleteIntentTag { intent_id, tag_id };
         // Delete intent tag
-        IntentTagBmc::delete(&mut conn, id).unwrap();
+        IntentTagBmc::delete(&mut conn, &data).unwrap();
     }
 }

@@ -61,6 +61,8 @@ fn main() -> Result<()> {
             delete_intent,
             archive_intent,
             unarchive_intent,
+            add_intent_tag,
+            delete_intent_tag,
             // Task
             create_task,
             update_task,

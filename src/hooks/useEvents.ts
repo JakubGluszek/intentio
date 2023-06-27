@@ -7,16 +7,20 @@ import { SettingsConfig } from "@/bindings/SettingsConfig";
 import { EventPayload } from "@/bindings/EventPayload";
 import { TimerSession } from "@/bindings/TimerSession";
 import { Queue } from "@/bindings/Queue";
+import { CreateIntentTag } from "@/bindings/CreateIntentTag";
+import { DeleteIntentTag } from "@/bindings/DeleteIntentTag";
 
 type Id = number;
 
 type Events = {
   [key: string]: any;
-  intent_created: EventPayload<Id>;
-  intent_updated: EventPayload<Id>;
-  intent_deleted: EventPayload<Id>;
-  intent_archived: EventPayload<Id>;
-  intent_unarchived: EventPayload<Id>;
+  intent_created: Id;
+  intent_updated: Id;
+  intent_deleted: Id;
+  intent_archived: Id;
+  intent_unarchived: Id;
+  intent_tag_created: CreateIntentTag;
+  intent_tag_deleted: DeleteIntentTag;
 
   task_created: EventPayload<Id>;
   task_updated: EventPayload<Id>;

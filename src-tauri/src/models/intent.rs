@@ -42,7 +42,7 @@ pub struct IntentTag {
     pub tag_id: i32,
 }
 
-#[derive(Insertable, Deserialize, TS, Debug, Clone)]
+#[derive(Insertable, Serialize, Deserialize, TS, Debug, Clone)]
 #[diesel(table_name = intent_tags, check_for_backend(diesel::sqlite::Sqlite))]
 #[ts(export, export_to = "../src/bindings/")]
 pub struct CreateIntentTag {
