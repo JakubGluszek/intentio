@@ -22,6 +22,10 @@ type Events = {
   intent_tag_created: CreateIntentTag;
   intent_tag_deleted: DeleteIntentTag;
 
+  tag_created: Id;
+  tag_updated: Id;
+  tag_deleted: Id;
+
   task_created: EventPayload<Id>;
   task_updated: EventPayload<Id>;
   task_deleted: EventPayload<Id>;

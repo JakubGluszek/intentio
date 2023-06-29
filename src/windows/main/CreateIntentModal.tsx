@@ -23,7 +23,7 @@ export const CreateIntentModal: React.FC<CreateIntentProps> = (props) => {
   });
 
   return (
-    <Modal display={props.display} header="Create Intent" onExit={props.onExit}>
+    <Modal header="Create Intent" {...props}>
       <form onSubmit={onSubmit} className="grow flex flex-col gap-0.5">
         <div className="flex flex-col bg-base/5 p-1">
           <Input

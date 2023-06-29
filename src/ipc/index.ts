@@ -7,5 +7,6 @@ export * from "./scripts";
 export * from "./config";
 export * from "./state";
 export * from "./timer";
+export * from "./tags";
 
 export * as default from "./index";

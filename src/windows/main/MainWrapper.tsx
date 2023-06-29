@@ -8,7 +8,6 @@ import { IconView } from "@/ui";
 
 interface MainWrapperProps {
   children: React.ReactNode;
-  viewPanel: boolean;
 }
 
 export const MainWrapper: React.FC<MainWrapperProps> = (props) => {
@@ -18,25 +17,23 @@ export const MainWrapper: React.FC<MainWrapperProps> = (props) => {
         {props.children}
 
         {/* Intent Panels */}
-        {props.viewPanel && (
-          <div className="h-7 flex flex-row rounded-[1px]">
-            <PanelButton>
-              <IconView icon={HiViewList} />
-            </PanelButton>
-            <PanelButton>
-              <IconView icon={MdCheckBox} />
-            </PanelButton>
-            <PanelButton>
-              <IconView icon={MdTimer} />
-            </PanelButton>
-            <PanelButton>
-              <IconView icon={MdHistory} />
-            </PanelButton>
-            <PanelButton isSelected>
-              <IconView icon={BiTargetLock} />
-            </PanelButton>
-          </div>
-        )}
+        <div className="h-7 flex flex-row rounded-[1px]">
+          <PanelButton>
+            <IconView icon={HiViewList} />
+          </PanelButton>
+          <PanelButton>
+            <IconView icon={MdCheckBox} />
+          </PanelButton>
+          <PanelButton>
+            <IconView icon={MdTimer} />
+          </PanelButton>
+          <PanelButton>
+            <IconView icon={MdHistory} />
+          </PanelButton>
+          <PanelButton isSelected>
+            <IconView icon={BiTargetLock} />
+          </PanelButton>
+        </div>
       </div>
     </div>
   );

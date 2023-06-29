@@ -6,3 +6,4 @@ export * from "./usePreventContextMenu";
 export * from "./useTimer";
 export * from "./useScaleWindow";
 export * from "./useIntents";
+export * from "./useTags";

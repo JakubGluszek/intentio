@@ -8,15 +8,17 @@ import { useIntents } from "@/hooks";
 import { Intent } from "@/bindings/Intent";
 import { MainWrapper } from "./MainWrapper";
 import { CreateIntentModal } from "./CreateIntentModal";
+import { TagsModal } from "./TagsModal";
 
 export const IntentsView: React.FC = () => {
   const [viewCreate, setViewCreate] = React.useState(false);
+  const [viewTags, setViewTags] = React.useState(false);
 
   const intents = useIntents();
 
   return (
     <>
-      <MainWrapper viewPanel={false}>
+      <MainWrapper>
         {/* Navbar */}
         <div className="h-8 flex flex-row gap-0.5 rounded-[1px] overflow-clip">
           {/* Heading */}
@@ -34,7 +36,11 @@ export const IntentsView: React.FC = () => {
             >
               <IconView icon={MdAddCircle} />
             </Button>
-            <Button variant="ghost" config={{ ghost: { highlight: false } }}>
+            <Button
+              onClick={() => setViewTags(true)}
+              variant="ghost"
+              config={{ ghost: { highlight: false } }}
+            >
               <IconView icon={MdTag} />
             </Button>
             <Button variant="ghost" config={{ ghost: { highlight: false } }}>
@@ -48,12 +54,12 @@ export const IntentsView: React.FC = () => {
         </div>
       </MainWrapper>
 
-      {/* Create Intent Modal */}
       <CreateIntentModal
         display={viewCreate}
         onCreate={intents.create}
         onExit={() => setViewCreate(false)}
       />
+      <TagsModal display={viewTags} onExit={() => setViewTags(false)} />
     </>
   );
 };
