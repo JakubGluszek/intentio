@@ -4,3 +4,4 @@ export * from "./Editor";
 export * from "./ColorInput";
 export * from "./SliderCard";
 export * from "./WindowContainer";
+export * from "./TagView";

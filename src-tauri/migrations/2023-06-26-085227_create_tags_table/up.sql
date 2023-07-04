@@ -9,6 +9,6 @@ CREATE TABLE
     id INTEGER NOT NULL PRIMARY KEY,
     intent_id INTEGER NOT NULL,
     tag_id INTEGER NOT NULL,
-    FOREIGN KEY (intent_id) REFERENCES intents (id),
-    FOREIGN KEY (tag_id) REFERENCES tags (id)
+    FOREIGN KEY (intent_id) REFERENCES intents (id) ON DELETE CASCADE,
+    FOREIGN KEY (tag_id) REFERENCES tags (id) ON DELETE CASCADE
   );

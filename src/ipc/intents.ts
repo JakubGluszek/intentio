@@ -4,6 +4,9 @@ import { ModelId } from "@/types";
 import { Intent } from "@/bindings/Intent";
 import { CreateIntent } from "@/bindings/CreateIntent";
 import { UpdateIntent } from "@/bindings/UpdateIntent";
+import { Tag } from "@/bindings/Tag";
+import { CreateIntentTag } from "@/bindings/CreateIntentTag";
+import { DeleteIntentTag } from "@/bindings/DeleteIntentTag";
 
 export const createIntent = async (data: CreateIntent) => {
   return await invoke<ModelId>("create_intent", { data });
@@ -34,4 +37,16 @@ export const archiveIntent = async (id: ModelId) => {
 
 export const unarchiveIntent = async (id: ModelId) => {
   return await invoke<ModelId>("unarchive_intent", { id });
+};
+
+export const getIntentTags = async (id: ModelId) => {
+  return await invoke<Tag[]>("get_intent_tags", { id });
+};
+
+export const addIntentTag = async (data: CreateIntentTag) => {
+  return await invoke<void>("add_intent_tag", { data });
+};
+
+export const deleteIntentTag = async (data: DeleteIntentTag) => {
+  return await invoke<void>("delete_intent_tag", { data });
 };

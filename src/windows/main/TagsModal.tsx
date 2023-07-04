@@ -1,13 +1,12 @@
 import React from "react";
 import { MdAddCircle, MdRemoveCircle, MdTag } from "react-icons/md";
-import { clsx, ScrollArea } from "@mantine/core";
+import { ScrollArea } from "@mantine/core";
 import { useClickOutside } from "@mantine/hooks";
 import { toast } from "react-hot-toast";
 
 import { Button, IconView, Input, Modal } from "@/ui";
-import { ModelId } from "@/types";
 import { useTags } from "@/hooks";
-import { Tag } from "@/bindings/Tag";
+import { TagView } from "@/components";
 import { CreateTag } from "@/bindings/CreateTag";
 
 interface TagsModalProps {
@@ -118,45 +117,6 @@ const CreateTagView: React.FC<CreateTagViewProps> = (props) => {
         maxLength={32}
         autoFocus
       />
-    </div>
-  );
-};
-
-interface TagViewProps {
-  data: Tag;
-  isRemovable: boolean;
-  onRemove: (id: ModelId) => Promise<ModelId>;
-}
-
-const TagView: React.FC<TagViewProps> = (props) => {
-  const [isHover, setIsHover] = React.useState(false);
-  const isRemovable = isHover && props.isRemovable;
-
-  return (
-    <div
-      className="relative p-0.5 rounded bg-primary/20 hover:bg-primary/30 text-primary/80 hover:text-primary transition-all duration-300"
-      onMouseEnter={() => setIsHover(true)}
-      onMouseLeave={() => setIsHover(false)}
-    >
-      <div
-        className={clsx(
-          "flex flex-row transition-opacity duration-300",
-          isRemovable ? "opacity-0 pointer-events-none" : "opacity-100"
-        )}
-      >
-        <IconView icon={MdTag} scale={0.8} />
-        <span className="uppercase text-xs font-bold">{props.data.label}</span>
-      </div>
-      {isRemovable && (
-        <button
-          onClick={() =>
-            props.onRemove(props.data.id).then(() => toast("Tag deleted"))
-          }
-          className="absolute fade-in animate-in duration-300 top-0 left-0 w-full h-full flex flex-row items-center justify-center active:bg-primary/20"
-        >
-          <IconView icon={MdRemoveCircle} scale={0.9} />
-        </button>
-      )}
     </div>
   );
 };

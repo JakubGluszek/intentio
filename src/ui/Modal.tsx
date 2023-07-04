@@ -1,7 +1,7 @@
 import React from "react";
 import { MdInfo } from "react-icons/md";
 import { useClickOutside, useDisclosure } from "@mantine/hooks";
-import { Popover } from "@mantine/core";
+import { clsx, Popover } from "@mantine/core";
 
 import { IconView } from "./IconView";
 
@@ -10,27 +10,37 @@ export interface ModalProps {
   display: boolean;
   header: string;
   description?: string;
-  onExit: () => void;
+  hidden?: boolean;
+  onExit?: () => void;
 }
 
 export const Modal: React.FC<ModalProps> = (props) => {
-  const ref = useClickOutside<HTMLDivElement>(() => props.onExit());
+  const ref = useClickOutside<HTMLDivElement>(() => props.onExit?.());
 
   if (!props.display) return null;
 
   return (
-    <div className="absolute left-0 top-0 p-8 w-screen h-screen flex flex-col bg-black/50">
+    <div
+      className={clsx(
+        "absolute left-0 top-0 p-8 w-screen h-screen flex flex-col bg-black/50",
+        props.hidden && "opacity-0 pointer-events-none"
+      )}
+      data-tauri-disable-drag
+    >
       {/* Modal */}
-      <div ref={ref} className="m-auto w-full bg-window rounded overflow-clip">
+      <div
+        ref={ref}
+        className="m-auto w-full bg-window rounded overflow-clip border border-base/5"
+      >
         {/* Heading */}
-        <div className="flex flex-row items-center justify-between bg-base/10 px-1 py-0.5 text-text/60">
+        <div className="flex flex-row items-center justify-between bg-base/5 px-1 py-0.5 text-text/60">
           <span className="uppercase font-semibold">{props.header}</span>
           {props.description && <About content={props.description} />}
         </div>
         {/* Wrapper */}
         <div className="flex flex-col p-0.5">
           {/* Content */}
-          <div className="flex flex-col gap-1 rounded-t-sm rounded-b overflow-clip">
+          <div className="flex flex-col gap-0.5 rounded-t-sm rounded-b overflow-clip">
             {props.children}
           </div>
         </div>

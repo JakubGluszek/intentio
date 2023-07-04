@@ -19,9 +19,9 @@ const MainWindow: React.FC = () => {
 const Content: React.FC = () => {
   return (
     <div className="w-[20rem] h-[21rem]">
-      <div className="relative w-screen h-screen flex flex-col bg-window/95 border-2 border-primary/10 rounded-md overflow-clip">
+      <div className="relative w-screen h-screen flex flex-col bg-window/95 border-2 border-base/5 rounded-md overflow-clip">
         {/* Titlebar */}
-        <div className="flex flex-row items-center h-8 p-0.5 bg-primary/10">
+        <div className="flex flex-row items-center h-8 p-0.5 bg-base/5">
           <div className="flex flex-row gap-1">
             <Button
               variant="ghost"

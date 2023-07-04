@@ -13,11 +13,12 @@ interface CreateIntentProps {
 }
 
 export const CreateIntentModal: React.FC<CreateIntentProps> = (props) => {
-  const { register, handleSubmit } = useForm<CreateIntent>();
+  const { register, handleSubmit, setValue } = useForm<CreateIntent>();
 
   const onSubmit = handleSubmit((data) => {
     props.onCreate(data).then(() => {
       toast("Intent created");
+      setValue("label", "");
       props.onExit();
     });
   });
