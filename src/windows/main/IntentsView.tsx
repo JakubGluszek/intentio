@@ -11,8 +11,6 @@ import { CreateIntentModal } from "./CreateIntentModal";
 import { TagsModal } from "./TagsModal";
 import { ModelId } from "@/types";
 import { IntentConfigModal } from "./IntentConfigModal";
-import { Tag } from "@/bindings/Tag";
-import ipc from "@/ipc";
 
 export const IntentsView: React.FC = () => {
   const [viewCreate, setViewCreate] = React.useState(false);
