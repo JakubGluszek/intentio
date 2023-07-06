@@ -1,7 +1,7 @@
 import React from "react";
 import { MdInfo } from "react-icons/md";
 import { useClickOutside, useDisclosure } from "@mantine/hooks";
-import { clsx, Popover } from "@mantine/core";
+import { clsx, Popover, ScrollArea } from "@mantine/core";
 
 import { IconView } from "./IconView";
 
@@ -22,7 +22,7 @@ export const Modal: React.FC<ModalProps> = (props) => {
   return (
     <div
       className={clsx(
-        "absolute left-0 top-0 p-8 w-screen h-screen flex flex-col bg-black/50",
+        "absolute left-0 top-0 p-6 w-screen h-screen flex flex-col bg-black/50",
         props.hidden && "opacity-0 pointer-events-none"
       )}
       data-tauri-disable-drag
@@ -30,7 +30,7 @@ export const Modal: React.FC<ModalProps> = (props) => {
       {/* Modal */}
       <div
         ref={ref}
-        className="m-auto w-full bg-window rounded overflow-clip border border-base/5"
+        className="m-auto w-full h-fit bg-window rounded border border-base/5 overflow-clip"
       >
         {/* Heading */}
         <div className="flex flex-row items-center justify-between bg-base/5 px-1 py-0.5 text-text/60">

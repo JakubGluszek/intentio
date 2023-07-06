@@ -25,6 +25,10 @@ export const useIntent = (id: ModelId | null) => {
     if (!id) return null;
     return await ipc.updateIntent(id, data);
   };
+  const remove = async (id: ModelId) => {
+    if (!id) return null;
+    return await ipc.deleteIntent(id);
+  };
   const addTag = async (data: CreateIntentTag) => {
     return await ipc.addIntentTag(data);
   };
@@ -60,6 +64,7 @@ export const useIntent = (id: ModelId | null) => {
     data: intent,
     tags,
     update,
+    remove,
     addTag,
     removeTag,
     archive,

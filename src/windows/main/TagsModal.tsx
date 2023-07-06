@@ -53,29 +53,31 @@ export const TagsModal: React.FC<TagsModalProps> = (props) => {
           </div>
         </div>
         {/* Tags List */}
-        <ScrollArea scrollbarSize={0}>
-          <div className="flex flex-row flex-wrap gap-1 p-1 bg-window rounded">
-            {viewCreate && (
-              <CreateTagView
-                onCreate={tags.create}
-                onExit={() => setViewCreate(false)}
-              />
-            )}
-            {tags.data.map((tag) => (
-              <TagView
-                key={tag.id}
-                data={tag}
-                onRemove={tags.remove}
-                isRemovable={viewRemove}
-              />
-            ))}
+        <div className="p-1 bg-window rounded">
+          <ScrollArea sx={{ flex: 1 }}>
+            <div className="flex flex-row flex-wrap gap-1">
+              {viewCreate && (
+                <CreateTagView
+                  onCreate={tags.create}
+                  onExit={() => setViewCreate(false)}
+                />
+              )}
+              {tags.data.map((tag) => (
+                <TagView
+                  key={tag.id}
+                  data={tag}
+                  onRemove={tags.remove}
+                  isRemovable={viewRemove}
+                />
+              ))}
 
-            {/* Empty Space Filler */}
-            {tags.data.length === 0 && !viewCreate && (
-              <div className="w-full text-text/50 text-center">0 tags</div>
-            )}
-          </div>
-        </ScrollArea>
+              {/* Empty Space Filler */}
+              {tags.data.length === 0 && !viewCreate && (
+                <div className="w-full text-text/50 text-center">0 tags</div>
+              )}
+            </div>
+          </ScrollArea>
+        </div>
       </div>
     </Modal>
   );

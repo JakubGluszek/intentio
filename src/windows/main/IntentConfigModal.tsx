@@ -1,15 +1,16 @@
 import React from "react";
-import { ScrollArea } from "@mantine/core";
-import { MdEdit } from "react-icons/md";
+import { clsx } from "@mantine/core";
+import { MdDelete, MdEdit } from "react-icons/md";
 import { RiArchiveFill, RiArchiveLine } from "react-icons/ri";
 import { toast } from "react-hot-toast";
 
 import { ModelId } from "@/types";
-import { Button, IconView, Input, Modal } from "@/ui";
+import { Button, IconView, Input, Modal, ScrollArea } from "@/ui";
 import ipc from "@/ipc";
 import { TagView } from "@/components";
 import { useIntent, useTags } from "@/hooks";
 import { UpdateIntent } from "@/bindings/UpdateIntent";
+import { Intent } from "@/bindings/Intent";
 
 interface IntentConfigModalProps {
   intentId: ModelId | null;
@@ -19,6 +20,7 @@ interface IntentConfigModalProps {
 export const IntentConfigModal: React.FC<IntentConfigModalProps> = (props) => {
   const [label, setLabel] = React.useState("");
   const [viewEditTags, setViewEditTags] = React.useState(false);
+  const [viewDeleteModal, setViewDeleteModal] = React.useState(false);
 
   const intent = useIntent(props.intentId);
 
@@ -40,15 +42,17 @@ export const IntentConfigModal: React.FC<IntentConfigModalProps> = (props) => {
     }
   }, [props.intentId]);
 
+  const viewMainModal = !viewEditTags && !viewDeleteModal;
+
   if (!intent.data && props.intentId) return null;
 
   return (
     <>
       <Modal
         display={!!props.intentId}
-        hidden={viewEditTags}
+        hidden={!viewMainModal}
         header="Configure Intent"
-        onExit={!viewEditTags ? props.onExit : undefined}
+        onExit={viewMainModal ? props.onExit : undefined}
       >
         {/* Label */}
         <div className="flex flex-col p-1 bg-base/5">
@@ -70,7 +74,7 @@ export const IntentConfigModal: React.FC<IntentConfigModalProps> = (props) => {
               </Button>
             </div>
           </div>
-          <ScrollArea scrollbarSize={0}>
+          <ScrollArea>
             <div className="flex flex-row flex-wrap gap-1 p-1 bg-window rounded">
               {intent.tags.map((tag) => (
                 <TagView key={tag.id} data={tag} />
@@ -100,6 +104,9 @@ export const IntentConfigModal: React.FC<IntentConfigModalProps> = (props) => {
                 <IconView icon={RiArchiveLine} />
               )}
             </Button>
+            <Button onClick={() => setViewDeleteModal(true)} variant="ghost">
+              <IconView icon={MdDelete} />
+            </Button>
           </div>
         </div>
       </Modal>
@@ -111,7 +118,83 @@ export const IntentConfigModal: React.FC<IntentConfigModalProps> = (props) => {
       >
         <EditIntentTags intentId={props.intentId!} />
       </Modal>
+      <Modal
+        display={viewDeleteModal}
+        header="Delete Intent"
+        onExit={() => setViewDeleteModal(false)}
+      >
+        <ScrollArea>
+          <DeleteIntent
+            intent={intent.data!}
+            onDelete={(id) =>
+              intent.remove(id).then(() => {
+                toast("Intent deleted");
+                setViewDeleteModal(false);
+                props.onExit();
+              })
+            }
+            onExit={() => setViewDeleteModal(false)}
+          />
+        </ScrollArea>
+      </Modal>
     </>
+  );
+};
+
+interface DeleteIntentProps {
+  intent: Intent;
+  onDelete: (id: number) => void;
+  onExit: () => void;
+}
+
+const DeleteIntent: React.FC<DeleteIntentProps> = (props) => {
+  const [label, setLabel] = React.useState("");
+
+  const canDelete = label === props.intent.label;
+
+  return (
+    <div className="flex flex-col gap-0.5">
+      <div className="flex flex-col bg-base/5 gap-1 p-1">
+        <p className="text-text/80">
+          Are you sure you want to delete&nbsp;
+          <span className="text-primary font-bold uppercase">
+            {props.intent.label}
+          </span>
+          ?
+        </p>
+        <p className="text-text/60 text-sm">
+          You will loose x hours of progress and all of it’s related content.
+          This operation is irreversible.
+        </p>
+      </div>
+      <div className="flex flex-col gap-1 bg-base/5 p-1">
+        <p className="text-text/80 text-sm">
+          To confirm, type&nbsp;
+          <span className="text-danger font-bold">{props.intent.label}</span>
+          &nbsp;below.
+        </p>
+        <Input
+          value={label}
+          onChange={(e) => setLabel(e.currentTarget.value)}
+          className={clsx(
+            "transition-colors duration-300",
+            canDelete && "border-danger/40 focus:border-danger/60"
+          )}
+        />
+        <Button
+          onClick={() => props.onDelete(props.intent.id)}
+          variant="base"
+          className={clsx(
+            "w-full",
+            !canDelete
+              ? "bg-danger/10 border-danger/20 text-danger/80 hover:bg-danger/20 hover:text-danger active:text-danger/60 active:border-danger/20 hover:border-danger/30 active:bg-danger/10"
+              : "bg-danger/20 border-danger/40 text-danger/80 hover:bg-danger/40 hover:text-danger active:text-window active:border-transparent hover:border-danger/60 active:bg-danger"
+          )}
+        >
+          Delete
+        </Button>
+      </div>
+    </div>
   );
 };
 
@@ -131,7 +214,7 @@ const EditIntentTags: React.FC<EditIntentTagsProps> = (props) => {
     <div className="flex flex-col gap-0.5">
       <div className="flex flex-col gap-1 p-1 bg-base/5 border border-base/5">
         <div className="text-text/80 text-sm">Selected Tags</div>
-        <ScrollArea scrollbarSize={0}>
+        <ScrollArea>
           <div className="flex flex-row flex-wrap gap-1 p-1 bg-window rounded">
             {intent.tags.map((tag) => (
               <TagView
@@ -156,7 +239,7 @@ const EditIntentTags: React.FC<EditIntentTagsProps> = (props) => {
       </div>
       <div className="flex flex-col gap-1 p-1 bg-base/5 border border-base/5">
         <div className="text-text/80 text-sm">Remaining Tags</div>
-        <ScrollArea scrollbarSize={0}>
+        <ScrollArea>
           <div className="flex flex-row flex-wrap gap-1 p-1 bg-window rounded">
             {remainingTags.map((tag) => (
               <TagView

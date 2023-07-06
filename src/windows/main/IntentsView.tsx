@@ -135,7 +135,7 @@ const IntentView: React.FC<IntentViewProps> = (props) => {
         </div>
       </div>
       {intent.tags.length > 0 && (
-        <div className="w-full flex flex-row gap-0.5 p-0.5 bg-window/50 rounded-md">
+        <div className="w-full flex flex-row overflow-x-auto gap-0.5 p-0.5 bg-window/50 rounded-md">
           {intent.tags.map((tag) => (
             <div
               key={tag.id}
