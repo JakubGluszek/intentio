@@ -31,6 +31,14 @@ export const useIntent = (id: ModelId | null) => {
   const removeTag = async (data: DeleteIntentTag) => {
     return await ipc.deleteIntentTag(data);
   };
+  const archive = async () => {
+    if (!intent) return;
+    return await ipc.archiveIntent(intent.id);
+  };
+  const unarchive = async () => {
+    if (!intent) return;
+    return await ipc.unarchiveIntent(intent.id);
+  };
 
   React.useEffect(() => {
     if (!id) return;
@@ -54,5 +62,7 @@ export const useIntent = (id: ModelId | null) => {
     update,
     addTag,
     removeTag,
+    archive,
+    unarchive,
   } as const;
 };

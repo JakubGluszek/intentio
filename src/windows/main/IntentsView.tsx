@@ -1,18 +1,19 @@
 import React from "react";
 import { MdAddCircle, MdInfo, MdSettings, MdTag } from "react-icons/md";
-import { HiArchive } from "react-icons/hi";
+import { RiArchiveFill, RiArchiveLine } from "react-icons/ri";
 import { BiTargetLock } from "react-icons/bi";
 
 import { Button, IconView, ScrollArea } from "@/ui";
 import { useIntent, useIntents } from "@/hooks";
+import { ModelId } from "@/types";
 import { Intent } from "@/bindings/Intent";
 import { MainWrapper } from "./MainWrapper";
 import { CreateIntentModal } from "./CreateIntentModal";
 import { TagsModal } from "./TagsModal";
-import { ModelId } from "@/types";
 import { IntentConfigModal } from "./IntentConfigModal";
 
 export const IntentsView: React.FC = () => {
+  const [viewArchive, setViewArchive] = React.useState(false);
   const [viewCreate, setViewCreate] = React.useState(false);
   const [viewTags, setViewTags] = React.useState(false);
   const [viewIntentConfig, setViewIntentConfig] =
@@ -27,33 +28,35 @@ export const IntentsView: React.FC = () => {
         <nav className="h-8 flex flex-row gap-0.5 rounded-[1px] overflow-clip">
           {/* Heading */}
           <div className="flex-1 flex flex-row items-center gap-1 px-1 text-text/80 bg-base/5 border border-base/5">
-            <span className="font-bold uppercase text-lg">Intents</span>
+            <span className="font-bold uppercase text-lg">
+              {viewArchive ? "Archive" : "Intents"}
+            </span>
           </div>
 
           {/* Button Bar */}
           <div className="w-fit flex flex-row items-center px-2 gap-2 bg-base/5 border border-base/5">
-            <Button
-              onClick={() => setViewCreate(true)}
-              variant="ghost"
-              config={{ ghost: { highlight: false } }}
-            >
+            <Button onClick={() => setViewCreate(true)} variant="ghost">
               <IconView icon={MdAddCircle} />
             </Button>
-            <Button
-              onClick={() => setViewTags(true)}
-              variant="ghost"
-              config={{ ghost: { highlight: false } }}
-            >
+            <Button onClick={() => setViewTags(true)} variant="ghost">
               <IconView icon={MdTag} />
             </Button>
-            <Button variant="ghost" config={{ ghost: { highlight: false } }}>
-              <IconView icon={HiArchive} />
+            <Button
+              onClick={() => setViewArchive((prev) => !prev)}
+              variant="ghost"
+            >
+              {viewArchive ? (
+                <IconView icon={RiArchiveFill} />
+              ) : (
+                <IconView icon={RiArchiveLine} />
+              )}
             </Button>
           </div>
         </nav>
 
         <IntentsList
           data={intents.data}
+          viewArchive={viewArchive}
           onConfigureIntent={setViewIntentConfig}
         />
       </MainWrapper>
@@ -74,6 +77,7 @@ export const IntentsView: React.FC = () => {
 
 interface IntentsListProps {
   data: Intent[];
+  viewArchive: boolean;
   onConfigureIntent: (id: ModelId) => void;
 }
 
@@ -82,13 +86,15 @@ const IntentsList: React.FC<IntentsListProps> = (props) => {
   return (
     <ScrollArea>
       <div className="flex flex-col gap-0.5">
-        {props.data.map((intent) => (
-          <IntentView
-            key={intent.id}
-            id={intent.id}
-            onConfigure={props.onConfigureIntent}
-          />
-        ))}
+        {props.data
+          .filter((intent) => !!intent.archived_at === props.viewArchive)
+          .map((intent) => (
+            <IntentView
+              key={intent.id}
+              id={intent.id}
+              onConfigure={props.onConfigureIntent}
+            />
+          ))}
       </div>
     </ScrollArea>
   );

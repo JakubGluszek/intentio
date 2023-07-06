@@ -1,6 +1,8 @@
 import React from "react";
 import { ScrollArea } from "@mantine/core";
 import { MdEdit } from "react-icons/md";
+import { RiArchiveFill, RiArchiveLine } from "react-icons/ri";
+import { toast } from "react-hot-toast";
 
 import { ModelId } from "@/types";
 import { Button, IconView, Input, Modal } from "@/ui";
@@ -8,7 +10,6 @@ import ipc from "@/ipc";
 import { TagView } from "@/components";
 import { useIntent, useTags } from "@/hooks";
 import { UpdateIntent } from "@/bindings/UpdateIntent";
-import { toast } from "react-hot-toast";
 
 interface IntentConfigModalProps {
   intentId: ModelId | null;
@@ -80,6 +81,26 @@ export const IntentConfigModal: React.FC<IntentConfigModalProps> = (props) => {
               )}
             </div>
           </ScrollArea>
+        </div>
+        <div className="flex flex-row items-center justify-between p-1 bg-base/5">
+          <span className="text-text/80">Manage</span>
+          {/* Button Bar */}
+          <div className="flex flex-row items-center gap-1">
+            <Button
+              variant="ghost"
+              onClick={() =>
+                intent.data?.archived_at
+                  ? intent.unarchive().then(() => toast("Intent unarchived"))
+                  : intent.archive().then(() => toast("Intent archived"))
+              }
+            >
+              {intent.data?.archived_at ? (
+                <IconView icon={RiArchiveFill} />
+              ) : (
+                <IconView icon={RiArchiveLine} />
+              )}
+            </Button>
+          </div>
         </div>
       </Modal>
 
