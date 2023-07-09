@@ -39,6 +39,7 @@ export const CreateIntentModal: React.FC<CreateIntentProps> = (props) => {
   React.useEffect(() => {
     if (props.display) return;
     setValue("label", "");
+    setTags([]);
   }, [props.display]);
 
   return (

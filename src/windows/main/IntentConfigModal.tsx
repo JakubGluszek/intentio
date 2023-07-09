@@ -1,11 +1,11 @@
 import React from "react";
-import { clsx } from "@mantine/core";
+import { clsx, ScrollArea } from "@mantine/core";
 import { MdDelete, MdEdit } from "react-icons/md";
 import { RiArchiveFill, RiArchiveLine } from "react-icons/ri";
 import { toast } from "react-hot-toast";
 
 import { ModelId } from "@/types";
-import { Button, IconView, Input, Modal, ScrollArea } from "@/ui";
+import { Button, IconView, Input, Modal } from "@/ui";
 import ipc from "@/ipc";
 import { TagView } from "@/components";
 import { useIntent, useTags } from "@/hooks";
@@ -178,7 +178,7 @@ const DeleteIntent: React.FC<DeleteIntentProps> = (props) => {
           onChange={(e) => setLabel(e.currentTarget.value)}
           className={clsx(
             "transition-colors duration-300",
-            canDelete && "border-danger/40 focus:border-danger/60"
+            canDelete ? "border-danger/40 focus:border-danger/60": "border-danger/20 focus:border-danger/30"
           )}
         />
         <Button
@@ -211,57 +211,53 @@ const EditIntentTags: React.FC<EditIntentTagsProps> = (props) => {
   );
 
   return (
-    <div className="flex flex-col gap-0.5">
-      <div className="flex flex-col gap-1 p-1 bg-base/5 border border-base/5">
+    <>
+      <div className="w-full flex flex-col gap-1 p-1 bg-base/5 border border-base/5">
         <div className="text-text/80 text-sm">Selected Tags</div>
-        <ScrollArea>
-          <div className="flex flex-row flex-wrap gap-1 p-1 bg-window rounded">
-            {intent.tags.map((tag) => (
-              <TagView
-                key={tag.id}
-                data={tag}
-                isRemovable
-                onRemove={(tagId) =>
-                  intent
-                    .removeTag({ intent_id: props.intentId, tag_id: tagId })
-                    .then(() => toast("Tag removed"))
-                }
-              />
-            ))}
-            {/* Empty Space Filler */}
-            {intent.tags.length === 0 && (
-              <div className="w-full text-text/50 text-center text-sm">
-                0 tags
-              </div>
-            )}
-          </div>
-        </ScrollArea>
+        <div className="flex flex-row flex-row-wrap gap-1 p-1 bg-window rounded">
+          {intent.tags.map((tag) => (
+            <TagView
+              key={tag.id}
+              data={tag}
+              isRemovable
+              onRemove={(tagId) =>
+                intent
+                  .removeTag({ intent_id: props.intentId, tag_id: tagId })
+                  .then(() => toast("Tag removed"))
+              }
+            />
+          ))}
+          {/* Empty Space Filler */}
+          {intent.tags.length === 0 && (
+            <div className="w-full text-text/50 text-center text-sm">
+              0 tags
+            </div>
+          )}
+        </div>
       </div>
       <div className="flex flex-col gap-1 p-1 bg-base/5 border border-base/5">
         <div className="text-text/80 text-sm">Remaining Tags</div>
-        <ScrollArea>
-          <div className="flex flex-row flex-wrap gap-1 p-1 bg-window rounded">
-            {remainingTags.map((tag) => (
-              <TagView
-                key={tag.id}
-                data={tag}
-                isAddable
-                onAdd={(tagId) =>
-                  intent
-                    .addTag({ intent_id: props.intentId, tag_id: tagId })
-                    .then(() => toast("Tag added"))
-                }
-              />
-            ))}
-            {/* Empty Space Filler */}
-            {remainingTags.length === 0 && (
-              <div className="w-full text-text/50 text-center text-sm">
-                No more tags to select
-              </div>
-            )}
-          </div>
-        </ScrollArea>
+        <div className="flex flex-row flex-wrap gap-1 p-1 bg-window rounded">
+          {remainingTags.map((tag) => (
+            <TagView
+              key={tag.id}
+              data={tag}
+              isAddable
+              onAdd={(tagId) =>
+                intent
+                  .addTag({ intent_id: props.intentId, tag_id: tagId })
+                  .then(() => toast("Tag added"))
+              }
+            />
+          ))}
+          {/* Empty Space Filler */}
+          {remainingTags.length === 0 && (
+            <div className="w-full text-text/50 text-center text-sm">
+              No more tags to select
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };

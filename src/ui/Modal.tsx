@@ -1,77 +1,63 @@
 import React from "react";
-import { MdInfo } from "react-icons/md";
-import { useClickOutside, useDisclosure } from "@mantine/hooks";
-import { clsx, Popover, ScrollArea } from "@mantine/core";
-
-import { IconView } from "./IconView";
+import { useClickOutside } from "@mantine/hooks";
+import { clsx, ScrollArea } from "@mantine/core";
 
 export interface ModalProps {
   children: React.ReactNode;
   display: boolean;
   header: string;
-  description?: string;
   hidden?: boolean;
   onExit?: () => void;
 }
 
 export const Modal: React.FC<ModalProps> = (props) => {
+  const [maxHeight, setMaxHeight] = React.useState(0);
+  const [maxWidth, setMaxWidth] = React.useState(0);
+
   const ref = useClickOutside<HTMLDivElement>(() => props.onExit?.());
+
+  React.useEffect(() => {
+    function handleResize() {
+      setMaxHeight(window.innerHeight - 64);
+      setMaxWidth(window.innerWidth - 64);
+    }
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   if (!props.display) return null;
 
   return (
     <div
       className={clsx(
-        "absolute left-0 top-0 p-6 w-screen h-screen flex flex-col bg-black/50",
+        "fixed top-0 left-0 w-screen h-screen flex flex-col items-center justify-center bg-darker/50",
         props.hidden && "opacity-0 pointer-events-none"
       )}
       data-tauri-disable-drag
     >
-      {/* Modal */}
       <div
         ref={ref}
-        className="m-auto w-full h-fit bg-window rounded border border-base/5 overflow-clip"
+        style={{ width: "fit-content" }}
+        className="flex flex-col bg-window rounded overflow-clip border-2 border-primary/20"
       >
         {/* Heading */}
-        <div className="flex flex-row items-center justify-between bg-base/5 px-1 py-0.5 text-text/60">
-          <span className="uppercase font-semibold">{props.header}</span>
-          {props.description && <About content={props.description} />}
+        <div className="flex flex-row items-center justify-between bg-primary/20 px-1 py-0.5 text-text/80">
+          <span className="uppercase font-bold">{props.header}</span>
         </div>
-        {/* Wrapper */}
-        <div className="flex flex-col p-0.5">
-          {/* Content */}
-          <div className="flex flex-col gap-0.5 rounded-t-sm rounded-b overflow-clip">
-            {props.children}
-          </div>
-        </div>
+        <ScrollArea.Autosize
+          scrollbarSize={0}
+          w={maxWidth}
+          styles={{ viewport: { width: maxWidth, maxWidth } }}
+          maxHeight={maxHeight}
+        >
+          <div className="flex flex-col gap-0.5 p-0.5">{props.children}</div>
+        </ScrollArea.Autosize>
       </div>
     </div>
-  );
-};
-
-interface AboutProps {
-  content: string;
-}
-
-const About: React.FC<AboutProps> = (props) => {
-  const [opened, { close, open }] = useDisclosure(false);
-
-  return (
-    <Popover
-      opened={opened}
-      shadow="md"
-      position="left"
-      width={248}
-      classNames={{
-        dropdown: "bg-window border-base/5 p-1 px-2 text-xs text-text/80",
-      }}
-    >
-      <Popover.Target>
-        <div onMouseOver={open} onMouseLeave={close}>
-          <IconView icon={MdInfo} />
-        </div>
-      </Popover.Target>
-      <Popover.Dropdown>{props.content}</Popover.Dropdown>
-    </Popover>
   );
 };

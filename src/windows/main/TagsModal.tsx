@@ -116,7 +116,7 @@ const CreateTagView: React.FC<CreateTagViewProps> = (props) => {
           }
         }}
         minLength={1}
-        maxLength={32}
+        maxLength={20}
         autoFocus
       />
     </div>
