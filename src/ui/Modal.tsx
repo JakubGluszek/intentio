@@ -35,7 +35,7 @@ export const Modal: React.FC<ModalProps> = (props) => {
   return (
     <div
       className={clsx(
-        "fixed top-0 left-0 w-screen h-screen flex flex-col items-center justify-center bg-darker/50",
+        "fixed top-0 left-0 w-screen h-screen flex flex-col items-center justify-center bg-darker/80",
         props.hidden && "opacity-0 pointer-events-none"
       )}
       data-tauri-disable-drag

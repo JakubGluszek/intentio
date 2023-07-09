@@ -112,7 +112,7 @@ const IntentView: React.FC<IntentViewProps> = (props) => {
 
   return (
     <div
-      className="group h-fit flex flex-col gap-1 p-1 bg-base/5 hover:bg-primary/10 active:bg-primary/20 border border-base/5 active:border-transparent cursor-pointer transition-all duration-300 hover:shadow-black/25 hover:shadow active:shadow-black/25 active:shadow-lg"
+      className="group h-fit flex flex-col gap-1 p-1 bg-base/10 hover:bg-primary/10 active:bg-primary/20 border border-base/5 active:border-transparent cursor-pointer transition-all duration-300 hover:shadow-black/25 hover:shadow active:shadow-black/25 active:shadow-lg"
       data-tauri-disable-drag
     >
       {/* Heading */}
