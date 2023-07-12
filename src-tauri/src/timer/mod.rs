@@ -82,9 +82,7 @@ impl Timer {
                 // Kill thread
                 break;
             }
-        })
-        .await
-        .unwrap();
+        });
         Ok(())
     }
     pub async fn stop(&mut self) -> TimerResult<()> {

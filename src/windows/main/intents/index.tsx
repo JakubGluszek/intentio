@@ -7,7 +7,6 @@ import { Button, IconView, ScrollArea } from "@/ui";
 import { useIntent, useIntents, useTimer } from "@/hooks";
 import { ModelId } from "@/types";
 import { Intent } from "@/bindings/Intent";
-import { MainWrapper } from "../MainWrapper";
 import { CreateIntentModal } from "./CreateIntentModal";
 import { TagsModal } from "./TagsModal";
 import { IntentConfigModal } from "./IntentConfigModal";
@@ -23,43 +22,41 @@ export const IntentsView: React.FC = () => {
 
   return (
     <>
-      <MainWrapper>
-        {/* Navbar */}
-        <nav className="h-8 flex flex-row gap-0.5 rounded-[1px] overflow-clip">
-          {/* Heading */}
-          <div className="flex-1 flex flex-row items-center gap-1 px-1 text-text/80 bg-base/5 border border-base/5">
-            <span className="font-bold uppercase text-lg">
-              {viewArchive ? "Archive" : "Intents"}
-            </span>
-          </div>
+      {/* Navbar */}
+      <nav className="h-8 flex flex-row gap-0.5 rounded-[1px] overflow-clip">
+        {/* Heading */}
+        <div className="flex-1 flex flex-row items-center gap-1 px-1 text-text/80 bg-base/5 border border-base/5">
+          <span className="font-bold uppercase text-lg">
+            {viewArchive ? "Archive" : "Intents"}
+          </span>
+        </div>
 
-          {/* Button Bar */}
-          <div className="w-fit flex flex-row items-center px-2 gap-2 bg-base/5 border border-base/5">
-            <Button onClick={() => setViewCreate(true)} variant="ghost">
-              <IconView icon={MdAddCircle} />
-            </Button>
-            <Button onClick={() => setViewTags(true)} variant="ghost">
-              <IconView icon={MdTag} />
-            </Button>
-            <Button
-              onClick={() => setViewArchive((prev) => !prev)}
-              variant="ghost"
-            >
-              {viewArchive ? (
-                <IconView icon={RiArchiveFill} />
-              ) : (
-                <IconView icon={RiArchiveLine} />
-              )}
-            </Button>
-          </div>
-        </nav>
+        {/* Button Bar */}
+        <div className="w-fit flex flex-row items-center px-2 gap-2 bg-base/5 border border-base/5">
+          <Button onClick={() => setViewCreate(true)} variant="ghost">
+            <IconView icon={MdAddCircle} />
+          </Button>
+          <Button onClick={() => setViewTags(true)} variant="ghost">
+            <IconView icon={MdTag} />
+          </Button>
+          <Button
+            onClick={() => setViewArchive((prev) => !prev)}
+            variant="ghost"
+          >
+            {viewArchive ? (
+              <IconView icon={RiArchiveFill} />
+            ) : (
+              <IconView icon={RiArchiveLine} />
+            )}
+          </Button>
+        </div>
+      </nav>
 
-        <IntentsList
-          data={intents.data}
-          viewArchive={viewArchive}
-          onConfigureIntent={setViewIntentConfig}
-        />
-      </MainWrapper>
+      <IntentsList
+        data={intents.data}
+        viewArchive={viewArchive}
+        onConfigureIntent={setViewIntentConfig}
+      />
 
       <CreateIntentModal
         display={viewCreate}

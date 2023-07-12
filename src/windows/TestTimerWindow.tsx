@@ -11,7 +11,7 @@ const TestTimerWindow: React.FC = () => {
   const timer = useTimer();
 
   React.useEffect(() => {
-    ipc.getIntent(1).then((data) => setIntent(data));
+    ipc.getIntent(2).then((data) => setIntent(data));
   }, []);
 
   if (!intent) return null;

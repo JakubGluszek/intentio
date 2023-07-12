@@ -108,11 +108,11 @@ fn setup_state(app: &mut App) -> Result<()> {
 fn build_main_window(app: &mut App) -> Result<()> {
     let settings = ConfigManager::get::<SettingsConfig>()?;
 
-    tauri::WindowBuilder::new(app, "main", tauri::WindowUrl::App("/".into()))
+    tauri::WindowBuilder::new(app, "main", tauri::WindowUrl::App("/intents".into()))
         .title("Intentio")
-        .inner_size(300f64, 340f64)
-        .max_inner_size(300f64, 340f64)
-        .min_inner_size(300f64, 340f64)
+        .inner_size(320f64, 336f64)
+        .max_inner_size(320f64, 336f64)
+        .min_inner_size(320f64, 336f64)
         .fullscreen(false)
         .resizable(false)
         .decorations(false)

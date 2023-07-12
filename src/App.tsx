@@ -1,27 +1,25 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 
-const MainWindowLegacy = React.lazy(() => import("./windows/main-legacy"));
-const SettingsWindow = React.lazy(() => import("./windows/settings"));
-const AnalyticsWindow = React.lazy(() => import("./windows/analytics"));
-const TestTimerWindow = React.lazy(() => import("./windows/TestTimerWindow"));
-const MainWindow = React.lazy(() => import("./windows/main"));
-const NewSettingsWindowDemo = React.lazy(
-  () => import("./windows/NewSettingsWindowDemo")
-);
+import { WindowContainer } from "@/components";
+import { IntentsView } from "./windows/main/intents";
+import { MainLayout } from "./windows/main/Layout";
+import { TimerView } from "./windows/main/timer";
+import SettingsWindow from "./windows/settings";
+import AnalyticsWindow from "./windows/analytics";
 
 const App: React.FC = () => {
   return (
-    <React.Fragment>
+    <WindowContainer>
       <Routes>
-        <Route index element={<MainWindowLegacy />} />
-        <Route path="settings" element={<SettingsWindow />} />
-        <Route path="analytics" element={<AnalyticsWindow />} />
-        <Route path="timer" element={<TestTimerWindow />} />
-        <Route path="new-main" element={<MainWindow />} />
-        <Route path="new-settings" element={<NewSettingsWindowDemo />} />
+        <Route path="*" element={<MainLayout />}>
+          <Route path="intents" element={<IntentsView />} />
+          <Route path="timer" element={<TimerView />} />
+        </Route>
+        <Route path="/settings" element={<SettingsWindow />} />
+        <Route path="/analytics" element={<AnalyticsWindow />} />
       </Routes>
-    </React.Fragment>
+    </WindowContainer>
   );
 };
 
