@@ -4,21 +4,44 @@ import { VscDebugRestart } from "react-icons/vsc";
 import { clsx } from "@mantine/core";
 import { useHotkeys } from "@mantine/hooks";
 import Color from "color";
+import { useAnimationFrame } from "framer-motion";
 
 import { Button } from "@/ui";
 import utils from "@/utils";
 import { Theme } from "@/bindings/Theme";
-
-import { useTimerReturnValues } from "./useTimer";
+import { SessionType } from "@/bindings/SessionType";
+import { TimerConfig } from "@/bindings/TimerConfig";
 import { CircleTimer, ColorFormat } from "./CircleTimer";
 
-export interface TimerProps extends useTimerReturnValues {
+export interface TimerProps {
+  type: SessionType;
+  duration: number;
+  elapsedTime: number;
+  iterations: number;
+  isPlaying: boolean;
+  startedAt?: Date;
+  resume: () => void;
+  pause: () => void;
+  restart: () => void;
+  skip: (manual?: boolean) => void;
   theme: Theme;
+  config: TimerConfig;
   displayCountdown: boolean;
   toggleDisplayCountdown: () => void;
 }
 
 export const Timer: React.FC<TimerProps> = (props) => {
+  const [elapsedTimeDetailed, setElapsedTimeDetailed] = React.useState(0);
+
+  useAnimationFrame((_, delta) => {
+    if (!props.isPlaying) return;
+    setElapsedTimeDetailed((prev) => prev + delta / 1000);
+  });
+
+  React.useEffect(() => {
+    setElapsedTimeDetailed(props.elapsedTime);
+  }, [props.elapsedTime]);
+
   useHotkeys([
     ["Space", () => (props.isPlaying ? props.pause() : props.resume())],
   ]);
@@ -38,7 +61,7 @@ export const Timer: React.FC<TimerProps> = (props) => {
     <CircleTimer
       isPlaying={props.isPlaying}
       duration={props.duration}
-      elapsedTime={props.elapsedTimeDetailed}
+      elapsedTime={elapsedTimeDetailed}
       strokeWidth={3}
       size={200}
       color={

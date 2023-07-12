@@ -7,10 +7,12 @@ import { Intent } from "@/bindings/Intent";
 import { Queue } from "@/bindings/Queue";
 
 import useEvents from "./useEvents";
+import { TimerConfig } from "@/bindings/TimerConfig";
 
 export const useTimer = () => {
   const [session, setSession] = React.useState<TimerSession | null>();
   const [queue, setQueue] = React.useState<Queue | null>();
+  const [config, setConfig] = React.useState<TimerConfig | null>();
 
   React.useEffect(() => {
     ipc
@@ -28,6 +30,11 @@ export const useTimer = () => {
       .timerGetQueue()
       .then((data) => setQueue(data))
       .catch(() => setQueue(null));
+
+    ipc
+      .getTimerConfig()
+      .then((data) => setConfig(data))
+      .catch(() => setConfig(null));
   }, []);
 
   useEvents({
@@ -97,6 +104,7 @@ export const useTimer = () => {
     stop,
     restart,
     skip,
+    config,
     addToQueue,
     removeFromQueue,
     reorderQueue,

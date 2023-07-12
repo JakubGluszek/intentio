@@ -47,7 +47,9 @@ impl Timer {
         if session.is_playing {
             return Ok(());
         }
+
         session.play();
+        session.emit();
 
         let session = self.get_session_clone().await?;
         let iteration = self.iteration.clone();
