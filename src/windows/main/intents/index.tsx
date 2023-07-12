@@ -4,10 +4,10 @@ import { RiArchiveFill, RiArchiveLine } from "react-icons/ri";
 import { BiTargetLock } from "react-icons/bi";
 
 import { Button, IconView, ScrollArea } from "@/ui";
-import { useIntent, useIntents } from "@/hooks";
+import { useIntent, useIntents, useTimer } from "@/hooks";
 import { ModelId } from "@/types";
 import { Intent } from "@/bindings/Intent";
-import { MainWrapper } from "./MainWrapper";
+import { MainWrapper } from "../MainWrapper";
 import { CreateIntentModal } from "./CreateIntentModal";
 import { TagsModal } from "./TagsModal";
 import { IntentConfigModal } from "./IntentConfigModal";
@@ -83,6 +83,7 @@ interface IntentsListProps {
 
 const IntentsList: React.FC<IntentsListProps> = (props) => {
   // TODO: Sort intents by total session hours
+  const timer = useTimer();
   return (
     <ScrollArea>
       <div className="flex flex-col gap-0.5">
@@ -93,6 +94,7 @@ const IntentsList: React.FC<IntentsListProps> = (props) => {
               key={intent.id}
               id={intent.id}
               onConfigure={props.onConfigureIntent}
+              onClick={() => timer.setIntent(intent)}
             />
           ))}
       </div>
@@ -103,6 +105,7 @@ const IntentsList: React.FC<IntentsListProps> = (props) => {
 interface IntentViewProps {
   id: ModelId;
   onConfigure: (id: ModelId) => void;
+  onClick: () => void;
 }
 
 const IntentView: React.FC<IntentViewProps> = (props) => {
@@ -113,6 +116,7 @@ const IntentView: React.FC<IntentViewProps> = (props) => {
   return (
     <div
       className="group h-fit flex flex-col gap-1 p-1 bg-base/10 hover:bg-primary/10 active:bg-primary/20 border border-base/5 active:border-transparent cursor-pointer transition-all duration-300 hover:shadow-black/25 hover:shadow active:shadow-black/25 active:shadow-lg"
+      onClick={() => props.onClick()}
       data-tauri-disable-drag
     >
       {/* Heading */}

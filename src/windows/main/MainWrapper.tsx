@@ -5,12 +5,15 @@ import { MdCheckBox, MdHistory, MdTimer } from "react-icons/md";
 import { clsx } from "@mantine/core";
 
 import { IconView } from "@/ui";
+import { MainWindowContext } from "./mainWindowContext";
 
 interface MainWrapperProps {
   children: React.ReactNode;
 }
 
 export const MainWrapper: React.FC<MainWrapperProps> = (props) => {
+  const { display, setDisplay } = React.useContext(MainWindowContext)!;
+
   return (
     <div className="relative grow flex flex-col p-0.5">
       <div className="grow flex flex-col gap-0.5">
@@ -18,19 +21,25 @@ export const MainWrapper: React.FC<MainWrapperProps> = (props) => {
 
         {/* Intent Panels */}
         <div className="h-7 flex flex-row rounded-[1px]">
-          <PanelButton>
+          <PanelButton onClick={() => null}>
             <IconView icon={HiViewList} />
           </PanelButton>
-          <PanelButton>
+          <PanelButton onClick={() => null}>
             <IconView icon={MdCheckBox} />
           </PanelButton>
-          <PanelButton>
+          <PanelButton
+            onClick={() => setDisplay("timer")}
+            isSelected={display === "timer"}
+          >
             <IconView icon={MdTimer} />
           </PanelButton>
-          <PanelButton>
+          <PanelButton onClick={() => null}>
             <IconView icon={MdHistory} />
           </PanelButton>
-          <PanelButton isSelected>
+          <PanelButton
+            onClick={() => setDisplay("intents")}
+            isSelected={display === "intents"}
+          >
             <IconView icon={BiTargetLock} />
           </PanelButton>
         </div>
@@ -42,11 +51,17 @@ export const MainWrapper: React.FC<MainWrapperProps> = (props) => {
 interface PanelButtonProps {
   children: React.ReactNode;
   isSelected?: boolean;
+  onClick: () => void;
 }
 
-const PanelButton: React.FC<PanelButtonProps> = ({ children, isSelected }) => {
+const PanelButton: React.FC<PanelButtonProps> = ({
+  children,
+  isSelected,
+  onClick,
+}) => {
   return (
     <button
+      onClick={onClick}
       className={clsx(
         "flex-1 flex flex-row items-center justify-center hover:shadow-black/10 hover:shadow active:shadow-black/20 active:shadow-lg active:scale-95 transition-all duration-150 first:rounded-bl last:rounded-br border-y border-base/5 first:border-l last:border-r",
         isSelected

@@ -3,15 +3,19 @@ import { MdAnalytics, MdClose, MdRemove, MdSettings } from "react-icons/md";
 
 import { WindowContainer } from "@/components";
 import { Button, IconView } from "@/ui";
-import { IntentsView } from "./IntentsView";
+import { IntentsView } from "./intents";
 import { WebviewWindow } from "@tauri-apps/api/window";
 import config from "@/config";
 import ipc from "@/ipc";
+import { MainWindowContext, MainWindowProvider } from "./mainWindowContext";
+import { TimerView } from "./timer";
 
 const MainWindow: React.FC = () => {
   return (
     <WindowContainer>
-      <Content />
+      <MainWindowProvider>
+        <Content />
+      </MainWindowProvider>
     </WindowContainer>
   );
 };
@@ -55,7 +59,11 @@ const Content: React.FC = () => {
 };
 
 const Main: React.FC = () => {
-  return <IntentsView />;
+  const { display } = React.useContext(MainWindowContext)!;
+
+  if (display === "intents") return <IntentsView />;
+
+  return <TimerView />;
 };
 
 export default MainWindow;

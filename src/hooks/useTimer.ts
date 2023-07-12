@@ -15,8 +15,14 @@ export const useTimer = () => {
   React.useEffect(() => {
     ipc
       .timerGetSession()
-      .then((data) => setSession(data))
-      .catch(() => setSession(null));
+      .then((data) => {
+        console.log("here", data);
+        setSession(data);
+      })
+      .catch((err) => {
+        console.log("err", err);
+        setSession(null);
+      });
 
     ipc
       .timerGetQueue()
