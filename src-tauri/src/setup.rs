@@ -29,7 +29,7 @@ fn setup_timer(app: &mut App) {
 
     let timer = Timer::init(app_handle);
 
-    app.manage(Mutex::new(timer));
+    app.manage(tokio::sync::Mutex::new(timer));
 }
 
 fn setup_database(app: &mut App) -> Result<()> {

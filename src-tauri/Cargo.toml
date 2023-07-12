@@ -35,6 +35,7 @@ tauri-hotkey = "0.1.2"
 tauri-plugin-autostart = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "dev" }
 diesel = { version = "2.1.0", features = ["sqlite", "chrono"] }
 diesel_migrations = { version = "2.1.0", features = ["sqlite"] }
+tokio = { version = "1.29.1", features = ["time"] }
 
 [features]
 # by default Tauri runs in production mode

@@ -2,12 +2,12 @@ use crate::{
     config::{ConfigManager, TimerConfig},
     models::Intent,
 };
-use std::{
-    sync::{atomic::AtomicU32, Arc, Mutex, MutexGuard},
-    thread,
-    time::Duration,
-};
+use std::sync::atomic::AtomicU32;
+use std::sync::Arc;
+use std::time::Duration;
 use tauri::AppHandle;
+use tokio::sync::{Mutex, MutexGuard};
+use tokio::time::sleep;
 
 mod error;
 mod queue;
@@ -41,24 +41,24 @@ impl Timer {
 
 // Methods for interacting with timer
 impl Timer {
-    pub fn play(&mut self) -> TimerResult<()> {
-        let mut session = self.get_session_guard()?;
+    pub async fn play(&mut self) -> TimerResult<()> {
+        let mut session = self.get_session_guard().await?;
         // Exit function if session is already playing
         if session.is_playing {
             return Ok(());
         }
         session.play();
 
-        let session = self.get_session_clone()?;
+        let session = self.get_session_clone().await?;
         let iteration = self.iteration.clone();
         let queue = self.queue.clone();
 
         // Run timer logic inside of a new thread
-        thread::spawn(move || {
+        tokio::spawn(async move {
             loop {
-                thread::sleep(Duration::from_secs(1));
+                sleep(Duration::from_secs(1)).await;
 
-                let mut session = session.lock().unwrap();
+                let mut session = session.lock().await;
                 // Kills thread if session has been paused
                 if !session.is_playing {
                     break;
@@ -71,7 +71,7 @@ impl Timer {
                     continue;
                 };
 
-                let mut queue = queue.lock().unwrap();
+                let mut queue = queue.lock().await;
                 // Switch session
                 let auto_start_next = session.next_session(iteration.clone(), &mut queue).unwrap();
                 // Determine whether to autostart the next one
@@ -82,28 +82,30 @@ impl Timer {
                 // Kill thread
                 break;
             }
-        });
+        })
+        .await
+        .unwrap();
         Ok(())
     }
-    pub fn stop(&mut self) -> TimerResult<()> {
-        let mut session = self.get_session_guard()?;
+    pub async fn stop(&mut self) -> TimerResult<()> {
+        let mut session = self.get_session_guard().await?;
         session.stop();
         session.emit();
         Ok(())
     }
-    pub fn restart(&mut self) -> TimerResult<()> {
-        let mut session = self.get_session_guard()?;
+    pub async fn restart(&mut self) -> TimerResult<()> {
+        let mut session = self.get_session_guard().await?;
         session.stop();
         session.save();
         session.restart();
         session.emit();
         Ok(())
     }
-    pub fn skip(&mut self) -> TimerResult<()> {
-        let mut session = self.get_session_guard()?;
+    pub async fn skip(&mut self) -> TimerResult<()> {
+        let mut session = self.get_session_guard().await?;
         let iteration = self.iteration.clone();
         let queue_guard = self.queue.clone();
-        let mut queue = queue_guard.lock().unwrap();
+        let mut queue = queue_guard.lock().await;
 
         session.stop();
         session.next_session(iteration, &mut *queue)?;
@@ -113,29 +115,29 @@ impl Timer {
 
 // Helper methods
 impl Timer {
-    fn get_session_clone(&self) -> TimerResult<Arc<Mutex<TimerSession>>> {
+    async fn get_session_clone(&self) -> TimerResult<Arc<Mutex<TimerSession>>> {
         if let Some(session) = &self.session {
             return Ok(session.clone());
         };
         Err(TimerError::UndefinedSession)
     }
-    fn get_session_guard(&self) -> Result<MutexGuard<TimerSession>, TimerError> {
+    async fn get_session_guard(&self) -> TimerResult<MutexGuard<TimerSession>> {
         let session = self.session.as_ref().ok_or(TimerError::UndefinedSession)?;
-        let session_guard = session.lock().unwrap();
+        let session_guard = session.lock().await;
         Ok(session_guard)
     }
 }
 
 // Session related methods
 impl Timer {
-    pub fn get_session(&self) -> TimerResult<TimerSession> {
-        let session = self.get_session_guard()?.clone();
+    pub async fn get_session(&self) -> TimerResult<TimerSession> {
+        let session = self.get_session_guard().await?.clone();
         Ok(session)
     }
-    pub fn set_session_intent(&mut self, app_handle: AppHandle, intent: Intent) {
+    pub async fn set_session_intent(&mut self, app_handle: AppHandle, intent: Intent) {
         match &mut self.session {
             Some(session) => {
-                let mut session = session.lock().unwrap();
+                let mut session = session.lock().await;
                 session.intent = intent;
                 session.emit();
             }
@@ -156,35 +158,39 @@ impl Timer {
 
 // Methods for interacting with the timer's queue
 impl Timer {
-    pub fn get_queue(&self) -> Queue {
-        self.queue.lock().unwrap().get()
+    pub async fn get_queue(&self) -> Queue {
+        self.queue.lock().await.get()
     }
-    pub fn add_to_queue(&mut self, session: QueueSession) {
-        let mut queue = self.queue.lock().unwrap();
+    pub async fn add_to_queue(&mut self, session: QueueSession) {
+        let mut queue = self.queue.lock().await;
         queue.add(session);
     }
-    pub fn remove_from_queue(&mut self, idx: usize) -> TimerResult<()> {
-        let mut queue = self.queue.lock().unwrap();
+    pub async fn remove_from_queue(&mut self, idx: usize) -> TimerResult<()> {
+        let mut queue = self.queue.lock().await;
         queue.remove(idx)
     }
-    pub fn reorder_queue(&mut self, idx: usize, target_idx: usize) -> TimerResult<()> {
-        let mut queue = self.queue.lock().unwrap();
+    pub async fn reorder_queue(&mut self, idx: usize, target_idx: usize) -> TimerResult<()> {
+        let mut queue = self.queue.lock().await;
         queue.reorder(idx, target_idx)
     }
-    pub fn clear_queue(&mut self) {
-        let mut queue = self.queue.lock().unwrap();
+    pub async fn clear_queue(&mut self) {
+        let mut queue = self.queue.lock().await;
         queue.clear()
     }
-    pub fn increment_queue_session_iterations(&mut self, idx: usize) -> TimerResult<()> {
-        let mut queue = self.queue.lock().unwrap();
+    pub async fn increment_queue_session_iterations(&mut self, idx: usize) -> TimerResult<()> {
+        let mut queue = self.queue.lock().await;
         queue.increment_session_iterations(idx)
     }
-    pub fn decrement_queue_session_iterations(&mut self, idx: usize) -> TimerResult<()> {
-        let mut queue = self.queue.lock().unwrap();
+    pub async fn decrement_queue_session_iterations(&mut self, idx: usize) -> TimerResult<()> {
+        let mut queue = self.queue.lock().await;
         queue.decrement_session_iterations(idx)
     }
-    pub fn update_queue_session_duration(&mut self, idx: usize, duration: i64) -> TimerResult<()> {
-        let mut queue = self.queue.lock().unwrap();
+    pub async fn update_queue_session_duration(
+        &mut self,
+        idx: usize,
+        duration: i64,
+    ) -> TimerResult<()> {
+        let mut queue = self.queue.lock().await;
         queue.update_session_duration(idx, duration)
     }
 }
