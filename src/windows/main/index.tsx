@@ -1,16 +1,26 @@
 import React from "react";
-import { MdAnalytics, MdClose, MdRemove, MdSettings } from "react-icons/md";
-
-import { WindowContainer } from "@/components";
-import { Button, IconView } from "@/ui";
-import { IntentsView } from "./intents";
 import { WebviewWindow } from "@tauri-apps/api/window";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import {
+  MdAnalytics,
+  MdCheckBox,
+  MdClose,
+  MdHistory,
+  MdRemove,
+  MdSettings,
+  MdTimer,
+} from "react-icons/md";
+import { clsx } from "@mantine/core";
+import { HiViewList } from "react-icons/hi";
+import { BiTargetLock } from "react-icons/bi";
+
 import config from "@/config";
 import ipc from "@/ipc";
-import { MainWindowContext, MainWindowProvider } from "./mainWindowContext";
-import { TimerView } from "./timer";
+import { Button, IconView } from "@/ui";
+import { WindowContainer } from "@/components";
+import { MainWindowProvider } from "./mainWindowContext";
 
-const MainWindow: React.FC = () => {
+export const MainWindow: React.FC = () => {
   return (
     <WindowContainer>
       <MainWindowProvider>
@@ -20,7 +30,7 @@ const MainWindow: React.FC = () => {
   );
 };
 
-const Content: React.FC = () => {
+export const Content: React.FC = () => {
   return (
     <div className="w-[20rem] h-[21rem]">
       <div className="relative w-screen h-screen flex flex-col bg-window/95 border-2 border-base/5 rounded-md overflow-clip">
@@ -51,19 +61,70 @@ const Content: React.FC = () => {
             </Button>
           </div>
         </div>
-
-        <Main />
+        <div className="relative grow flex flex-col p-0.5">
+          <div className="grow flex flex-col gap-0.5">
+            <Outlet />
+            <Navbar />
+          </div>
+        </div>
       </div>
     </div>
   );
 };
 
-const Main: React.FC = () => {
-  const { display } = React.useContext(MainWindowContext)!;
+const Navbar: React.FC = () => {
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
 
-  if (display === "intents") return <IntentsView />;
-
-  return <TimerView />;
+  return (
+    <div className="h-7 flex flex-row rounded-[1px]">
+      <NavButton onClick={() => null}>
+        <IconView icon={HiViewList} />
+      </NavButton>
+      <NavButton onClick={() => null}>
+        <IconView icon={MdCheckBox} />
+      </NavButton>
+      <NavButton
+        isSelected={pathname === "/timer"}
+        onClick={() => navigate("/timer")}
+      >
+        <IconView icon={MdTimer} />
+      </NavButton>
+      <NavButton onClick={() => null}>
+        <IconView icon={MdHistory} />
+      </NavButton>
+      <NavButton
+        isSelected={pathname === "/intents"}
+        onClick={() => navigate("/intents")}
+      >
+        <IconView icon={BiTargetLock} />
+      </NavButton>
+    </div>
+  );
 };
 
-export default MainWindow;
+interface NavButtonProps {
+  children: React.ReactNode;
+  isSelected?: boolean;
+  onClick: () => void;
+}
+
+const NavButton: React.FC<NavButtonProps> = ({
+  children,
+  isSelected,
+  onClick,
+}) => {
+  return (
+    <button
+      onClick={onClick}
+      className={clsx(
+        "flex-1 flex flex-row items-center justify-center hover:shadow-black/10 hover:shadow active:shadow-black/20 active:shadow-lg active:scale-95 transition-all duration-150 first:rounded-bl last:rounded-br border-y border-base/5 first:border-l last:border-r",
+        isSelected
+          ? "bg-primary/20 hover:bg-primary/30 text-primary border-b-2 border-y-0 first:border-l-0 last:border-r-0 border-primary"
+          : "bg-base/5 hover:bg-base/10 text-text/80 hover:text-base active:text-primary"
+      )}
+    >
+      {children}
+    </button>
+  );
+};

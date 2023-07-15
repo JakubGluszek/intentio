@@ -1774,6 +1774,7 @@ dependencies = [
  "cuid",
  "diesel",
  "diesel_migrations",
+ "rand 0.8.5",
  "rodio",
  "serde",
  "serde_json",

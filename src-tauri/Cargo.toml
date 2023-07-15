@@ -36,6 +36,7 @@ tauri-plugin-autostart = { git = "https://github.com/tauri-apps/plugins-workspac
 diesel = { version = "2.1.0", features = ["sqlite", "chrono"] }
 diesel_migrations = { version = "2.1.0", features = ["sqlite"] }
 tokio = { version = "1.29.1", features = ["time"] }
+rand = "0.8.5"
 
 [features]
 # by default Tauri runs in production mode

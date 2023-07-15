@@ -15,7 +15,6 @@ import { VscSettings } from "react-icons/vsc";
 import { TbTerminal2 } from "react-icons/tb";
 import { IoIosBug, IoIosGlobe, IoLogoGithub } from "react-icons/io";
 import { SiDiscord } from "react-icons/si";
-import { Tooltip as MantineTooltip } from "@mantine/core";
 import { useHotkeys } from "@mantine/hooks";
 import { appWindow, LogicalSize } from "@tauri-apps/api/window";
 

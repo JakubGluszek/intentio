@@ -7,6 +7,7 @@ import { Button, IconView, ScrollArea } from "@/ui";
 import { useIntent, useIntents, useTimer } from "@/hooks";
 import { ModelId } from "@/types";
 import { Intent } from "@/bindings/Intent";
+
 import { CreateIntentModal } from "./CreateIntentModal";
 import { TagsModal } from "./TagsModal";
 import { IntentConfigModal } from "./IntentConfigModal";

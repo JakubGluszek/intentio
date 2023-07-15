@@ -2,6 +2,7 @@ use crate::{
     config::{ConfigManager, TimerConfig},
     models::Intent,
 };
+use rand::Rng;
 use std::sync::atomic::AtomicU32;
 use std::sync::Arc;
 use std::time::Duration;
@@ -56,8 +57,11 @@ impl Timer {
         let queue = self.queue.clone();
 
         // Run timer logic inside of a new thread
+        let mut rng = rand::thread_rng();
+        let random_number: u32 = rng.gen_range(1..=100);
         tokio::spawn(async move {
             loop {
+                println!("thread => {}", random_number);
                 sleep(Duration::from_secs(1)).await;
 
                 let mut session = session.lock().await;
