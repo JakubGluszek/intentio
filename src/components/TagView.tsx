@@ -28,7 +28,7 @@ export const TagView: React.FC<TagViewProps> = (props) => {
     >
       <div
         className={clsx(
-          "flex flex-row transition-opacity duration-300 flex-wrap",
+          "flex flex-row transition-opacity duration-300",
           isModifiable ? "opacity-0 pointer-events-none" : "opacity-100"
         )}
       >

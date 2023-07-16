@@ -1,11 +1,16 @@
 import React from "react";
 import { useClickOutside } from "@mantine/hooks";
 import { clsx, ScrollArea } from "@mantine/core";
+import { IconType } from "react-icons";
+import { IconView } from "./IconView";
 
 export interface ModalProps {
   children: React.ReactNode;
   display: boolean;
-  header: string;
+  header: {
+    label: string;
+    icon?: IconType;
+  };
   hidden?: boolean;
   onExit?: () => void;
 }
@@ -43,11 +48,12 @@ export const Modal: React.FC<ModalProps> = (props) => {
       <div
         ref={ref}
         style={{ width: "fit-content" }}
-        className="flex flex-col bg-window rounded overflow-clip border-2 border-primary/20"
+        className="flex flex-col rounded-lg overflow-clip shadow-lg shadow-black/80 backdrop-blur-sm"
       >
         {/* Heading */}
-        <div className="flex flex-row items-center justify-between bg-primary/20 px-1 py-0.5 text-text/80">
-          <span className="uppercase font-bold">{props.header}</span>
+        <div className="flex flex-row items-center p-1 py-1 gap-2 text-text/60 bg-primary/40">
+          {props.header?.icon && <IconView icon={props.header.icon} />}
+          <span className="uppercase font-bold">{props.header.label}</span>
         </div>
         <ScrollArea.Autosize
           scrollbarSize={0}
@@ -55,7 +61,9 @@ export const Modal: React.FC<ModalProps> = (props) => {
           styles={{ viewport: { width: maxWidth, maxWidth } }}
           maxHeight={maxHeight}
         >
-          <div className="flex flex-col gap-0.5 p-0.5">{props.children}</div>
+          <div className="flex flex-col bg-window/50 p-2 gap-1">
+            {props.children}
+          </div>
         </ScrollArea.Autosize>
       </div>
     </div>

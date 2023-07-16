@@ -11,7 +11,6 @@ export const useContextMenu = () => {
 
   const onContextMenuHandler = React.useCallback(
     (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
-      console.log(display);
       if (display) return;
       setPosition({ left: e.pageX, top: e.pageY });
       show();

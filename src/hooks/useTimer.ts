@@ -18,11 +18,9 @@ export const useTimer = () => {
     ipc
       .timerGetSession()
       .then((data) => {
-        console.log("here", data);
         setSession(data);
       })
-      .catch((err) => {
-        console.log("err", err);
+      .catch(() => {
         setSession(null);
       });
 
@@ -39,11 +37,9 @@ export const useTimer = () => {
 
   useEvents({
     timer_session_updated: (data) => {
-      console.log(data);
       setSession(data);
     },
     timer_queue_updated: (data) => {
-      console.log(data);
       setQueue(data);
     },
   });

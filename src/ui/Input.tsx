@@ -15,7 +15,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     } = props;
 
     let className =
-      "w-full h-8 py-1 px-1 bg-darker/20 rounded-sm border-2 outline-none border-primary/40 focus:border-primary/80 placeholder:text-text/60";
+      "w-full h-8 py-1 px-1 bg-primary/10 focus:shadow-inner focus:shadow-black/40 rounded-sm border-2 outline-none border-primary/20 focus:border-primary/50 placeholder:text-text/60";
 
     if (customClassName) {
       className = twMerge(className, customClassName);

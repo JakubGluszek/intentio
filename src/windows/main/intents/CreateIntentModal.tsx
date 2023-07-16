@@ -1,5 +1,5 @@
 import React from "react";
-import { MdAddCircle } from "react-icons/md";
+import { MdAddCircle, MdCreate } from "react-icons/md";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { ScrollArea } from "@mantine/core";
@@ -46,53 +46,47 @@ export const CreateIntentModal: React.FC<CreateIntentProps> = (props) => {
     <>
       <Modal
         display={props.display}
-        header="Create Intent"
+        header={{ label: "Create Intent", icon: MdCreate }}
         hidden={viewAddTags}
         onExit={!viewAddTags ? props.onExit : undefined}
       >
-        <form onSubmit={onSubmit} className="grow flex flex-col gap-0.5">
-          <div className="flex flex-col bg-base/5 p-1">
-            <Input
-              placeholder="Label"
-              autoFocus
-              maxLength={24}
-              {...register("label", {
-                required: true,
-                minLength: 1,
-                maxLength: 24,
-              })}
-            />
-          </div>
-          <div className="flex flex-col gap-1 p-1 bg-base/5">
-            <div className="flex flex-row items-center justify-between">
-              <span className="text-text/60 font-semibold">Tags</span>
-              <Button
-                onClick={() => setViewAddTags(true)}
-                variant="ghost"
-                config={{ ghost: { highlight: false } }}
-              >
-                <IconView icon={MdAddCircle} />
-              </Button>
-            </div>
-            {tags.length > 0 && (
-              <div className="flex flex-row flex-wrap gap-1 p-1 bg-window rounded">
-                {tags.map((tag) => (
-                  <TagView key={tag.id} data={tag} />
-                ))}
-              </div>
-            )}
-          </div>
-          <div className="bg-base/5 p-1">
-            <Button type="submit" variant="base" className="w-full">
-              SAVE
+        <form onSubmit={onSubmit} className="grow flex flex-col gap-2">
+          <Input
+            placeholder="Label"
+            autoFocus
+            maxLength={24}
+            {...register("label", {
+              required: true,
+              minLength: 1,
+              maxLength: 24,
+            })}
+          />
+          <div className="flex flex-row items-center justify-between">
+            <span className="text-text/60 font-semibold">Tags</span>
+            <Button
+              onClick={() => setViewAddTags(true)}
+              variant="ghost"
+              config={{ ghost: { highlight: false } }}
+            >
+              <IconView icon={MdAddCircle} />
             </Button>
           </div>
+          {tags.length > 0 && (
+            <div className="flex flex-row flex-wrap gap-1 p-1 rounded">
+              {tags.map((tag) => (
+                <TagView key={tag.id} data={tag} />
+              ))}
+            </div>
+          )}
+          <Button type="submit" variant="base" className="w-full">
+            SAVE
+          </Button>
         </form>
       </Modal>
 
       <Modal
         display={viewAddTags}
-        header="Add Tags"
+        header={{ label: "Add Tags", icon: MdCreate }}
         onExit={() => setViewAddTags(false)}
       >
         <AddIntentTagsProps tags={tags} setTags={setTags} />
@@ -114,51 +108,47 @@ const AddIntentTagsProps: React.FC<AddIntentTagsProps> = (props) => {
   );
 
   return (
-    <div className="flex flex-col gap-0.5">
-      <div className="flex flex-col gap-1 p-1 bg-base/5 border border-base/5">
-        <div className="text-text/80 text-sm">Selected Tags</div>
-        <ScrollArea scrollbarSize={0}>
-          <div className="flex flex-row flex-wrap gap-1 p-1 bg-window rounded">
-            {props.tags.map((tag) => (
-              <TagView
-                key={tag.id}
-                data={tag}
-                isRemovable
-                onRemove={(tagId) =>
-                  props.setTags(props.tags.filter((tag) => tag.id !== tagId))
-                }
-              />
-            ))}
-            {/* Empty Space Filler */}
-            {props.tags.length === 0 && (
-              <div className="w-full text-text/50 text-center text-sm">
-                0 tags
-              </div>
-            )}
-          </div>
-        </ScrollArea>
-      </div>
-      <div className="flex flex-col gap-1 p-1 bg-base/5 border border-base/5">
-        <div className="text-text/80 text-sm">Remaining Tags</div>
-        <ScrollArea scrollbarSize={0}>
-          <div className="flex flex-row flex-wrap gap-1 p-1 bg-window rounded">
-            {remainingTags.map((tag) => (
-              <TagView
-                key={tag.id}
-                data={tag}
-                isAddable
-                onAdd={() => props.setTags([tag, ...props.tags])}
-              />
-            ))}
-            {/* Empty Space Filler */}
-            {remainingTags.length === 0 && (
-              <div className="w-full text-text/50 text-center text-sm">
-                No more tags to select
-              </div>
-            )}
-          </div>
-        </ScrollArea>
-      </div>
-    </div>
+    <>
+      <div className="text-text/80 text-sm">Selected Tags</div>
+      <ScrollArea scrollbarSize={0}>
+        <div className="flex flex-row flex-wrap gap-1 p-1 bg-base/10 rounded border border-base/10">
+          {props.tags.map((tag) => (
+            <TagView
+              key={tag.id}
+              data={tag}
+              isRemovable
+              onRemove={(tagId) =>
+                props.setTags(props.tags.filter((tag) => tag.id !== tagId))
+              }
+            />
+          ))}
+          {/* Empty Space Filler */}
+          {props.tags.length === 0 && (
+            <div className="w-full text-text/50 text-center text-sm">
+              0 tags
+            </div>
+          )}
+        </div>
+      </ScrollArea>
+      <div className="text-text/80 text-sm">Remaining Tags</div>
+      <ScrollArea scrollbarSize={0}>
+        <div className="flex flex-row flex-wrap gap-1 p-2 bg-base/10 rounded border border-base/10">
+          {remainingTags.map((tag) => (
+            <TagView
+              key={tag.id}
+              data={tag}
+              isAddable
+              onAdd={() => props.setTags([tag, ...props.tags])}
+            />
+          ))}
+          {/* Empty Space Filler */}
+          {remainingTags.length === 0 && (
+            <div className="w-full text-text/50 text-center text-sm">
+              No more tags to select
+            </div>
+          )}
+        </div>
+      </ScrollArea>
+    </>
   );
 };

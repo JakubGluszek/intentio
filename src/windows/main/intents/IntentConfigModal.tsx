@@ -1,6 +1,6 @@
 import React from "react";
 import { clsx, ScrollArea } from "@mantine/core";
-import { MdDelete, MdEdit } from "react-icons/md";
+import { MdDangerous, MdDelete, MdEdit, MdSettings } from "react-icons/md";
 import { RiArchiveFill, RiArchiveLine } from "react-icons/ri";
 import { toast } from "react-hot-toast";
 
@@ -51,11 +51,12 @@ export const IntentConfigModal: React.FC<IntentConfigModalProps> = (props) => {
       <Modal
         display={!!props.intentId}
         hidden={!viewMainModal}
-        header="Configure Intent"
+        header={{ label: "Configure Intent", icon: MdSettings }}
         onExit={viewMainModal ? props.onExit : undefined}
       >
         {/* Label */}
-        <div className="flex flex-col p-1 bg-base/5">
+        <div className="flex flex-col gap-1">
+          <span className="text-text/80">Label</span>
           <Input
             value={label}
             onChange={(e) => setLabel(e.currentTarget.value)}
@@ -65,7 +66,7 @@ export const IntentConfigModal: React.FC<IntentConfigModalProps> = (props) => {
           />
         </div>
         {/* Tags */}
-        <div className="flex flex-col gap-1 p-1 bg-base/5">
+        <div className="flex flex-col gap-1">
           <div className="flex flex-row items-center justify-between">
             <span className="text-text/80">Tags</span>
             <div className="flex flex-row items-center gap-1">
@@ -75,7 +76,7 @@ export const IntentConfigModal: React.FC<IntentConfigModalProps> = (props) => {
             </div>
           </div>
           <ScrollArea>
-            <div className="flex flex-row flex-wrap gap-1 p-1 bg-window rounded">
+            <div className="flex flex-row flex-wrap gap-1 p-2 bg-base/10 rounded border border-base/10">
               {intent.tags.map((tag) => (
                 <TagView key={tag.id} data={tag} />
               ))}
@@ -86,7 +87,7 @@ export const IntentConfigModal: React.FC<IntentConfigModalProps> = (props) => {
             </div>
           </ScrollArea>
         </div>
-        <div className="flex flex-row items-center justify-between p-1 bg-base/5">
+        <div className="flex flex-row items-center justify-between">
           <span className="text-text/80">Manage</span>
           {/* Button Bar */}
           <div className="flex flex-row items-center gap-1">
@@ -113,14 +114,14 @@ export const IntentConfigModal: React.FC<IntentConfigModalProps> = (props) => {
 
       <Modal
         display={viewEditTags}
-        header="Edit Tags"
+        header={{ label: "Edit Tags", icon: MdEdit }}
         onExit={() => setViewEditTags(false)}
       >
         <EditIntentTags intentId={props.intentId!} />
       </Modal>
       <Modal
         display={viewDeleteModal}
-        header="Delete Intent"
+        header={{ label: "Delete Intent", icon: MdDelete }}
         onExit={() => setViewDeleteModal(false)}
       >
         <ScrollArea>
@@ -149,51 +150,79 @@ interface DeleteIntentProps {
 
 const DeleteIntent: React.FC<DeleteIntentProps> = (props) => {
   const [label, setLabel] = React.useState("");
+  const [step, setStep] = React.useState(0);
 
   const canDelete = label === props.intent.label;
 
   return (
-    <div className="flex flex-col gap-0.5">
-      <div className="flex flex-col bg-base/5 gap-1 p-1">
-        <p className="text-text/80">
-          Are you sure you want to delete&nbsp;
-          <span className="text-primary font-bold uppercase">
-            {props.intent.label}
-          </span>
-          ?
-        </p>
-        <p className="text-text/60 text-sm">
-          You will loose x hours of progress and all of it’s related content.
-          This operation is irreversible.
-        </p>
-      </div>
-      <div className="flex flex-col gap-1 bg-base/5 p-1">
-        <p className="text-text/80 text-sm">
-          To confirm, type&nbsp;
-          <span className="text-danger font-bold">{props.intent.label}</span>
-          &nbsp;below.
-        </p>
-        <Input
-          value={label}
-          onChange={(e) => setLabel(e.currentTarget.value)}
-          className={clsx(
-            "transition-colors duration-300",
-            canDelete ? "border-danger/40 focus:border-danger/60": "border-danger/20 focus:border-danger/30"
-          )}
-        />
-        <Button
-          onClick={() => props.onDelete(props.intent.id)}
-          variant="base"
-          className={clsx(
-            "w-full",
-            !canDelete
-              ? "bg-danger/10 border-danger/20 text-danger/80 hover:bg-danger/20 hover:text-danger active:text-danger/60 active:border-danger/20 hover:border-danger/30 active:bg-danger/10"
-              : "bg-danger/20 border-danger/40 text-danger/80 hover:bg-danger/40 hover:text-danger active:text-window active:border-transparent hover:border-danger/60 active:bg-danger"
-          )}
-        >
-          Delete
-        </Button>
-      </div>
+    <div className="flex flex-col gap-2 p-2 bg-window/50">
+      {step === 0 && (
+        <>
+          <div className="flex flex-col bg-base/10 gap-2 p-2 rounded">
+            <p className="text-text/80">
+              Are you sure you want to delete&nbsp;
+              <span className="text-primary font-bold uppercase">
+                {props.intent.label}
+              </span>
+              ?
+            </p>
+            <p className="text-text/60 text-sm flex flex-col gap-2">
+              You will loose x hours of progress and all of it’s related
+              content.
+              <p>
+                This operation is{" "}
+                <span className="text-danger/80 font-semibold">
+                  irreversible
+                </span>
+                .
+              </p>
+            </p>
+          </div>
+          <div className="w-full flex flex-row gap-2 justify-between">
+            <Button className="flex-1" variant="base" onClick={props.onExit}>
+              Return
+            </Button>
+            <Button
+              className="flex-1"
+              variant="base"
+              onClick={() => setStep((prev) => prev + 1)}
+            >
+              Continue
+            </Button>
+          </div>
+        </>
+      )}
+      {step === 1 && (
+        <div className="flex flex-col gap-1 bg-base/5 p-2 rounded border border-lighter/10">
+          <p className="text-text/80 text-sm">
+            To confirm, type&nbsp;
+            <span className="text-danger font-bold">{props.intent.label}</span>
+            &nbsp;below.
+          </p>
+          <Input
+            value={label}
+            onChange={(e) => setLabel(e.currentTarget.value)}
+            className={clsx(
+              "transition-colors duration-300",
+              canDelete
+                ? "border-danger/40 focus:border-danger/60 bg-darker/25"
+                : "border-danger/20 focus:border-danger/30 bg-danger/5"
+            )}
+          />
+          <Button
+            onClick={() => props.onDelete(props.intent.id)}
+            variant="base"
+            className={clsx(
+              "w-full",
+              !canDelete
+                ? "bg-danger/10 border-danger/20 text-danger/80 hover:bg-danger/20 hover:text-danger active:text-danger/60 active:border-danger/20 hover:border-danger/30 active:bg-danger/10"
+                : "bg-danger/20 border-danger/40 text-danger/80 hover:bg-danger/40 hover:text-danger active:text-window active:border-transparent hover:border-danger/60 active:bg-danger"
+            )}
+          >
+            Delete
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
@@ -212,9 +241,9 @@ const EditIntentTags: React.FC<EditIntentTagsProps> = (props) => {
 
   return (
     <>
-      <div className="w-full flex flex-col gap-1 p-1 bg-base/5 border border-base/5">
+      <div className="w-full flex flex-col gap-1">
         <div className="text-text/80 text-sm">Selected Tags</div>
-        <div className="flex flex-row flex-row-wrap gap-1 p-1 bg-window rounded">
+        <div className="flex flex-row flex-wrap gap-1 p-1 bg-base/10 rounded border border-lighter/5">
           {intent.tags.map((tag) => (
             <TagView
               key={tag.id}
@@ -235,9 +264,9 @@ const EditIntentTags: React.FC<EditIntentTagsProps> = (props) => {
           )}
         </div>
       </div>
-      <div className="flex flex-col gap-1 p-1 bg-base/5 border border-base/5">
+      <div className="flex flex-col gap-1">
         <div className="text-text/80 text-sm">Remaining Tags</div>
-        <div className="flex flex-row flex-wrap gap-1 p-1 bg-window rounded">
+        <div className="flex flex-row flex-wrap gap-1 p-1 bg-base/10 rounded border border-lighter/5">
           {remainingTags.map((tag) => (
             <TagView
               key={tag.id}

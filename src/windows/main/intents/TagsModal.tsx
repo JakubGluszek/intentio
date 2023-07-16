@@ -25,59 +25,53 @@ export const TagsModal: React.FC<TagsModalProps> = (props) => {
   }, [tags.data]);
 
   return (
-    <Modal
-      {...props}
-      header="Intent Tags"
-      description="Add your own custom tags which you can then apply for different intents based on how you decide to categorize them. Utilizing this will greatly improve the way you can analyze a group of related intents."
-    >
-      <div className="flex flex-col gap-1 p-1 bg-base/5 rounded-sm">
-        {/* Navbar */}
-        <div className="flex flex-row items-center justify-between">
-          <span className="text-text/80">
-            {viewRemove ? "Remove tags" : "All Tags"}
-          </span>
-          {/* Button Bar */}
-          <div className="flex flex-row gap-1">
-            <Button onClick={() => setViewCreate(true)} variant="ghost">
-              <IconView icon={MdAddCircle} />
+    <Modal {...props} header={{ label: "Intent Tags", icon: MdTag }}>
+      {/* Navbar */}
+      <div className="flex flex-row items-center justify-between">
+        <span className="text-text/80">
+          {viewRemove ? "Remove tags" : "All Tags"}
+        </span>
+        {/* Button Bar */}
+        <div className="flex flex-row gap-1">
+          <Button onClick={() => setViewCreate(true)} variant="ghost">
+            <IconView icon={MdAddCircle} />
+          </Button>
+          {tags.data.length > 0 && (
+            <Button
+              onClick={() => setViewRemove((prev) => !prev)}
+              variant="ghost"
+              className={viewRemove ? "text-primary" : undefined}
+            >
+              <IconView icon={MdRemoveCircle} />
             </Button>
-            {tags.data.length > 0 && (
-              <Button
-                onClick={() => setViewRemove((prev) => !prev)}
-                variant="ghost"
-                className={viewRemove ? "text-primary" : undefined}
-              >
-                <IconView icon={MdRemoveCircle} />
-              </Button>
+          )}
+        </div>
+      </div>
+      {/* Tags List */}
+      <div className="p-2 bg-base/10 rounded-lg shadow-lg shadow-black/50 border border-lighter/10">
+        <ScrollArea sx={{ flex: 1 }}>
+          <div className="flex flex-row flex-wrap gap-1">
+            {viewCreate && (
+              <CreateTagView
+                onCreate={tags.create}
+                onExit={() => setViewCreate(false)}
+              />
+            )}
+            {tags.data.map((tag) => (
+              <TagView
+                key={tag.id}
+                data={tag}
+                onRemove={tags.remove}
+                isRemovable={viewRemove}
+              />
+            ))}
+
+            {/* Empty Space Filler */}
+            {tags.data.length === 0 && !viewCreate && (
+              <div className="w-full text-text/50 text-center">0 tags</div>
             )}
           </div>
-        </div>
-        {/* Tags List */}
-        <div className="p-1 bg-window rounded">
-          <ScrollArea sx={{ flex: 1 }}>
-            <div className="flex flex-row flex-wrap gap-1">
-              {viewCreate && (
-                <CreateTagView
-                  onCreate={tags.create}
-                  onExit={() => setViewCreate(false)}
-                />
-              )}
-              {tags.data.map((tag) => (
-                <TagView
-                  key={tag.id}
-                  data={tag}
-                  onRemove={tags.remove}
-                  isRemovable={viewRemove}
-                />
-              ))}
-
-              {/* Empty Space Filler */}
-              {tags.data.length === 0 && !viewCreate && (
-                <div className="w-full text-text/50 text-center">0 tags</div>
-              )}
-            </div>
-          </ScrollArea>
-        </div>
+        </ScrollArea>
       </div>
     </Modal>
   );
