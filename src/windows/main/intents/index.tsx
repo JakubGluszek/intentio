@@ -11,6 +11,7 @@ import { Intent } from "@/bindings/Intent";
 import { CreateIntentModal } from "./CreateIntentModal";
 import { TagsModal } from "./TagsModal";
 import { IntentConfigModal } from "./IntentConfigModal";
+import { clsx } from "@mantine/core";
 
 export const IntentsView: React.FC = () => {
   const [viewArchive, setViewArchive] = React.useState(false);
@@ -20,6 +21,7 @@ export const IntentsView: React.FC = () => {
     React.useState<ModelId | null>(null);
 
   const intents = useIntents();
+  const timer = useTimer();
 
   return (
     <>
@@ -57,6 +59,8 @@ export const IntentsView: React.FC = () => {
         data={intents.data}
         viewArchive={viewArchive}
         onConfigureIntent={setViewIntentConfig}
+        selected={timer.session?.intent}
+        onSelected={timer.setIntent}
       />
 
       <CreateIntentModal
@@ -77,11 +81,12 @@ interface IntentsListProps {
   data: Intent[];
   viewArchive: boolean;
   onConfigureIntent: (id: ModelId) => void;
+  selected: Intent | undefined;
+  onSelected: (intent: Intent) => void;
 }
 
 const IntentsList: React.FC<IntentsListProps> = (props) => {
   // TODO: Sort intents by total session hours
-  const timer = useTimer();
   return (
     <ScrollArea>
       <div className="flex flex-col gap-0.5">
@@ -92,7 +97,8 @@ const IntentsList: React.FC<IntentsListProps> = (props) => {
               key={intent.id}
               id={intent.id}
               onConfigure={props.onConfigureIntent}
-              onClick={() => timer.setIntent(intent)}
+              onClick={() => props.onSelected(intent)}
+              selected={props.selected?.id === intent.id}
             />
           ))}
       </div>
@@ -104,6 +110,7 @@ interface IntentViewProps {
   id: ModelId;
   onConfigure: (id: ModelId) => void;
   onClick: () => void;
+  selected: boolean;
 }
 
 const IntentView: React.FC<IntentViewProps> = (props) => {
@@ -113,14 +120,27 @@ const IntentView: React.FC<IntentViewProps> = (props) => {
 
   return (
     <div
-      className="group h-fit flex flex-col gap-1 p-1 bg-base/10 hover:bg-primary/10 active:bg-primary/20 border border-base/5 active:border-transparent cursor-pointer transition-all duration-300 hover:shadow-black/25 hover:shadow active:shadow-black/25 active:shadow-lg"
-      onClick={() => props.onClick()}
+      className={clsx(
+        "group h-fit flex flex-col gap-1 p-1 cursor-pointer transition-all duration-300 hover:shadow-black/25 hover:shadow active:shadow-black/25 active:shadow-lg",
+        props.selected
+          ? "bg-primary/10 hover:bg-primary/20 border-b-2 border-primary/80"
+          : "bg-base/10 hover:bg-primary/10 active:bg-primary/20 border-b-2 border-transparent"
+      )}
+      // @ts-ignore
+      onClick={(e) => !e.target.closest("button") && props.onClick()}
       data-tauri-disable-drag
     >
       {/* Heading */}
       <div className="flex flex-row items-center justify-between">
         {/* Label */}
-        <div className="flex flex-row items-center gap-1 text-text/70 group-hover:text-text transition-colors duration-300">
+        <div
+          className={clsx(
+            "flex flex-row items-center gap-1 transition-colors duration-300",
+            props.selected
+              ? "text-primary/80 grup-hover:text-primary"
+              : "text-text/70 group-hover:text-text"
+          )}
+        >
           <IconView icon={BiTargetLock} />
           <span className="font-bold">{intent.data.label}</span>
         </div>
