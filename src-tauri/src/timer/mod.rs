@@ -2,13 +2,15 @@ use crate::{
     config::{ConfigManager, TimerConfig},
     models::Intent,
 };
-use rand::Rng;
 use std::sync::atomic::AtomicU32;
 use std::sync::Arc;
 use std::time::Duration;
 use tauri::AppHandle;
-use tokio::sync::{Mutex, MutexGuard};
 use tokio::time::sleep;
+use tokio::{
+    sync::{Mutex, OwnedMutexGuard},
+    task::JoinHandle,
+};
 
 mod error;
 mod queue;
@@ -24,6 +26,7 @@ pub struct Timer {
     session: Option<Arc<Mutex<TimerSession>>>,
     iteration: Arc<AtomicU32>,
     queue: Arc<Mutex<TimerQueue>>,
+    session_handle: Option<JoinHandle<()>>,
 }
 
 // Static timer methods
@@ -33,6 +36,7 @@ impl Timer {
             session: None,
             iteration: Arc::new(AtomicU32::new(0)),
             queue: Arc::new(Mutex::new(TimerQueue::new(app_handle))),
+            session_handle: None,
         }
     }
     fn get_config() -> TimerConfig {
@@ -57,14 +61,14 @@ impl Timer {
         let queue = self.queue.clone();
 
         // Run timer logic inside of a new thread
-        let mut rng = rand::thread_rng();
-        let random_number: u32 = rng.gen_range(1..=100);
-        tokio::spawn(async move {
+        if self.session_handle.is_some() {
+            self.session_handle.as_ref().unwrap().abort();
+        };
+        let handle = tokio::spawn(async move {
             loop {
-                println!("thread => {}", random_number);
                 sleep(Duration::from_secs(1)).await;
 
-                let mut session = session.lock().await;
+                let mut session = session.clone().lock_owned().await;
                 // Kills thread if session has been paused
                 if !session.is_playing {
                     break;
@@ -89,6 +93,7 @@ impl Timer {
                 break;
             }
         });
+        self.session_handle = Some(handle);
         Ok(())
     }
     pub async fn stop(&mut self) -> TimerResult<()> {
@@ -125,9 +130,9 @@ impl Timer {
         };
         Err(TimerError::UndefinedSession)
     }
-    async fn get_session_guard(&self) -> TimerResult<MutexGuard<TimerSession>> {
-        let session = self.session.as_ref().ok_or(TimerError::UndefinedSession)?;
-        let session_guard = session.lock().await;
+    async fn get_session_guard(&self) -> TimerResult<OwnedMutexGuard<TimerSession>> {
+        let session = self.session.clone().ok_or(TimerError::UndefinedSession)?;
+        let session_guard = session.lock_owned().await;
         Ok(session_guard)
     }
 }

@@ -34,7 +34,14 @@ export const Timer: React.FC<TimerProps> = (props) => {
   const [elapsedTimeDetailed, setElapsedTimeDetailed] = React.useState(0);
 
   useAnimationFrame((_, delta) => {
-    if (!props.isPlaying) return;
+    if (!props.isPlaying) {
+      if (elapsedTimeDetailed >= props.elapsedTime) {
+        setElapsedTimeDetailed((prev) => prev - delta / 1000);
+        return;
+      }
+      setElapsedTimeDetailed(props.elapsedTime);
+    }
+
     setElapsedTimeDetailed((prev) => prev + delta / 1000);
   });
 
