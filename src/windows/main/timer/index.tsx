@@ -5,11 +5,21 @@ import { Loader, Timer } from "@/components";
 import useStore from "@/store";
 import { useTimer } from "@/hooks";
 import { Button } from "@/ui";
+import { MainWindowContext } from "../mainWindowContext";
 
 export const TimerView: React.FC = () => {
   const store = useStore();
   const timer = useTimer();
   const navigate = useNavigate();
+  const { setDisplayNavbar } = React.useContext(MainWindowContext)!;
+
+  React.useEffect(() => {
+    if (timer.session && timer.session.is_playing) {
+      setDisplayNavbar(false);
+    } else {
+      setDisplayNavbar(true);
+    }
+  }, [timer.session]);
 
   // Window invisible
   if (!store.currentTheme) return null;

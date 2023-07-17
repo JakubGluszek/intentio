@@ -18,7 +18,7 @@ import config from "@/config";
 import ipc from "@/ipc";
 import { Button, IconView } from "@/ui";
 import { WindowContainer } from "@/components";
-import { MainWindowProvider } from "./mainWindowContext";
+import { MainWindowContext, MainWindowProvider } from "./mainWindowContext";
 
 export const MainWindow: React.FC = () => {
   return (
@@ -31,6 +31,8 @@ export const MainWindow: React.FC = () => {
 };
 
 export const Content: React.FC = () => {
+  const { displayNavbar } = React.useContext(MainWindowContext)!;
+
   return (
     <div className="w-[20rem] h-[21rem]">
       <div className="relative w-screen h-screen flex flex-col bg-window/95 border-2 border-base/5 rounded-md overflow-clip">
@@ -64,7 +66,7 @@ export const Content: React.FC = () => {
         <div className="relative grow flex flex-col p-0.5">
           <div className="grow flex flex-col gap-0.5">
             <Outlet />
-            <Navbar />
+            {displayNavbar && <Navbar />}
           </div>
         </div>
       </div>

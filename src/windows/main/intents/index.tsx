@@ -12,6 +12,7 @@ import { CreateIntentModal } from "./CreateIntentModal";
 import { TagsModal } from "./TagsModal";
 import { IntentConfigModal } from "./IntentConfigModal";
 import { clsx } from "@mantine/core";
+import { MainWindowContext } from "../mainWindowContext";
 
 export const IntentsView: React.FC = () => {
   const [viewArchive, setViewArchive] = React.useState(false);
@@ -20,8 +21,14 @@ export const IntentsView: React.FC = () => {
   const [viewIntentConfig, setViewIntentConfig] =
     React.useState<ModelId | null>(null);
 
+  const { setDisplayNavbar } = React.useContext(MainWindowContext)!;
+
   const intents = useIntents();
   const timer = useTimer();
+
+  React.useEffect(() => {
+    setDisplayNavbar(true);
+  }, []);
 
   return (
     <>
