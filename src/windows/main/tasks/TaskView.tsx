@@ -20,9 +20,7 @@ const TaskView = React.forwardRef<HTMLDivElement, TaskViewProps>(
       if (!props.data.completed) {
         ipc.completeTask(props.data.id).then(() => toast("Task completed"));
       } else {
-        ipc
-          .uncompleteTask(props.data.id)
-          .then(() => toast("Task completion reverted"));
+        ipc.uncompleteTask(props.data.id);
       }
     }, [props.data]);
 
