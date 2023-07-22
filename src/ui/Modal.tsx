@@ -40,7 +40,7 @@ export const Modal: React.FC<ModalProps> = (props) => {
   return (
     <div
       className={clsx(
-        "fixed top-0 left-0 w-screen h-screen flex flex-col items-center justify-center bg-darker/80",
+        "z-[500] fixed top-0 left-0 w-screen h-screen flex flex-col items-center justify-center bg-darker/80",
         props.hidden && "opacity-0 pointer-events-none"
       )}
       data-tauri-disable-drag
@@ -48,10 +48,10 @@ export const Modal: React.FC<ModalProps> = (props) => {
       <div
         ref={ref}
         style={{ width: "fit-content" }}
-        className="flex flex-col rounded-lg overflow-clip shadow-lg shadow-black/80 backdrop-blur-sm"
+        className="flex flex-col rounded overflow-clip shadow-lg shadow-black/80 backdrop-blur-sm"
       >
         {/* Heading */}
-        <div className="flex flex-row items-center p-1 py-1 gap-2 text-text/80 bg-primary/20 border-b-2 border-primary/40">
+        <div className="flex flex-row items-center p-1 py-1 gap-2 text-text/80 bg-base/40">
           {props.header?.icon && <IconView icon={props.header.icon} />}
           <span className="uppercase font-bold">{props.header.label}</span>
         </div>

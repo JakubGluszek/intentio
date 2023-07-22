@@ -1,12 +1,11 @@
 import React from "react";
 import {
   MdAddCircle,
-  MdCheck,
   MdCheckBox,
   MdCheckBoxOutlineBlank,
 } from "react-icons/md";
 
-import { Button, IconView } from "@/ui";
+import { Button, IconView, Tooltip } from "@/ui";
 import ipc from "@/ipc";
 import { TimerSession } from "@/bindings/TimerSession";
 
@@ -33,18 +32,22 @@ export const TasksView: React.FC = () => {
         {/* Button Bar */}
         <div className="w-fit flex flex-row items-center px-2 gap-2 bg-base/5 border border-base/5">
           {session && (
-            <Button onClick={() => setViewCreateTask(true)} variant="ghost">
-              <IconView icon={MdAddCircle} />
-            </Button>
+            <Tooltip label="Create task">
+              <Button onClick={() => setViewCreateTask(true)} variant="ghost">
+                <IconView icon={MdAddCircle} />
+              </Button>
+            </Tooltip>
           )}
-          <Button
-            onClick={() => setViewCompleted((prev) => !prev)}
-            variant="ghost"
-          >
-            <IconView
-              icon={viewCompleted ? MdCheckBoxOutlineBlank : MdCheckBox}
-            />
-          </Button>
+          <Tooltip label={viewCompleted ? "View tasks" : "View completed"}>
+            <Button
+              onClick={() => setViewCompleted((prev) => !prev)}
+              variant="ghost"
+            >
+              <IconView
+                icon={viewCompleted ? MdCheckBoxOutlineBlank : MdCheckBox}
+              />
+            </Button>
+          </Tooltip>
         </div>
       </nav>
 

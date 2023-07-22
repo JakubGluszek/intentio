@@ -73,7 +73,7 @@ export const WindowContainer: React.FC<WindowContainerProps> = (props) => {
             backgroundColor: "rgb(var(--window-color))",
             borderBottomWidth: 2,
             borderColor: "rgb(var(--primary-color) / 0.8)",
-            borderRadius: 4,
+            borderRadius: 2,
             fontSize: "0.9rem",
             fontWeight: 700,
             color: "rgb(var(--primary-color))",

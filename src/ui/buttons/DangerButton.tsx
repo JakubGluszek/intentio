@@ -8,7 +8,7 @@ export const DangerButton: React.FC<ButtonProps> = (props) => {
 
   let className =
     props.variant === "base"
-      ? "bg-danger/20 hover:bg-danger/30 active:bg-danger border-danger/60 hover:border-danger/80 text-danger/90 hover:text-danger active:text-window"
+      ? "bg-danger/20 hover:bg-danger/30 active:bg-danger active:border-danger/60 border-danger/60 hover:border-danger/80 text-danger/90 hover:text-danger active:text-window"
       : "text-danger/80 hover:bg-danger/20 active:bg-danger/30 hover:text-danger active:text-danger";
 
   if (customClassName) {
