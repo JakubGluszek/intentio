@@ -2,6 +2,7 @@ import React from "react";
 import { HTMLMotionProps, motion } from "framer-motion";
 
 import utils from "@/utils";
+import { WindowContext } from "@/contexts";
 
 // TODO: receive: width, height, press duration...
 interface TaskButtonProps extends HTMLMotionProps<"button"> {
@@ -24,7 +25,9 @@ export const TaskButton: React.FC<TaskButtonProps> = (props) => {
   completedRef.current = props.completed;
   const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
-  const size = 20;
+  const { windowScale } = React.useContext(WindowContext)!;
+
+  const size = windowScale.iconSize;
   const padding = 8;
 
   const cleanup = () => {
@@ -91,7 +94,7 @@ export const TaskButton: React.FC<TaskButtonProps> = (props) => {
 
   return (
     <motion.button
-      className="group m-1 border-2 border-primary/80 hover:border-primary active:border-primary overflow-clip transition-colors rounded-sm flex flex-col items-center justify-center"
+      className="group m-1 border-2 border-primary/80 hover:border-primary active:border-primary overflow-clip transition-colors flex flex-col items-center justify-center"
       layout
       style={{
         minWidth: size,
@@ -110,7 +113,7 @@ export const TaskButton: React.FC<TaskButtonProps> = (props) => {
       {...restProps}
     >
       <motion.div
-        className="bg-primary/80 group-hover:bg-primary group-active:bg-primary transition-colors rounded-sm"
+        className="bg-primary/80 group-hover:bg-primary group-active:bg-primary transition-colors"
         style={{
           width: size - padding,
           height: size - padding,
