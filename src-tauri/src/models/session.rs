@@ -24,8 +24,14 @@ pub struct Session {
 #[ts(export, export_to = "../src/bindings/")]
 pub struct CreateSession {
     pub duration: i32,
-    pub summary: Option<String>,
     #[ts(type = "number")]
     pub started_at: i64,
     pub intent_id: i32,
+}
+
+#[derive(AsChangeset, TS, Deserialize)]
+#[diesel(table_name = sessions, check_for_backend(diesel::sqlite::Sqlite))]
+#[ts(export, export_to = "../src/bindings/")]
+pub struct UpdateSession {
+    pub summary: Option<String>,
 }

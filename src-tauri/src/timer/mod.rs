@@ -5,7 +5,7 @@ use crate::{
 use std::sync::atomic::AtomicU32;
 use std::sync::Arc;
 use std::time::Duration;
-use tauri::AppHandle;
+use tauri::{AppHandle, Manager};
 use tokio::time::sleep;
 use tokio::{
     sync::{Mutex, OwnedMutexGuard},

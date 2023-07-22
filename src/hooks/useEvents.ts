@@ -40,20 +40,20 @@ type Events = {
   theme_updated: EventPayload<Id>;
   theme_deleted: EventPayload<Id>;
 
-  session_created: EventPayload<Id>;
+  session_created: Id;
+  session_updated: EventPayload<Id>;
 
   settings_config_updated: EventPayload<SettingsConfig>;
   timer_config_updated: EventPayload<TimerConfig>;
 
   timer_play: undefined;
   timer_skip: undefined;
+  timer_session_updated: TimerSession;
+  timer_queue_updated: Queue;
 
   current_theme_changed: undefined;
   current_theme_updated: Theme;
   preview_theme: Theme;
-
-  timer_session_updated: TimerSession;
-  timer_queue_updated: Queue;
 };
 
 type Callback<T extends keyof Events> = (data: Events[T]) => void;

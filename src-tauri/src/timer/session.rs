@@ -97,11 +97,14 @@ impl TimerSession {
             let data = CreateSession {
                 duration: self.time_elapsed as i32,
                 started_at: self.started_at.unwrap(),
-                summary: None,
                 intent_id: self.intent.id,
             };
-            self.app_handle
+            let session_id = self
+                .app_handle
                 .db(|mut db| SessionBmc::create(&mut db, &data))
+                .unwrap();
+            self.app_handle
+                .emit_all("session_created", session_id)
                 .unwrap();
         };
     }

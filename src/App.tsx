@@ -7,6 +7,7 @@ import { TimerView } from "./windows/main/timer";
 import { TasksView } from "./windows/main/tasks";
 import SettingsWindow from "./windows/settings";
 import AnalyticsWindow from "./windows/analytics";
+import SummaryWindow from "./windows/summary";
 
 const App: React.FC = () => {
   return (
@@ -18,6 +19,7 @@ const App: React.FC = () => {
       </Route>
       <Route path="/settings" element={<SettingsWindow />} />
       <Route path="/analytics" element={<AnalyticsWindow />} />
+      <Route path="/summary" element={<SummaryWindow />} />
     </Routes>
   );
 };

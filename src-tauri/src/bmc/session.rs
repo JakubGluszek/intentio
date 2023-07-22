@@ -5,6 +5,7 @@ use ts_rs::TS;
 
 use crate::models::CreateSession;
 use crate::models::Session;
+use crate::models::UpdateSession;
 use crate::prelude::Result;
 
 use super::BaseBmc;
@@ -27,6 +28,15 @@ impl SessionBmc {
             .values(data)
             .execute(conn)?;
         BaseBmc::get_last_insert_id(conn)
+    }
+
+    pub fn update(conn: &mut SqliteConnection, id: i32, data: &UpdateSession) -> Result<i32> {
+        use crate::db::schema::sessions::dsl;
+
+        diesel::update(dsl::sessions.find(id))
+            .set(data)
+            .execute(conn)?;
+        Ok(id)
     }
 
     pub fn get(conn: &mut SqliteConnection, id: i32) -> Result<Session> {
@@ -67,7 +77,12 @@ impl SessionBmc {
 
 #[cfg(test)]
 mod session_bmc_tests {
-    use crate::{bmc::IntentBmc, db::Db, models::CreateIntent, prelude::Error};
+    use crate::{
+        bmc::{test_helpers::create_dummy_intent, IntentBmc},
+        db::Db,
+        models::CreateIntent,
+        prelude::Error,
+    };
 
     use super::*;
 
@@ -84,7 +99,6 @@ mod session_bmc_tests {
         let started_at = chrono::Utc::now().timestamp();
         let data = CreateSession {
             duration: 1500,
-            summary: None,
             started_at,
             intent_id,
         };
@@ -100,7 +114,6 @@ mod session_bmc_tests {
         let started_at = chrono::Utc::now().timestamp();
         let data = CreateSession {
             duration: 1500,
-            summary: None,
             started_at,
             intent_id: 1,
         };
@@ -122,7 +135,6 @@ mod session_bmc_tests {
         let started_at = chrono::Utc::now().timestamp();
         let data = CreateSession {
             duration: 1500,
-            summary: None,
             started_at,
             intent_id,
         };
@@ -150,7 +162,6 @@ mod session_bmc_tests {
             let started_at = chrono::Utc::now().timestamp();
             let data = CreateSession {
                 duration: 1500,
-                summary: None,
                 started_at,
                 intent_id,
             };
@@ -176,7 +187,6 @@ mod session_bmc_tests {
             let started_at = chrono::Utc::now().timestamp();
             let data = CreateSession {
                 duration: 1500,
-                summary: None,
                 started_at,
                 intent_id,
             };
@@ -186,7 +196,6 @@ mod session_bmc_tests {
             let started_at = chrono::Utc::now().timestamp();
             let data = CreateSession {
                 duration: 1500,
-                summary: None,
                 started_at,
                 intent_id: intent_id2,
             };
@@ -217,7 +226,6 @@ mod session_bmc_tests {
             let started_at = chrono::Utc::now().timestamp();
             let data = CreateSession {
                 duration: 1500,
-                summary: None,
                 started_at,
                 intent_id,
             };
@@ -233,5 +241,27 @@ mod session_bmc_tests {
 
         assert_eq!(sessions.len(), 4);
         assert_eq!(sessions[0].id, 5);
+    }
+
+    #[test]
+    fn test_update_session_summary() {
+        let mut conn = Db::establish_test_connection().unwrap();
+        // Create intent.
+        let intent_id = create_dummy_intent(&mut conn);
+        // Create session.
+        let data = CreateSession {
+            duration: 1500,
+            started_at: 0,
+            intent_id,
+        };
+        let session_id = SessionBmc::create(&mut conn, &data).unwrap();
+        // Update session
+        let data = UpdateSession {
+            summary: Some("foo".to_string()),
+        };
+        SessionBmc::update(&mut conn, session_id, &data).unwrap();
+        // Query and test update
+        let session = SessionBmc::get(&mut conn, session_id).unwrap();
+        assert_eq!(session.summary.unwrap(), "foo".to_string());
     }
 }

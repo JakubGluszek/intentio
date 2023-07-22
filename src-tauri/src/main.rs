@@ -73,6 +73,7 @@ fn main() -> Result<()> {
             uncomplete_task,
             // Session
             create_session,
+            update_session,
             get_session,
             get_sessions,
             // Script
