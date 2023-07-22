@@ -132,7 +132,7 @@ const AddIntentTagsProps: React.FC<AddIntentTagsProps> = (props) => {
       </ScrollArea>
       <div className="text-text/80 text-sm">Remaining Tags</div>
       <ScrollArea scrollbarSize={0}>
-        <div className="flex flex-row flex-wrap gap-1 p-2 bg-base/10 rounded border border-base/10">
+        <div className="flex flex-row flex-wrap gap-1 p-1 bg-base/10 rounded border border-base/10">
           {remainingTags.map((tag) => (
             <TagView
               key={tag.id}

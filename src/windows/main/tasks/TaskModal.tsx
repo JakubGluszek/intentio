@@ -39,7 +39,7 @@ export const TaskModal: React.FC<TaskModalProps> = (props) => {
     <Modal
       display={props.display}
       onExit={props.onExit}
-      header={{ label: "Task details" }}
+      header={{ label: "Edit task" }}
     >
       <div className="flex flex-col gap-2">
         <form onSubmit={onSubmit}>

@@ -35,7 +35,7 @@ const TaskView = React.forwardRef<HTMLDivElement, TaskViewProps>(
           exit={{ opacity: 0, scale: 0.9 }}
         >
           <div
-            className="p-0 bg-base/5 hover:bg-base/10 border border-base/5 hover:border-primary/40 cursor-pointer"
+            className="p-0.5 bg-base/5 hover:bg-primary/10 border border-base/5 cursor-pointer"
             onClick={(e) => {
               // @ts-ignore
               if (e.target.closest("button")) return;
@@ -43,12 +43,14 @@ const TaskView = React.forwardRef<HTMLDivElement, TaskViewProps>(
             }}
             data-tauri-disable-drag
           >
-            <div className="flex flex-row items-center gap-0.5">
+            <div className="flex flex-row gap-0.5">
               <TaskButton
                 completed={props.data.completed}
                 onValueChange={() => handleCheck()}
               />
-              <div style={{ wordBreak: "break-all" }}>{props.data.body}</div>
+              <div className="pt-0.5" style={{ wordBreak: "break-all" }}>
+                {props.data.body}
+              </div>
             </div>
           </div>
         </motion.div>
