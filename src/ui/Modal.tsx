@@ -51,7 +51,7 @@ export const Modal: React.FC<ModalProps> = (props) => {
         className="flex flex-col rounded-lg overflow-clip shadow-lg shadow-black/80 backdrop-blur-sm"
       >
         {/* Heading */}
-        <div className="flex flex-row items-center p-1 py-1 gap-2 text-text/60 bg-primary/40">
+        <div className="flex flex-row items-center p-1 py-1 gap-2 text-text/80 bg-primary/20 border-b-2 border-primary/40">
           {props.header?.icon && <IconView icon={props.header.icon} />}
           <span className="uppercase font-bold">{props.header.label}</span>
         </div>

@@ -4,6 +4,7 @@ import { ModelId } from "@/types";
 import { Task } from "@/bindings/Task";
 import { UpdateTask } from "@/bindings/UpdateTask";
 import { CreateTask } from "@/bindings/CreateTask";
+import { GetTasksOptions } from "@/bindings/GetTasksOptions";
 
 export const createTask = async (data: CreateTask) => {
   return await invoke<ModelId>("create_task", { data });
@@ -21,8 +22,8 @@ export const getTask = async (id: ModelId) => {
   return await invoke<Task>("get_task", { id });
 };
 
-export const getTasks = async () => {
-  return await invoke<Task[]>("get_tasks");
+export const getTasks = async (options: GetTasksOptions) => {
+  return await invoke<Task[]>("get_tasks", { options });
 };
 
 export const completeTask = async (id: ModelId) => {

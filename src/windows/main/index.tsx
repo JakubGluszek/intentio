@@ -83,7 +83,10 @@ const Navbar: React.FC = () => {
       <NavButton onClick={() => null}>
         <IconView icon={HiViewList} />
       </NavButton>
-      <NavButton onClick={() => null}>
+      <NavButton
+        isSelected={pathname === "/tasks"}
+        onClick={() => navigate("/tasks")}
+      >
         <IconView icon={MdCheckBox} />
       </NavButton>
       <NavButton

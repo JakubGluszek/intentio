@@ -8,3 +8,4 @@ export * from "./useScaleWindow";
 export * from "./useIntents";
 export * from "./useTags";
 export * from "./useIntent";
+export * from "./useTasks";
