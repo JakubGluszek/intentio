@@ -10,7 +10,9 @@ export const useTasks = () => {
   const [data, setData] = React.useState<Task[]>([]);
 
   const getList = async (options: GetTasksOptions) => {
-    return await ipc.getTasks(options);
+    const result = await ipc.getTasks(options);
+    setData(result);
+    return result;
   };
   const create = async (data: CreateTask) => {
     return await ipc.createTask(data);
