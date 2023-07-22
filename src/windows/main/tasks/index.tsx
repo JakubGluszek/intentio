@@ -1,30 +1,27 @@
 import React from "react";
-import { MdAddCircle } from "react-icons/md";
+import {
+  MdAddCircle,
+  MdCheck,
+  MdCheckBox,
+  MdCheckBoxOutlineBlank,
+} from "react-icons/md";
 
 import { Button, IconView } from "@/ui";
 import ipc from "@/ipc";
 import { TimerSession } from "@/bindings/TimerSession";
-import { useTasks } from "@/hooks";
+
 import { CreateTaskModal } from "./CreateTaskModal";
+import TaskView from "./TaskView";
+import { useIntentTasks } from "@/hooks";
 
 export const TasksView: React.FC = () => {
   const [viewCreateTask, setViewCreateTask] = React.useState(false);
   const [session, setSession] = React.useState<TimerSession | null>(null);
-
-  const tasks = useTasks();
+  const [viewCompleted, setViewCompleted] = React.useState(false);
 
   React.useEffect(() => {
     ipc.timerGetSession().then((data) => setSession(data));
   }, []);
-
-  React.useEffect(() => {
-    tasks.getList({
-      limit: null,
-      offset: null,
-      completed: null,
-      intent_id: session?.intent.id ?? null,
-    });
-  }, [session]);
 
   return (
     <>
@@ -40,10 +37,27 @@ export const TasksView: React.FC = () => {
               <IconView icon={MdAddCircle} />
             </Button>
           )}
+          <Button
+            onClick={() => setViewCompleted((prev) => !prev)}
+            variant="ghost"
+          >
+            <IconView
+              icon={viewCompleted ? MdCheckBoxOutlineBlank : MdCheckBox}
+            />
+          </Button>
         </div>
       </nav>
 
-      <div className="grow flex flex-col gap-1"></div>
+      <div className="grow flex flex-col">
+        {session ? (
+          <TasksList
+            intentId={session.intent.id}
+            viewCompleted={viewCompleted}
+          />
+        ) : (
+          <div className="m-auto">Select an intent to create a task</div>
+        )}
+      </div>
 
       {session && (
         <CreateTaskModal
@@ -53,5 +67,22 @@ export const TasksView: React.FC = () => {
         />
       )}
     </>
+  );
+};
+
+interface TasksListProps {
+  intentId: number;
+  viewCompleted: boolean;
+}
+
+const TasksList: React.FC<TasksListProps> = (props) => {
+  const tasks = useIntentTasks(props.intentId, props.viewCompleted);
+
+  return (
+    <div className="grow flex flex-col gap-0.5">
+      {tasks.data.map((task) => (
+        <TaskView key={task.id} data={task} />
+      ))}
+    </div>
   );
 };

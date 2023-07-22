@@ -29,6 +29,8 @@ type Events = {
   task_created: EventPayload<Id>;
   task_updated: EventPayload<Id>;
   task_deleted: EventPayload<Id>;
+  task_completed: EventPayload<Id>;
+  task_uncompleted: EventPayload<Id>;
 
   script_created: EventPayload<Id>;
   script_updated: EventPayload<Id>;
