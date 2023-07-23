@@ -8,6 +8,7 @@ import { TasksView } from "./windows/main/tasks";
 import SettingsWindow from "./windows/settings";
 import AnalyticsWindow from "./windows/analytics";
 import SummaryWindow from "./windows/summary";
+import TinyTimerWindow from "./windows/tiny-timer";
 
 const App: React.FC = () => {
   return (
@@ -20,6 +21,7 @@ const App: React.FC = () => {
       <Route path="/settings" element={<SettingsWindow />} />
       <Route path="/analytics" element={<AnalyticsWindow />} />
       <Route path="/summary" element={<SummaryWindow />} />
+      <Route path="/tiny-timer" element={<TinyTimerWindow />} />
     </Routes>
   );
 };
