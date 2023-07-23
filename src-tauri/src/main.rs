@@ -109,6 +109,7 @@ fn main() -> Result<()> {
             MacosLauncher::LaunchAgent,
             Some(vec![]),
         ))
+        .plugin(tauri_plugin_positioner::init())
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
     Ok(())

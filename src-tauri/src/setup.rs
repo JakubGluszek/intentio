@@ -9,7 +9,7 @@ use crate::{
     state::{AppState, TimerState},
     timer::Timer,
 };
-use tauri::{App, Manager};
+use tauri::{App, LogicalPosition, Manager};
 use tauri_hotkey::{Hotkey, HotkeyManager, Key, Modifier};
 
 pub fn setup_hook(app: &mut App) {
@@ -22,6 +22,7 @@ pub fn setup_hook(app: &mut App) {
     setup_hotkeys_manager(app).expect("should set up hotkeys");
     setup_state(app).expect("should set up state");
     build_main_window(app).expect("should build main window");
+    build_notifications_window(app).expect("should build notifications window");
 }
 
 fn setup_timer(app: &mut App) {
@@ -102,6 +103,27 @@ fn setup_state(app: &mut App) -> Result<()> {
     };
 
     app.manage(Mutex::new(app_state));
+    Ok(())
+}
+
+fn build_notifications_window(app: &mut App) -> Result<()> {
+    tauri::WindowBuilder::new(
+        app,
+        "notifications",
+        tauri::WindowUrl::App("/notifications".into()),
+    )
+    .title("Notifications")
+    .inner_size(320f64, 36f64)
+    .max_inner_size(320f64, 36f64)
+    .min_inner_size(320f64, 36f64)
+    .fullscreen(false)
+    .resizable(false)
+    .decorations(false)
+    .always_on_top(true)
+    .transparent(true)
+    .visible(false)
+    .build()?;
+
     Ok(())
 }
 
