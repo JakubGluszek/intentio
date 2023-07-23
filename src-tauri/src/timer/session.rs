@@ -106,6 +106,28 @@ impl TimerSession {
             self.app_handle
                 .emit_all("session_created", session_id)
                 .unwrap();
+
+            let config = Timer::get_config();
+            // Open session summary window
+            if config.session_summary {
+                tauri::WindowBuilder::new(
+                    &self.app_handle,
+                    "summary",
+                    tauri::WindowUrl::App(format!("/summary?sessionId={}", session_id).into()),
+                )
+                .title("Session Summary")
+                .inner_size(320f64, 336f64)
+                .max_inner_size(320f64, 336f64)
+                .min_inner_size(320f64, 336f64)
+                .fullscreen(false)
+                .resizable(false)
+                .decorations(false)
+                .always_on_top(true)
+                .center()
+                .transparent(true)
+                .build()
+                .unwrap();
+            };
         };
     }
 

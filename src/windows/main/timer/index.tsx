@@ -11,7 +11,6 @@ export const TimerView: React.FC = () => {
   const timer = useTimer();
   const navigate = useNavigate();
 
-  // Window invisible
   if (!store.currentTheme) return null;
   // Loading
   if (timer.session === undefined) return <Loader />;
@@ -19,7 +18,7 @@ export const TimerView: React.FC = () => {
   if (!timer.config) return <Loader />;
 
   return (
-    <div className="grow flex flex-col items-center justify-center bg-base/5 border border-base/5">
+    <div className="grow flex flex-col items-center justify-center bg-base/5">
       {timer.session ? (
         <Timer
           type={timer.session._type}

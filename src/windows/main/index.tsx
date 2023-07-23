@@ -123,10 +123,10 @@ const NavButton: React.FC<NavButtonProps> = ({
     <button
       onClick={onClick}
       className={clsx(
-        "flex-1 flex flex-row items-center justify-center hover:shadow-black/10 hover:shadow active:shadow-black/20 active:shadow-lg active:scale-95 transition-all duration-150 first:rounded-bl last:rounded-br border-y border-base/5 first:border-l last:border-r",
+        "flex-1 flex flex-row items-center justify-center hover:shadow-black/10 hover:shadow active:shadow-black/20 active:shadow-lg active:scale-95 transition-all duration-150 first:rounded-bl last:rounded-br",
         isSelected
           ? "bg-primary/20 hover:bg-primary/30 text-primary border-b-2 border-y-0 first:border-l-0 last:border-r-0 border-primary"
-          : "bg-base/5 hover:bg-base/10 text-text/80 hover:text-base active:text-primary"
+          : "bg-base/5 hover:bg-base/10 text-text/80 border-b-2 border-transparent hover:text-base active:text-primary"
       )}
     >
       {children}

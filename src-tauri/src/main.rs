@@ -72,7 +72,6 @@ fn main() -> Result<()> {
             complete_task,
             uncomplete_task,
             // Session
-            create_session,
             update_session,
             get_session,
             get_sessions,

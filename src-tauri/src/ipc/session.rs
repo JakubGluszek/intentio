@@ -12,13 +12,6 @@ use crate::{
 use super::EventPayload;
 
 #[command]
-pub async fn create_session(app_handle: AppHandle, data: CreateSession) -> Result<i32> {
-    let id = app_handle.db(|mut db| SessionBmc::create(&mut db, &data))?;
-    app_handle.emit_all("session_created", id)?;
-    Ok(id)
-}
-
-#[command]
 pub async fn update_session(app_handle: AppHandle, id: i32, data: UpdateSession) -> Result<i32> {
     let id = app_handle.db(|mut db| SessionBmc::update(&mut db, id, &data))?;
     let payload = EventPayload { data: id };
