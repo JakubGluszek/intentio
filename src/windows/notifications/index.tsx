@@ -3,8 +3,12 @@ import { move_window, Position } from "tauri-plugin-positioner-api";
 import { appWindow } from "@tauri-apps/api/window";
 
 import { WindowContainer } from "@/components";
+import { NotificationView } from "@/features/notification";
+import { useNotifications } from "@/features/notification/useNotifications";
 
 const NotificationsWindow: React.FC = () => {
+  const { data } = useNotifications();
+
   React.useEffect(() => {
     move_window(Position.BottomRight);
     appWindow.show();
@@ -12,13 +16,13 @@ const NotificationsWindow: React.FC = () => {
 
   return (
     <WindowContainer>
-      <Content />
+      <div className="w-fit h-fit">
+        {data.map((n, idx) => (
+          <NotificationView key={idx} {...n} />
+        ))}
+      </div>
     </WindowContainer>
   );
-};
-
-const Content: React.FC = () => {
-  return <div className="w-fit h-fit">Notifications</div>;
 };
 
 export default NotificationsWindow;

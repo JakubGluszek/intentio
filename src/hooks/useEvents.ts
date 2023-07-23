@@ -9,6 +9,7 @@ import { TimerSession } from "@/bindings/TimerSession";
 import { Queue } from "@/bindings/Queue";
 import { CreateIntentTag } from "@/bindings/CreateIntentTag";
 import { DeleteIntentTag } from "@/bindings/DeleteIntentTag";
+import { Notification } from "@/features/notification/types";
 
 type Id = number;
 
@@ -54,6 +55,8 @@ type Events = {
   current_theme_changed: undefined;
   current_theme_updated: Theme;
   preview_theme: Theme;
+
+  customNotification: Notification;
 };
 
 type Callback<T extends keyof Events> = (data: Events[T]) => void;
