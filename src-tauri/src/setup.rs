@@ -9,7 +9,7 @@ use crate::{
     state::{AppState, TimerState},
     timer::Timer,
 };
-use tauri::{App, LogicalPosition, Manager};
+use tauri::{App, Manager};
 use tauri_hotkey::{Hotkey, HotkeyManager, Key, Modifier};
 
 pub fn setup_hook(app: &mut App) {
@@ -113,11 +113,11 @@ fn build_notifications_window(app: &mut App) -> Result<()> {
         tauri::WindowUrl::App("/notifications".into()),
     )
     .title("Notifications")
-    .inner_size(320f64, 36f64)
-    .max_inner_size(320f64, 36f64)
-    .min_inner_size(320f64, 36f64)
+    .inner_size(392f64, 48f64)
+    .max_inner_size(392f64, 48f64)
+    .min_inner_size(392f64, 48f64)
     .fullscreen(false)
-    .resizable(false)
+    .resizable(true)
     .decorations(false)
     .always_on_top(true)
     .transparent(true)

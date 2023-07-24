@@ -139,6 +139,9 @@ impl TimerSession {
         let config = Timer::get_config();
         let auto_start_next = match self._type {
             SessionType::Focus => {
+                self.app_handle
+                    .emit_all("focus_session_completed", ())
+                    .unwrap();
                 // Try to save session before switching to a break
                 self.save();
 
@@ -153,7 +156,21 @@ impl TimerSession {
                 iteration.fetch_add(1, Ordering::SeqCst);
                 config.auto_start_breaks
             }
-            _ => {
+            SessionType::Break => {
+                self.app_handle.emit_all("break_completed", ()).unwrap();
+
+                if queue.is_empty() {
+                    self.set_focus_session(&config);
+                } else {
+                    queue.next(self)?;
+                };
+                config.auto_start_focus
+            }
+            SessionType::LongBreak => {
+                self.app_handle
+                    .emit_all("long_break_completed", ())
+                    .unwrap();
+
                 if queue.is_empty() {
                     self.set_focus_session(&config);
                 } else {

@@ -56,7 +56,9 @@ type Events = {
   current_theme_updated: Theme;
   preview_theme: Theme;
 
-  customNotification: Notification;
+  focus_session_completed: undefined;
+  break_completed: undefined;
+  long_break_completed: undefined;
 };
 
 type Callback<T extends keyof Events> = (data: Events[T]) => void;
