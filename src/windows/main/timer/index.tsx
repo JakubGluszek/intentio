@@ -1,13 +1,12 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { TbWindowMinimize } from "react-icons/tb";
 
 import { Loader, Timer } from "@/components";
 import useStore from "@/store";
 import { useTimer } from "@/hooks";
 import { Button, IconView } from "@/ui";
-import { TbWindowMinimize } from "react-icons/tb";
-import { WebviewWindow } from "@tauri-apps/api/window";
-import { WebviewConfig } from "@/config";
+import ipc from "@/ipc";
 
 export const TimerView: React.FC = () => {
   const store = useStore();
@@ -41,18 +40,7 @@ export const TimerView: React.FC = () => {
           />
 
           <div className="absolute top-1 right-1">
-            <Button
-              variant="ghost"
-              onClick={() =>
-                new WebviewWindow("tiny-timer", {
-                  url: "/tiny-timer",
-                  title: "Tiny Timer",
-                  width: 240,
-                  height: 80,
-                  ...WebviewConfig,
-                })
-              }
-            >
+            <Button variant="ghost" onClick={() => ipc.createTinyTimerWindow()}>
               <IconView icon={TbWindowMinimize} />
             </Button>
           </div>

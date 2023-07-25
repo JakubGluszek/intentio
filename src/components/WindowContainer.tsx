@@ -56,7 +56,7 @@ export const WindowContainer: React.FC<WindowContainerProps> = (props) => {
     ipc.getSettingsConfig().then((data) => store.setSettingsConfig(data));
   }, []);
 
-  if (!store.currentTheme) return null;
+  if (!store.currentTheme) return <div>Loading</div>;
 
   return (
     <WindowProvider>

@@ -74,3 +74,25 @@ pub async fn play_audio(audio: Option<String>, app: AppHandle<Wry>) -> Result<()
 
     Ok(())
 }
+
+#[command]
+pub async fn create_tiny_timer_window(app: AppHandle<Wry>) -> Result<()> {
+    tauri::WindowBuilder::new(
+        &app,
+        "tiny-timer",
+        tauri::WindowUrl::App("/tiny-timer".into()),
+    )
+    .title("Tiny Timer")
+    .inner_size(240f64, 80f64)
+    .max_inner_size(240f64, 80f64)
+    .min_inner_size(240f64, 80f64)
+    .fullscreen(false)
+    .resizable(false)
+    .decorations(false)
+    .always_on_top(true)
+    .transparent(true)
+    .visible(false)
+    .build()?;
+
+    Ok(())
+}

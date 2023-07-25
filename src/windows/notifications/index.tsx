@@ -1,5 +1,6 @@
 import React from "react";
 import { move_window, Position } from "tauri-plugin-positioner-api";
+import { appWindow } from "@tauri-apps/api/window";
 
 import { NotificationView } from "@/features/notification";
 import { useNotifications } from "@/features/notification/useNotifications";
@@ -8,7 +9,6 @@ import { useEvents, usePreventContextMenu } from "@/hooks";
 import utils from "@/utils";
 import ipc from "@/ipc";
 import { WindowProvider } from "@/contexts";
-import { appWindow, LogicalSize } from "@tauri-apps/api/window";
 
 const NotificationsWindow: React.FC = () => {
   const store = useStore();
@@ -32,8 +32,6 @@ const NotificationsWindow: React.FC = () => {
     });
   }, []);
 
-  if (!store.currentTheme) return null;
-
   return (
     <WindowProvider>
       <Content />
@@ -46,23 +44,17 @@ const Content: React.FC = () => {
 
   React.useEffect(() => {
     if (notification) {
-      appWindow.show();
-      appWindow.setSize(new LogicalSize(400, 64));
-      appWindow.setResizable(false);
-      appWindow.setCursorIcon("default");
-      move_window(Position.TopCenter);
+      appWindow.show().then(() => {
+        move_window(Position.TopCenter);
+      });
       return;
     }
     appWindow.hide();
   }, [notification]);
 
-  if (!notification) return null;
+  if (!notification) return <div>Loading</div>;
 
-  return (
-    <div className="p-2 py-4">
-      <NotificationView {...notification} onClose={closeNotification} />
-    </div>
-  );
+  return <NotificationView {...notification} onClose={closeNotification} />;
 };
 
 export default NotificationsWindow;

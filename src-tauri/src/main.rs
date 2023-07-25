@@ -47,6 +47,7 @@ fn main() -> Result<()> {
             play_audio,
             hide_main_window,
             exit_main_window,
+            create_tiny_timer_window,
             // Theme
             create_theme,
             update_theme,

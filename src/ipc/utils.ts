@@ -21,3 +21,7 @@ export const hideMainWindow = async () => {
 export const exitMainWindow = async () => {
   return await invoke("exit_main_window");
 };
+
+export const createTinyTimerWindow = async () => {
+  return await invoke("create_tiny_timer_window");
+};
